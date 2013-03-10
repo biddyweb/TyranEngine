@@ -1,0 +1,31 @@
+<target name="tyranengine" type="executable">
+	<!-- core -->
+	<header directory="tyranscript/include" />
+	<source directory="core/src/base" recursive="true" />
+
+	<!-- configurations -->
+	<configuration name="debug">
+		<define name="DEBUG" />
+		<define name="TORNADO_CONFIG_DEBUG" />
+	</configuration>
+
+	<configuration name="release">
+	</configuration>
+	<configuration name="adhoc">
+	</configuration>
+	<configuration name="distribution">
+	</configuration>
+
+	<!-- platforms -->
+	<platform name="mac_os_x">
+		<define name="TORNADO_OS_MAC_OS_X" />
+
+		<source directory="core/src/platform/posix" exclude="[absolute_time.cpp, elapsed_time.cpp, elapsed_time.h, tornado_semaphore.h, tornado_semaphore.cpp]"/>
+		<source directory="core/src/platform/mac_os_x" recursive="true" />
+		
+		<library filename="Cocoa.framework" />
+		<library filename="OpenGL.framework" />
+		<library filename="AudioToolbox.framework" />
+	</platform>
+
+</target>

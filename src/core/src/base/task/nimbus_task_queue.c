@@ -50,6 +50,7 @@ tyran_boolean nimbus_task_queue_has_pending_tasks_from_group(nimbus_task_queue* 
 
 nimbus_task* nimbus_task_queue_fetch_next_task(nimbus_task_queue* self, int requested_affinity)
 {
+TYRAN_LOG("Fetch next task");
 	nimbus_task* task;
 
 	if (self->task_count == 0) {

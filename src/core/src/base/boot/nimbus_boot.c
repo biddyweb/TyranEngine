@@ -31,7 +31,7 @@ void nimbus_boot_task_threads(nimbus_boot* self)
 void nimbus_boot_engine(nimbus_boot* self)
 {
 	self->engine = nimbus_engine_new(&self->memory);
-	nimbus_task_queue_add_task(self->task_queue, &self->engine->task);
+	nimbus_task_queue_add_task(self->task_queue, self->engine->task);
 }
 
 nimbus_boot* nimbus_boot_new()
@@ -49,17 +49,21 @@ nimbus_boot* nimbus_boot_new()
 	nimbus_boot_task_threads(self);
 	nimbus_boot_engine(self);
 
+	TYRAN_LOG("Boot done!");
+
 	return self;
 }
 
 void nimbus_boot_manually_update_affinity_zero_tasks(nimbus_boot* self)
 {
+	TYRAN_LOG("checking...");
 	const int affinity = 0;
 	for (;;) {
 		nimbus_task* task = nimbus_task_queue_fetch_next_task(self->task_queue, affinity);
 		if (task == 0) {
 			break;
 		} else {
+			TYRAN_LOG("Found a task:%p", task->work);
 			task->work(task);
 			nimbus_task_queue_task_completed(self->task_queue, task);
 		}

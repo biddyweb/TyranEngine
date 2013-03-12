@@ -90,10 +90,8 @@
 
 - (void)drawRect:(NSRect)theRect {
 	[[self openGLContext] makeCurrentContext];
-	if (self->boot) {
-		nimbus_boot_vertical_refresh(self->boot);
-		glFlush();
- 	}
+	nimbus_boot_vertical_refresh(self->boot);
+	glFlush();
 	[[self openGLContext] flushBuffer];
 }
 @end

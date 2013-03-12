@@ -5,7 +5,7 @@
 #include <tyranscript/tyran_mocha_api.h>
 
 typedef struct nimbus_engine {
-	nimbus_task task;
+	nimbus_task* task;
 	tyran_mocha_api mocha_api;
 } nimbus_engine;
 

@@ -11,7 +11,7 @@ class Builder
 		p "directory"
 		directory build_directory
 
-		c_files = FileList['../../lib/**/*.c', './**/*.c']
+		c_files = FileList['./**/*.c', 'tyranscript/src/lib/**/*.c']
 		p "c:#{c_files.inspect}"
 
 		o_files = []

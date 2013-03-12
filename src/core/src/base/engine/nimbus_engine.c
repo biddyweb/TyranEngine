@@ -5,6 +5,12 @@ TYRAN_RUNTIME_CALL_FUNC(nimbus_engine_load_library)
 	return 0;
 }
 
+void nimbus_engine_work(void* _self)
+{
+	nimbus_engine* self = (nimbus_engine*) _self;
+	TYRAN_LOG("Engine WORK:%p",self);
+}
+
 nimbus_engine* nimbus_engine_new(tyran_memory* memory)
 {
 	nimbus_engine* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_engine);
@@ -15,6 +21,8 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory)
 
 	tyran_value* global = tyran_runtime_context(self->mocha_api.default_runtime);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "load_library", nimbus_engine_load_library);
+
+	self->task = nimbus_task_new(memory, nimbus_engine_work, self);
 
 	return self;
 }

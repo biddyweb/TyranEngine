@@ -5,7 +5,7 @@
 
 struct tyran_memory;
 
-typedef void (*nimbus_event_read)(void* self, struct nimbus_event_stream* stream);
+typedef void (*nimbus_event_read)(void* self, struct nimbus_event_read_stream* stream);
 
 typedef struct nimbus_event_listener_function {
 	nimbus_event_read event_reader;

@@ -13,9 +13,15 @@ typedef struct nimbus_boot {
 	struct nimbus_engine* engine;
 	int task_thread_count;
 	tyran_memory memory;
+	u8t* memory_area;
 } nimbus_boot;
 
 nimbus_boot* nimbus_boot_new();
-tyran_boolean nimbus_boot_vertical_refresh(nimbus_boot* self);
+void nimbus_boot_destroy(nimbus_boot* boot);
+
+tyran_boolean nimbus_boot_ready_for_next_frame(nimbus_boot* self);
+tyran_boolean nimbus_boot_should_render(nimbus_boot* self);
+void nimbus_boot_update(nimbus_boot* self);
+
 
 #endif

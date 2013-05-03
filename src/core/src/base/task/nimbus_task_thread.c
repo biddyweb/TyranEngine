@@ -20,7 +20,7 @@ void nimbus_task_thread_work(nimbus_task_thread* self)
 		if (task == 0) {
 			nimbus_thread_sleep(0.1f);
 		} else {
-			task->work(task->self);
+			task->work(task->self, self->task_queue);
 			nimbus_task_queue_task_completed(self->task_queue, task);
 		}
 	}

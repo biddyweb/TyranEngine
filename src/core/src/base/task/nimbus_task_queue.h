@@ -11,7 +11,8 @@ typedef struct nimbus_task_queue {
 	nimbus_mutex mutex;
 	struct nimbus_task* tasks[128];
 	int task_count;
-	int task_index;
+	int task_write_index;
+	int task_read_index;
 	int task_max_count;
 } nimbus_task_queue;
 

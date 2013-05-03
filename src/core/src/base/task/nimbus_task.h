@@ -1,9 +1,11 @@
 #ifndef nimbus_task_h
 #define nimbus_task_h
 
-typedef void (*nimbus_task_function)(void*);
 
 struct nimbus_task_queue;
+
+typedef void (*nimbus_task_function)(void*, struct nimbus_task_queue* queue);
+
 struct tyran_memory;
 
 typedef struct nimbus_task {

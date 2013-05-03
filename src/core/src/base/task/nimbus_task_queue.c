@@ -26,6 +26,8 @@ void nimbus_task_queue_destroy(nimbus_task_queue* self)
 
 void nimbus_task_queue_add_task(nimbus_task_queue* self, nimbus_task* task)
 {
+	TYRAN_ASSERT(task, "MUST BE zero");
+	TYRAN_ASSERT(self->task_count < self->task_max_count, "FULL");
 	nimbus_mutex_lock(&self->mutex);
 
 	task->task_queue = self;
@@ -34,7 +36,9 @@ void nimbus_task_queue_add_task(nimbus_task_queue* self, nimbus_task* task)
 		self->group_counter[task->group]++;
 	}
 
-	self->tasks[self->task_count++] = task;
+	self->tasks[self->task_write_index++] = task;
+	self->task_write_index %= self->task_max_count;
+	self->task_count++;
 
 	nimbus_mutex_unlock(&self->mutex);
 }
@@ -50,20 +54,21 @@ tyran_boolean nimbus_task_queue_has_pending_tasks_from_group(nimbus_task_queue* 
 
 nimbus_task* nimbus_task_queue_fetch_next_task(nimbus_task_queue* self, int requested_affinity)
 {
-TYRAN_LOG("Fetch next task");
+	TYRAN_LOG("Fetch next task");
 	nimbus_task* task;
 
 	if (self->task_count == 0) {
 		task = 0;
 	} else {
 		nimbus_mutex_lock(&self->mutex);
-		task = self->tasks[self->task_index];
+		task = self->tasks[self->task_read_index];
 
 		if (task->affinity != -1 && requested_affinity != task->affinity) {
 			task = 0;
 		} else {
-			self->task_index++;
-			self->task_index %= self->task_max_count;
+			self->tasks[self->task_read_index] = 0;
+			self->task_read_index++;
+			self->task_read_index %= self->task_max_count;
 			self->task_count--;
 		}
 		nimbus_mutex_unlock(&self->mutex);

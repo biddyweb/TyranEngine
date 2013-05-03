@@ -3,7 +3,7 @@
 #include "../task/nimbus_task_queue.h"
 #include "../task/nimbus_task_thread.h"
 
-#include "../engine/nimbus_engine.h"
+#include "../../engine/base/nimbus_engine.h"
 
 #include "tyranscript/tyran_config.h"
 #include "tyranscript/tyran_clib.h"
@@ -43,6 +43,7 @@ nimbus_boot* nimbus_boot_new()
 	tyran_memory_construct(&memory, memory_area, max_size);
 	nimbus_boot* self = TYRAN_MEMORY_CALLOC_TYPE(&memory, nimbus_boot);
 	self->memory = memory;
+	self->memory_area = memory_area;
 
 	nimbus_boot_logger(self);
 	nimbus_boot_task_queue(self);
@@ -52,6 +53,11 @@ nimbus_boot* nimbus_boot_new()
 	TYRAN_LOG("Boot done!");
 
 	return self;
+}
+
+void nimbus_boot_destroy(nimbus_boot* self)
+{
+	tyran_free(self->memory_area);
 }
 
 void nimbus_boot_manually_update_affinity_zero_tasks(nimbus_boot* self)
@@ -64,17 +70,29 @@ void nimbus_boot_manually_update_affinity_zero_tasks(nimbus_boot* self)
 			break;
 		} else {
 			TYRAN_LOG("Found a task:%p", task->work);
-			task->work(task);
+			task->work(task, self->task_queue);
 			nimbus_task_queue_task_completed(self->task_queue, task);
 		}
 	}
 }
 
-tyran_boolean nimbus_boot_vertical_refresh(nimbus_boot* self)
+
+tyran_boolean nimbus_boot_ready_for_next_frame(nimbus_boot* self)
 {
+	tyran_boolean pending_tasks = nimbus_task_queue_has_pending_tasks_from_group(self->task_queue, 0);
+	return !pending_tasks;
+}
+
+tyran_boolean nimbus_boot_should_render(nimbus_boot* self)
+{
+	tyran_boolean did_draw_something = nimbus_engine_should_render(self->engine);
+	return did_draw_something;
+}
+
+void nimbus_boot_update(nimbus_boot* self)
+{
+	nimbus_engine_update(self->engine, self->task_queue);
 	nimbus_boot_manually_update_affinity_zero_tasks(self);
-	// tyran_boolean did_draw_something = nimbus_engine_vertical_refresh(self->engine);
-	return TYRAN_TRUE;
 }
 
 tyran_boolean nimbus_boot_all_threads_are_terminated(nimbus_boot* self)

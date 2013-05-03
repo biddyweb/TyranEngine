@@ -89,9 +89,18 @@
 }
 
 - (void)drawRect:(NSRect)theRect {
-	[[self openGLContext] makeCurrentContext];
-	nimbus_boot_vertical_refresh(self->boot);
-	glFlush();
-	[[self openGLContext] flushBuffer];
+	if (!nimbus_boot_ready_for_next_frame(self->boot)) {
+		return;
+	}
+	
+	tyran_boolean should_draw = nimbus_boot_should_render(self->boot);
+	if (should_draw) {
+		[[self openGLContext] makeCurrentContext];
+		glFlush();
+		[[self openGLContext] flushBuffer];
+	}
+	
+	nimbus_boot_update(self->boot);
+	
 }
 @end

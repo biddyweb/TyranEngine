@@ -38,13 +38,13 @@ void nimbus_event_process(nimbus_event_listener* self, const u8t* raw_event_poin
 		nimbus_event_listener_function* func = nimbus_event_function_from_event_id(self, id);
 
 		if (func) {
-			nimbus_event_stream stream;
+			nimbus_event_read_stream stream;
 			stream.pointer = start_event_pointer;
 			func->event_reader(func, &stream);
 		}
 
 		if (self->listen_to_all) {
-			nimbus_event_stream stream;
+			nimbus_event_read_stream stream;
 			stream.pointer = start_event_pointer;
 			stream.event_type_id = id;
 			self->listen_to_all(func, &stream);

@@ -4,10 +4,12 @@ compiler: clang
 before_script:
   - "gem install rake"
   - "gem install colored"
-  - "cd ./src/samples/command"
+  - "cd ./src/"
   - "mkdir build"
+  - "wget https://github.com/Piot/TyranScript/archive/v0.2.zip -O v0.2.zip"
+  - "mkdir tyranscript"
+  - "unzip v0.2.zip -d tyranscript"
 
 script:
   - "rake"
-  - "cd ../../tests"
-  - "rake"
+

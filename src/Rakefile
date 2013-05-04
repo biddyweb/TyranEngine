@@ -1,6 +1,6 @@
 require_relative 'buildscript/builder'
 
-application = 'command'
+application = 'engine'
 
 builder = Builder.new application, ['core/include', 'tyranscript/src/include']
 

@@ -4,6 +4,7 @@
 	<source directory="tyranscript/src/lib" recursive="true" />
 
 	<source directory="core/src/base" recursive="true" />
+	<source directory="engine" recursive="true" />
 
 	<!-- configurations -->
 	<configuration name="debug">
@@ -28,6 +29,12 @@
 		<library filename="Cocoa.framework" />
 		<library filename="OpenGL.framework" />
 		<library filename="AudioToolbox.framework" />
+	</platform>
+	<platform name="ios">
+		<define name="TORNADO_OS_IOS" />
+
+		<library filename="Foundation.framework" />
+		<library filename="OpenGLES.framework" />
 	</platform>
 
 </target>

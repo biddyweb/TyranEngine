@@ -3,7 +3,7 @@
 #include "../task/nimbus_task_queue.h"
 #include "../task/nimbus_task_thread.h"
 
-#include "../../engine/base/nimbus_engine.h"
+#include "../../../../engine/base/nimbus_engine.h"
 
 #include "tyranscript/tyran_config.h"
 #include "tyranscript/tyran_clib.h"

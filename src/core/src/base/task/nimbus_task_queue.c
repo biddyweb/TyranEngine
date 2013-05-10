@@ -1,6 +1,7 @@
 #include "nimbus_task_queue.h"
 #include <tyranscript/tyran_memory.h>
 #include "nimbus_task.h"
+#include "../mutex/nimbus_mutex.h"
 #include <tyranscript/tyran_log.h>
 
 nimbus_task_queue* nimbus_task_queue_new(tyran_memory* memory)

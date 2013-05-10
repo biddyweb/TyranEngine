@@ -627,57 +627,61 @@
 			isa = PBXBuildFile;
 			fileRef = 00000000000000000000015F /* Icon-72.png */ ;
 		};
-		000000000000000000000162 /* Icon-Small-50.png */  = {
+		000000000000000000000162 /* Icon-72@2x.png */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000161 /* Icon-Small-50.png */ ;
+			fileRef = 000000000000000000000161 /* Icon-72@2x.png */ ;
 		};
-		000000000000000000000164 /* Icon-Small.png */  = {
+		000000000000000000000164 /* Icon-Small-50.png */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000163 /* Icon-Small.png */ ;
+			fileRef = 000000000000000000000163 /* Icon-Small-50.png */ ;
 		};
-		000000000000000000000166 /* Icon-Small@2x.png */  = {
+		000000000000000000000166 /* Icon-Small.png */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000165 /* Icon-Small@2x.png */ ;
+			fileRef = 000000000000000000000165 /* Icon-Small.png */ ;
 		};
-		000000000000000000000168 /* Icon.png */  = {
+		000000000000000000000168 /* Icon-Small@2x.png */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000167 /* Icon.png */ ;
+			fileRef = 000000000000000000000167 /* Icon-Small@2x.png */ ;
 		};
-		00000000000000000000016A /* Icon@2x.png */  = {
+		00000000000000000000016A /* Icon.png */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000169 /* Icon@2x.png */ ;
+			fileRef = 000000000000000000000169 /* Icon.png */ ;
 		};
-		00000000000000000000016C /* MainStoryboard_iPad.storyboard */  = {
+		00000000000000000000016C /* Icon@2x.png */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000016B /* MainStoryboard_iPad.storyboard */ ;
+			fileRef = 00000000000000000000016B /* Icon@2x.png */ ;
 		};
-		00000000000000000000016E /* MainStoryboard_iPhone.storyboard */  = {
+		00000000000000000000016E /* MainStoryboard_iPad.storyboard */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000016D /* MainStoryboard_iPhone.storyboard */ ;
+			fileRef = 00000000000000000000016D /* MainStoryboard_iPad.storyboard */ ;
 		};
-		000000000000000000000170 /* tyran.plist */  = {
+		000000000000000000000170 /* MainStoryboard_iPhone.storyboard */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000016F /* tyran.plist */ ;
+			fileRef = 00000000000000000000016F /* MainStoryboard_iPhone.storyboard */ ;
 		};
-		000000000000000000000172 /* Foundation.framework */  = {
+		000000000000000000000172 /* tyran.plist */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000171 /* Foundation.framework */ ;
+			fileRef = 000000000000000000000171 /* tyran.plist */ ;
 		};
-		000000000000000000000174 /* UIKit.framework */  = {
+		000000000000000000000174 /* Foundation.framework */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000173 /* UIKit.framework */ ;
+			fileRef = 000000000000000000000173 /* Foundation.framework */ ;
 		};
-		000000000000000000000176 /* CoreGraphics.framework */  = {
+		000000000000000000000176 /* UIKit.framework */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000175 /* CoreGraphics.framework */ ;
+			fileRef = 000000000000000000000175 /* UIKit.framework */ ;
 		};
-		000000000000000000000178 /* GLKit.framework */  = {
+		000000000000000000000178 /* CoreGraphics.framework */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000177 /* GLKit.framework */ ;
+			fileRef = 000000000000000000000177 /* CoreGraphics.framework */ ;
 		};
-		00000000000000000000017A /* OpenGLES.framework */  = {
+		00000000000000000000017A /* GLKit.framework */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000179 /* OpenGLES.framework */ ;
+			fileRef = 000000000000000000000179 /* GLKit.framework */ ;
+		};
+		00000000000000000000017C /* OpenGLES.framework */  = {
+			isa = PBXBuildFile;
+			fileRef = 00000000000000000000017B /* OpenGLES.framework */ ;
 		};
 		/* End PBXBuildFile section */
 		
@@ -1923,7 +1927,15 @@
 			path = "../../resource/ios/Icon-72.png";
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000161 /* Icon-Small-50.png */  = {
+		000000000000000000000161 /* Icon-72@2x.png */  = {
+			isa = PBXFileReference;
+			fileEncoding = 4;
+			lastKnownFileType = image.png;
+			name = "Icon-72@2x.png";
+			path = "../../resource/ios/Icon-72@2x.png";
+			sourceTree = SOURCE_ROOT;
+		};
+		000000000000000000000163 /* Icon-Small-50.png */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = image.png;
@@ -1931,7 +1943,7 @@
 			path = "../../resource/ios/Icon-Small-50.png";
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000163 /* Icon-Small.png */  = {
+		000000000000000000000165 /* Icon-Small.png */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = image.png;
@@ -1939,7 +1951,7 @@
 			path = "../../resource/ios/Icon-Small.png";
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000165 /* Icon-Small@2x.png */  = {
+		000000000000000000000167 /* Icon-Small@2x.png */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = image.png;
@@ -1947,7 +1959,7 @@
 			path = "../../resource/ios/Icon-Small@2x.png";
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000167 /* Icon.png */  = {
+		000000000000000000000169 /* Icon.png */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = image.png;
@@ -1955,7 +1967,7 @@
 			path = ../../resource/ios/Icon.png;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000169 /* Icon@2x.png */  = {
+		00000000000000000000016B /* Icon@2x.png */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = image.png;
@@ -1963,7 +1975,7 @@
 			path = "../../resource/ios/Icon@2x.png";
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000016B /* MainStoryboard_iPad.storyboard */  = {
+		00000000000000000000016D /* MainStoryboard_iPad.storyboard */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = file.storyboard;
@@ -1971,7 +1983,7 @@
 			path = ../../resource/ios/MainStoryboard_iPad.storyboard;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000016D /* MainStoryboard_iPhone.storyboard */  = {
+		00000000000000000000016F /* MainStoryboard_iPhone.storyboard */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = file.storyboard;
@@ -1979,7 +1991,7 @@
 			path = ../../resource/ios/MainStoryboard_iPhone.storyboard;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000016F /* tyran.plist */  = {
+		000000000000000000000171 /* tyran.plist */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = text.plist.xml;
@@ -1988,7 +2000,7 @@
 			plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist";
 			sourceTree = "<group>";
 		};
-		000000000000000000000171 /* Foundation.framework */  = {
+		000000000000000000000173 /* Foundation.framework */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = wrapper.framework;
@@ -1996,7 +2008,7 @@
 			path = System/Library/Frameworks/Foundation.framework;
 			sourceTree = SDKROOT;
 		};
-		000000000000000000000173 /* UIKit.framework */  = {
+		000000000000000000000175 /* UIKit.framework */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = wrapper.framework;
@@ -2004,7 +2016,7 @@
 			path = System/Library/Frameworks/UIKit.framework;
 			sourceTree = SDKROOT;
 		};
-		000000000000000000000175 /* CoreGraphics.framework */  = {
+		000000000000000000000177 /* CoreGraphics.framework */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = wrapper.framework;
@@ -2012,7 +2024,7 @@
 			path = System/Library/Frameworks/CoreGraphics.framework;
 			sourceTree = SDKROOT;
 		};
-		000000000000000000000177 /* GLKit.framework */  = {
+		000000000000000000000179 /* GLKit.framework */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = wrapper.framework;
@@ -2020,7 +2032,7 @@
 			path = System/Library/Frameworks/GLKit.framework;
 			sourceTree = SDKROOT;
 		};
-		000000000000000000000179 /* OpenGLES.framework */  = {
+		00000000000000000000017B /* OpenGLES.framework */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = wrapper.framework;
@@ -2028,7 +2040,7 @@
 			path = System/Library/Frameworks/OpenGLES.framework;
 			sourceTree = SDKROOT;
 		};
-		000000000000000000000184 /* sinkblobs.app */  = {
+		000000000000000000000186 /* sinkblobs.app */  = {
 			isa = PBXFileReference;
 			explicitFileType = wrapper.application;
 			includeInIndex = 0;
@@ -2040,15 +2052,15 @@
 		
 		
 		/* Begin PBXFrameworksBuildPhase section */
-		00000000000000000000017B /* Frameworks build phase */  = {
+		00000000000000000000017D /* Frameworks build phase */  = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				000000000000000000000172 /* Foundation.framework */ ,
-				000000000000000000000174 /* UIKit.framework */ ,
-				000000000000000000000176 /* CoreGraphics.framework */ ,
-				000000000000000000000178 /* GLKit.framework */ ,
-				00000000000000000000017A /* OpenGLES.framework */ ,
+				000000000000000000000174 /* Foundation.framework */ ,
+				000000000000000000000176 /* UIKit.framework */ ,
+				000000000000000000000178 /* CoreGraphics.framework */ ,
+				00000000000000000000017A /* GLKit.framework */ ,
+				00000000000000000000017C /* OpenGLES.framework */ ,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2524,11 +2536,11 @@
 		000000000000000000000002 /* Frameworks */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000171 /* Foundation.framework */ ,
-				000000000000000000000173 /* UIKit.framework */ ,
-				000000000000000000000175 /* CoreGraphics.framework */ ,
-				000000000000000000000177 /* GLKit.framework */ ,
-				000000000000000000000179 /* OpenGLES.framework */ ,
+				000000000000000000000173 /* Foundation.framework */ ,
+				000000000000000000000175 /* UIKit.framework */ ,
+				000000000000000000000177 /* CoreGraphics.framework */ ,
+				000000000000000000000179 /* GLKit.framework */ ,
+				00000000000000000000017B /* OpenGLES.framework */ ,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -2536,7 +2548,7 @@
 		000000000000000000000003 /* Products */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000184 /* sinkblobs.app */ ,
+				000000000000000000000186 /* sinkblobs.app */ ,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2547,14 +2559,15 @@
 				00000000000000000000015B /* Default-568h@2x.png */ ,
 				00000000000000000000015D /* Default.png */ ,
 				00000000000000000000015F /* Icon-72.png */ ,
-				000000000000000000000161 /* Icon-Small-50.png */ ,
-				000000000000000000000163 /* Icon-Small.png */ ,
-				000000000000000000000165 /* Icon-Small@2x.png */ ,
-				000000000000000000000167 /* Icon.png */ ,
-				000000000000000000000169 /* Icon@2x.png */ ,
-				00000000000000000000016B /* MainStoryboard_iPad.storyboard */ ,
-				00000000000000000000016D /* MainStoryboard_iPhone.storyboard */ ,
-				00000000000000000000016F /* tyran.plist */ ,
+				000000000000000000000161 /* Icon-72@2x.png */ ,
+				000000000000000000000163 /* Icon-Small-50.png */ ,
+				000000000000000000000165 /* Icon-Small.png */ ,
+				000000000000000000000167 /* Icon-Small@2x.png */ ,
+				000000000000000000000169 /* Icon.png */ ,
+				00000000000000000000016B /* Icon@2x.png */ ,
+				00000000000000000000016D /* MainStoryboard_iPad.storyboard */ ,
+				00000000000000000000016F /* MainStoryboard_iPhone.storyboard */ ,
+				000000000000000000000171 /* tyran.plist */ ,
 			);
 			name = ios;
 			path = /Users/peter/work/TyranEngine/resource/ios;
@@ -2600,7 +2613,7 @@
 		
 		
 		/* Begin PBXHeadersBuildPhase section */
-		00000000000000000000017D /* Headers build phase */  = {
+		00000000000000000000017F /* Headers build phase */  = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2699,14 +2712,14 @@
 		
 		
 		/* Begin PBXNativeTarget section */
-		000000000000000000000185 /* sinkblobs */  = {
+		000000000000000000000187 /* sinkblobs */  = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 000000000000000000000183 /* Build configuration list for target */ ;
+			buildConfigurationList = 000000000000000000000185 /* Build configuration list for target */ ;
 			buildPhases = (
-				00000000000000000000017D /* Headers build phase */ ,
-				00000000000000000000017E /* Resources build phase */ ,
-				00000000000000000000017C /* Sources build phase */ ,
-				00000000000000000000017B /* Frameworks build phase */ ,
+				00000000000000000000017F /* Headers build phase */ ,
+				000000000000000000000180 /* Resources build phase */ ,
+				00000000000000000000017E /* Sources build phase */ ,
+				00000000000000000000017D /* Frameworks build phase */ ,
 			);
 			buildRules = (
 			);
@@ -2714,16 +2727,16 @@
 			);
 			name = sinkblobs;
 			productName = sinkblobs;
-			productReference = 000000000000000000000184 /* sinkblobs.app */ ;
+			productReference = 000000000000000000000186 /* sinkblobs.app */ ;
 			productType = "com.apple.product-type.application";
 		};
 		/* End PBXNativeTarget section */
 		
 		
 		/* Begin PBXProject section */
-		00000000000000000000018B /* Project */  = {
+		00000000000000000000018D /* Project */  = {
 			isa = PBXProject;
-			buildConfigurationList = 00000000000000000000018A /* Build configuration list for project */ ;
+			buildConfigurationList = 00000000000000000000018C /* Build configuration list for project */ ;
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
 			mainGroup = 000000000000000000000004 /* sinkblobs */ ;
@@ -2731,27 +2744,28 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				000000000000000000000185 /* sinkblobs */ ,
+				000000000000000000000187 /* sinkblobs */ ,
 			);
 		};
 		/* End PBXProject section */
 		
 		
 		/* Begin PBXResourcesBuildPhase section */
-		00000000000000000000017E /* Resources build phase */  = {
+		000000000000000000000180 /* Resources build phase */  = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				00000000000000000000015C /* Default-568h@2x.png */ ,
 				00000000000000000000015E /* Default.png */ ,
 				000000000000000000000160 /* Icon-72.png */ ,
-				000000000000000000000162 /* Icon-Small-50.png */ ,
-				000000000000000000000164 /* Icon-Small.png */ ,
-				000000000000000000000166 /* Icon-Small@2x.png */ ,
-				000000000000000000000168 /* Icon.png */ ,
-				00000000000000000000016A /* Icon@2x.png */ ,
-				00000000000000000000016C /* MainStoryboard_iPad.storyboard */ ,
-				00000000000000000000016E /* MainStoryboard_iPhone.storyboard */ ,
+				000000000000000000000162 /* Icon-72@2x.png */ ,
+				000000000000000000000164 /* Icon-Small-50.png */ ,
+				000000000000000000000166 /* Icon-Small.png */ ,
+				000000000000000000000168 /* Icon-Small@2x.png */ ,
+				00000000000000000000016A /* Icon.png */ ,
+				00000000000000000000016C /* Icon@2x.png */ ,
+				00000000000000000000016E /* MainStoryboard_iPad.storyboard */ ,
+				000000000000000000000170 /* MainStoryboard_iPhone.storyboard */ ,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2759,7 +2773,7 @@
 		
 		
 		/* Begin PBXSourcesBuildPhase section */
-		00000000000000000000017C /* Sources build phase */  = {
+		00000000000000000000017E /* Sources build phase */  = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2834,7 +2848,7 @@
 		
 		
 		/* Begin XCBuildConfiguration section */
-		00000000000000000000017F /* Debug build settings target */  = {
+		000000000000000000000181 /* Debug build settings target */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2844,14 +2858,14 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = sinkblobs_Prefix.pch;
 				GCC_THUMB_SUPPORT = NO;
-				INFOPLIST_FILE = /Users/peter/work/TyranEngine/resource/ios/tyran.plist;
+				INFOPLIST_FILE = tyran.plist;
 				LIBRARY_SEARCH_PATHS = (
 				);
 				PRODUCT_NAME = sinkblobs;
 			};
 			name = Debug;
 		};
-		000000000000000000000180 /* Release build settings target */  = {
+		000000000000000000000182 /* Release build settings target */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2859,14 +2873,14 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = sinkblobs_Prefix.pch;
 				GCC_THUMB_SUPPORT = NO;
-				INFOPLIST_FILE = /Users/peter/work/TyranEngine/resource/ios/tyran.plist;
+				INFOPLIST_FILE = tyran.plist;
 				LIBRARY_SEARCH_PATHS = (
 				);
 				PRODUCT_NAME = sinkblobs;
 			};
 			name = Release;
 		};
-		000000000000000000000181 /* AdHoc build settings target */  = {
+		000000000000000000000183 /* AdHoc build settings target */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2874,14 +2888,14 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = sinkblobs_Prefix.pch;
 				GCC_THUMB_SUPPORT = NO;
-				INFOPLIST_FILE = /Users/peter/work/TyranEngine/resource/ios/tyran.plist;
+				INFOPLIST_FILE = tyran.plist;
 				LIBRARY_SEARCH_PATHS = (
 				);
 				PRODUCT_NAME = sinkblobs;
 			};
 			name = AdHoc;
 		};
-		000000000000000000000182 /* AppStore build settings target */  = {
+		000000000000000000000184 /* AppStore build settings target */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2889,14 +2903,14 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = sinkblobs_Prefix.pch;
 				GCC_THUMB_SUPPORT = NO;
-				INFOPLIST_FILE = /Users/peter/work/TyranEngine/resource/ios/tyran.plist;
+				INFOPLIST_FILE = tyran.plist;
 				LIBRARY_SEARCH_PATHS = (
 				);
 				PRODUCT_NAME = sinkblobs;
 			};
 			name = AppStore;
 		};
-		000000000000000000000186 /* Debug build settings project */  = {
+		000000000000000000000188 /* Debug build settings project */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
@@ -2921,7 +2935,7 @@
 			};
 			name = Debug;
 		};
-		000000000000000000000187 /* Release build settings project */  = {
+		000000000000000000000189 /* Release build settings project */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
@@ -2943,7 +2957,7 @@
 			};
 			name = Release;
 		};
-		000000000000000000000188 /* AdHoc build settings project */  = {
+		00000000000000000000018A /* AdHoc build settings project */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
@@ -2966,7 +2980,7 @@
 			};
 			name = AdHoc;
 		};
-		000000000000000000000189 /* AppStore build settings project */  = {
+		00000000000000000000018B /* AppStore build settings project */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
@@ -2993,24 +3007,24 @@
 		
 		
 		/* Begin XCConfigurationList section */
-		000000000000000000000183 /* Build configuration list for target */  = {
+		000000000000000000000185 /* Build configuration list for target */  = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				00000000000000000000017F /* Debug build settings target */ ,
-				000000000000000000000180 /* Release build settings target */ ,
-				000000000000000000000181 /* AdHoc build settings target */ ,
-				000000000000000000000182 /* AppStore build settings target */ ,
+				000000000000000000000181 /* Debug build settings target */ ,
+				000000000000000000000182 /* Release build settings target */ ,
+				000000000000000000000183 /* AdHoc build settings target */ ,
+				000000000000000000000184 /* AppStore build settings target */ ,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		00000000000000000000018A /* Build configuration list for project */  = {
+		00000000000000000000018C /* Build configuration list for project */  = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				000000000000000000000186 /* Debug build settings project */ ,
-				000000000000000000000187 /* Release build settings project */ ,
-				000000000000000000000188 /* AdHoc build settings project */ ,
-				000000000000000000000189 /* AppStore build settings project */ ,
+				000000000000000000000188 /* Debug build settings project */ ,
+				000000000000000000000189 /* Release build settings project */ ,
+				00000000000000000000018A /* AdHoc build settings project */ ,
+				00000000000000000000018B /* AppStore build settings project */ ,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3018,5 +3032,5 @@
 		/* End XCConfigurationList section */
 		
 	};
-	rootObject = 00000000000000000000018B /* Project */ ;
+	rootObject = 00000000000000000000018D /* Project */ ;
 }

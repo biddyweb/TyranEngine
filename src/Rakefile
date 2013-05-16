@@ -2,6 +2,6 @@ require_relative 'buildscript/builder'
 
 application = 'engine'
 
-builder = Builder.new application, ['core/include', 'tyranscript/src/include']
+builder = Builder.new application, ['core/include', 'tyranscript/include']
 
 task :default => application

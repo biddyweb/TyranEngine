@@ -35,6 +35,7 @@
 		<source directory="core/src/platform/ios" recursive="true" />
 		<source directory="core/src/platform/posix" exclude="[main.c]" />
 
+		<library filename="../external/Dropbox.framework" />
 		<library filename="Foundation.framework" />
 		<library filename="UIKit.framework" />
 		<library filename="CoreGraphics.framework" />

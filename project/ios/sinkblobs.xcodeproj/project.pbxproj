@@ -663,9 +663,9 @@
 			isa = PBXBuildFile;
 			fileRef = 000000000000000000000170 /* tyran.plist */ ;
 		};
-		000000000000000000000173 /* Dropbox.framework */  = {
+		000000000000000000000173 /* dropbox.framework */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000172 /* Dropbox.framework */ ;
+			fileRef = 000000000000000000000172 /* dropbox.framework */ ;
 		};
 		000000000000000000000175 /* Foundation.framework */  = {
 			isa = PBXBuildFile;
@@ -2004,12 +2004,12 @@
 			plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist";
 			sourceTree = "<group>";
 		};
-		000000000000000000000172 /* Dropbox.framework */  = {
+		000000000000000000000172 /* dropbox.framework */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = wrapper.framework;
-			name = Dropbox.framework;
-			path = ../../external/Dropbox.framework;
+			name = dropbox.framework;
+			path = ../../external/dropbox.framework;
 			sourceTree = "<group>";
 		};
 		000000000000000000000174 /* Foundation.framework */  = {
@@ -2074,7 +2074,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				000000000000000000000173 /* Dropbox.framework */ ,
+				000000000000000000000173 /* dropbox.framework */ ,
 				000000000000000000000175 /* Foundation.framework */ ,
 				000000000000000000000177 /* UIKit.framework */ ,
 				000000000000000000000179 /* CoreGraphics.framework */ ,
@@ -2513,7 +2513,7 @@
 		000000000000000000000002 /* Frameworks */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000172 /* Dropbox.framework */ ,
+				000000000000000000000172 /* dropbox.framework */ ,
 				000000000000000000000174 /* Foundation.framework */ ,
 				000000000000000000000176 /* UIKit.framework */ ,
 				000000000000000000000178 /* CoreGraphics.framework */ ,

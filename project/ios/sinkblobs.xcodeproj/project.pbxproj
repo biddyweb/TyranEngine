@@ -663,29 +663,25 @@
 			isa = PBXBuildFile;
 			fileRef = 000000000000000000000170 /* tyran.plist */ ;
 		};
-		000000000000000000000173 /* dropbox.framework */  = {
+		000000000000000000000173 /* Foundation.framework */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000172 /* dropbox.framework */ ;
+			fileRef = 000000000000000000000172 /* Foundation.framework */ ;
 		};
-		000000000000000000000175 /* Foundation.framework */  = {
+		000000000000000000000175 /* UIKit.framework */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000174 /* Foundation.framework */ ;
+			fileRef = 000000000000000000000174 /* UIKit.framework */ ;
 		};
-		000000000000000000000177 /* UIKit.framework */  = {
+		000000000000000000000177 /* CoreGraphics.framework */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000176 /* UIKit.framework */ ;
+			fileRef = 000000000000000000000176 /* CoreGraphics.framework */ ;
 		};
-		000000000000000000000179 /* CoreGraphics.framework */  = {
+		000000000000000000000179 /* GLKit.framework */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000178 /* CoreGraphics.framework */ ;
+			fileRef = 000000000000000000000178 /* GLKit.framework */ ;
 		};
-		00000000000000000000017B /* GLKit.framework */  = {
+		00000000000000000000017B /* OpenGLES.framework */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000017A /* GLKit.framework */ ;
-		};
-		00000000000000000000017D /* OpenGLES.framework */  = {
-			isa = PBXBuildFile;
-			fileRef = 00000000000000000000017C /* OpenGLES.framework */ ;
+			fileRef = 00000000000000000000017A /* OpenGLES.framework */ ;
 		};
 		/* End PBXBuildFile section */
 		
@@ -2004,15 +2000,7 @@
 			plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist";
 			sourceTree = "<group>";
 		};
-		000000000000000000000172 /* dropbox.framework */  = {
-			isa = PBXFileReference;
-			fileEncoding = 4;
-			lastKnownFileType = wrapper.framework;
-			name = dropbox.framework;
-			path = ../../external/dropbox.framework;
-			sourceTree = "<group>";
-		};
-		000000000000000000000174 /* Foundation.framework */  = {
+		000000000000000000000172 /* Foundation.framework */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = wrapper.framework;
@@ -2020,7 +2008,7 @@
 			path = System/Library/Frameworks/Foundation.framework;
 			sourceTree = SDKROOT;
 		};
-		000000000000000000000176 /* UIKit.framework */  = {
+		000000000000000000000174 /* UIKit.framework */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = wrapper.framework;
@@ -2028,7 +2016,7 @@
 			path = System/Library/Frameworks/UIKit.framework;
 			sourceTree = SDKROOT;
 		};
-		000000000000000000000178 /* CoreGraphics.framework */  = {
+		000000000000000000000176 /* CoreGraphics.framework */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = wrapper.framework;
@@ -2036,7 +2024,7 @@
 			path = System/Library/Frameworks/CoreGraphics.framework;
 			sourceTree = SDKROOT;
 		};
-		00000000000000000000017A /* GLKit.framework */  = {
+		000000000000000000000178 /* GLKit.framework */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = wrapper.framework;
@@ -2044,7 +2032,7 @@
 			path = System/Library/Frameworks/GLKit.framework;
 			sourceTree = SDKROOT;
 		};
-		00000000000000000000017C /* OpenGLES.framework */  = {
+		00000000000000000000017A /* OpenGLES.framework */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = wrapper.framework;
@@ -2052,7 +2040,7 @@
 			path = System/Library/Frameworks/OpenGLES.framework;
 			sourceTree = SDKROOT;
 		};
-		000000000000000000000182 /* sinkblobs.app */  = {
+		000000000000000000000180 /* sinkblobs.app */  = {
 			isa = PBXFileReference;
 			explicitFileType = wrapper.application;
 			includeInIndex = 0;
@@ -2060,7 +2048,7 @@
 			path = sinkblobs.app;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		000000000000000000000189 /*  */  = {
+		000000000000000000000187 /*  */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			name = "";
@@ -2070,16 +2058,15 @@
 		
 		
 		/* Begin PBXFrameworksBuildPhase section */
-		00000000000000000000017E /* Frameworks build phase */  = {
+		00000000000000000000017C /* Frameworks build phase */  = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				000000000000000000000173 /* dropbox.framework */ ,
-				000000000000000000000175 /* Foundation.framework */ ,
-				000000000000000000000177 /* UIKit.framework */ ,
-				000000000000000000000179 /* CoreGraphics.framework */ ,
-				00000000000000000000017B /* GLKit.framework */ ,
-				00000000000000000000017D /* OpenGLES.framework */ ,
+				000000000000000000000173 /* Foundation.framework */ ,
+				000000000000000000000175 /* UIKit.framework */ ,
+				000000000000000000000177 /* CoreGraphics.framework */ ,
+				000000000000000000000179 /* GLKit.framework */ ,
+				00000000000000000000017B /* OpenGLES.framework */ ,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2513,12 +2500,11 @@
 		000000000000000000000002 /* Frameworks */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000172 /* dropbox.framework */ ,
-				000000000000000000000174 /* Foundation.framework */ ,
-				000000000000000000000176 /* UIKit.framework */ ,
-				000000000000000000000178 /* CoreGraphics.framework */ ,
-				00000000000000000000017A /* GLKit.framework */ ,
-				00000000000000000000017C /* OpenGLES.framework */ ,
+				000000000000000000000172 /* Foundation.framework */ ,
+				000000000000000000000174 /* UIKit.framework */ ,
+				000000000000000000000176 /* CoreGraphics.framework */ ,
+				000000000000000000000178 /* GLKit.framework */ ,
+				00000000000000000000017A /* OpenGLES.framework */ ,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -2526,7 +2512,7 @@
 		000000000000000000000003 /* Products */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000182 /* sinkblobs.app */ ,
+				000000000000000000000180 /* sinkblobs.app */ ,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2589,7 +2575,7 @@
 		
 		
 		/* Begin PBXHeadersBuildPhase section */
-		000000000000000000000180 /* Headers build phase */  = {
+		00000000000000000000017E /* Headers build phase */  = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2688,14 +2674,14 @@
 		
 		
 		/* Begin PBXNativeTarget section */
-		000000000000000000000188 /* sinkblobs */  = {
+		000000000000000000000186 /* sinkblobs */  = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 000000000000000000000187 /* Build configuration list for target */ ;
+			buildConfigurationList = 000000000000000000000185 /* Build configuration list for target */ ;
 			buildPhases = (
-				000000000000000000000180 /* Headers build phase */ ,
-				000000000000000000000181 /* Resources build phase */ ,
-				00000000000000000000017F /* Sources build phase */ ,
-				00000000000000000000017E /* Frameworks build phase */ ,
+				00000000000000000000017E /* Headers build phase */ ,
+				00000000000000000000017F /* Resources build phase */ ,
+				00000000000000000000017D /* Sources build phase */ ,
+				00000000000000000000017C /* Frameworks build phase */ ,
 			);
 			buildRules = (
 			);
@@ -2703,16 +2689,16 @@
 			);
 			name = sinkblobs;
 			productName = sinkblobs;
-			productReference = 000000000000000000000182 /* sinkblobs.app */ ;
+			productReference = 000000000000000000000180 /* sinkblobs.app */ ;
 			productType = "com.apple.product-type.application";
 		};
 		/* End PBXNativeTarget section */
 		
 		
 		/* Begin PBXProject section */
-		00000000000000000000018F /* Project */  = {
+		00000000000000000000018D /* Project */  = {
 			isa = PBXProject;
-			buildConfigurationList = 00000000000000000000018E /* Build configuration list for project */ ;
+			buildConfigurationList = 00000000000000000000018C /* Build configuration list for project */ ;
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
 			mainGroup = 000000000000000000000004 /* sinkblobs */ ;
@@ -2720,14 +2706,14 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				000000000000000000000188 /* sinkblobs */ ,
+				000000000000000000000186 /* sinkblobs */ ,
 			);
 		};
 		/* End PBXProject section */
 		
 		
 		/* Begin PBXResourcesBuildPhase section */
-		000000000000000000000181 /* Resources build phase */  = {
+		00000000000000000000017F /* Resources build phase */  = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2749,7 +2735,7 @@
 		
 		
 		/* Begin PBXSourcesBuildPhase section */
-		00000000000000000000017F /* Sources build phase */  = {
+		00000000000000000000017D /* Sources build phase */  = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2824,13 +2810,12 @@
 		
 		
 		/* Begin XCBuildConfiguration section */
-		000000000000000000000183 /* Debug build settings target */  = {
+		000000000000000000000181 /* Debug build settings target */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
-					../../external,
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -2844,13 +2829,12 @@
 			};
 			name = Debug;
 		};
-		000000000000000000000184 /* Release build settings target */  = {
+		000000000000000000000182 /* Release build settings target */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
-					../../external,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = sinkblobs_Prefix.pch;
@@ -2862,13 +2846,12 @@
 			};
 			name = Release;
 		};
-		000000000000000000000185 /* AdHoc build settings target */  = {
+		000000000000000000000183 /* AdHoc build settings target */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
-					../../external,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = sinkblobs_Prefix.pch;
@@ -2880,13 +2863,12 @@
 			};
 			name = AdHoc;
 		};
-		000000000000000000000186 /* AppStore build settings target */  = {
+		000000000000000000000184 /* AppStore build settings target */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
-					../../external,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = sinkblobs_Prefix.pch;
@@ -2898,7 +2880,7 @@
 			};
 			name = AppStore;
 		};
-		00000000000000000000018A /* Debug build settings project */  = {
+		000000000000000000000188 /* Debug build settings project */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
@@ -2921,7 +2903,7 @@
 			};
 			name = Debug;
 		};
-		00000000000000000000018B /* Release build settings project */  = {
+		000000000000000000000189 /* Release build settings project */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
@@ -2941,7 +2923,7 @@
 			};
 			name = Release;
 		};
-		00000000000000000000018C /* AdHoc build settings project */  = {
+		00000000000000000000018A /* AdHoc build settings project */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
@@ -2962,7 +2944,7 @@
 			};
 			name = AdHoc;
 		};
-		00000000000000000000018D /* AppStore build settings project */  = {
+		00000000000000000000018B /* AppStore build settings project */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
@@ -2987,24 +2969,24 @@
 		
 		
 		/* Begin XCConfigurationList section */
-		000000000000000000000187 /* Build configuration list for target */  = {
+		000000000000000000000185 /* Build configuration list for target */  = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				000000000000000000000183 /* Debug build settings target */ ,
-				000000000000000000000184 /* Release build settings target */ ,
-				000000000000000000000185 /* AdHoc build settings target */ ,
-				000000000000000000000186 /* AppStore build settings target */ ,
+				000000000000000000000181 /* Debug build settings target */ ,
+				000000000000000000000182 /* Release build settings target */ ,
+				000000000000000000000183 /* AdHoc build settings target */ ,
+				000000000000000000000184 /* AppStore build settings target */ ,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		00000000000000000000018E /* Build configuration list for project */  = {
+		00000000000000000000018C /* Build configuration list for project */  = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				00000000000000000000018A /* Debug build settings project */ ,
-				00000000000000000000018B /* Release build settings project */ ,
-				00000000000000000000018C /* AdHoc build settings project */ ,
-				00000000000000000000018D /* AppStore build settings project */ ,
+				000000000000000000000188 /* Debug build settings project */ ,
+				000000000000000000000189 /* Release build settings project */ ,
+				00000000000000000000018A /* AdHoc build settings project */ ,
+				00000000000000000000018B /* AppStore build settings project */ ,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3012,5 +2994,5 @@
 		/* End XCConfigurationList section */
 		
 	};
-	rootObject = 00000000000000000000018F /* Project */ ;
+	rootObject = 00000000000000000000018D /* Project */ ;
 }

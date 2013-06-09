@@ -135,553 +135,561 @@
 			isa = PBXBuildFile;
 			fileRef = 000000000000000000000054 /* resource_load.h */ ;
 		};
-		000000000000000000000058 /* resource_handler.c */  = {
+		000000000000000000000058 /* connecting_socket.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000057 /* resource_handler.c */ ;
+			fileRef = 000000000000000000000057 /* connecting_socket.c */ ;
 		};
-		00000000000000000000005A /* resource_handler.h */  = {
+		00000000000000000000005A /* connecting_socket.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000059 /* resource_handler.h */ ;
+			fileRef = 000000000000000000000059 /* connecting_socket.h */ ;
 		};
-		00000000000000000000005C /* resource_id.h */  = {
+		00000000000000000000005D /* resource_handler.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000005B /* resource_id.h */ ;
+			fileRef = 00000000000000000000005C /* resource_handler.c */ ;
 		};
-		00000000000000000000005E /* resource_reader.c */  = {
+		00000000000000000000005F /* resource_handler.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000005D /* resource_reader.c */ ;
+			fileRef = 00000000000000000000005E /* resource_handler.h */ ;
 		};
-		000000000000000000000060 /* resource_reader.h */  = {
+		000000000000000000000061 /* resource_id.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000005F /* resource_reader.h */ ;
+			fileRef = 000000000000000000000060 /* resource_id.h */ ;
 		};
-		000000000000000000000067 /* tyran_mocha_lexer_debug.h */  = {
+		000000000000000000000063 /* resource_reader.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000066 /* tyran_mocha_lexer_debug.h */ ;
+			fileRef = 000000000000000000000062 /* resource_reader.c */ ;
 		};
-		000000000000000000000069 /* tyran_mocha_parser_debug.h */  = {
+		000000000000000000000065 /* resource_reader.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000068 /* tyran_mocha_parser_debug.h */ ;
+			fileRef = 000000000000000000000064 /* resource_reader.h */ ;
 		};
-		00000000000000000000006C /* tyran_print_parser_tree.h */  = {
+		00000000000000000000006C /* tyran_mocha_lexer_debug.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000006B /* tyran_print_parser_tree.h */ ;
+			fileRef = 00000000000000000000006B /* tyran_mocha_lexer_debug.h */ ;
 		};
-		00000000000000000000006E /* tyran_print_constants.h */  = {
+		00000000000000000000006E /* tyran_mocha_parser_debug.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000006D /* tyran_print_constants.h */ ;
+			fileRef = 00000000000000000000006D /* tyran_mocha_parser_debug.h */ ;
 		};
-		000000000000000000000070 /* tyran_print_opcodes.h */  = {
+		000000000000000000000071 /* tyran_print_parser_tree.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000006F /* tyran_print_opcodes.h */ ;
+			fileRef = 000000000000000000000070 /* tyran_print_parser_tree.h */ ;
 		};
-		000000000000000000000072 /* tyran_print_runtime_state.h */  = {
+		000000000000000000000073 /* tyran_print_constants.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000071 /* tyran_print_runtime_state.h */ ;
+			fileRef = 000000000000000000000072 /* tyran_print_constants.h */ ;
 		};
-		000000000000000000000074 /* tyran_print_value.h */  = {
+		000000000000000000000075 /* tyran_print_opcodes.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000073 /* tyran_print_value.h */ ;
+			fileRef = 000000000000000000000074 /* tyran_print_opcodes.h */ ;
 		};
-		000000000000000000000078 /* tyran_code.h */  = {
+		000000000000000000000077 /* tyran_print_runtime_state.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000077 /* tyran_code.h */ ;
+			fileRef = 000000000000000000000076 /* tyran_print_runtime_state.h */ ;
 		};
-		00000000000000000000007A /* tyran_errors.h */  = {
+		000000000000000000000079 /* tyran_print_value.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000079 /* tyran_errors.h */ ;
+			fileRef = 000000000000000000000078 /* tyran_print_value.h */ ;
 		};
-		00000000000000000000007C /* tyran_generator.h */  = {
+		00000000000000000000007D /* tyran_code.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000007B /* tyran_generator.h */ ;
+			fileRef = 00000000000000000000007C /* tyran_code.h */ ;
 		};
-		00000000000000000000007E /* tyran_parser_tree.h */  = {
+		00000000000000000000007F /* tyran_errors.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000007D /* tyran_parser_tree.h */ ;
+			fileRef = 00000000000000000000007E /* tyran_errors.h */ ;
 		};
-		000000000000000000000080 /* tyran_variable_scope.h */  = {
+		000000000000000000000081 /* tyran_generator.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000007F /* tyran_variable_scope.h */ ;
+			fileRef = 000000000000000000000080 /* tyran_generator.h */ ;
 		};
-		000000000000000000000083 /* tyran_mocha_lexer.h */  = {
+		000000000000000000000083 /* tyran_parser_tree.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000082 /* tyran_mocha_lexer.h */ ;
+			fileRef = 000000000000000000000082 /* tyran_parser_tree.h */ ;
 		};
-		000000000000000000000085 /* tyran_mocha_parser.h */  = {
+		000000000000000000000085 /* tyran_variable_scope.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000084 /* tyran_mocha_parser.h */ ;
+			fileRef = 000000000000000000000084 /* tyran_variable_scope.h */ ;
 		};
-		000000000000000000000087 /* tyran_label.h */  = {
+		000000000000000000000088 /* tyran_mocha_lexer.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000086 /* tyran_label.h */ ;
+			fileRef = 000000000000000000000087 /* tyran_mocha_lexer.h */ ;
 		};
-		000000000000000000000089 /* tyran_label_reference.h */  = {
+		00000000000000000000008A /* tyran_mocha_parser.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000088 /* tyran_label_reference.h */ ;
+			fileRef = 000000000000000000000089 /* tyran_mocha_parser.h */ ;
 		};
-		00000000000000000000008B /* tyran_lexer.h */  = {
+		00000000000000000000008C /* tyran_label.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000008A /* tyran_lexer.h */ ;
+			fileRef = 00000000000000000000008B /* tyran_label.h */ ;
 		};
-		00000000000000000000008D /* tyran_parser_assembler.h */  = {
+		00000000000000000000008E /* tyran_label_reference.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000008C /* tyran_parser_assembler.h */ ;
+			fileRef = 00000000000000000000008D /* tyran_label_reference.h */ ;
 		};
-		00000000000000000000008F /* tyran_parser_state.h */  = {
+		000000000000000000000090 /* tyran_lexer.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000008E /* tyran_parser_state.h */ ;
+			fileRef = 00000000000000000000008F /* tyran_lexer.h */ ;
 		};
-		000000000000000000000091 /* tyran_api.h */  = {
+		000000000000000000000092 /* tyran_parser_assembler.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000090 /* tyran_api.h */ ;
+			fileRef = 000000000000000000000091 /* tyran_parser_assembler.h */ ;
 		};
-		000000000000000000000093 /* tyran_array.h */  = {
+		000000000000000000000094 /* tyran_parser_state.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000092 /* tyran_array.h */ ;
+			fileRef = 000000000000000000000093 /* tyran_parser_state.h */ ;
 		};
-		000000000000000000000095 /* tyran_array_iterator_prototype.h */  = {
+		000000000000000000000096 /* tyran_api.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000094 /* tyran_array_iterator_prototype.h */ ;
+			fileRef = 000000000000000000000095 /* tyran_api.h */ ;
 		};
-		000000000000000000000097 /* tyran_array_prototype.h */  = {
+		000000000000000000000098 /* tyran_array.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000096 /* tyran_array_prototype.h */ ;
+			fileRef = 000000000000000000000097 /* tyran_array.h */ ;
 		};
-		000000000000000000000099 /* tyran_clib.h */  = {
+		00000000000000000000009A /* tyran_array_iterator_prototype.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000098 /* tyran_clib.h */ ;
+			fileRef = 000000000000000000000099 /* tyran_array_iterator_prototype.h */ ;
 		};
-		00000000000000000000009B /* tyran_config.h */  = {
+		00000000000000000000009C /* tyran_array_prototype.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000009A /* tyran_config.h */ ;
+			fileRef = 00000000000000000000009B /* tyran_array_prototype.h */ ;
 		};
-		00000000000000000000009D /* tyran_configuration.h */  = {
+		00000000000000000000009E /* tyran_clib.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000009C /* tyran_configuration.h */ ;
+			fileRef = 00000000000000000000009D /* tyran_clib.h */ ;
 		};
-		00000000000000000000009F /* tyran_constants.h */  = {
+		0000000000000000000000A0 /* tyran_config.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000009E /* tyran_constants.h */ ;
+			fileRef = 00000000000000000000009F /* tyran_config.h */ ;
 		};
-		0000000000000000000000A1 /* tyran_function.h */  = {
+		0000000000000000000000A2 /* tyran_configuration.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000A0 /* tyran_function.h */ ;
+			fileRef = 0000000000000000000000A1 /* tyran_configuration.h */ ;
 		};
-		0000000000000000000000A3 /* tyran_function_callback.h */  = {
+		0000000000000000000000A4 /* tyran_constants.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000A2 /* tyran_function_callback.h */ ;
+			fileRef = 0000000000000000000000A3 /* tyran_constants.h */ ;
 		};
-		0000000000000000000000A5 /* tyran_function_object.h */  = {
+		0000000000000000000000A6 /* tyran_function.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000A4 /* tyran_function_object.h */ ;
+			fileRef = 0000000000000000000000A5 /* tyran_function.h */ ;
 		};
-		0000000000000000000000A7 /* tyran_function_prototype.h */  = {
+		0000000000000000000000A8 /* tyran_function_callback.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000A6 /* tyran_function_prototype.h */ ;
+			fileRef = 0000000000000000000000A7 /* tyran_function_callback.h */ ;
 		};
-		0000000000000000000000A9 /* tyran_iterator_object.h */  = {
+		0000000000000000000000AA /* tyran_function_object.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000A8 /* tyran_iterator_object.h */ ;
+			fileRef = 0000000000000000000000A9 /* tyran_function_object.h */ ;
 		};
-		0000000000000000000000AB /* tyran_log.h */  = {
+		0000000000000000000000AC /* tyran_function_prototype.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000AA /* tyran_log.h */ ;
+			fileRef = 0000000000000000000000AB /* tyran_function_prototype.h */ ;
 		};
-		0000000000000000000000AD /* tyran_memory.h */  = {
+		0000000000000000000000AE /* tyran_iterator_object.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000AC /* tyran_memory.h */ ;
+			fileRef = 0000000000000000000000AD /* tyran_iterator_object.h */ ;
 		};
-		0000000000000000000000AF /* tyran_memory_pool.h */  = {
+		0000000000000000000000B0 /* tyran_log.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000AE /* tyran_memory_pool.h */ ;
+			fileRef = 0000000000000000000000AF /* tyran_log.h */ ;
 		};
-		0000000000000000000000B1 /* tyran_mocha_api.h */  = {
+		0000000000000000000000B2 /* tyran_memory.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000B0 /* tyran_mocha_api.h */ ;
+			fileRef = 0000000000000000000000B1 /* tyran_memory.h */ ;
 		};
-		0000000000000000000000B3 /* tyran_number.h */  = {
+		0000000000000000000000B4 /* tyran_memory_pool.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000B2 /* tyran_number.h */ ;
+			fileRef = 0000000000000000000000B3 /* tyran_memory_pool.h */ ;
 		};
-		0000000000000000000000B5 /* tyran_number_operator.h */  = {
+		0000000000000000000000B6 /* tyran_mocha_api.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000B4 /* tyran_number_operator.h */ ;
+			fileRef = 0000000000000000000000B5 /* tyran_mocha_api.h */ ;
 		};
-		0000000000000000000000B7 /* tyran_object.h */  = {
+		0000000000000000000000B8 /* tyran_number.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000B6 /* tyran_object.h */ ;
+			fileRef = 0000000000000000000000B7 /* tyran_number.h */ ;
 		};
-		0000000000000000000000B9 /* tyran_object_array.h */  = {
+		0000000000000000000000BA /* tyran_number_operator.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000B8 /* tyran_object_array.h */ ;
+			fileRef = 0000000000000000000000B9 /* tyran_number_operator.h */ ;
 		};
-		0000000000000000000000BB /* tyran_object_macros.h */  = {
+		0000000000000000000000BC /* tyran_object.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000BA /* tyran_object_macros.h */ ;
+			fileRef = 0000000000000000000000BB /* tyran_object.h */ ;
 		};
-		0000000000000000000000BD /* tyran_object_prototype.h */  = {
+		0000000000000000000000BE /* tyran_object_array.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000BC /* tyran_object_prototype.h */ ;
+			fileRef = 0000000000000000000000BD /* tyran_object_array.h */ ;
 		};
-		0000000000000000000000BF /* tyran_opcode.h */  = {
+		0000000000000000000000C0 /* tyran_object_macros.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000BE /* tyran_opcode.h */ ;
+			fileRef = 0000000000000000000000BF /* tyran_object_macros.h */ ;
 		};
-		0000000000000000000000C1 /* tyran_opcode_enums.h */  = {
+		0000000000000000000000C2 /* tyran_object_prototype.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000C0 /* tyran_opcode_enums.h */ ;
+			fileRef = 0000000000000000000000C1 /* tyran_object_prototype.h */ ;
 		};
-		0000000000000000000000C3 /* tyran_opcode_ids.h */  = {
+		0000000000000000000000C4 /* tyran_opcode.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000C2 /* tyran_opcode_ids.h */ ;
+			fileRef = 0000000000000000000000C3 /* tyran_opcode.h */ ;
 		};
-		0000000000000000000000C5 /* tyran_opcodes.h */  = {
+		0000000000000000000000C6 /* tyran_opcode_enums.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000C4 /* tyran_opcodes.h */ ;
+			fileRef = 0000000000000000000000C5 /* tyran_opcode_enums.h */ ;
 		};
-		0000000000000000000000C7 /* tyran_platform.h */  = {
+		0000000000000000000000C8 /* tyran_opcode_ids.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000C6 /* tyran_platform.h */ ;
+			fileRef = 0000000000000000000000C7 /* tyran_opcode_ids.h */ ;
 		};
-		0000000000000000000000C9 /* tyran_prototypes.h */  = {
+		0000000000000000000000CA /* tyran_opcodes.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000C8 /* tyran_prototypes.h */ ;
+			fileRef = 0000000000000000000000C9 /* tyran_opcodes.h */ ;
 		};
-		0000000000000000000000CB /* tyran_range.h */  = {
+		0000000000000000000000CC /* tyran_platform.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000CA /* tyran_range.h */ ;
+			fileRef = 0000000000000000000000CB /* tyran_platform.h */ ;
 		};
-		0000000000000000000000CD /* tyran_range_iterator.h */  = {
+		0000000000000000000000CE /* tyran_prototypes.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000CC /* tyran_range_iterator.h */ ;
+			fileRef = 0000000000000000000000CD /* tyran_prototypes.h */ ;
 		};
-		0000000000000000000000CF /* tyran_range_iterator_prototype.h */  = {
+		0000000000000000000000D0 /* tyran_range.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000CE /* tyran_range_iterator_prototype.h */ ;
+			fileRef = 0000000000000000000000CF /* tyran_range.h */ ;
 		};
-		0000000000000000000000D1 /* tyran_range_prototype.h */  = {
+		0000000000000000000000D2 /* tyran_range_iterator.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000D0 /* tyran_range_prototype.h */ ;
+			fileRef = 0000000000000000000000D1 /* tyran_range_iterator.h */ ;
 		};
-		0000000000000000000000D3 /* tyran_red_black_tree.h */  = {
+		0000000000000000000000D4 /* tyran_range_iterator_prototype.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000D2 /* tyran_red_black_tree.h */ ;
+			fileRef = 0000000000000000000000D3 /* tyran_range_iterator_prototype.h */ ;
 		};
-		0000000000000000000000D5 /* tyran_red_black_tree_macros.h */  = {
+		0000000000000000000000D6 /* tyran_range_prototype.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000D4 /* tyran_red_black_tree_macros.h */ ;
+			fileRef = 0000000000000000000000D5 /* tyran_range_prototype.h */ ;
 		};
-		0000000000000000000000D7 /* tyran_runtime.h */  = {
+		0000000000000000000000D8 /* tyran_red_black_tree.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000D6 /* tyran_runtime.h */ ;
+			fileRef = 0000000000000000000000D7 /* tyran_red_black_tree.h */ ;
 		};
-		0000000000000000000000D9 /* tyran_runtime_callbacks.h */  = {
+		0000000000000000000000DA /* tyran_red_black_tree_macros.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000D8 /* tyran_runtime_callbacks.h */ ;
+			fileRef = 0000000000000000000000D9 /* tyran_red_black_tree_macros.h */ ;
 		};
-		0000000000000000000000DB /* tyran_runtime_stack.h */  = {
+		0000000000000000000000DC /* tyran_runtime.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000DA /* tyran_runtime_stack.h */ ;
+			fileRef = 0000000000000000000000DB /* tyran_runtime.h */ ;
 		};
-		0000000000000000000000DD /* tyran_string.h */  = {
+		0000000000000000000000DE /* tyran_runtime_callbacks.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000DC /* tyran_string.h */ ;
+			fileRef = 0000000000000000000000DD /* tyran_runtime_callbacks.h */ ;
 		};
-		0000000000000000000000DF /* tyran_string_object.h */  = {
+		0000000000000000000000E0 /* tyran_runtime_stack.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000DE /* tyran_string_object.h */ ;
+			fileRef = 0000000000000000000000DF /* tyran_runtime_stack.h */ ;
 		};
-		0000000000000000000000E1 /* tyran_string_prototype.h */  = {
+		0000000000000000000000E2 /* tyran_string.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000E0 /* tyran_string_prototype.h */ ;
+			fileRef = 0000000000000000000000E1 /* tyran_string.h */ ;
 		};
-		0000000000000000000000E3 /* tyran_symbol.h */  = {
+		0000000000000000000000E4 /* tyran_string_object.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000E2 /* tyran_symbol.h */ ;
+			fileRef = 0000000000000000000000E3 /* tyran_string_object.h */ ;
 		};
-		0000000000000000000000E5 /* tyran_symbol_table.h */  = {
+		0000000000000000000000E6 /* tyran_string_prototype.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000E4 /* tyran_symbol_table.h */ ;
+			fileRef = 0000000000000000000000E5 /* tyran_string_prototype.h */ ;
 		};
-		0000000000000000000000E7 /* tyran_types.h */  = {
+		0000000000000000000000E8 /* tyran_symbol.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000E6 /* tyran_types.h */ ;
+			fileRef = 0000000000000000000000E7 /* tyran_symbol.h */ ;
 		};
-		0000000000000000000000E9 /* tyran_value.h */  = {
+		0000000000000000000000EA /* tyran_symbol_table.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000E8 /* tyran_value.h */ ;
+			fileRef = 0000000000000000000000E9 /* tyran_symbol_table.h */ ;
 		};
-		0000000000000000000000EB /* tyran_value_object.h */  = {
+		0000000000000000000000EC /* tyran_types.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000EA /* tyran_value_object.h */ ;
+			fileRef = 0000000000000000000000EB /* tyran_types.h */ ;
 		};
-		0000000000000000000000F0 /* tyran_mocha_lexer_debug.c */  = {
+		0000000000000000000000EE /* tyran_value.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000EF /* tyran_mocha_lexer_debug.c */ ;
+			fileRef = 0000000000000000000000ED /* tyran_value.h */ ;
 		};
-		0000000000000000000000F2 /* tyran_mocha_parser_debug.c */  = {
+		0000000000000000000000F0 /* tyran_value_object.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000F1 /* tyran_mocha_parser_debug.c */ ;
+			fileRef = 0000000000000000000000EF /* tyran_value_object.h */ ;
 		};
-		0000000000000000000000F5 /* tyran_print_parser_tree.c */  = {
+		0000000000000000000000F5 /* tyran_mocha_lexer_debug.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000F4 /* tyran_print_parser_tree.c */ ;
+			fileRef = 0000000000000000000000F4 /* tyran_mocha_lexer_debug.c */ ;
 		};
-		0000000000000000000000F7 /* tyran_print_constants.c */  = {
+		0000000000000000000000F7 /* tyran_mocha_parser_debug.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000F6 /* tyran_print_constants.c */ ;
+			fileRef = 0000000000000000000000F6 /* tyran_mocha_parser_debug.c */ ;
 		};
-		0000000000000000000000F9 /* tyran_print_opcodes.c */  = {
+		0000000000000000000000FA /* tyran_print_parser_tree.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000F8 /* tyran_print_opcodes.c */ ;
+			fileRef = 0000000000000000000000F9 /* tyran_print_parser_tree.c */ ;
 		};
-		0000000000000000000000FB /* tyran_print_runtime.c */  = {
+		0000000000000000000000FC /* tyran_print_constants.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000FA /* tyran_print_runtime.c */ ;
+			fileRef = 0000000000000000000000FB /* tyran_print_constants.c */ ;
 		};
-		0000000000000000000000FD /* tyran_print_runtime.h */  = {
+		0000000000000000000000FE /* tyran_print_opcodes.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000FC /* tyran_print_runtime.h */ ;
+			fileRef = 0000000000000000000000FD /* tyran_print_opcodes.c */ ;
 		};
-		0000000000000000000000FF /* tyran_print_runtime_state.c */  = {
+		000000000000000000000100 /* tyran_print_runtime.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 0000000000000000000000FE /* tyran_print_runtime_state.c */ ;
+			fileRef = 0000000000000000000000FF /* tyran_print_runtime.c */ ;
 		};
-		000000000000000000000101 /* tyran_print_value.c */  = {
+		000000000000000000000102 /* tyran_print_runtime.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000100 /* tyran_print_value.c */ ;
+			fileRef = 000000000000000000000101 /* tyran_print_runtime.h */ ;
 		};
-		000000000000000000000105 /* tyran_parser_assembler.c */  = {
+		000000000000000000000104 /* tyran_print_runtime_state.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000104 /* tyran_parser_assembler.c */ ;
+			fileRef = 000000000000000000000103 /* tyran_print_runtime_state.c */ ;
 		};
-		000000000000000000000108 /* tyran_code.c */  = {
+		000000000000000000000106 /* tyran_print_value.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000107 /* tyran_code.c */ ;
+			fileRef = 000000000000000000000105 /* tyran_print_value.c */ ;
 		};
-		00000000000000000000010A /* tyran_errors.c */  = {
+		00000000000000000000010A /* tyran_parser_assembler.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000109 /* tyran_errors.c */ ;
+			fileRef = 000000000000000000000109 /* tyran_parser_assembler.c */ ;
 		};
-		00000000000000000000010C /* tyran_generator.c */  = {
+		00000000000000000000010D /* tyran_code.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000010B /* tyran_generator.c */ ;
+			fileRef = 00000000000000000000010C /* tyran_code.c */ ;
 		};
-		00000000000000000000010E /* tyran_lexer.c */  = {
+		00000000000000000000010F /* tyran_errors.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000010D /* tyran_lexer.c */ ;
+			fileRef = 00000000000000000000010E /* tyran_errors.c */ ;
 		};
-		000000000000000000000110 /* tyran_variable_scope.c */  = {
+		000000000000000000000111 /* tyran_generator.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000010F /* tyran_variable_scope.c */ ;
+			fileRef = 000000000000000000000110 /* tyran_generator.c */ ;
 		};
-		000000000000000000000113 /* tyran_mocha_lexer.c */  = {
+		000000000000000000000113 /* tyran_lexer.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000112 /* tyran_mocha_lexer.c */ ;
+			fileRef = 000000000000000000000112 /* tyran_lexer.c */ ;
 		};
-		000000000000000000000115 /* tyran_mocha_parser.c */  = {
+		000000000000000000000115 /* tyran_variable_scope.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000114 /* tyran_mocha_parser.c */ ;
+			fileRef = 000000000000000000000114 /* tyran_variable_scope.c */ ;
 		};
-		000000000000000000000117 /* tyran_parser_tree.c */  = {
+		000000000000000000000118 /* tyran_mocha_lexer.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000116 /* tyran_parser_tree.c */ ;
+			fileRef = 000000000000000000000117 /* tyran_mocha_lexer.c */ ;
 		};
-		000000000000000000000119 /* tyran_array.c */  = {
+		00000000000000000000011A /* tyran_mocha_parser.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000118 /* tyran_array.c */ ;
+			fileRef = 000000000000000000000119 /* tyran_mocha_parser.c */ ;
 		};
-		00000000000000000000011B /* tyran_array_iterator_prototype.c */  = {
+		00000000000000000000011C /* tyran_parser_tree.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000011A /* tyran_array_iterator_prototype.c */ ;
+			fileRef = 00000000000000000000011B /* tyran_parser_tree.c */ ;
 		};
-		00000000000000000000011D /* tyran_array_prototype.c */  = {
+		00000000000000000000011E /* tyran_array.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000011C /* tyran_array_prototype.c */ ;
+			fileRef = 00000000000000000000011D /* tyran_array.c */ ;
 		};
-		00000000000000000000011F /* tyran_constants.c */  = {
+		000000000000000000000120 /* tyran_array_iterator_prototype.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000011E /* tyran_constants.c */ ;
+			fileRef = 00000000000000000000011F /* tyran_array_iterator_prototype.c */ ;
 		};
-		000000000000000000000121 /* tyran_function.c */  = {
+		000000000000000000000122 /* tyran_array_prototype.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000120 /* tyran_function.c */ ;
+			fileRef = 000000000000000000000121 /* tyran_array_prototype.c */ ;
 		};
-		000000000000000000000123 /* tyran_function_object.c */  = {
+		000000000000000000000124 /* tyran_constants.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000122 /* tyran_function_object.c */ ;
+			fileRef = 000000000000000000000123 /* tyran_constants.c */ ;
 		};
-		000000000000000000000125 /* tyran_iterator_object.c */  = {
+		000000000000000000000126 /* tyran_function.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000124 /* tyran_iterator_object.c */ ;
+			fileRef = 000000000000000000000125 /* tyran_function.c */ ;
 		};
-		000000000000000000000127 /* tyran_memory.c */  = {
+		000000000000000000000128 /* tyran_function_object.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000126 /* tyran_memory.c */ ;
+			fileRef = 000000000000000000000127 /* tyran_function_object.c */ ;
 		};
-		000000000000000000000129 /* tyran_memory_pool.c */  = {
+		00000000000000000000012A /* tyran_iterator_object.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000128 /* tyran_memory_pool.c */ ;
+			fileRef = 000000000000000000000129 /* tyran_iterator_object.c */ ;
 		};
-		00000000000000000000012B /* tyran_mocha_api.c */  = {
+		00000000000000000000012C /* tyran_memory.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000012A /* tyran_mocha_api.c */ ;
+			fileRef = 00000000000000000000012B /* tyran_memory.c */ ;
 		};
-		00000000000000000000012D /* tyran_number_operator.c */  = {
+		00000000000000000000012E /* tyran_memory_pool.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000012C /* tyran_number_operator.c */ ;
+			fileRef = 00000000000000000000012D /* tyran_memory_pool.c */ ;
 		};
-		00000000000000000000012F /* tyran_object.c */  = {
+		000000000000000000000130 /* tyran_mocha_api.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000012E /* tyran_object.c */ ;
+			fileRef = 00000000000000000000012F /* tyran_mocha_api.c */ ;
 		};
-		000000000000000000000131 /* tyran_object_array.c */  = {
+		000000000000000000000132 /* tyran_number_operator.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000130 /* tyran_object_array.c */ ;
+			fileRef = 000000000000000000000131 /* tyran_number_operator.c */ ;
 		};
-		000000000000000000000133 /* tyran_object_prototype.c */  = {
+		000000000000000000000134 /* tyran_object.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000132 /* tyran_object_prototype.c */ ;
+			fileRef = 000000000000000000000133 /* tyran_object.c */ ;
 		};
-		000000000000000000000135 /* tyran_opcodes.c */  = {
+		000000000000000000000136 /* tyran_object_array.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000134 /* tyran_opcodes.c */ ;
+			fileRef = 000000000000000000000135 /* tyran_object_array.c */ ;
 		};
-		000000000000000000000137 /* tyran_prototypes.c */  = {
+		000000000000000000000138 /* tyran_object_prototype.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000136 /* tyran_prototypes.c */ ;
+			fileRef = 000000000000000000000137 /* tyran_object_prototype.c */ ;
 		};
-		000000000000000000000139 /* tyran_range.c */  = {
+		00000000000000000000013A /* tyran_opcodes.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000138 /* tyran_range.c */ ;
+			fileRef = 000000000000000000000139 /* tyran_opcodes.c */ ;
 		};
-		00000000000000000000013B /* tyran_range_iterator.c */  = {
+		00000000000000000000013C /* tyran_prototypes.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000013A /* tyran_range_iterator.c */ ;
+			fileRef = 00000000000000000000013B /* tyran_prototypes.c */ ;
 		};
-		00000000000000000000013D /* tyran_range_iterator_prototype.c */  = {
+		00000000000000000000013E /* tyran_range.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000013C /* tyran_range_iterator_prototype.c */ ;
+			fileRef = 00000000000000000000013D /* tyran_range.c */ ;
 		};
-		00000000000000000000013F /* tyran_range_prototype.c */  = {
+		000000000000000000000140 /* tyran_range_iterator.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000013E /* tyran_range_prototype.c */ ;
+			fileRef = 00000000000000000000013F /* tyran_range_iterator.c */ ;
 		};
-		000000000000000000000141 /* tyran_red_black_tree.c */  = {
+		000000000000000000000142 /* tyran_range_iterator_prototype.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000140 /* tyran_red_black_tree.c */ ;
+			fileRef = 000000000000000000000141 /* tyran_range_iterator_prototype.c */ ;
 		};
-		000000000000000000000143 /* tyran_runtime.c */  = {
+		000000000000000000000144 /* tyran_range_prototype.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000142 /* tyran_runtime.c */ ;
+			fileRef = 000000000000000000000143 /* tyran_range_prototype.c */ ;
 		};
-		000000000000000000000145 /* tyran_runtime_helper.c */  = {
+		000000000000000000000146 /* tyran_red_black_tree.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000144 /* tyran_runtime_helper.c */ ;
+			fileRef = 000000000000000000000145 /* tyran_red_black_tree.c */ ;
 		};
-		000000000000000000000147 /* tyran_runtime_macros.h */  = {
+		000000000000000000000148 /* tyran_runtime.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000146 /* tyran_runtime_macros.h */ ;
+			fileRef = 000000000000000000000147 /* tyran_runtime.c */ ;
 		};
-		000000000000000000000149 /* tyran_runtime_stack.c */  = {
+		00000000000000000000014A /* tyran_runtime_helper.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000148 /* tyran_runtime_stack.c */ ;
+			fileRef = 000000000000000000000149 /* tyran_runtime_helper.c */ ;
 		};
-		00000000000000000000014B /* tyran_string.c */  = {
+		00000000000000000000014C /* tyran_runtime_macros.h */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000014A /* tyran_string.c */ ;
+			fileRef = 00000000000000000000014B /* tyran_runtime_macros.h */ ;
 		};
-		00000000000000000000014D /* tyran_string_object.c */  = {
+		00000000000000000000014E /* tyran_runtime_stack.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000014C /* tyran_string_object.c */ ;
+			fileRef = 00000000000000000000014D /* tyran_runtime_stack.c */ ;
 		};
-		00000000000000000000014F /* tyran_string_prototype.c */  = {
+		000000000000000000000150 /* tyran_string.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000014E /* tyran_string_prototype.c */ ;
+			fileRef = 00000000000000000000014F /* tyran_string.c */ ;
 		};
-		000000000000000000000151 /* tyran_symbol.c */  = {
+		000000000000000000000152 /* tyran_string_object.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000150 /* tyran_symbol.c */ ;
+			fileRef = 000000000000000000000151 /* tyran_string_object.c */ ;
 		};
-		000000000000000000000153 /* tyran_symbol_table.c */  = {
+		000000000000000000000154 /* tyran_string_prototype.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000152 /* tyran_symbol_table.c */ ;
+			fileRef = 000000000000000000000153 /* tyran_string_prototype.c */ ;
 		};
-		000000000000000000000155 /* tyran_value.c */  = {
+		000000000000000000000156 /* tyran_symbol.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000154 /* tyran_value.c */ ;
+			fileRef = 000000000000000000000155 /* tyran_symbol.c */ ;
 		};
-		000000000000000000000157 /* tyran_value_object.c */  = {
+		000000000000000000000158 /* tyran_symbol_table.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000156 /* tyran_value_object.c */ ;
+			fileRef = 000000000000000000000157 /* tyran_symbol_table.c */ ;
 		};
-		00000000000000000000015B /* Default-568h@2x.png */  = {
+		00000000000000000000015A /* tyran_value.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000015A /* Default-568h@2x.png */ ;
+			fileRef = 000000000000000000000159 /* tyran_value.c */ ;
 		};
-		00000000000000000000015D /* Default.png */  = {
+		00000000000000000000015C /* tyran_value_object.c */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000015C /* Default.png */ ;
+			fileRef = 00000000000000000000015B /* tyran_value_object.c */ ;
 		};
-		00000000000000000000015F /* Icon-72.png */  = {
+		000000000000000000000160 /* Default-568h@2x.png */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000015E /* Icon-72.png */ ;
+			fileRef = 00000000000000000000015F /* Default-568h@2x.png */ ;
 		};
-		000000000000000000000161 /* Icon-72@2x.png */  = {
+		000000000000000000000162 /* Default.png */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000160 /* Icon-72@2x.png */ ;
+			fileRef = 000000000000000000000161 /* Default.png */ ;
 		};
-		000000000000000000000163 /* Icon-Small-50.png */  = {
+		000000000000000000000164 /* Icon-72.png */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000162 /* Icon-Small-50.png */ ;
+			fileRef = 000000000000000000000163 /* Icon-72.png */ ;
 		};
-		000000000000000000000165 /* Icon-Small.png */  = {
+		000000000000000000000166 /* Icon-72@2x.png */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000164 /* Icon-Small.png */ ;
+			fileRef = 000000000000000000000165 /* Icon-72@2x.png */ ;
 		};
-		000000000000000000000167 /* Icon-Small@2x.png */  = {
+		000000000000000000000168 /* Icon-Small-50.png */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000166 /* Icon-Small@2x.png */ ;
+			fileRef = 000000000000000000000167 /* Icon-Small-50.png */ ;
 		};
-		000000000000000000000169 /* Icon.png */  = {
+		00000000000000000000016A /* Icon-Small.png */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000168 /* Icon.png */ ;
+			fileRef = 000000000000000000000169 /* Icon-Small.png */ ;
 		};
-		00000000000000000000016B /* Icon@2x.png */  = {
+		00000000000000000000016C /* Icon-Small@2x.png */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000016A /* Icon@2x.png */ ;
+			fileRef = 00000000000000000000016B /* Icon-Small@2x.png */ ;
 		};
-		00000000000000000000016D /* MainStoryboard_iPad.storyboard */  = {
+		00000000000000000000016E /* Icon.png */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000016C /* MainStoryboard_iPad.storyboard */ ;
+			fileRef = 00000000000000000000016D /* Icon.png */ ;
 		};
-		00000000000000000000016F /* MainStoryboard_iPhone.storyboard */  = {
+		000000000000000000000170 /* Icon@2x.png */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000016E /* MainStoryboard_iPhone.storyboard */ ;
+			fileRef = 00000000000000000000016F /* Icon@2x.png */ ;
 		};
-		000000000000000000000171 /* tyran.plist */  = {
+		000000000000000000000172 /* MainStoryboard_iPad.storyboard */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000170 /* tyran.plist */ ;
+			fileRef = 000000000000000000000171 /* MainStoryboard_iPad.storyboard */ ;
 		};
-		000000000000000000000173 /* Foundation.framework */  = {
+		000000000000000000000174 /* MainStoryboard_iPhone.storyboard */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000172 /* Foundation.framework */ ;
+			fileRef = 000000000000000000000173 /* MainStoryboard_iPhone.storyboard */ ;
 		};
-		000000000000000000000175 /* UIKit.framework */  = {
+		000000000000000000000176 /* tyran.plist */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000174 /* UIKit.framework */ ;
+			fileRef = 000000000000000000000175 /* tyran.plist */ ;
 		};
-		000000000000000000000177 /* CoreGraphics.framework */  = {
+		000000000000000000000178 /* Foundation.framework */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000176 /* CoreGraphics.framework */ ;
+			fileRef = 000000000000000000000177 /* Foundation.framework */ ;
 		};
-		000000000000000000000179 /* GLKit.framework */  = {
+		00000000000000000000017A /* UIKit.framework */  = {
 			isa = PBXBuildFile;
-			fileRef = 000000000000000000000178 /* GLKit.framework */ ;
+			fileRef = 000000000000000000000179 /* UIKit.framework */ ;
 		};
-		00000000000000000000017B /* OpenGLES.framework */  = {
+		00000000000000000000017C /* CoreGraphics.framework */  = {
 			isa = PBXBuildFile;
-			fileRef = 00000000000000000000017A /* OpenGLES.framework */ ;
+			fileRef = 00000000000000000000017B /* CoreGraphics.framework */ ;
+		};
+		00000000000000000000017E /* GLKit.framework */  = {
+			isa = PBXBuildFile;
+			fileRef = 00000000000000000000017D /* GLKit.framework */ ;
+		};
+		000000000000000000000180 /* OpenGLES.framework */  = {
+			isa = PBXBuildFile;
+			fileRef = 00000000000000000000017F /* OpenGLES.framework */ ;
 		};
 		/* End PBXBuildFile section */
 		
@@ -943,7 +951,23 @@
 			path = ../../src/engine/event/resource_load.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000057 /* resource_handler.c */  = {
+		000000000000000000000057 /* connecting_socket.c */  = {
+			isa = PBXFileReference;
+			fileEncoding = 4;
+			lastKnownFileType = sourcecode.c.c;
+			name = connecting_socket.c;
+			path = ../../src/engine/network/connecting_socket.c;
+			sourceTree = SOURCE_ROOT;
+		};
+		000000000000000000000059 /* connecting_socket.h */  = {
+			isa = PBXFileReference;
+			fileEncoding = 4;
+			lastKnownFileType = sourcecode.c.h;
+			name = connecting_socket.h;
+			path = ../../src/engine/network/connecting_socket.h;
+			sourceTree = SOURCE_ROOT;
+		};
+		00000000000000000000005C /* resource_handler.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -951,7 +975,7 @@
 			path = ../../src/engine/resource/resource_handler.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000059 /* resource_handler.h */  = {
+		00000000000000000000005E /* resource_handler.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -959,7 +983,7 @@
 			path = ../../src/engine/resource/resource_handler.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000005B /* resource_id.h */  = {
+		000000000000000000000060 /* resource_id.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -967,7 +991,7 @@
 			path = ../../src/engine/resource/resource_id.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000005D /* resource_reader.c */  = {
+		000000000000000000000062 /* resource_reader.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -975,7 +999,7 @@
 			path = ../../src/engine/resource/resource_reader.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000005F /* resource_reader.h */  = {
+		000000000000000000000064 /* resource_reader.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -983,7 +1007,7 @@
 			path = ../../src/engine/resource/resource_reader.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000066 /* tyran_mocha_lexer_debug.h */  = {
+		00000000000000000000006B /* tyran_mocha_lexer_debug.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -991,7 +1015,7 @@
 			path = ../../src/tyranscript/include/tyranscript/debug/mocha/tyran_mocha_lexer_debug.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000068 /* tyran_mocha_parser_debug.h */  = {
+		00000000000000000000006D /* tyran_mocha_parser_debug.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -999,7 +1023,7 @@
 			path = ../../src/tyranscript/include/tyranscript/debug/mocha/tyran_mocha_parser_debug.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000006B /* tyran_print_parser_tree.h */  = {
+		000000000000000000000070 /* tyran_print_parser_tree.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1007,7 +1031,7 @@
 			path = ../../src/tyranscript/include/tyranscript/debug/parser/tyran_print_parser_tree.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000006D /* tyran_print_constants.h */  = {
+		000000000000000000000072 /* tyran_print_constants.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1015,7 +1039,7 @@
 			path = ../../src/tyranscript/include/tyranscript/debug/tyran_print_constants.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000006F /* tyran_print_opcodes.h */  = {
+		000000000000000000000074 /* tyran_print_opcodes.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1023,7 +1047,7 @@
 			path = ../../src/tyranscript/include/tyranscript/debug/tyran_print_opcodes.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000071 /* tyran_print_runtime_state.h */  = {
+		000000000000000000000076 /* tyran_print_runtime_state.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1031,7 +1055,7 @@
 			path = ../../src/tyranscript/include/tyranscript/debug/tyran_print_runtime_state.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000073 /* tyran_print_value.h */  = {
+		000000000000000000000078 /* tyran_print_value.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1039,7 +1063,7 @@
 			path = ../../src/tyranscript/include/tyranscript/debug/tyran_print_value.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000077 /* tyran_code.h */  = {
+		00000000000000000000007C /* tyran_code.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1047,7 +1071,7 @@
 			path = ../../src/tyranscript/include/tyranscript/parser/common/tyran_code.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000079 /* tyran_errors.h */  = {
+		00000000000000000000007E /* tyran_errors.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1055,7 +1079,7 @@
 			path = ../../src/tyranscript/include/tyranscript/parser/common/tyran_errors.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000007B /* tyran_generator.h */  = {
+		000000000000000000000080 /* tyran_generator.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1063,7 +1087,7 @@
 			path = ../../src/tyranscript/include/tyranscript/parser/common/tyran_generator.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000007D /* tyran_parser_tree.h */  = {
+		000000000000000000000082 /* tyran_parser_tree.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1071,7 +1095,7 @@
 			path = ../../src/tyranscript/include/tyranscript/parser/common/tyran_parser_tree.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000007F /* tyran_variable_scope.h */  = {
+		000000000000000000000084 /* tyran_variable_scope.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1079,7 +1103,7 @@
 			path = ../../src/tyranscript/include/tyranscript/parser/common/tyran_variable_scope.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000082 /* tyran_mocha_lexer.h */  = {
+		000000000000000000000087 /* tyran_mocha_lexer.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1087,7 +1111,7 @@
 			path = ../../src/tyranscript/include/tyranscript/parser/mocha/tyran_mocha_lexer.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000084 /* tyran_mocha_parser.h */  = {
+		000000000000000000000089 /* tyran_mocha_parser.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1095,7 +1119,7 @@
 			path = ../../src/tyranscript/include/tyranscript/parser/mocha/tyran_mocha_parser.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000086 /* tyran_label.h */  = {
+		00000000000000000000008B /* tyran_label.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1103,7 +1127,7 @@
 			path = ../../src/tyranscript/include/tyranscript/parser/tyran_label.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000088 /* tyran_label_reference.h */  = {
+		00000000000000000000008D /* tyran_label_reference.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1111,7 +1135,7 @@
 			path = ../../src/tyranscript/include/tyranscript/parser/tyran_label_reference.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000008A /* tyran_lexer.h */  = {
+		00000000000000000000008F /* tyran_lexer.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1119,7 +1143,7 @@
 			path = ../../src/tyranscript/include/tyranscript/parser/tyran_lexer.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000008C /* tyran_parser_assembler.h */  = {
+		000000000000000000000091 /* tyran_parser_assembler.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1127,7 +1151,7 @@
 			path = ../../src/tyranscript/include/tyranscript/parser/tyran_parser_assembler.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000008E /* tyran_parser_state.h */  = {
+		000000000000000000000093 /* tyran_parser_state.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1135,7 +1159,7 @@
 			path = ../../src/tyranscript/include/tyranscript/parser/tyran_parser_state.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000090 /* tyran_api.h */  = {
+		000000000000000000000095 /* tyran_api.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1143,7 +1167,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_api.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000092 /* tyran_array.h */  = {
+		000000000000000000000097 /* tyran_array.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1151,7 +1175,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_array.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000094 /* tyran_array_iterator_prototype.h */  = {
+		000000000000000000000099 /* tyran_array_iterator_prototype.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1159,7 +1183,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_array_iterator_prototype.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000096 /* tyran_array_prototype.h */  = {
+		00000000000000000000009B /* tyran_array_prototype.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1167,7 +1191,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_array_prototype.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000098 /* tyran_clib.h */  = {
+		00000000000000000000009D /* tyran_clib.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1175,7 +1199,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_clib.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000009A /* tyran_config.h */  = {
+		00000000000000000000009F /* tyran_config.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1183,7 +1207,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_config.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000009C /* tyran_configuration.h */  = {
+		0000000000000000000000A1 /* tyran_configuration.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1191,7 +1215,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_configuration.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000009E /* tyran_constants.h */  = {
+		0000000000000000000000A3 /* tyran_constants.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1199,7 +1223,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_constants.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000A0 /* tyran_function.h */  = {
+		0000000000000000000000A5 /* tyran_function.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1207,7 +1231,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_function.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000A2 /* tyran_function_callback.h */  = {
+		0000000000000000000000A7 /* tyran_function_callback.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1215,7 +1239,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_function_callback.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000A4 /* tyran_function_object.h */  = {
+		0000000000000000000000A9 /* tyran_function_object.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1223,7 +1247,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_function_object.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000A6 /* tyran_function_prototype.h */  = {
+		0000000000000000000000AB /* tyran_function_prototype.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1231,7 +1255,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_function_prototype.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000A8 /* tyran_iterator_object.h */  = {
+		0000000000000000000000AD /* tyran_iterator_object.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1239,7 +1263,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_iterator_object.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000AA /* tyran_log.h */  = {
+		0000000000000000000000AF /* tyran_log.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1247,7 +1271,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_log.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000AC /* tyran_memory.h */  = {
+		0000000000000000000000B1 /* tyran_memory.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1255,7 +1279,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_memory.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000AE /* tyran_memory_pool.h */  = {
+		0000000000000000000000B3 /* tyran_memory_pool.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1263,7 +1287,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_memory_pool.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000B0 /* tyran_mocha_api.h */  = {
+		0000000000000000000000B5 /* tyran_mocha_api.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1271,7 +1295,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_mocha_api.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000B2 /* tyran_number.h */  = {
+		0000000000000000000000B7 /* tyran_number.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1279,7 +1303,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_number.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000B4 /* tyran_number_operator.h */  = {
+		0000000000000000000000B9 /* tyran_number_operator.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1287,7 +1311,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_number_operator.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000B6 /* tyran_object.h */  = {
+		0000000000000000000000BB /* tyran_object.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1295,7 +1319,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_object.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000B8 /* tyran_object_array.h */  = {
+		0000000000000000000000BD /* tyran_object_array.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1303,7 +1327,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_object_array.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000BA /* tyran_object_macros.h */  = {
+		0000000000000000000000BF /* tyran_object_macros.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1311,7 +1335,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_object_macros.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000BC /* tyran_object_prototype.h */  = {
+		0000000000000000000000C1 /* tyran_object_prototype.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1319,7 +1343,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_object_prototype.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000BE /* tyran_opcode.h */  = {
+		0000000000000000000000C3 /* tyran_opcode.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1327,7 +1351,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_opcode.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000C0 /* tyran_opcode_enums.h */  = {
+		0000000000000000000000C5 /* tyran_opcode_enums.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1335,7 +1359,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_opcode_enums.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000C2 /* tyran_opcode_ids.h */  = {
+		0000000000000000000000C7 /* tyran_opcode_ids.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1343,7 +1367,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_opcode_ids.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000C4 /* tyran_opcodes.h */  = {
+		0000000000000000000000C9 /* tyran_opcodes.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1351,7 +1375,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_opcodes.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000C6 /* tyran_platform.h */  = {
+		0000000000000000000000CB /* tyran_platform.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1359,7 +1383,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_platform.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000C8 /* tyran_prototypes.h */  = {
+		0000000000000000000000CD /* tyran_prototypes.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1367,7 +1391,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_prototypes.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000CA /* tyran_range.h */  = {
+		0000000000000000000000CF /* tyran_range.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1375,7 +1399,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_range.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000CC /* tyran_range_iterator.h */  = {
+		0000000000000000000000D1 /* tyran_range_iterator.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1383,7 +1407,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_range_iterator.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000CE /* tyran_range_iterator_prototype.h */  = {
+		0000000000000000000000D3 /* tyran_range_iterator_prototype.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1391,7 +1415,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_range_iterator_prototype.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000D0 /* tyran_range_prototype.h */  = {
+		0000000000000000000000D5 /* tyran_range_prototype.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1399,7 +1423,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_range_prototype.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000D2 /* tyran_red_black_tree.h */  = {
+		0000000000000000000000D7 /* tyran_red_black_tree.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1407,7 +1431,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_red_black_tree.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000D4 /* tyran_red_black_tree_macros.h */  = {
+		0000000000000000000000D9 /* tyran_red_black_tree_macros.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1415,7 +1439,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_red_black_tree_macros.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000D6 /* tyran_runtime.h */  = {
+		0000000000000000000000DB /* tyran_runtime.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1423,7 +1447,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_runtime.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000D8 /* tyran_runtime_callbacks.h */  = {
+		0000000000000000000000DD /* tyran_runtime_callbacks.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1431,7 +1455,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_runtime_callbacks.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000DA /* tyran_runtime_stack.h */  = {
+		0000000000000000000000DF /* tyran_runtime_stack.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1439,7 +1463,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_runtime_stack.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000DC /* tyran_string.h */  = {
+		0000000000000000000000E1 /* tyran_string.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1447,7 +1471,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_string.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000DE /* tyran_string_object.h */  = {
+		0000000000000000000000E3 /* tyran_string_object.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1455,7 +1479,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_string_object.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000E0 /* tyran_string_prototype.h */  = {
+		0000000000000000000000E5 /* tyran_string_prototype.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1463,7 +1487,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_string_prototype.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000E2 /* tyran_symbol.h */  = {
+		0000000000000000000000E7 /* tyran_symbol.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1471,7 +1495,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_symbol.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000E4 /* tyran_symbol_table.h */  = {
+		0000000000000000000000E9 /* tyran_symbol_table.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1479,7 +1503,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_symbol_table.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000E6 /* tyran_types.h */  = {
+		0000000000000000000000EB /* tyran_types.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1487,7 +1511,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_types.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000E8 /* tyran_value.h */  = {
+		0000000000000000000000ED /* tyran_value.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1495,7 +1519,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_value.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000EA /* tyran_value_object.h */  = {
+		0000000000000000000000EF /* tyran_value_object.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1503,7 +1527,7 @@
 			path = ../../src/tyranscript/include/tyranscript/tyran_value_object.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000EF /* tyran_mocha_lexer_debug.c */  = {
+		0000000000000000000000F4 /* tyran_mocha_lexer_debug.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1511,7 +1535,7 @@
 			path = ../../src/tyranscript/lib/debug/mocha/tyran_mocha_lexer_debug.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000F1 /* tyran_mocha_parser_debug.c */  = {
+		0000000000000000000000F6 /* tyran_mocha_parser_debug.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1519,7 +1543,7 @@
 			path = ../../src/tyranscript/lib/debug/mocha/tyran_mocha_parser_debug.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000F4 /* tyran_print_parser_tree.c */  = {
+		0000000000000000000000F9 /* tyran_print_parser_tree.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1527,7 +1551,7 @@
 			path = ../../src/tyranscript/lib/debug/parser/tyran_print_parser_tree.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000F6 /* tyran_print_constants.c */  = {
+		0000000000000000000000FB /* tyran_print_constants.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1535,7 +1559,7 @@
 			path = ../../src/tyranscript/lib/debug/tyran_print_constants.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000F8 /* tyran_print_opcodes.c */  = {
+		0000000000000000000000FD /* tyran_print_opcodes.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1543,7 +1567,7 @@
 			path = ../../src/tyranscript/lib/debug/tyran_print_opcodes.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000FA /* tyran_print_runtime.c */  = {
+		0000000000000000000000FF /* tyran_print_runtime.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1551,7 +1575,7 @@
 			path = ../../src/tyranscript/lib/debug/tyran_print_runtime.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000FC /* tyran_print_runtime.h */  = {
+		000000000000000000000101 /* tyran_print_runtime.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1559,7 +1583,7 @@
 			path = ../../src/tyranscript/lib/debug/tyran_print_runtime.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		0000000000000000000000FE /* tyran_print_runtime_state.c */  = {
+		000000000000000000000103 /* tyran_print_runtime_state.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1567,7 +1591,7 @@
 			path = ../../src/tyranscript/lib/debug/tyran_print_runtime_state.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000100 /* tyran_print_value.c */  = {
+		000000000000000000000105 /* tyran_print_value.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1575,7 +1599,7 @@
 			path = ../../src/tyranscript/lib/debug/tyran_print_value.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000104 /* tyran_parser_assembler.c */  = {
+		000000000000000000000109 /* tyran_parser_assembler.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1583,7 +1607,7 @@
 			path = ../../src/tyranscript/lib/parser/assembler/tyran_parser_assembler.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000107 /* tyran_code.c */  = {
+		00000000000000000000010C /* tyran_code.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1591,7 +1615,7 @@
 			path = ../../src/tyranscript/lib/parser/common/tyran_code.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000109 /* tyran_errors.c */  = {
+		00000000000000000000010E /* tyran_errors.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1599,7 +1623,7 @@
 			path = ../../src/tyranscript/lib/parser/common/tyran_errors.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000010B /* tyran_generator.c */  = {
+		000000000000000000000110 /* tyran_generator.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1607,7 +1631,7 @@
 			path = ../../src/tyranscript/lib/parser/common/tyran_generator.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000010D /* tyran_lexer.c */  = {
+		000000000000000000000112 /* tyran_lexer.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1615,7 +1639,7 @@
 			path = ../../src/tyranscript/lib/parser/common/tyran_lexer.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000010F /* tyran_variable_scope.c */  = {
+		000000000000000000000114 /* tyran_variable_scope.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1623,7 +1647,7 @@
 			path = ../../src/tyranscript/lib/parser/common/tyran_variable_scope.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000112 /* tyran_mocha_lexer.c */  = {
+		000000000000000000000117 /* tyran_mocha_lexer.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1631,7 +1655,7 @@
 			path = ../../src/tyranscript/lib/parser/mocha/tyran_mocha_lexer.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000114 /* tyran_mocha_parser.c */  = {
+		000000000000000000000119 /* tyran_mocha_parser.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1639,7 +1663,7 @@
 			path = ../../src/tyranscript/lib/parser/mocha/tyran_mocha_parser.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000116 /* tyran_parser_tree.c */  = {
+		00000000000000000000011B /* tyran_parser_tree.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1647,7 +1671,7 @@
 			path = ../../src/tyranscript/lib/parser/mocha/tyran_parser_tree.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000118 /* tyran_array.c */  = {
+		00000000000000000000011D /* tyran_array.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1655,7 +1679,7 @@
 			path = ../../src/tyranscript/lib/tyran_array.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000011A /* tyran_array_iterator_prototype.c */  = {
+		00000000000000000000011F /* tyran_array_iterator_prototype.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1663,7 +1687,7 @@
 			path = ../../src/tyranscript/lib/tyran_array_iterator_prototype.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000011C /* tyran_array_prototype.c */  = {
+		000000000000000000000121 /* tyran_array_prototype.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1671,7 +1695,7 @@
 			path = ../../src/tyranscript/lib/tyran_array_prototype.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000011E /* tyran_constants.c */  = {
+		000000000000000000000123 /* tyran_constants.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1679,7 +1703,7 @@
 			path = ../../src/tyranscript/lib/tyran_constants.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000120 /* tyran_function.c */  = {
+		000000000000000000000125 /* tyran_function.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1687,7 +1711,7 @@
 			path = ../../src/tyranscript/lib/tyran_function.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000122 /* tyran_function_object.c */  = {
+		000000000000000000000127 /* tyran_function_object.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1695,7 +1719,7 @@
 			path = ../../src/tyranscript/lib/tyran_function_object.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000124 /* tyran_iterator_object.c */  = {
+		000000000000000000000129 /* tyran_iterator_object.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1703,7 +1727,7 @@
 			path = ../../src/tyranscript/lib/tyran_iterator_object.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000126 /* tyran_memory.c */  = {
+		00000000000000000000012B /* tyran_memory.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1711,7 +1735,7 @@
 			path = ../../src/tyranscript/lib/tyran_memory.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000128 /* tyran_memory_pool.c */  = {
+		00000000000000000000012D /* tyran_memory_pool.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1719,7 +1743,7 @@
 			path = ../../src/tyranscript/lib/tyran_memory_pool.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000012A /* tyran_mocha_api.c */  = {
+		00000000000000000000012F /* tyran_mocha_api.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1727,7 +1751,7 @@
 			path = ../../src/tyranscript/lib/tyran_mocha_api.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000012C /* tyran_number_operator.c */  = {
+		000000000000000000000131 /* tyran_number_operator.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1735,7 +1759,7 @@
 			path = ../../src/tyranscript/lib/tyran_number_operator.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000012E /* tyran_object.c */  = {
+		000000000000000000000133 /* tyran_object.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1743,7 +1767,7 @@
 			path = ../../src/tyranscript/lib/tyran_object.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000130 /* tyran_object_array.c */  = {
+		000000000000000000000135 /* tyran_object_array.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1751,7 +1775,7 @@
 			path = ../../src/tyranscript/lib/tyran_object_array.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000132 /* tyran_object_prototype.c */  = {
+		000000000000000000000137 /* tyran_object_prototype.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1759,7 +1783,7 @@
 			path = ../../src/tyranscript/lib/tyran_object_prototype.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000134 /* tyran_opcodes.c */  = {
+		000000000000000000000139 /* tyran_opcodes.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1767,7 +1791,7 @@
 			path = ../../src/tyranscript/lib/tyran_opcodes.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000136 /* tyran_prototypes.c */  = {
+		00000000000000000000013B /* tyran_prototypes.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1775,7 +1799,7 @@
 			path = ../../src/tyranscript/lib/tyran_prototypes.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000138 /* tyran_range.c */  = {
+		00000000000000000000013D /* tyran_range.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1783,7 +1807,7 @@
 			path = ../../src/tyranscript/lib/tyran_range.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000013A /* tyran_range_iterator.c */  = {
+		00000000000000000000013F /* tyran_range_iterator.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1791,7 +1815,7 @@
 			path = ../../src/tyranscript/lib/tyran_range_iterator.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000013C /* tyran_range_iterator_prototype.c */  = {
+		000000000000000000000141 /* tyran_range_iterator_prototype.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1799,7 +1823,7 @@
 			path = ../../src/tyranscript/lib/tyran_range_iterator_prototype.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000013E /* tyran_range_prototype.c */  = {
+		000000000000000000000143 /* tyran_range_prototype.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1807,7 +1831,7 @@
 			path = ../../src/tyranscript/lib/tyran_range_prototype.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000140 /* tyran_red_black_tree.c */  = {
+		000000000000000000000145 /* tyran_red_black_tree.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1815,7 +1839,7 @@
 			path = ../../src/tyranscript/lib/tyran_red_black_tree.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000142 /* tyran_runtime.c */  = {
+		000000000000000000000147 /* tyran_runtime.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1823,7 +1847,7 @@
 			path = ../../src/tyranscript/lib/tyran_runtime.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000144 /* tyran_runtime_helper.c */  = {
+		000000000000000000000149 /* tyran_runtime_helper.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1831,7 +1855,7 @@
 			path = ../../src/tyranscript/lib/tyran_runtime_helper.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000146 /* tyran_runtime_macros.h */  = {
+		00000000000000000000014B /* tyran_runtime_macros.h */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.h;
@@ -1839,7 +1863,7 @@
 			path = ../../src/tyranscript/lib/tyran_runtime_macros.h;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000148 /* tyran_runtime_stack.c */  = {
+		00000000000000000000014D /* tyran_runtime_stack.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1847,7 +1871,7 @@
 			path = ../../src/tyranscript/lib/tyran_runtime_stack.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000014A /* tyran_string.c */  = {
+		00000000000000000000014F /* tyran_string.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1855,7 +1879,7 @@
 			path = ../../src/tyranscript/lib/tyran_string.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000014C /* tyran_string_object.c */  = {
+		000000000000000000000151 /* tyran_string_object.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1863,7 +1887,7 @@
 			path = ../../src/tyranscript/lib/tyran_string_object.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000014E /* tyran_string_prototype.c */  = {
+		000000000000000000000153 /* tyran_string_prototype.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1871,7 +1895,7 @@
 			path = ../../src/tyranscript/lib/tyran_string_prototype.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000150 /* tyran_symbol.c */  = {
+		000000000000000000000155 /* tyran_symbol.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1879,7 +1903,7 @@
 			path = ../../src/tyranscript/lib/tyran_symbol.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000152 /* tyran_symbol_table.c */  = {
+		000000000000000000000157 /* tyran_symbol_table.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1887,7 +1911,7 @@
 			path = ../../src/tyranscript/lib/tyran_symbol_table.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000154 /* tyran_value.c */  = {
+		000000000000000000000159 /* tyran_value.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1895,7 +1919,7 @@
 			path = ../../src/tyranscript/lib/tyran_value.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000156 /* tyran_value_object.c */  = {
+		00000000000000000000015B /* tyran_value_object.c */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = sourcecode.c.c;
@@ -1903,7 +1927,7 @@
 			path = ../../src/tyranscript/lib/tyran_value_object.c;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000015A /* Default-568h@2x.png */  = {
+		00000000000000000000015F /* Default-568h@2x.png */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = image.png;
@@ -1911,7 +1935,7 @@
 			path = "../../resource/ios/Default-568h@2x.png";
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000015C /* Default.png */  = {
+		000000000000000000000161 /* Default.png */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = image.png;
@@ -1919,7 +1943,7 @@
 			path = ../../resource/ios/Default.png;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000015E /* Icon-72.png */  = {
+		000000000000000000000163 /* Icon-72.png */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = image.png;
@@ -1927,7 +1951,7 @@
 			path = "../../resource/ios/Icon-72.png";
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000160 /* Icon-72@2x.png */  = {
+		000000000000000000000165 /* Icon-72@2x.png */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = image.png;
@@ -1935,7 +1959,7 @@
 			path = "../../resource/ios/Icon-72@2x.png";
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000162 /* Icon-Small-50.png */  = {
+		000000000000000000000167 /* Icon-Small-50.png */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = image.png;
@@ -1943,7 +1967,7 @@
 			path = "../../resource/ios/Icon-Small-50.png";
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000164 /* Icon-Small.png */  = {
+		000000000000000000000169 /* Icon-Small.png */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = image.png;
@@ -1951,7 +1975,7 @@
 			path = "../../resource/ios/Icon-Small.png";
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000166 /* Icon-Small@2x.png */  = {
+		00000000000000000000016B /* Icon-Small@2x.png */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = image.png;
@@ -1959,7 +1983,7 @@
 			path = "../../resource/ios/Icon-Small@2x.png";
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000168 /* Icon.png */  = {
+		00000000000000000000016D /* Icon.png */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = image.png;
@@ -1967,7 +1991,7 @@
 			path = ../../resource/ios/Icon.png;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000016A /* Icon@2x.png */  = {
+		00000000000000000000016F /* Icon@2x.png */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = image.png;
@@ -1975,7 +1999,7 @@
 			path = "../../resource/ios/Icon@2x.png";
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000016C /* MainStoryboard_iPad.storyboard */  = {
+		000000000000000000000171 /* MainStoryboard_iPad.storyboard */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = file.storyboard;
@@ -1983,7 +2007,7 @@
 			path = ../../resource/ios/MainStoryboard_iPad.storyboard;
 			sourceTree = SOURCE_ROOT;
 		};
-		00000000000000000000016E /* MainStoryboard_iPhone.storyboard */  = {
+		000000000000000000000173 /* MainStoryboard_iPhone.storyboard */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = file.storyboard;
@@ -1991,7 +2015,7 @@
 			path = ../../resource/ios/MainStoryboard_iPhone.storyboard;
 			sourceTree = SOURCE_ROOT;
 		};
-		000000000000000000000170 /* tyran.plist */  = {
+		000000000000000000000175 /* tyran.plist */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = text.plist.xml;
@@ -2000,7 +2024,7 @@
 			plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist";
 			sourceTree = "<group>";
 		};
-		000000000000000000000172 /* Foundation.framework */  = {
+		000000000000000000000177 /* Foundation.framework */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = wrapper.framework;
@@ -2008,7 +2032,7 @@
 			path = System/Library/Frameworks/Foundation.framework;
 			sourceTree = SDKROOT;
 		};
-		000000000000000000000174 /* UIKit.framework */  = {
+		000000000000000000000179 /* UIKit.framework */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = wrapper.framework;
@@ -2016,7 +2040,7 @@
 			path = System/Library/Frameworks/UIKit.framework;
 			sourceTree = SDKROOT;
 		};
-		000000000000000000000176 /* CoreGraphics.framework */  = {
+		00000000000000000000017B /* CoreGraphics.framework */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = wrapper.framework;
@@ -2024,7 +2048,7 @@
 			path = System/Library/Frameworks/CoreGraphics.framework;
 			sourceTree = SDKROOT;
 		};
-		000000000000000000000178 /* GLKit.framework */  = {
+		00000000000000000000017D /* GLKit.framework */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = wrapper.framework;
@@ -2032,7 +2056,7 @@
 			path = System/Library/Frameworks/GLKit.framework;
 			sourceTree = SDKROOT;
 		};
-		00000000000000000000017A /* OpenGLES.framework */  = {
+		00000000000000000000017F /* OpenGLES.framework */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			lastKnownFileType = wrapper.framework;
@@ -2040,7 +2064,7 @@
 			path = System/Library/Frameworks/OpenGLES.framework;
 			sourceTree = SDKROOT;
 		};
-		000000000000000000000180 /* sinkblobs.app */  = {
+		000000000000000000000185 /* sinkblobs.app */  = {
 			isa = PBXFileReference;
 			explicitFileType = wrapper.application;
 			includeInIndex = 0;
@@ -2048,7 +2072,7 @@
 			path = sinkblobs.app;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		000000000000000000000187 /*  */  = {
+		00000000000000000000018C /*  */  = {
 			isa = PBXFileReference;
 			fileEncoding = 4;
 			name = "";
@@ -2058,15 +2082,15 @@
 		
 		
 		/* Begin PBXFrameworksBuildPhase section */
-		00000000000000000000017C /* Frameworks build phase */  = {
+		000000000000000000000181 /* Frameworks build phase */  = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				000000000000000000000173 /* Foundation.framework */ ,
-				000000000000000000000175 /* UIKit.framework */ ,
-				000000000000000000000177 /* CoreGraphics.framework */ ,
-				000000000000000000000179 /* GLKit.framework */ ,
-				00000000000000000000017B /* OpenGLES.framework */ ,
+				000000000000000000000178 /* Foundation.framework */ ,
+				00000000000000000000017A /* UIKit.framework */ ,
+				00000000000000000000017C /* CoreGraphics.framework */ ,
+				00000000000000000000017E /* GLKit.framework */ ,
+				000000000000000000000180 /* OpenGLES.framework */ ,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2215,14 +2239,23 @@
 			name = event;
 			sourceTree = "<group>";
 		};
-		000000000000000000000056 /* resource */  = {
+		000000000000000000000056 /* network */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000057 /* resource_handler.c */ ,
-				000000000000000000000059 /* resource_handler.h */ ,
-				00000000000000000000005B /* resource_id.h */ ,
-				00000000000000000000005D /* resource_reader.c */ ,
-				00000000000000000000005F /* resource_reader.h */ ,
+				000000000000000000000057 /* connecting_socket.c */ ,
+				000000000000000000000059 /* connecting_socket.h */ ,
+			);
+			name = network;
+			sourceTree = "<group>";
+		};
+		00000000000000000000005B /* resource */  = {
+			isa = PBXGroup;
+			children = (
+				00000000000000000000005C /* resource_handler.c */ ,
+				00000000000000000000005E /* resource_handler.h */ ,
+				000000000000000000000060 /* resource_id.h */ ,
+				000000000000000000000062 /* resource_reader.c */ ,
+				000000000000000000000064 /* resource_reader.h */ ,
 			);
 			name = resource;
 			sourceTree = "<group>";
@@ -2232,257 +2265,258 @@
 			children = (
 				00000000000000000000004E /* base */ ,
 				000000000000000000000053 /* event */ ,
-				000000000000000000000056 /* resource */ ,
+				000000000000000000000056 /* network */ ,
+				00000000000000000000005B /* resource */ ,
 			);
 			name = engine;
 			sourceTree = "<group>";
 		};
-		000000000000000000000065 /* mocha */  = {
+		00000000000000000000006A /* mocha */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000066 /* tyran_mocha_lexer_debug.h */ ,
-				000000000000000000000068 /* tyran_mocha_parser_debug.h */ ,
+				00000000000000000000006B /* tyran_mocha_lexer_debug.h */ ,
+				00000000000000000000006D /* tyran_mocha_parser_debug.h */ ,
 			);
 			name = mocha;
 			sourceTree = "<group>";
 		};
-		00000000000000000000006A /* parser */  = {
+		00000000000000000000006F /* parser */  = {
 			isa = PBXGroup;
 			children = (
-				00000000000000000000006B /* tyran_print_parser_tree.h */ ,
+				000000000000000000000070 /* tyran_print_parser_tree.h */ ,
 			);
 			name = parser;
 			sourceTree = "<group>";
 		};
-		000000000000000000000064 /* debug */  = {
+		000000000000000000000069 /* debug */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000065 /* mocha */ ,
-				00000000000000000000006A /* parser */ ,
-				00000000000000000000006D /* tyran_print_constants.h */ ,
-				00000000000000000000006F /* tyran_print_opcodes.h */ ,
-				000000000000000000000071 /* tyran_print_runtime_state.h */ ,
-				000000000000000000000073 /* tyran_print_value.h */ ,
+				00000000000000000000006A /* mocha */ ,
+				00000000000000000000006F /* parser */ ,
+				000000000000000000000072 /* tyran_print_constants.h */ ,
+				000000000000000000000074 /* tyran_print_opcodes.h */ ,
+				000000000000000000000076 /* tyran_print_runtime_state.h */ ,
+				000000000000000000000078 /* tyran_print_value.h */ ,
 			);
 			name = debug;
 			sourceTree = "<group>";
 		};
-		000000000000000000000076 /* common */  = {
+		00000000000000000000007B /* common */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000077 /* tyran_code.h */ ,
-				000000000000000000000079 /* tyran_errors.h */ ,
-				00000000000000000000007B /* tyran_generator.h */ ,
-				00000000000000000000007D /* tyran_parser_tree.h */ ,
-				00000000000000000000007F /* tyran_variable_scope.h */ ,
+				00000000000000000000007C /* tyran_code.h */ ,
+				00000000000000000000007E /* tyran_errors.h */ ,
+				000000000000000000000080 /* tyran_generator.h */ ,
+				000000000000000000000082 /* tyran_parser_tree.h */ ,
+				000000000000000000000084 /* tyran_variable_scope.h */ ,
 			);
 			name = common;
 			sourceTree = "<group>";
 		};
-		000000000000000000000081 /* mocha */  = {
+		000000000000000000000086 /* mocha */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000082 /* tyran_mocha_lexer.h */ ,
-				000000000000000000000084 /* tyran_mocha_parser.h */ ,
+				000000000000000000000087 /* tyran_mocha_lexer.h */ ,
+				000000000000000000000089 /* tyran_mocha_parser.h */ ,
 			);
 			name = mocha;
 			sourceTree = "<group>";
 		};
-		000000000000000000000075 /* parser */  = {
+		00000000000000000000007A /* parser */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000076 /* common */ ,
-				000000000000000000000081 /* mocha */ ,
-				000000000000000000000086 /* tyran_label.h */ ,
-				000000000000000000000088 /* tyran_label_reference.h */ ,
-				00000000000000000000008A /* tyran_lexer.h */ ,
-				00000000000000000000008C /* tyran_parser_assembler.h */ ,
-				00000000000000000000008E /* tyran_parser_state.h */ ,
+				00000000000000000000007B /* common */ ,
+				000000000000000000000086 /* mocha */ ,
+				00000000000000000000008B /* tyran_label.h */ ,
+				00000000000000000000008D /* tyran_label_reference.h */ ,
+				00000000000000000000008F /* tyran_lexer.h */ ,
+				000000000000000000000091 /* tyran_parser_assembler.h */ ,
+				000000000000000000000093 /* tyran_parser_state.h */ ,
 			);
 			name = parser;
 			sourceTree = "<group>";
 		};
-		000000000000000000000063 /* tyranscript */  = {
+		000000000000000000000068 /* tyranscript */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000064 /* debug */ ,
-				000000000000000000000075 /* parser */ ,
-				000000000000000000000090 /* tyran_api.h */ ,
-				000000000000000000000092 /* tyran_array.h */ ,
-				000000000000000000000094 /* tyran_array_iterator_prototype.h */ ,
-				000000000000000000000096 /* tyran_array_prototype.h */ ,
-				000000000000000000000098 /* tyran_clib.h */ ,
-				00000000000000000000009A /* tyran_config.h */ ,
-				00000000000000000000009C /* tyran_configuration.h */ ,
-				00000000000000000000009E /* tyran_constants.h */ ,
-				0000000000000000000000A0 /* tyran_function.h */ ,
-				0000000000000000000000A2 /* tyran_function_callback.h */ ,
-				0000000000000000000000A4 /* tyran_function_object.h */ ,
-				0000000000000000000000A6 /* tyran_function_prototype.h */ ,
-				0000000000000000000000A8 /* tyran_iterator_object.h */ ,
-				0000000000000000000000AA /* tyran_log.h */ ,
-				0000000000000000000000AC /* tyran_memory.h */ ,
-				0000000000000000000000AE /* tyran_memory_pool.h */ ,
-				0000000000000000000000B0 /* tyran_mocha_api.h */ ,
-				0000000000000000000000B2 /* tyran_number.h */ ,
-				0000000000000000000000B4 /* tyran_number_operator.h */ ,
-				0000000000000000000000B6 /* tyran_object.h */ ,
-				0000000000000000000000B8 /* tyran_object_array.h */ ,
-				0000000000000000000000BA /* tyran_object_macros.h */ ,
-				0000000000000000000000BC /* tyran_object_prototype.h */ ,
-				0000000000000000000000BE /* tyran_opcode.h */ ,
-				0000000000000000000000C0 /* tyran_opcode_enums.h */ ,
-				0000000000000000000000C2 /* tyran_opcode_ids.h */ ,
-				0000000000000000000000C4 /* tyran_opcodes.h */ ,
-				0000000000000000000000C6 /* tyran_platform.h */ ,
-				0000000000000000000000C8 /* tyran_prototypes.h */ ,
-				0000000000000000000000CA /* tyran_range.h */ ,
-				0000000000000000000000CC /* tyran_range_iterator.h */ ,
-				0000000000000000000000CE /* tyran_range_iterator_prototype.h */ ,
-				0000000000000000000000D0 /* tyran_range_prototype.h */ ,
-				0000000000000000000000D2 /* tyran_red_black_tree.h */ ,
-				0000000000000000000000D4 /* tyran_red_black_tree_macros.h */ ,
-				0000000000000000000000D6 /* tyran_runtime.h */ ,
-				0000000000000000000000D8 /* tyran_runtime_callbacks.h */ ,
-				0000000000000000000000DA /* tyran_runtime_stack.h */ ,
-				0000000000000000000000DC /* tyran_string.h */ ,
-				0000000000000000000000DE /* tyran_string_object.h */ ,
-				0000000000000000000000E0 /* tyran_string_prototype.h */ ,
-				0000000000000000000000E2 /* tyran_symbol.h */ ,
-				0000000000000000000000E4 /* tyran_symbol_table.h */ ,
-				0000000000000000000000E6 /* tyran_types.h */ ,
-				0000000000000000000000E8 /* tyran_value.h */ ,
-				0000000000000000000000EA /* tyran_value_object.h */ ,
+				000000000000000000000069 /* debug */ ,
+				00000000000000000000007A /* parser */ ,
+				000000000000000000000095 /* tyran_api.h */ ,
+				000000000000000000000097 /* tyran_array.h */ ,
+				000000000000000000000099 /* tyran_array_iterator_prototype.h */ ,
+				00000000000000000000009B /* tyran_array_prototype.h */ ,
+				00000000000000000000009D /* tyran_clib.h */ ,
+				00000000000000000000009F /* tyran_config.h */ ,
+				0000000000000000000000A1 /* tyran_configuration.h */ ,
+				0000000000000000000000A3 /* tyran_constants.h */ ,
+				0000000000000000000000A5 /* tyran_function.h */ ,
+				0000000000000000000000A7 /* tyran_function_callback.h */ ,
+				0000000000000000000000A9 /* tyran_function_object.h */ ,
+				0000000000000000000000AB /* tyran_function_prototype.h */ ,
+				0000000000000000000000AD /* tyran_iterator_object.h */ ,
+				0000000000000000000000AF /* tyran_log.h */ ,
+				0000000000000000000000B1 /* tyran_memory.h */ ,
+				0000000000000000000000B3 /* tyran_memory_pool.h */ ,
+				0000000000000000000000B5 /* tyran_mocha_api.h */ ,
+				0000000000000000000000B7 /* tyran_number.h */ ,
+				0000000000000000000000B9 /* tyran_number_operator.h */ ,
+				0000000000000000000000BB /* tyran_object.h */ ,
+				0000000000000000000000BD /* tyran_object_array.h */ ,
+				0000000000000000000000BF /* tyran_object_macros.h */ ,
+				0000000000000000000000C1 /* tyran_object_prototype.h */ ,
+				0000000000000000000000C3 /* tyran_opcode.h */ ,
+				0000000000000000000000C5 /* tyran_opcode_enums.h */ ,
+				0000000000000000000000C7 /* tyran_opcode_ids.h */ ,
+				0000000000000000000000C9 /* tyran_opcodes.h */ ,
+				0000000000000000000000CB /* tyran_platform.h */ ,
+				0000000000000000000000CD /* tyran_prototypes.h */ ,
+				0000000000000000000000CF /* tyran_range.h */ ,
+				0000000000000000000000D1 /* tyran_range_iterator.h */ ,
+				0000000000000000000000D3 /* tyran_range_iterator_prototype.h */ ,
+				0000000000000000000000D5 /* tyran_range_prototype.h */ ,
+				0000000000000000000000D7 /* tyran_red_black_tree.h */ ,
+				0000000000000000000000D9 /* tyran_red_black_tree_macros.h */ ,
+				0000000000000000000000DB /* tyran_runtime.h */ ,
+				0000000000000000000000DD /* tyran_runtime_callbacks.h */ ,
+				0000000000000000000000DF /* tyran_runtime_stack.h */ ,
+				0000000000000000000000E1 /* tyran_string.h */ ,
+				0000000000000000000000E3 /* tyran_string_object.h */ ,
+				0000000000000000000000E5 /* tyran_string_prototype.h */ ,
+				0000000000000000000000E7 /* tyran_symbol.h */ ,
+				0000000000000000000000E9 /* tyran_symbol_table.h */ ,
+				0000000000000000000000EB /* tyran_types.h */ ,
+				0000000000000000000000ED /* tyran_value.h */ ,
+				0000000000000000000000EF /* tyran_value_object.h */ ,
 			);
 			name = tyranscript;
 			sourceTree = "<group>";
 		};
-		000000000000000000000062 /* include */  = {
+		000000000000000000000067 /* include */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000063 /* tyranscript */ ,
+				000000000000000000000068 /* tyranscript */ ,
 			);
 			name = include;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000EE /* mocha */  = {
+		0000000000000000000000F3 /* mocha */  = {
 			isa = PBXGroup;
 			children = (
-				0000000000000000000000EF /* tyran_mocha_lexer_debug.c */ ,
-				0000000000000000000000F1 /* tyran_mocha_parser_debug.c */ ,
+				0000000000000000000000F4 /* tyran_mocha_lexer_debug.c */ ,
+				0000000000000000000000F6 /* tyran_mocha_parser_debug.c */ ,
 			);
 			name = mocha;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000F3 /* parser */  = {
+		0000000000000000000000F8 /* parser */  = {
 			isa = PBXGroup;
 			children = (
-				0000000000000000000000F4 /* tyran_print_parser_tree.c */ ,
+				0000000000000000000000F9 /* tyran_print_parser_tree.c */ ,
 			);
 			name = parser;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000ED /* debug */  = {
+		0000000000000000000000F2 /* debug */  = {
 			isa = PBXGroup;
 			children = (
-				0000000000000000000000EE /* mocha */ ,
-				0000000000000000000000F3 /* parser */ ,
-				0000000000000000000000F6 /* tyran_print_constants.c */ ,
-				0000000000000000000000F8 /* tyran_print_opcodes.c */ ,
-				0000000000000000000000FA /* tyran_print_runtime.c */ ,
-				0000000000000000000000FC /* tyran_print_runtime.h */ ,
-				0000000000000000000000FE /* tyran_print_runtime_state.c */ ,
-				000000000000000000000100 /* tyran_print_value.c */ ,
+				0000000000000000000000F3 /* mocha */ ,
+				0000000000000000000000F8 /* parser */ ,
+				0000000000000000000000FB /* tyran_print_constants.c */ ,
+				0000000000000000000000FD /* tyran_print_opcodes.c */ ,
+				0000000000000000000000FF /* tyran_print_runtime.c */ ,
+				000000000000000000000101 /* tyran_print_runtime.h */ ,
+				000000000000000000000103 /* tyran_print_runtime_state.c */ ,
+				000000000000000000000105 /* tyran_print_value.c */ ,
 			);
 			name = debug;
 			sourceTree = "<group>";
 		};
-		000000000000000000000103 /* assembler */  = {
+		000000000000000000000108 /* assembler */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000104 /* tyran_parser_assembler.c */ ,
+				000000000000000000000109 /* tyran_parser_assembler.c */ ,
 			);
 			name = assembler;
 			sourceTree = "<group>";
 		};
-		000000000000000000000106 /* common */  = {
+		00000000000000000000010B /* common */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000107 /* tyran_code.c */ ,
-				000000000000000000000109 /* tyran_errors.c */ ,
-				00000000000000000000010B /* tyran_generator.c */ ,
-				00000000000000000000010D /* tyran_lexer.c */ ,
-				00000000000000000000010F /* tyran_variable_scope.c */ ,
+				00000000000000000000010C /* tyran_code.c */ ,
+				00000000000000000000010E /* tyran_errors.c */ ,
+				000000000000000000000110 /* tyran_generator.c */ ,
+				000000000000000000000112 /* tyran_lexer.c */ ,
+				000000000000000000000114 /* tyran_variable_scope.c */ ,
 			);
 			name = common;
 			sourceTree = "<group>";
 		};
-		000000000000000000000111 /* mocha */  = {
+		000000000000000000000116 /* mocha */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000112 /* tyran_mocha_lexer.c */ ,
-				000000000000000000000114 /* tyran_mocha_parser.c */ ,
-				000000000000000000000116 /* tyran_parser_tree.c */ ,
+				000000000000000000000117 /* tyran_mocha_lexer.c */ ,
+				000000000000000000000119 /* tyran_mocha_parser.c */ ,
+				00000000000000000000011B /* tyran_parser_tree.c */ ,
 			);
 			name = mocha;
 			sourceTree = "<group>";
 		};
-		000000000000000000000102 /* parser */  = {
+		000000000000000000000107 /* parser */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000103 /* assembler */ ,
-				000000000000000000000106 /* common */ ,
-				000000000000000000000111 /* mocha */ ,
+				000000000000000000000108 /* assembler */ ,
+				00000000000000000000010B /* common */ ,
+				000000000000000000000116 /* mocha */ ,
 			);
 			name = parser;
 			sourceTree = "<group>";
 		};
-		0000000000000000000000EC /* lib */  = {
+		0000000000000000000000F1 /* lib */  = {
 			isa = PBXGroup;
 			children = (
-				0000000000000000000000ED /* debug */ ,
-				000000000000000000000102 /* parser */ ,
-				000000000000000000000118 /* tyran_array.c */ ,
-				00000000000000000000011A /* tyran_array_iterator_prototype.c */ ,
-				00000000000000000000011C /* tyran_array_prototype.c */ ,
-				00000000000000000000011E /* tyran_constants.c */ ,
-				000000000000000000000120 /* tyran_function.c */ ,
-				000000000000000000000122 /* tyran_function_object.c */ ,
-				000000000000000000000124 /* tyran_iterator_object.c */ ,
-				000000000000000000000126 /* tyran_memory.c */ ,
-				000000000000000000000128 /* tyran_memory_pool.c */ ,
-				00000000000000000000012A /* tyran_mocha_api.c */ ,
-				00000000000000000000012C /* tyran_number_operator.c */ ,
-				00000000000000000000012E /* tyran_object.c */ ,
-				000000000000000000000130 /* tyran_object_array.c */ ,
-				000000000000000000000132 /* tyran_object_prototype.c */ ,
-				000000000000000000000134 /* tyran_opcodes.c */ ,
-				000000000000000000000136 /* tyran_prototypes.c */ ,
-				000000000000000000000138 /* tyran_range.c */ ,
-				00000000000000000000013A /* tyran_range_iterator.c */ ,
-				00000000000000000000013C /* tyran_range_iterator_prototype.c */ ,
-				00000000000000000000013E /* tyran_range_prototype.c */ ,
-				000000000000000000000140 /* tyran_red_black_tree.c */ ,
-				000000000000000000000142 /* tyran_runtime.c */ ,
-				000000000000000000000144 /* tyran_runtime_helper.c */ ,
-				000000000000000000000146 /* tyran_runtime_macros.h */ ,
-				000000000000000000000148 /* tyran_runtime_stack.c */ ,
-				00000000000000000000014A /* tyran_string.c */ ,
-				00000000000000000000014C /* tyran_string_object.c */ ,
-				00000000000000000000014E /* tyran_string_prototype.c */ ,
-				000000000000000000000150 /* tyran_symbol.c */ ,
-				000000000000000000000152 /* tyran_symbol_table.c */ ,
-				000000000000000000000154 /* tyran_value.c */ ,
-				000000000000000000000156 /* tyran_value_object.c */ ,
+				0000000000000000000000F2 /* debug */ ,
+				000000000000000000000107 /* parser */ ,
+				00000000000000000000011D /* tyran_array.c */ ,
+				00000000000000000000011F /* tyran_array_iterator_prototype.c */ ,
+				000000000000000000000121 /* tyran_array_prototype.c */ ,
+				000000000000000000000123 /* tyran_constants.c */ ,
+				000000000000000000000125 /* tyran_function.c */ ,
+				000000000000000000000127 /* tyran_function_object.c */ ,
+				000000000000000000000129 /* tyran_iterator_object.c */ ,
+				00000000000000000000012B /* tyran_memory.c */ ,
+				00000000000000000000012D /* tyran_memory_pool.c */ ,
+				00000000000000000000012F /* tyran_mocha_api.c */ ,
+				000000000000000000000131 /* tyran_number_operator.c */ ,
+				000000000000000000000133 /* tyran_object.c */ ,
+				000000000000000000000135 /* tyran_object_array.c */ ,
+				000000000000000000000137 /* tyran_object_prototype.c */ ,
+				000000000000000000000139 /* tyran_opcodes.c */ ,
+				00000000000000000000013B /* tyran_prototypes.c */ ,
+				00000000000000000000013D /* tyran_range.c */ ,
+				00000000000000000000013F /* tyran_range_iterator.c */ ,
+				000000000000000000000141 /* tyran_range_iterator_prototype.c */ ,
+				000000000000000000000143 /* tyran_range_prototype.c */ ,
+				000000000000000000000145 /* tyran_red_black_tree.c */ ,
+				000000000000000000000147 /* tyran_runtime.c */ ,
+				000000000000000000000149 /* tyran_runtime_helper.c */ ,
+				00000000000000000000014B /* tyran_runtime_macros.h */ ,
+				00000000000000000000014D /* tyran_runtime_stack.c */ ,
+				00000000000000000000014F /* tyran_string.c */ ,
+				000000000000000000000151 /* tyran_string_object.c */ ,
+				000000000000000000000153 /* tyran_string_prototype.c */ ,
+				000000000000000000000155 /* tyran_symbol.c */ ,
+				000000000000000000000157 /* tyran_symbol_table.c */ ,
+				000000000000000000000159 /* tyran_value.c */ ,
+				00000000000000000000015B /* tyran_value_object.c */ ,
 			);
 			name = lib;
 			sourceTree = "<group>";
 		};
-		000000000000000000000061 /* tyranscript */  = {
+		000000000000000000000066 /* tyranscript */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000062 /* include */ ,
-				0000000000000000000000EC /* lib */ ,
+				000000000000000000000067 /* include */ ,
+				0000000000000000000000F1 /* lib */ ,
 			);
 			name = tyranscript;
 			sourceTree = "<group>";
@@ -2492,7 +2526,7 @@
 			children = (
 				000000000000000000000007 /* core */ ,
 				00000000000000000000004D /* engine */ ,
-				000000000000000000000061 /* tyranscript */ ,
+				000000000000000000000066 /* tyranscript */ ,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -2500,11 +2534,11 @@
 		000000000000000000000002 /* Frameworks */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000172 /* Foundation.framework */ ,
-				000000000000000000000174 /* UIKit.framework */ ,
-				000000000000000000000176 /* CoreGraphics.framework */ ,
-				000000000000000000000178 /* GLKit.framework */ ,
-				00000000000000000000017A /* OpenGLES.framework */ ,
+				000000000000000000000177 /* Foundation.framework */ ,
+				000000000000000000000179 /* UIKit.framework */ ,
+				00000000000000000000017B /* CoreGraphics.framework */ ,
+				00000000000000000000017D /* GLKit.framework */ ,
+				00000000000000000000017F /* OpenGLES.framework */ ,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -2512,34 +2546,34 @@
 		000000000000000000000003 /* Products */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000180 /* sinkblobs.app */ ,
+				000000000000000000000185 /* sinkblobs.app */ ,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		000000000000000000000159 /* ios */  = {
+		00000000000000000000015E /* ios */  = {
 			isa = PBXGroup;
 			children = (
-				00000000000000000000015A /* Default-568h@2x.png */ ,
-				00000000000000000000015C /* Default.png */ ,
-				00000000000000000000015E /* Icon-72.png */ ,
-				000000000000000000000160 /* Icon-72@2x.png */ ,
-				000000000000000000000162 /* Icon-Small-50.png */ ,
-				000000000000000000000164 /* Icon-Small.png */ ,
-				000000000000000000000166 /* Icon-Small@2x.png */ ,
-				000000000000000000000168 /* Icon.png */ ,
-				00000000000000000000016A /* Icon@2x.png */ ,
-				00000000000000000000016C /* MainStoryboard_iPad.storyboard */ ,
-				00000000000000000000016E /* MainStoryboard_iPhone.storyboard */ ,
-				000000000000000000000170 /* tyran.plist */ ,
+				00000000000000000000015F /* Default-568h@2x.png */ ,
+				000000000000000000000161 /* Default.png */ ,
+				000000000000000000000163 /* Icon-72.png */ ,
+				000000000000000000000165 /* Icon-72@2x.png */ ,
+				000000000000000000000167 /* Icon-Small-50.png */ ,
+				000000000000000000000169 /* Icon-Small.png */ ,
+				00000000000000000000016B /* Icon-Small@2x.png */ ,
+				00000000000000000000016D /* Icon.png */ ,
+				00000000000000000000016F /* Icon@2x.png */ ,
+				000000000000000000000171 /* MainStoryboard_iPad.storyboard */ ,
+				000000000000000000000173 /* MainStoryboard_iPhone.storyboard */ ,
+				000000000000000000000175 /* tyran.plist */ ,
 			);
 			name = ios;
 			sourceTree = "<group>";
 		};
-		000000000000000000000158 /* resource */  = {
+		00000000000000000000015D /* resource */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000159 /* ios */ ,
+				00000000000000000000015E /* ios */ ,
 			);
 			name = resource;
 			sourceTree = "<group>";
@@ -2547,7 +2581,7 @@
 		000000000000000000000005 /* Resources */  = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000158 /* resource */ ,
+				00000000000000000000015D /* resource */ ,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -2575,7 +2609,7 @@
 		
 		
 		/* Begin PBXHeadersBuildPhase section */
-		00000000000000000000017E /* Headers build phase */  = {
+		000000000000000000000183 /* Headers build phase */  = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2597,76 +2631,77 @@
 				00000000000000000000004A /* nimbus_thread.h */ ,
 				000000000000000000000052 /* nimbus_engine.h */ ,
 				000000000000000000000055 /* resource_load.h */ ,
-				00000000000000000000005A /* resource_handler.h */ ,
-				00000000000000000000005C /* resource_id.h */ ,
-				000000000000000000000060 /* resource_reader.h */ ,
-				000000000000000000000067 /* tyran_mocha_lexer_debug.h */ ,
-				000000000000000000000069 /* tyran_mocha_parser_debug.h */ ,
-				00000000000000000000006C /* tyran_print_parser_tree.h */ ,
-				00000000000000000000006E /* tyran_print_constants.h */ ,
-				000000000000000000000070 /* tyran_print_opcodes.h */ ,
-				000000000000000000000072 /* tyran_print_runtime_state.h */ ,
-				000000000000000000000074 /* tyran_print_value.h */ ,
-				000000000000000000000078 /* tyran_code.h */ ,
-				00000000000000000000007A /* tyran_errors.h */ ,
-				00000000000000000000007C /* tyran_generator.h */ ,
-				00000000000000000000007E /* tyran_parser_tree.h */ ,
-				000000000000000000000080 /* tyran_variable_scope.h */ ,
-				000000000000000000000083 /* tyran_mocha_lexer.h */ ,
-				000000000000000000000085 /* tyran_mocha_parser.h */ ,
-				000000000000000000000087 /* tyran_label.h */ ,
-				000000000000000000000089 /* tyran_label_reference.h */ ,
-				00000000000000000000008B /* tyran_lexer.h */ ,
-				00000000000000000000008D /* tyran_parser_assembler.h */ ,
-				00000000000000000000008F /* tyran_parser_state.h */ ,
-				000000000000000000000091 /* tyran_api.h */ ,
-				000000000000000000000093 /* tyran_array.h */ ,
-				000000000000000000000095 /* tyran_array_iterator_prototype.h */ ,
-				000000000000000000000097 /* tyran_array_prototype.h */ ,
-				000000000000000000000099 /* tyran_clib.h */ ,
-				00000000000000000000009B /* tyran_config.h */ ,
-				00000000000000000000009D /* tyran_configuration.h */ ,
-				00000000000000000000009F /* tyran_constants.h */ ,
-				0000000000000000000000A1 /* tyran_function.h */ ,
-				0000000000000000000000A3 /* tyran_function_callback.h */ ,
-				0000000000000000000000A5 /* tyran_function_object.h */ ,
-				0000000000000000000000A7 /* tyran_function_prototype.h */ ,
-				0000000000000000000000A9 /* tyran_iterator_object.h */ ,
-				0000000000000000000000AB /* tyran_log.h */ ,
-				0000000000000000000000AD /* tyran_memory.h */ ,
-				0000000000000000000000AF /* tyran_memory_pool.h */ ,
-				0000000000000000000000B1 /* tyran_mocha_api.h */ ,
-				0000000000000000000000B3 /* tyran_number.h */ ,
-				0000000000000000000000B5 /* tyran_number_operator.h */ ,
-				0000000000000000000000B7 /* tyran_object.h */ ,
-				0000000000000000000000B9 /* tyran_object_array.h */ ,
-				0000000000000000000000BB /* tyran_object_macros.h */ ,
-				0000000000000000000000BD /* tyran_object_prototype.h */ ,
-				0000000000000000000000BF /* tyran_opcode.h */ ,
-				0000000000000000000000C1 /* tyran_opcode_enums.h */ ,
-				0000000000000000000000C3 /* tyran_opcode_ids.h */ ,
-				0000000000000000000000C5 /* tyran_opcodes.h */ ,
-				0000000000000000000000C7 /* tyran_platform.h */ ,
-				0000000000000000000000C9 /* tyran_prototypes.h */ ,
-				0000000000000000000000CB /* tyran_range.h */ ,
-				0000000000000000000000CD /* tyran_range_iterator.h */ ,
-				0000000000000000000000CF /* tyran_range_iterator_prototype.h */ ,
-				0000000000000000000000D1 /* tyran_range_prototype.h */ ,
-				0000000000000000000000D3 /* tyran_red_black_tree.h */ ,
-				0000000000000000000000D5 /* tyran_red_black_tree_macros.h */ ,
-				0000000000000000000000D7 /* tyran_runtime.h */ ,
-				0000000000000000000000D9 /* tyran_runtime_callbacks.h */ ,
-				0000000000000000000000DB /* tyran_runtime_stack.h */ ,
-				0000000000000000000000DD /* tyran_string.h */ ,
-				0000000000000000000000DF /* tyran_string_object.h */ ,
-				0000000000000000000000E1 /* tyran_string_prototype.h */ ,
-				0000000000000000000000E3 /* tyran_symbol.h */ ,
-				0000000000000000000000E5 /* tyran_symbol_table.h */ ,
-				0000000000000000000000E7 /* tyran_types.h */ ,
-				0000000000000000000000E9 /* tyran_value.h */ ,
-				0000000000000000000000EB /* tyran_value_object.h */ ,
-				0000000000000000000000FD /* tyran_print_runtime.h */ ,
-				000000000000000000000147 /* tyran_runtime_macros.h */ ,
+				00000000000000000000005A /* connecting_socket.h */ ,
+				00000000000000000000005F /* resource_handler.h */ ,
+				000000000000000000000061 /* resource_id.h */ ,
+				000000000000000000000065 /* resource_reader.h */ ,
+				00000000000000000000006C /* tyran_mocha_lexer_debug.h */ ,
+				00000000000000000000006E /* tyran_mocha_parser_debug.h */ ,
+				000000000000000000000071 /* tyran_print_parser_tree.h */ ,
+				000000000000000000000073 /* tyran_print_constants.h */ ,
+				000000000000000000000075 /* tyran_print_opcodes.h */ ,
+				000000000000000000000077 /* tyran_print_runtime_state.h */ ,
+				000000000000000000000079 /* tyran_print_value.h */ ,
+				00000000000000000000007D /* tyran_code.h */ ,
+				00000000000000000000007F /* tyran_errors.h */ ,
+				000000000000000000000081 /* tyran_generator.h */ ,
+				000000000000000000000083 /* tyran_parser_tree.h */ ,
+				000000000000000000000085 /* tyran_variable_scope.h */ ,
+				000000000000000000000088 /* tyran_mocha_lexer.h */ ,
+				00000000000000000000008A /* tyran_mocha_parser.h */ ,
+				00000000000000000000008C /* tyran_label.h */ ,
+				00000000000000000000008E /* tyran_label_reference.h */ ,
+				000000000000000000000090 /* tyran_lexer.h */ ,
+				000000000000000000000092 /* tyran_parser_assembler.h */ ,
+				000000000000000000000094 /* tyran_parser_state.h */ ,
+				000000000000000000000096 /* tyran_api.h */ ,
+				000000000000000000000098 /* tyran_array.h */ ,
+				00000000000000000000009A /* tyran_array_iterator_prototype.h */ ,
+				00000000000000000000009C /* tyran_array_prototype.h */ ,
+				00000000000000000000009E /* tyran_clib.h */ ,
+				0000000000000000000000A0 /* tyran_config.h */ ,
+				0000000000000000000000A2 /* tyran_configuration.h */ ,
+				0000000000000000000000A4 /* tyran_constants.h */ ,
+				0000000000000000000000A6 /* tyran_function.h */ ,
+				0000000000000000000000A8 /* tyran_function_callback.h */ ,
+				0000000000000000000000AA /* tyran_function_object.h */ ,
+				0000000000000000000000AC /* tyran_function_prototype.h */ ,
+				0000000000000000000000AE /* tyran_iterator_object.h */ ,
+				0000000000000000000000B0 /* tyran_log.h */ ,
+				0000000000000000000000B2 /* tyran_memory.h */ ,
+				0000000000000000000000B4 /* tyran_memory_pool.h */ ,
+				0000000000000000000000B6 /* tyran_mocha_api.h */ ,
+				0000000000000000000000B8 /* tyran_number.h */ ,
+				0000000000000000000000BA /* tyran_number_operator.h */ ,
+				0000000000000000000000BC /* tyran_object.h */ ,
+				0000000000000000000000BE /* tyran_object_array.h */ ,
+				0000000000000000000000C0 /* tyran_object_macros.h */ ,
+				0000000000000000000000C2 /* tyran_object_prototype.h */ ,
+				0000000000000000000000C4 /* tyran_opcode.h */ ,
+				0000000000000000000000C6 /* tyran_opcode_enums.h */ ,
+				0000000000000000000000C8 /* tyran_opcode_ids.h */ ,
+				0000000000000000000000CA /* tyran_opcodes.h */ ,
+				0000000000000000000000CC /* tyran_platform.h */ ,
+				0000000000000000000000CE /* tyran_prototypes.h */ ,
+				0000000000000000000000D0 /* tyran_range.h */ ,
+				0000000000000000000000D2 /* tyran_range_iterator.h */ ,
+				0000000000000000000000D4 /* tyran_range_iterator_prototype.h */ ,
+				0000000000000000000000D6 /* tyran_range_prototype.h */ ,
+				0000000000000000000000D8 /* tyran_red_black_tree.h */ ,
+				0000000000000000000000DA /* tyran_red_black_tree_macros.h */ ,
+				0000000000000000000000DC /* tyran_runtime.h */ ,
+				0000000000000000000000DE /* tyran_runtime_callbacks.h */ ,
+				0000000000000000000000E0 /* tyran_runtime_stack.h */ ,
+				0000000000000000000000E2 /* tyran_string.h */ ,
+				0000000000000000000000E4 /* tyran_string_object.h */ ,
+				0000000000000000000000E6 /* tyran_string_prototype.h */ ,
+				0000000000000000000000E8 /* tyran_symbol.h */ ,
+				0000000000000000000000EA /* tyran_symbol_table.h */ ,
+				0000000000000000000000EC /* tyran_types.h */ ,
+				0000000000000000000000EE /* tyran_value.h */ ,
+				0000000000000000000000F0 /* tyran_value_object.h */ ,
+				000000000000000000000102 /* tyran_print_runtime.h */ ,
+				00000000000000000000014C /* tyran_runtime_macros.h */ ,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2674,14 +2709,14 @@
 		
 		
 		/* Begin PBXNativeTarget section */
-		000000000000000000000186 /* sinkblobs */  = {
+		00000000000000000000018B /* sinkblobs */  = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 000000000000000000000185 /* Build configuration list for target */ ;
+			buildConfigurationList = 00000000000000000000018A /* Build configuration list for target */ ;
 			buildPhases = (
-				00000000000000000000017E /* Headers build phase */ ,
-				00000000000000000000017F /* Resources build phase */ ,
-				00000000000000000000017D /* Sources build phase */ ,
-				00000000000000000000017C /* Frameworks build phase */ ,
+				000000000000000000000183 /* Headers build phase */ ,
+				000000000000000000000184 /* Resources build phase */ ,
+				000000000000000000000182 /* Sources build phase */ ,
+				000000000000000000000181 /* Frameworks build phase */ ,
 			);
 			buildRules = (
 			);
@@ -2689,16 +2724,16 @@
 			);
 			name = sinkblobs;
 			productName = sinkblobs;
-			productReference = 000000000000000000000180 /* sinkblobs.app */ ;
+			productReference = 000000000000000000000185 /* sinkblobs.app */ ;
 			productType = "com.apple.product-type.application";
 		};
 		/* End PBXNativeTarget section */
 		
 		
 		/* Begin PBXProject section */
-		00000000000000000000018D /* Project */  = {
+		000000000000000000000192 /* Project */  = {
 			isa = PBXProject;
-			buildConfigurationList = 00000000000000000000018C /* Build configuration list for project */ ;
+			buildConfigurationList = 000000000000000000000191 /* Build configuration list for project */ ;
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
 			mainGroup = 000000000000000000000004 /* sinkblobs */ ;
@@ -2706,28 +2741,28 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				000000000000000000000186 /* sinkblobs */ ,
+				00000000000000000000018B /* sinkblobs */ ,
 			);
 		};
 		/* End PBXProject section */
 		
 		
 		/* Begin PBXResourcesBuildPhase section */
-		00000000000000000000017F /* Resources build phase */  = {
+		000000000000000000000184 /* Resources build phase */  = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00000000000000000000015B /* Default-568h@2x.png */ ,
-				00000000000000000000015D /* Default.png */ ,
-				00000000000000000000015F /* Icon-72.png */ ,
-				000000000000000000000161 /* Icon-72@2x.png */ ,
-				000000000000000000000163 /* Icon-Small-50.png */ ,
-				000000000000000000000165 /* Icon-Small.png */ ,
-				000000000000000000000167 /* Icon-Small@2x.png */ ,
-				000000000000000000000169 /* Icon.png */ ,
-				00000000000000000000016B /* Icon@2x.png */ ,
-				00000000000000000000016D /* MainStoryboard_iPad.storyboard */ ,
-				00000000000000000000016F /* MainStoryboard_iPhone.storyboard */ ,
+				000000000000000000000160 /* Default-568h@2x.png */ ,
+				000000000000000000000162 /* Default.png */ ,
+				000000000000000000000164 /* Icon-72.png */ ,
+				000000000000000000000166 /* Icon-72@2x.png */ ,
+				000000000000000000000168 /* Icon-Small-50.png */ ,
+				00000000000000000000016A /* Icon-Small.png */ ,
+				00000000000000000000016C /* Icon-Small@2x.png */ ,
+				00000000000000000000016E /* Icon.png */ ,
+				000000000000000000000170 /* Icon@2x.png */ ,
+				000000000000000000000172 /* MainStoryboard_iPad.storyboard */ ,
+				000000000000000000000174 /* MainStoryboard_iPhone.storyboard */ ,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2735,7 +2770,7 @@
 		
 		
 		/* Begin PBXSourcesBuildPhase section */
-		00000000000000000000017D /* Sources build phase */  = {
+		000000000000000000000182 /* Sources build phase */  = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2753,56 +2788,57 @@
 				000000000000000000000048 /* nimbus_thread.c */ ,
 				00000000000000000000004C /* nimbus_thread_sleep.c */ ,
 				000000000000000000000050 /* nimbus_engine.c */ ,
-				000000000000000000000058 /* resource_handler.c */ ,
-				00000000000000000000005E /* resource_reader.c */ ,
-				0000000000000000000000F0 /* tyran_mocha_lexer_debug.c */ ,
-				0000000000000000000000F2 /* tyran_mocha_parser_debug.c */ ,
-				0000000000000000000000F5 /* tyran_print_parser_tree.c */ ,
-				0000000000000000000000F7 /* tyran_print_constants.c */ ,
-				0000000000000000000000F9 /* tyran_print_opcodes.c */ ,
-				0000000000000000000000FB /* tyran_print_runtime.c */ ,
-				0000000000000000000000FF /* tyran_print_runtime_state.c */ ,
-				000000000000000000000101 /* tyran_print_value.c */ ,
-				000000000000000000000105 /* tyran_parser_assembler.c */ ,
-				000000000000000000000108 /* tyran_code.c */ ,
-				00000000000000000000010A /* tyran_errors.c */ ,
-				00000000000000000000010C /* tyran_generator.c */ ,
-				00000000000000000000010E /* tyran_lexer.c */ ,
-				000000000000000000000110 /* tyran_variable_scope.c */ ,
-				000000000000000000000113 /* tyran_mocha_lexer.c */ ,
-				000000000000000000000115 /* tyran_mocha_parser.c */ ,
-				000000000000000000000117 /* tyran_parser_tree.c */ ,
-				000000000000000000000119 /* tyran_array.c */ ,
-				00000000000000000000011B /* tyran_array_iterator_prototype.c */ ,
-				00000000000000000000011D /* tyran_array_prototype.c */ ,
-				00000000000000000000011F /* tyran_constants.c */ ,
-				000000000000000000000121 /* tyran_function.c */ ,
-				000000000000000000000123 /* tyran_function_object.c */ ,
-				000000000000000000000125 /* tyran_iterator_object.c */ ,
-				000000000000000000000127 /* tyran_memory.c */ ,
-				000000000000000000000129 /* tyran_memory_pool.c */ ,
-				00000000000000000000012B /* tyran_mocha_api.c */ ,
-				00000000000000000000012D /* tyran_number_operator.c */ ,
-				00000000000000000000012F /* tyran_object.c */ ,
-				000000000000000000000131 /* tyran_object_array.c */ ,
-				000000000000000000000133 /* tyran_object_prototype.c */ ,
-				000000000000000000000135 /* tyran_opcodes.c */ ,
-				000000000000000000000137 /* tyran_prototypes.c */ ,
-				000000000000000000000139 /* tyran_range.c */ ,
-				00000000000000000000013B /* tyran_range_iterator.c */ ,
-				00000000000000000000013D /* tyran_range_iterator_prototype.c */ ,
-				00000000000000000000013F /* tyran_range_prototype.c */ ,
-				000000000000000000000141 /* tyran_red_black_tree.c */ ,
-				000000000000000000000143 /* tyran_runtime.c */ ,
-				000000000000000000000145 /* tyran_runtime_helper.c */ ,
-				000000000000000000000149 /* tyran_runtime_stack.c */ ,
-				00000000000000000000014B /* tyran_string.c */ ,
-				00000000000000000000014D /* tyran_string_object.c */ ,
-				00000000000000000000014F /* tyran_string_prototype.c */ ,
-				000000000000000000000151 /* tyran_symbol.c */ ,
-				000000000000000000000153 /* tyran_symbol_table.c */ ,
-				000000000000000000000155 /* tyran_value.c */ ,
-				000000000000000000000157 /* tyran_value_object.c */ ,
+				000000000000000000000058 /* connecting_socket.c */ ,
+				00000000000000000000005D /* resource_handler.c */ ,
+				000000000000000000000063 /* resource_reader.c */ ,
+				0000000000000000000000F5 /* tyran_mocha_lexer_debug.c */ ,
+				0000000000000000000000F7 /* tyran_mocha_parser_debug.c */ ,
+				0000000000000000000000FA /* tyran_print_parser_tree.c */ ,
+				0000000000000000000000FC /* tyran_print_constants.c */ ,
+				0000000000000000000000FE /* tyran_print_opcodes.c */ ,
+				000000000000000000000100 /* tyran_print_runtime.c */ ,
+				000000000000000000000104 /* tyran_print_runtime_state.c */ ,
+				000000000000000000000106 /* tyran_print_value.c */ ,
+				00000000000000000000010A /* tyran_parser_assembler.c */ ,
+				00000000000000000000010D /* tyran_code.c */ ,
+				00000000000000000000010F /* tyran_errors.c */ ,
+				000000000000000000000111 /* tyran_generator.c */ ,
+				000000000000000000000113 /* tyran_lexer.c */ ,
+				000000000000000000000115 /* tyran_variable_scope.c */ ,
+				000000000000000000000118 /* tyran_mocha_lexer.c */ ,
+				00000000000000000000011A /* tyran_mocha_parser.c */ ,
+				00000000000000000000011C /* tyran_parser_tree.c */ ,
+				00000000000000000000011E /* tyran_array.c */ ,
+				000000000000000000000120 /* tyran_array_iterator_prototype.c */ ,
+				000000000000000000000122 /* tyran_array_prototype.c */ ,
+				000000000000000000000124 /* tyran_constants.c */ ,
+				000000000000000000000126 /* tyran_function.c */ ,
+				000000000000000000000128 /* tyran_function_object.c */ ,
+				00000000000000000000012A /* tyran_iterator_object.c */ ,
+				00000000000000000000012C /* tyran_memory.c */ ,
+				00000000000000000000012E /* tyran_memory_pool.c */ ,
+				000000000000000000000130 /* tyran_mocha_api.c */ ,
+				000000000000000000000132 /* tyran_number_operator.c */ ,
+				000000000000000000000134 /* tyran_object.c */ ,
+				000000000000000000000136 /* tyran_object_array.c */ ,
+				000000000000000000000138 /* tyran_object_prototype.c */ ,
+				00000000000000000000013A /* tyran_opcodes.c */ ,
+				00000000000000000000013C /* tyran_prototypes.c */ ,
+				00000000000000000000013E /* tyran_range.c */ ,
+				000000000000000000000140 /* tyran_range_iterator.c */ ,
+				000000000000000000000142 /* tyran_range_iterator_prototype.c */ ,
+				000000000000000000000144 /* tyran_range_prototype.c */ ,
+				000000000000000000000146 /* tyran_red_black_tree.c */ ,
+				000000000000000000000148 /* tyran_runtime.c */ ,
+				00000000000000000000014A /* tyran_runtime_helper.c */ ,
+				00000000000000000000014E /* tyran_runtime_stack.c */ ,
+				000000000000000000000150 /* tyran_string.c */ ,
+				000000000000000000000152 /* tyran_string_object.c */ ,
+				000000000000000000000154 /* tyran_string_prototype.c */ ,
+				000000000000000000000156 /* tyran_symbol.c */ ,
+				000000000000000000000158 /* tyran_symbol_table.c */ ,
+				00000000000000000000015A /* tyran_value.c */ ,
+				00000000000000000000015C /* tyran_value_object.c */ ,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2810,13 +2846,11 @@
 		
 		
 		/* Begin XCBuildConfiguration section */
-		000000000000000000000181 /* Debug build settings target */  = {
+		000000000000000000000186 /* Debug build settings target */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2829,13 +2863,11 @@
 			};
 			name = Debug;
 		};
-		000000000000000000000182 /* Release build settings target */  = {
+		000000000000000000000187 /* Release build settings target */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = sinkblobs_Prefix.pch;
 				GCC_THUMB_SUPPORT = NO;
@@ -2846,13 +2878,11 @@
 			};
 			name = Release;
 		};
-		000000000000000000000183 /* AdHoc build settings target */  = {
+		000000000000000000000188 /* AdHoc build settings target */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = sinkblobs_Prefix.pch;
 				GCC_THUMB_SUPPORT = NO;
@@ -2863,13 +2893,11 @@
 			};
 			name = AdHoc;
 		};
-		000000000000000000000184 /* AppStore build settings target */  = {
+		000000000000000000000189 /* AppStore build settings target */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = sinkblobs_Prefix.pch;
 				GCC_THUMB_SUPPORT = NO;
@@ -2880,7 +2908,7 @@
 			};
 			name = AppStore;
 		};
-		000000000000000000000188 /* Debug build settings project */  = {
+		00000000000000000000018D /* Debug build settings project */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
@@ -2903,7 +2931,7 @@
 			};
 			name = Debug;
 		};
-		000000000000000000000189 /* Release build settings project */  = {
+		00000000000000000000018E /* Release build settings project */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
@@ -2923,7 +2951,7 @@
 			};
 			name = Release;
 		};
-		00000000000000000000018A /* AdHoc build settings project */  = {
+		00000000000000000000018F /* AdHoc build settings project */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
@@ -2944,7 +2972,7 @@
 			};
 			name = AdHoc;
 		};
-		00000000000000000000018B /* AppStore build settings project */  = {
+		000000000000000000000190 /* AppStore build settings project */  = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
@@ -2969,24 +2997,24 @@
 		
 		
 		/* Begin XCConfigurationList section */
-		000000000000000000000185 /* Build configuration list for target */  = {
+		00000000000000000000018A /* Build configuration list for target */  = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				000000000000000000000181 /* Debug build settings target */ ,
-				000000000000000000000182 /* Release build settings target */ ,
-				000000000000000000000183 /* AdHoc build settings target */ ,
-				000000000000000000000184 /* AppStore build settings target */ ,
+				000000000000000000000186 /* Debug build settings target */ ,
+				000000000000000000000187 /* Release build settings target */ ,
+				000000000000000000000188 /* AdHoc build settings target */ ,
+				000000000000000000000189 /* AppStore build settings target */ ,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		00000000000000000000018C /* Build configuration list for project */  = {
+		000000000000000000000191 /* Build configuration list for project */  = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				000000000000000000000188 /* Debug build settings project */ ,
-				000000000000000000000189 /* Release build settings project */ ,
-				00000000000000000000018A /* AdHoc build settings project */ ,
-				00000000000000000000018B /* AppStore build settings project */ ,
+				00000000000000000000018D /* Debug build settings project */ ,
+				00000000000000000000018E /* Release build settings project */ ,
+				00000000000000000000018F /* AdHoc build settings project */ ,
+				000000000000000000000190 /* AppStore build settings project */ ,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2994,5 +3022,5 @@
 		/* End XCConfigurationList section */
 		
 	};
-	rootObject = 00000000000000000000018D /* Project */ ;
+	rootObject = 000000000000000000000192 /* Project */ ;
 }

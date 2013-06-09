@@ -12,6 +12,8 @@ char* tyran_str_dup(tyran_memory* pool, const char* str);
 
 #define tyran_memcpy_type(T, dest, source, N) memcpy(dest, source, (N) * sizeof(T))
 
+#define tyran_memcpy_octets(dest, source, N) memcpy(dest, source, (N))
+
 #define tyran_memcmp memcmp
 #define tyran_memset_type(T, V) memset(T, V, sizeof(*T))
 #define tyran_memset_type_n(T, V, N) memset(T, V, sizeof(*T) * (N))

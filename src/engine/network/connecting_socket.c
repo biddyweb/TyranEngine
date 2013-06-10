@@ -1,7 +1,7 @@
 #include "connecting_socket.h"
 
 #if defined TORNADO_OS_WINDOWS
-	#include <Winsock2.h>
+    #include <Winsock2.h>
 	#include <Ws2tcpip.h>
 #else
 	#include <sys/socket.h>
@@ -10,9 +10,7 @@
 	#include <unistd.h>
 #endif
 
-
 #include <sys/types.h>
-
 #include <tyranscript/tyran_clib.h>
 
 int nimbus_engine_connecting_socket_connect(nimbus_engine_connecting_socket* self, const char* hostname, int port)
@@ -36,8 +34,7 @@ int nimbus_engine_connecting_socket_connect(nimbus_engine_connecting_socket* sel
 	tornado_memcpy(&sin.sin_addr.s_addr, found_address_info->ai_addr, found_address_info->ai_addrlen);
 #else
 	struct hostent *host = gethostbyname(hostname);
-	if (!host) 
-	{
+	if (!host) {
 		return -1;
 	}
 	tyran_memcpy_octets(&sin.sin_addr.s_addr, host->h_addr, host->h_length);
@@ -47,14 +44,12 @@ int nimbus_engine_connecting_socket_connect(nimbus_engine_connecting_socket* sel
 	sin.sin_port = htons(port);
 
 	int result = connect(self->socket_handle, (const struct sockaddr*)&sin, sizeof(sin));
-	if (result < 0)
-	{
+	if (result < 0) {
 		return -2;
 	}
 
 	return 0;
 }
-
 
 nimbus_engine_connecting_socket* nimbus_engine_connecting_socket_new(tyran_memory* memory, const char* hostname, int port)
 {
@@ -65,8 +60,17 @@ nimbus_engine_connecting_socket* nimbus_engine_connecting_socket_new(tyran_memor
 	return self;
 }
 
+void nimbus_engine_connecting_socket_write(nimbus_engine_connecting_socket* self, const u8t* data, int length)
+{
+    send(self->socket_handle, data, length, 0);
+}
 
-
+int nimbus_engine_connecting_socket_read(nimbus_engine_connecting_socket* self, u8t* data, int max_length)
+{
+    int octets_read = recv(self->socket_handle, data, max_length, 0);
+    
+    return octets_read;
+}
 
 void nimbus_engine_connecting_socket_close(nimbus_engine_connecting_socket* self)
 {

@@ -7,7 +7,7 @@ nimbus_ring_buffer* nimbus_ring_buffer_new(tyran_memory* memory, int max_length)
 	nimbus_ring_buffer* self = TYRAN_MEMORY_CALLOC_TYPE(memory,nimbus_ring_buffer);
 	self->buffer = TYRAN_MEMORY_ALLOC(memory, max_length, "circular buffer");
 	self->max_size = max_length;
-	
+
 	return self;
 }
 
@@ -39,17 +39,17 @@ int nimbus_ring_buffer_write(nimbus_ring_buffer* self, const void* data, int len
 	if (len > write_octets_left) {
 		return -1;
 	}
-	
+
 	const u8t* data_pointer = (const u8t*) data;
-	
+
 	int size_to_end_of_buffer = self->max_size - self->write_index;
 	if (len > size_to_end_of_buffer) {
 		write_advance(self, data_pointer, size_to_end_of_buffer);
 		data_pointer += size_to_end_of_buffer;
 		len -= size_to_end_of_buffer;
 	}
-	write_advance(self, data_pointer, len);	
-	
+	write_advance(self, data_pointer, len);
+
 	return 0;
 }
 
@@ -69,6 +69,6 @@ int nimbus_ring_buffer_read(nimbus_ring_buffer* self, void* data, int len)
 		len_to_read -= size_to_end_of_buffer;
 	}
 	read_advance(self, data_pointer, len_to_read);
-	
+
 	return len;
 }

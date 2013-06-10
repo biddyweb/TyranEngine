@@ -11,7 +11,7 @@ typedef struct nimbus_ring_buffer {
 	u8t* buffer;
 	int size;
 	int max_size;
-	
+
 } nimbus_ring_buffer;
 
 nimbus_ring_buffer* nimbus_ring_buffer_new(struct tyran_memory* memory, int max_length);

@@ -6,9 +6,9 @@
 struct tyran_memory;
 
 typedef struct nimbus_in_stream {
-    const u8t* buffer;
-    const u8t* pointer;
-    const u8t* end_buffer;
+	const u8t* buffer;
+	const u8t* pointer;
+	const u8t* end_buffer;
 } nimbus_in_stream;
 
 

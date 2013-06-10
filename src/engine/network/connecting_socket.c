@@ -1,13 +1,13 @@
 #include "connecting_socket.h"
 
 #if defined TORNADO_OS_WINDOWS
-    #include <Winsock2.h>
-	#include <Ws2tcpip.h>
+#include <Winsock2.h>
+#include <Ws2tcpip.h>
 #else
-	#include <sys/socket.h>
-	#include <netdb.h>
-	#include <netinet/tcp.h> 	
-	#include <unistd.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <netinet/tcp.h>
+#include <unistd.h>
 #endif
 
 #include <sys/types.h>
@@ -18,7 +18,8 @@ int nimbus_engine_connecting_socket_connect(nimbus_engine_connecting_socket* sel
 	self->socket_handle = socket(AF_INET, SOCK_STREAM, 0);
 
 	int flag = 1;
-	/* int ret = */ setsockopt(self->socket_handle, IPPROTO_TCP, TCP_NODELAY, (char *)&flag, sizeof(flag) );
+	/* int ret = */
+	setsockopt(self->socket_handle, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(flag) );
 
 	struct sockaddr_in sin;
 
@@ -33,13 +34,13 @@ int nimbus_engine_connecting_socket_connect(nimbus_engine_connecting_socket* sel
 	getaddrinfo(hostname.c_str(), 0, 0, &found_address_info);
 	tornado_memcpy(&sin.sin_addr.s_addr, found_address_info->ai_addr, found_address_info->ai_addrlen);
 #else
-	struct hostent *host = gethostbyname(hostname);
+	struct hostent* host = gethostbyname(hostname);
 	if (!host) {
 		return -1;
 	}
 	tyran_memcpy_octets(&sin.sin_addr.s_addr, host->h_addr, host->h_length);
 #endif
-	
+
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(port);
 
@@ -54,22 +55,22 @@ int nimbus_engine_connecting_socket_connect(nimbus_engine_connecting_socket* sel
 nimbus_engine_connecting_socket* nimbus_engine_connecting_socket_new(tyran_memory* memory, const char* hostname, int port)
 {
 	nimbus_engine_connecting_socket* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_engine_connecting_socket);
-	
+
 	nimbus_engine_connecting_socket_connect(self, hostname, port);
-	
+
 	return self;
 }
 
 void nimbus_engine_connecting_socket_write(nimbus_engine_connecting_socket* self, const u8t* data, int length)
 {
-    send(self->socket_handle, data, length, 0);
+	send(self->socket_handle, data, length, 0);
 }
 
 int nimbus_engine_connecting_socket_read(nimbus_engine_connecting_socket* self, u8t* data, int max_length)
 {
-    int octets_read = recv(self->socket_handle, data, max_length, 0);
-    
-    return octets_read;
+	int octets_read = recv(self->socket_handle, data, max_length, 0);
+
+	return octets_read;
 }
 
 void nimbus_engine_connecting_socket_close(nimbus_engine_connecting_socket* self)

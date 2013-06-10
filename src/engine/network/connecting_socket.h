@@ -1,6 +1,8 @@
 #ifndef nimbus_base_connecting_socket_h
 #define nimbus_base_connecting_socket_h
 
+#include <tyranscript/tyran_types.h>
+
 typedef struct nimbus_engine_connecting_socket {
 	int socket_handle;
 } nimbus_engine_connecting_socket;

@@ -2,21 +2,22 @@
 #include "endian.h"
 #include <tyranscript/tyran_clib.h>
 
-in_stream* nimbus_in_stream_new(tyran_memory* memory, int max_octets)
+nimbus_in_stream* nimbus_in_stream_new(tyran_memory* memory, const u8t* buffer, int max_octets)
 {
     nimbus_in_stream* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_in_stream);
-    self->buffer = TYRAN_MEMORY_ALLOC(memory, max_octets, "in_stream buffer");
-    self->pointer = buffer;
-    self->end_buffer = buffer + max_octets;
+    self->buffer = buffer;
+    self->pointer = self->buffer;
+    self->end_buffer = self->buffer + max_octets;
+    
+    return self;
 }
 
-void nimbus_in_stream_free(in_stream* self)
+void nimbus_in_stream_free(nimbus_in_stream* self)
 {
-    TYRAN_FREE(self->buffer);
-    TYRAN_FREE(self);
+    TYRAN_MEMORY_FREE(self);
 }
 
-int nimbus_in_stream_read_octets(in_stream* self, void* data, int length)
+int nimbus_in_stream_read_octets(nimbus_in_stream* self, void* data, int length)
 {
     TYRAN_ASSERT(self->pointer + length < self->end_buffer, "Read too far");
     tyran_memcpy_octets(data, self->pointer, length);
@@ -25,7 +26,7 @@ int nimbus_in_stream_read_octets(in_stream* self, void* data, int length)
     return 0;
 }
 
-int nimbus_in_stream_read_u16t(in_stream* self, u16t* data)
+int nimbus_in_stream_read_u16t(nimbus_in_stream* self, u16t* data)
 {
     nimbus_in_stream_read_octets(self, data, 2);
     *data = nimbus_endian_u16t_from_network(*data);
@@ -33,7 +34,7 @@ int nimbus_in_stream_read_u16t(in_stream* self, u16t* data)
     return 0;
 }
 
-int nimbus_in_stream_read_u32t(in_stream* self, u32t* data)
+int nimbus_in_stream_read_u32t(nimbus_in_stream* self, u32t* data)
 {
     nimbus_in_stream_read_octets(self, data, 4);
     *data = nimbus_endian_u32t_from_network(*data);
@@ -41,7 +42,7 @@ int nimbus_in_stream_read_u32t(in_stream* self, u32t* data)
     return 0;
 }
 
-int nimbus_in_stream_read_string(in_stream* self, char* data, int max_length)
+int nimbus_in_stream_read_string(nimbus_in_stream* self, char* data, int max_length)
 {
     u16t len;
     nimbus_in_stream_read_u16t(self, &len);

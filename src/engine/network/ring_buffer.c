@@ -1,27 +1,31 @@
 #include "ring_buffer.h"
+#include <tyranscript/tyran_memory.h>
+#include <tyranscript/tyran_clib.h>
 
 nimbus_ring_buffer* nimbus_ring_buffer_new(tyran_memory* memory, int max_length)
 {
-	in_buffer* self = TYRAN_CALLOC_TYPE(memory, nimbus_ring_buffer);
-	self->buffer = TYRAN_MALLOC(memory, max_length, "circular buffer");
+	nimbus_ring_buffer* self = TYRAN_MEMORY_CALLOC_TYPE(memory,nimbus_ring_buffer);
+	self->buffer = TYRAN_MEMORY_ALLOC(memory, max_length, "circular buffer");
 	self->max_size = max_length;
+	
+	return self;
 }
 
 void nimbus_ring_buffer_free(nimbus_ring_buffer* self)
 {
-	TYRAN_FREE(self->buffer);
-	TYRAN_FREE(self);
+	TYRAN_MEMORY_FREE(self->buffer);
+	TYRAN_MEMORY_FREE(self);
 }
 
-static void write_advance(in_buffer* self, const u8t* data_pointer, int size)
+static void write_advance(nimbus_ring_buffer* self, const u8t* data_pointer, int size)
 {
-	tyran_memcpy_octets(self->write_pointer, data_pointer, size);
+	tyran_memcpy_octets(self->buffer + self->write_index, data_pointer, size);
 	self->write_index += size;
 	self->write_index %= self->max_size;
 	self->size += size;
 }
 
-static void read_advance(in_buffer* self, u8t* data_pointer, int size)
+static void read_advance(nimbus_ring_buffer* self, u8t* data_pointer, int size)
 {
 	tyran_memcpy_octets(data_pointer, self->buffer + self->write_index, size);
 	self->read_index += size;
@@ -29,7 +33,7 @@ static void read_advance(in_buffer* self, u8t* data_pointer, int size)
 	self->size -= size;
 }
 
-int nimbus_ring_buffer_write(in_buffer* self, const void* data, int len)
+int nimbus_ring_buffer_write(nimbus_ring_buffer* self, const void* data, int len)
 {
 	int write_octets_left = self->max_size - self->size;
 	if (len > write_octets_left) {

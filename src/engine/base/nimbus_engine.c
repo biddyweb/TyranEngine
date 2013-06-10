@@ -15,8 +15,8 @@ TYRAN_RUNTIME_CALL_FUNC(nimbus_engine_load_library)
 
 void nimbus_engine_work(void* _self, nimbus_task_queue* queue)
 {
-	nimbus_engine* self = (nimbus_engine*) _self;
-	TYRAN_LOG("Engine WORK:%p",self);
+	// nimbus_engine* self = (nimbus_engine*) _self;
+	// TYRAN_LOG("Engine WORK:%p",self);
 
 }
 

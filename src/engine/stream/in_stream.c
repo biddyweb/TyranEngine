@@ -26,18 +26,23 @@ int nimbus_in_stream_read_octets(nimbus_in_stream* self, void* data, int length)
 	return 0;
 }
 
-int nimbus_in_stream_read_u16t(nimbus_in_stream* self, u16t* data)
+int nimbus_in_stream_read_u8(nimbus_in_stream* self, u8t* data)
+{
+	nimbus_in_stream_read_octets(self, data, 1);
+}
+
+int nimbus_in_stream_read_u16(nimbus_in_stream* self, u16t* data)
 {
 	nimbus_in_stream_read_octets(self, data, 2);
-	*data = nimbus_endian_u16t_from_network(*data);
+	*data = nimbus_endian_u16_from_network(*data);
 
 	return 0;
 }
 
-int nimbus_in_stream_read_u32t(nimbus_in_stream* self, u32t* data)
+int nimbus_in_stream_read_u32(nimbus_in_stream* self, u32t* data)
 {
 	nimbus_in_stream_read_octets(self, data, 4);
-	*data = nimbus_endian_u32t_from_network(*data);
+	*data = nimbus_endian_u32_from_network(*data);
 
 	return 0;
 }
@@ -45,7 +50,7 @@ int nimbus_in_stream_read_u32t(nimbus_in_stream* self, u32t* data)
 int nimbus_in_stream_read_string(nimbus_in_stream* self, char* data, int max_length)
 {
 	u16t len;
-	nimbus_in_stream_read_u16t(self, &len);
+	nimbus_in_stream_read_u16(self, &len);
 	TYRAN_ASSERT(len < max_length, "String is too big for buffer");
 
 	nimbus_in_stream_read_octets(self, data, len);

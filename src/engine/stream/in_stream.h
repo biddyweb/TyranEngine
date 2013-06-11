@@ -14,8 +14,9 @@ typedef struct nimbus_in_stream {
 
 
 nimbus_in_stream* nimbus_in_stream_new(struct tyran_memory* memory, const u8t* buffer, int max_octets);
-int nimbus_in_stream_read_u16t(nimbus_in_stream* self, u16t* data);
-int nimbus_in_stream_read_u32t(nimbus_in_stream* self, u32t* data);
+int nimbus_in_stream_read_u8(nimbus_in_stream* self, u8t* data);
+int nimbus_in_stream_read_u16(nimbus_in_stream* self, u16t* data);
+int nimbus_in_stream_read_u32(nimbus_in_stream* self, u32t* data);
 int nimbus_in_stream_read_string(nimbus_in_stream* self, char* data, int max_length);
 
 #endif

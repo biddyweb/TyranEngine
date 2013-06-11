@@ -2,12 +2,17 @@
 #include "endian.h"
 #include <tyranscript/tyran_clib.h>
 
+void nimbus_out_stream_clear(nimbus_out_stream* self)
+{
+	self->pointer = self->buffer;
+	self->end_buffer = self->buffer + max_octets;
+}
+
 void nimbus_out_stream_new(tyran_memory* memory, int max_octets)
 {
 	nimbus_out_stream* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_out_stream);
 	self->buffer = TYRAN_MEMORY_ALLOC(memory, max_octets, "out_stream buffer");
-	self->pointer = self->buffer;
-	self->end_buffer = self->buffer + max_octets;
+	nimbus_out_stream_clear(self);
 }
 
 void nimbus_out_stream_free(nimbus_out_stream* self)
@@ -24,22 +29,27 @@ void nimbus_out_stream_write_octets(nimbus_out_stream* self, const void* data, i
 	self->pointer += octet_length;
 }
 
-void nimbus_out_stream_write_u16t(nimbus_out_stream* self, u16t data)
+void nimbus_out_stream_write_u8(nimbus_out_stream* self, u8t data)
 {
-	u16t network_short = nimbus_endian_u16t_to_network(data);
+	nimbus_out_stream_write_octets(self, &data, 1);
+}
+
+void nimbus_out_stream_write_u16(nimbus_out_stream* self, u16t data)
+{
+	u16t network_short = nimbus_endian_u16_to_network(data);
 	nimbus_out_stream_write_octets(self, &network_short, 2);
 }
 
-void nimbus_out_stream_write_u32t(nimbus_out_stream* self, u32t data)
+void nimbus_out_stream_write_u32(nimbus_out_stream* self, u32t data)
 {
-	u32t network_long = nimbus_endian_u16t_to_network(data);
+	u32t network_long = nimbus_endian_u32_to_network(data);
 	nimbus_out_stream_write_octets(self, &network_long, 4);
 }
 
 void nimbus_out_stream_write_string(nimbus_out_stream* self, const char* str)
 {
 	u16t len = tyran_strlen(str);
-	nimbus_out_stream_write_u16t(self, len);
+	nimbus_out_stream_write_u16(self, len);
 	nimbus_out_stream_write_octets(self, str, len);
 }
 

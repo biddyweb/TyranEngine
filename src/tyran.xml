@@ -41,5 +41,8 @@
 		<library filename="GLKit.framework" />
 		<library filename="OpenGLES.framework" />
 	</platform>
+	<platform name="linux">
+		<define name="TORNADO_OS_LINUX" />
+	</platform>
 
 </target>

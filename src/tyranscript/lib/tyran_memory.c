@@ -1,4 +1,4 @@
-#include "tyran_memory.h"
+#include <tyranscript/tyran_memory.h>
 #include <tyranscript/tyran_config.h>
 
 void tyran_memory_construct(tyran_memory* memory, u8t* start, size_t size)

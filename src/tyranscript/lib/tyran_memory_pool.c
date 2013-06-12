@@ -5,7 +5,7 @@ void tyran_memory_pool_initialize_entries(tyran_memory_pool* pool)
 	u8t* m = pool->memory + 1;
 	int total_size = pool->struct_size + sizeof(tyran_memory_pool_entry);
 	tyran_memory_pool_entry* previous = 0;
-	for (int i=0; i<pool->max_count; ++i) {
+	for (size_t i=0; i<pool->max_count; ++i) {
 		tyran_memory_pool_entry* e = (tyran_memory_pool_entry*) m;
 		if (i==0) {
 			pool->first_free = e;

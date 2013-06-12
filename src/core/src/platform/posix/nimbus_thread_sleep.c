@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 199309
 #include <time.h>
 #include "../../base/thread/nimbus_thread_sleep.h"
 

@@ -1,3 +1,4 @@
+
 <target name="tyranengine" type="executable">
 	<!-- core -->
 	<header directory="tyranscript/include" />
@@ -43,6 +44,8 @@
 	</platform>
 	<platform name="linux">
 		<define name="TORNADO_OS_LINUX" />
+		<source directory="core/src/platform/posix" />
+		<library filename="pthread" />
 	</platform>
 
 </target>

@@ -5,8 +5,6 @@
 
 #include <tyranscript/tyran_types.h>
 
-struct tyran_memory;
-
 typedef void (*nimbus_thread_func)(void* self);
 
 typedef struct nimbus_thread {
@@ -14,10 +12,10 @@ typedef struct nimbus_thread {
 	pthread_t thread_id;
 	tyran_boolean _is_done;
 	nimbus_thread_func func;
-	void* self;
+	void* other_self;
 } nimbus_thread;
 
-nimbus_thread* nimbus_thread_new(struct tyran_memory* memory, nimbus_thread_func func, void* self);
-tyran_boolean nimbus_thread_is_done(nimbus_thread* thread);
+void nimbus_thread_init(nimbus_thread* self, nimbus_thread_func func, void* other_self);
+tyran_boolean nimbus_thread_is_done(nimbus_thread* self);
 
 #endif

@@ -1,6 +1,11 @@
 #include "endian.h"
 
-#import <netinet/in.h>
+#if defined TORNADO_OS_MAC_OS_X || defined TORNADO_OS_IOS
+    #import <netinet/in.h>
+#elif defined TORNADO_OS_LINUX
+    #include <netinet/in.h>
+    
+#endif
 
 u16t nimbus_endian_u16_to_network(u16t data)
 {

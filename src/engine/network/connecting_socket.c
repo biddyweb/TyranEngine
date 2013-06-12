@@ -38,7 +38,7 @@ int nimbus_connecting_socket_connect(nimbus_connecting_socket* self, const char*
 	if (!host) {
 		return -1;
 	}
-	tyran_memcpy_octets(&sin.sin_addr.s_addr, host->h_addr, host->h_length);
+	tyran_memcpy_octets(&sin.sin_addr.s_addr, host->h_addr_list[0], host->h_length);
 #endif
 
 	sin.sin_family = AF_INET;

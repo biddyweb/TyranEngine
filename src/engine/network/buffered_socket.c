@@ -164,7 +164,7 @@ static int receive(nimbus_buffered_socket* self)
 			check_header(self);
 		} else {
 			int buffer_size = nimbus_ring_buffer_size(&self->buffer);
-			if (buffer_size >= self->expected_payload_size) {
+			if (buffer_size >= (int) self->expected_payload_size) {
 				on_payload_done(self);
 			}
 		}

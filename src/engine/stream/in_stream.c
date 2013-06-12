@@ -2,14 +2,11 @@
 #include "endian.h"
 #include <tyranscript/tyran_clib.h>
 
-nimbus_in_stream* nimbus_in_stream_new(tyran_memory* memory, const u8t* buffer, int max_octets)
+void nimbus_in_stream_init(nimbus_in_stream* self, const u8t* buffer, int max_octets)
 {
-	nimbus_in_stream* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_in_stream);
 	self->buffer = buffer;
 	self->pointer = self->buffer;
 	self->end_buffer = self->buffer + max_octets;
-
-	return self;
 }
 
 void nimbus_in_stream_free(nimbus_in_stream* self)
@@ -29,6 +26,8 @@ int nimbus_in_stream_read_octets(nimbus_in_stream* self, void* data, int length)
 int nimbus_in_stream_read_u8(nimbus_in_stream* self, u8t* data)
 {
 	nimbus_in_stream_read_octets(self, data, 1);
+
+	return 0;
 }
 
 int nimbus_in_stream_read_u16(nimbus_in_stream* self, u16t* data)

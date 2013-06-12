@@ -2,36 +2,69 @@
 #include <tyranscript/tyran_memory.h>
 #include <tyranscript/tyran_clib.h>
 
-nimbus_ring_buffer* nimbus_ring_buffer_new(tyran_memory* memory, int max_length)
+void nimbus_ring_buffer_init(nimbus_ring_buffer* self, tyran_memory* memory, int max_length)
 {
-	nimbus_ring_buffer* self = TYRAN_MEMORY_CALLOC_TYPE(memory,nimbus_ring_buffer);
 	self->buffer = TYRAN_MEMORY_ALLOC(memory, max_length, "circular buffer");
 	self->max_size = max_length;
+}
 
-	return self;
+void nimbus_ring_buffer_write_pointer(nimbus_ring_buffer* self, u8t** data, int* length)
+{
+	*data = self->buffer + self->write_index;
+	*length = self->max_size - self->write_index;
+}
+
+
+int nimbus_ring_buffer_size(nimbus_ring_buffer* self)
+{
+	return self->size;
 }
 
 void nimbus_ring_buffer_free(nimbus_ring_buffer* self)
 {
 	TYRAN_MEMORY_FREE(self->buffer);
-	TYRAN_MEMORY_FREE(self);
 }
 
-static void write_advance(nimbus_ring_buffer* self, const u8t* data_pointer, int size)
+void nimbus_ring_buffer_write_pointer_advance(nimbus_ring_buffer* self, int size)
 {
-	tyran_memcpy_octets(self->buffer + self->write_index, data_pointer, size);
 	self->write_index += size;
 	self->write_index %= self->max_size;
 	self->size += size;
 }
 
-static void read_advance(nimbus_ring_buffer* self, u8t* data_pointer, int size)
+static void write_advance(nimbus_ring_buffer* self, const u8t* data_pointer, int size)
 {
-	tyran_memcpy_octets(data_pointer, self->buffer + self->write_index, size);
+	tyran_memcpy_octets(self->buffer + self->write_index, data_pointer, size);
+	nimbus_ring_buffer_write_pointer_advance(self, size);
+}
+
+static void read_advance_pointer(nimbus_ring_buffer* self, int size)
+{
 	self->read_index += size;
 	self->read_index %= self->max_size;
 	self->size -= size;
 }
+
+static void read_advance(nimbus_ring_buffer* self, u8t* data_pointer, int size)
+{
+	tyran_memcpy_octets(data_pointer, self->buffer + self->read_index, size);
+	read_advance_pointer(self, size);
+}
+
+void nimbus_ring_buffer_read_pointer(nimbus_ring_buffer* self, int size, u8t** data, int* length)
+{
+	int available;
+	if (self->read_index < self->write_index) {
+		available = self->write_index - self->read_index;
+	} else {
+		available = self->max_size - self->read_index;
+	}
+
+	*data = self->buffer + self->read_index;
+	*length = available;
+	read_advance_pointer(self, available);
+}
+
 
 int nimbus_ring_buffer_write(nimbus_ring_buffer* self, const void* data, int len)
 {

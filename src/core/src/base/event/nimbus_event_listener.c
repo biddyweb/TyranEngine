@@ -53,12 +53,9 @@ void nimbus_event_process(nimbus_event_listener* self, const u8t* raw_event_poin
 }
 
 
-nimbus_event_listener* nimbus_event_listener_new(tyran_memory* memory)
+void nimbus_event_listener_init(nimbus_event_listener* self)
 {
-	nimbus_event_listener* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_event_listener);
-	self->memory = memory;
-
-	return self;
+	self->function_count = 0;
 }
 
 void nimbus_event_listener_listen(nimbus_event_listener* self, nimbus_event_type_id id, nimbus_event_read reader)

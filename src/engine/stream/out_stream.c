@@ -5,20 +5,18 @@
 void nimbus_out_stream_clear(nimbus_out_stream* self)
 {
 	self->pointer = self->buffer;
-	self->end_buffer = self->buffer + max_octets;
 }
 
-void nimbus_out_stream_new(tyran_memory* memory, int max_octets)
+void nimbus_out_stream_init(nimbus_out_stream* self, tyran_memory* memory, int max_octets)
 {
-	nimbus_out_stream* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_out_stream);
 	self->buffer = TYRAN_MEMORY_ALLOC(memory, max_octets, "out_stream buffer");
+	self->end_buffer = self->buffer + max_octets;
 	nimbus_out_stream_clear(self);
 }
 
 void nimbus_out_stream_free(nimbus_out_stream* self)
 {
 	TYRAN_MEMORY_FREE(self->buffer);
-	TYRAN_MEMORY_FREE(self);
 	self->end_buffer = 0;
 }
 
@@ -53,7 +51,7 @@ void nimbus_out_stream_write_string(nimbus_out_stream* self, const char* str)
 	nimbus_out_stream_write_octets(self, str, len);
 }
 
-void nimbus_out_stream_info(nimbus_out_stream* self, u8t** buffer, int* length)
+void nimbus_out_stream_info(nimbus_out_stream* self, const u8t** buffer, int* length)
 {
 	*buffer = self->buffer;
 	*length = self->pointer - self->buffer;

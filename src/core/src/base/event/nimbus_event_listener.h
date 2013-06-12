@@ -19,7 +19,7 @@ typedef struct nimbus_event_listener {
 	struct tyran_memory* memory;
 } nimbus_event_listener;
 
-nimbus_event_listener* nimbus_event_listener_new(struct tyran_memory* memory);
+void nimbus_event_listener_init(nimbus_event_listener* self);
 void nimbus_event_listener_listen(nimbus_event_listener* self, nimbus_event_type_id id, nimbus_event_read reader);
 
 #endif

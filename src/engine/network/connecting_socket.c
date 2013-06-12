@@ -13,7 +13,7 @@
 #include <sys/types.h>
 #include <tyranscript/tyran_clib.h>
 
-int nimbus_engine_connecting_socket_connect(nimbus_engine_connecting_socket* self, const char* hostname, int port)
+int nimbus_connecting_socket_connect(nimbus_connecting_socket* self, const char* hostname, int port)
 {
 	self->socket_handle = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -52,28 +52,25 @@ int nimbus_engine_connecting_socket_connect(nimbus_engine_connecting_socket* sel
 	return 0;
 }
 
-nimbus_engine_connecting_socket* nimbus_engine_connecting_socket_new(tyran_memory* memory, const char* hostname, int port)
+void nimbus_connecting_socket_init(nimbus_connecting_socket* self, const char* hostname, int port)
 {
-	nimbus_engine_connecting_socket* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_engine_connecting_socket);
 
-	nimbus_engine_connecting_socket_connect(self, hostname, port);
-
-	return self;
+	nimbus_connecting_socket_connect(self, hostname, port);
 }
 
-void nimbus_engine_connecting_socket_write(nimbus_engine_connecting_socket* self, const u8t* data, int length)
+void nimbus_connecting_socket_write(nimbus_connecting_socket* self, const u8t* data, int length)
 {
 	send(self->socket_handle, data, length, 0);
 }
 
-int nimbus_engine_connecting_socket_read(nimbus_engine_connecting_socket* self, u8t* data, int max_length)
+int nimbus_connecting_socket_read(nimbus_connecting_socket* self, u8t* data, int max_length)
 {
 	int octets_read = recv(self->socket_handle, data, max_length, 0);
 
 	return octets_read;
 }
 
-void nimbus_engine_connecting_socket_close(nimbus_engine_connecting_socket* self)
+void nimbus_connecting_socket_close(nimbus_connecting_socket* self)
 {
 #if defined TORNADO_OS_WINDOWS
 	closesocket(self->socket_handle);

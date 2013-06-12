@@ -26,7 +26,7 @@ void nimbus_engine_request_boot_resource(nimbus_engine* self)
 
 	nimbus_resource_load event;
 	event.resource_id = boot_id;
-	nimbus_event_stream_write_event(self->event_stream, NIMBUS_EVENT_RESOURCE_LOAD, event);
+	nimbus_event_stream_write_event(&self->event_stream, NIMBUS_EVENT_RESOURCE_LOAD, event);
 }
 
 
@@ -43,7 +43,7 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory)
 
 	self->task = nimbus_task_new(memory, nimbus_engine_work, self);
 	self->resource_handler = nimbus_resource_handler_new(memory);
-	self->event_listener = nimbus_event_listener_new(memory);
+	nimbus_event_listener_init(&self->event_listener);
 
 	nimbus_engine_request_boot_resource(self);
 

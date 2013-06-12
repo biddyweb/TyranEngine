@@ -50,7 +50,7 @@ nimbus_resource_id nimbus_resource_id_from_stream(nimbus_event_read_stream* stre
 nimbus_resource_reader* nimbus_resource_reader_new(tyran_memory* memory, nimbus_resource_handler* resource_handler)
 {
 	nimbus_resource_reader* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_resource_reader);
-	self->event_listener = nimbus_event_listener_new(memory);
+	nimbus_event_listener_init(self->event_listener);
 	self->resource_handler = resource_handler;
 	nimbus_event_listener_listen(self->event_listener, nimbus_event_resource_request_id, nimbus_resource_reader_on_request);
 

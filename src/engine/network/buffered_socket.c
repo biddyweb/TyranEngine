@@ -24,8 +24,6 @@ typedef struct nimbus_buffered_socket {
 	nimbus_connecting_socket socket;
 	nimbus_resource_id resource_id;
 
-	u8t* out_event_buffer;
-	int out_event_buffer_size;
 	u32t expected_payload_size;
 	int waiting_for_header;
 } nimbus_buffered_socket;
@@ -61,9 +59,8 @@ void nimbus_buffered_socket_init(nimbus_buffered_socket* self, tyran_memory* mem
 	nimbus_ring_buffer_init(&self->buffer, memory, 1024);
 	nimbus_out_stream_init(&self->out_stream, memory, 1024);
 	nimbus_connecting_socket_init(&self->socket, host, port);
+	nimbus_event_write_stream_init(&self->out_event_stream, memory, 1024);
 
-	self->out_event_buffer_size = 1024;
-	self->out_event_buffer = TYRAN_MEMORY_ALLOC(memory, self->out_event_buffer_size, "event buffer");
 
 	const int RESOURCE_REQUEST_ID = 2;
 
@@ -132,9 +129,9 @@ static void on_payload_done(nimbus_buffered_socket* self)
 
 	nimbus_resource_id resource_id;
 
-	nimbus_event_write_stream_init(&self->out_event_stream, self->out_event_buffer, self->out_event_buffer_size);
 	const int RESOURCE_UPDATED = 2;
 
+	nimbus_event_write_stream_clear(&self->out_event_stream);
 	nimbus_event_stream_write_event_header(&self->out_event_stream, RESOURCE_UPDATED, self->expected_payload_size + sizeof(resource_id));
 	nimbus_event_stream_write_type(&self->out_event_stream, self->resource_id);
 

@@ -41,6 +41,8 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory)
 	tyran_value* global = tyran_runtime_context(self->mocha_api.default_runtime);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "load_library", nimbus_engine_load_library);
 
+	nimbus_event_write_stream_init(&self->event_stream, memory, 1024);
+
 	self->task = nimbus_task_new(memory, nimbus_engine_work, self);
 	self->resource_handler = nimbus_resource_handler_new(memory);
 	nimbus_event_listener_init(&self->event_listener);
@@ -48,6 +50,11 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory)
 	nimbus_engine_request_boot_resource(self);
 
 	return self;
+}
+
+void nimbus_engine_free(nimbus_engine* self)
+{
+	nimbus_event_write_stream_free(&self->event_stream);
 }
 
 

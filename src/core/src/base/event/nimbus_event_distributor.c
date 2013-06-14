@@ -19,8 +19,7 @@ void nimbus_event_distributor_set_buffer_for_objects_to_parse(nimbus_event_distr
 {
 	for (int i=0; i<object_count; ++i) {
 		nimbus_update* o = &objects[i];
-		o->event_buffer = self->event_buffer;
-		o->event_buffer_size = self->event_buffer_used_octet_size;
+        nimbus_event_stream_read_init(&o->event_read_stream, self->event_buffer, self->event_buffer_used_octet_size);
 	}
 }
 
@@ -31,9 +30,9 @@ void nimbus_event_distributor_write_events_to_buffer(nimbus_event_distributor* s
 	for (int i=0; i<object_count; ++i) {
 		nimbus_update* o = &objects[i];
 
-		int events_octet_size = o->outgoing_event_count;
+		int events_octet_size = nimbus_event_write_stream_length(&o->event_write_stream);
 		if (events_octet_size != 0) {
-			const u8t* events = o->outgoing_events;
+			const u8t* events = o->event_write_stream.buffer;
 			// TORNADO_LOG("** Distributing events of octet size:" << events_octet_size);
 			TYRAN_ASSERT((p - self->event_buffer) + events_octet_size < self->event_buffer_size, "Out of event buffer memory");
 
@@ -41,7 +40,7 @@ void nimbus_event_distributor_write_events_to_buffer(nimbus_event_distributor* s
 			p += events_octet_size;
 		}
 
-		o->outgoing_event_count = 0;
+        nimbus_event_write_stream_clear(&o->event_write_stream);
 	}
 
 	self->event_buffer_used_octet_size = (p - self->event_buffer);

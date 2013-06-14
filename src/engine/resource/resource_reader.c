@@ -19,13 +19,11 @@ static void nimbus_resource_reader_read_file(nimbus_resource_reader* self, nimbu
 
 void nimbus_resource_reader_fire_resource(nimbus_resource_reader* self, nimbus_resource_id id)
 {
-	nimbus_event_write_stream stream;
-
-	stream.pointer = self->update_object->outgoing_events;
+	nimbus_event_write_stream* stream = &self->update_object->event_write_stream;
 
 	//nimbus_event_stream_write_header(&stream, nimbus_event_resource_loaded_id, self->temporary_file_buffer_size + sizeof(nimbus_resource_id));
-	nimbus_event_stream_write_event_header(&stream, id, self->temporary_file_buffer_size);
-	nimbus_event_stream_write_octets(&stream, self->temporary_file_buffer, self->temporary_file_buffer_size);
+	nimbus_event_stream_write_event_header(stream, id, self->temporary_file_buffer_size);
+	nimbus_event_stream_write_octets(stream, self->temporary_file_buffer, self->temporary_file_buffer_size);
 }
 
 void nimbus_resource_reader_on_request(void* _self, nimbus_event_read_stream* stream)

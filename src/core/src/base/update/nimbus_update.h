@@ -3,12 +3,14 @@
 
 #include <tyranscript/tyran_types.h>
 
-typedef struct nimbus_update {
-	u8t* outgoing_events;
-	int outgoing_event_count;
+#include "../event/nimbus_event_stream.h"
 
-	u8t* event_buffer;
-	int event_buffer_size;
+typedef struct nimbus_update {
+    nimbus_event_write_stream event_write_stream;
+    nimbus_event_read_stream event_read_stream;
 } nimbus_update;
+
+
+void nimbus_update_init(nimbus_update* self, struct tyran_memory* memory);
 
 #endif

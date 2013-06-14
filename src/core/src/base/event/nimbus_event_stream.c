@@ -19,6 +19,12 @@ void nimbus_event_write_stream_free(nimbus_event_write_stream* stream)
 	TYRAN_MEMORY_FREE(stream->buffer);
 }
 
+int nimbus_event_write_stream_length(nimbus_event_write_stream* self)
+{
+    return self->end_pointer - self->buffer;
+}
+
+
 void nimbus_event_stream_write_octets(nimbus_event_write_stream* stream, const void* data, int len)
 {
 	TYRAN_ASSERT(stream->pointer + len < stream->end_pointer, "Overwrite!");
@@ -30,4 +36,10 @@ void nimbus_event_stream_read_octets(nimbus_event_read_stream* stream, u8t* data
 {
 	tyran_memcpy_type(u8t, data, stream->pointer, len);
 	stream->pointer += len;
+}
+
+void nimbus_event_stream_read_init(nimbus_event_read_stream* self, const u8t* pointer, int length)
+{
+    self->pointer = pointer;
+    self->end_pointer = pointer + length;
 }

@@ -36,6 +36,7 @@ void nimbus_boot_engine(nimbus_boot* self)
 
 nimbus_boot* nimbus_boot_new()
 {
+	TYRAN_LOG("Boot new");
 	tyran_memory memory;
 
 	const int max_size = 64000;
@@ -69,7 +70,7 @@ void nimbus_boot_manually_update_affinity_zero_tasks(nimbus_boot* self)
 		if (task == 0) {
 			break;
 		} else {
-			TYRAN_LOG("Found a task:%p", task->work);
+			TYRAN_LOG("Found a task:%p", (void*)task);
 			task->work(task, self->task_queue);
 			nimbus_task_queue_task_completed(self->task_queue, task);
 		}

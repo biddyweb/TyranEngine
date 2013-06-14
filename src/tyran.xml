@@ -10,7 +10,7 @@
 	<!-- configurations -->
 	<configuration name="debug">
 		<define name="DEBUG" />
-		<define name="TORNADO_CONFIG_DEBUG" />
+		<define name="TYRAN_CONFIGURATION_DEBUG" />
 	</configuration>
 
 	<configuration name="release">

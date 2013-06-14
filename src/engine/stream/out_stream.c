@@ -22,7 +22,7 @@ void nimbus_out_stream_free(nimbus_out_stream* self)
 
 void nimbus_out_stream_write_octets(nimbus_out_stream* self, const void* data, int octet_length)
 {
-	TYRAN_ASSERT(self->pointer + octet_length < self->end_of_buffer, "Overwrite buffer");
+	TYRAN_ASSERT(self->pointer + octet_length < self->end_buffer, "Overwrite buffer");
 	tyran_memcpy_octets(self->pointer, data, octet_length);
 	self->pointer += octet_length;
 }

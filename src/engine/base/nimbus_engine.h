@@ -5,8 +5,9 @@
 #include "../../core/src/base/event/nimbus_event_listener.h"
 #include "../../core/src/base/event/nimbus_event_stream.h"
 
-#include <tyranscript/tyran_mocha_api.h>
 
+#include "../network/event_connection.h"
+#include <tyranscript/tyran_mocha_api.h>
 
 struct nimbus_resource_handler;
 
@@ -16,6 +17,7 @@ typedef struct nimbus_engine {
 	struct nimbus_resource_handler* resource_handler;
 	nimbus_event_write_stream event_stream;
 	nimbus_event_listener event_listener;
+	nimbus_event_connection event_connection;
 } nimbus_engine;
 
 

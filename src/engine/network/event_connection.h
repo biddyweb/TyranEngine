@@ -29,7 +29,7 @@ typedef struct nimbus_event_connection {
 } nimbus_event_connection;
 
 
-struct nimbus_event_connection* nimbus_event_connection_new(struct tyran_memory* memory, struct nimbus_connecting_socket* socket);
 void nimbus_event_connection_run(void* _self);
+void nimbus_event_connection_init(nimbus_event_connection* self, struct tyran_memory* memory, const char* host, int port);
 
 #endif

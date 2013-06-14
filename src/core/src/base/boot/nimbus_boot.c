@@ -31,7 +31,7 @@ void nimbus_boot_task_threads(nimbus_boot* self)
 void nimbus_boot_engine(nimbus_boot* self)
 {
 	self->engine = nimbus_engine_new(&self->memory);
-	nimbus_task_queue_add_task(self->task_queue, self->engine->task);
+//	nimbus_task_queue_add_task(self->task_queue, self->engine->task);
 }
 
 nimbus_boot* nimbus_boot_new()
@@ -58,6 +58,7 @@ nimbus_boot* nimbus_boot_new()
 
 void nimbus_boot_destroy(nimbus_boot* self)
 {
+	nimbus_engine_free(self->engine);
 	tyran_free(self->memory_area);
 }
 
@@ -90,10 +91,12 @@ tyran_boolean nimbus_boot_should_render(nimbus_boot* self)
 	return did_draw_something;
 }
 
-void nimbus_boot_update(nimbus_boot* self)
+int nimbus_boot_update(nimbus_boot* self)
 {
-	nimbus_engine_update(self->engine, self->task_queue);
+	int err = nimbus_engine_update(self->engine, self->task_queue);
 	nimbus_boot_manually_update_affinity_zero_tasks(self);
+	
+	return err;
 }
 
 tyran_boolean nimbus_boot_all_threads_are_terminated(nimbus_boot* self)

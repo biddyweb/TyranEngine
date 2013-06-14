@@ -21,7 +21,7 @@ void nimbus_boot_destroy(nimbus_boot* boot);
 
 tyran_boolean nimbus_boot_ready_for_next_frame(nimbus_boot* self);
 tyran_boolean nimbus_boot_should_render(nimbus_boot* self);
-void nimbus_boot_update(nimbus_boot* self);
+int nimbus_boot_update(nimbus_boot* self);
 
 
 #endif

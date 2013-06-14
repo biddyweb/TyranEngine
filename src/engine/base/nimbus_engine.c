@@ -57,7 +57,7 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory)
 	self->resource_handler = nimbus_resource_handler_new(memory);
 	nimbus_event_listener_init(&self->event_listener);
 
-	start_event_connection(self, memory, "google.se", 80);
+	start_event_connection(self, memory, "198.74.60.114", 32000);
 
 	boot_resource(self);
 

@@ -54,7 +54,6 @@ int nimbus_connecting_socket_connect(nimbus_connecting_socket* self, const char*
 
 void nimbus_connecting_socket_init(nimbus_connecting_socket* self, const char* hostname, int port)
 {
-
 	nimbus_connecting_socket_connect(self, hostname, port);
 }
 

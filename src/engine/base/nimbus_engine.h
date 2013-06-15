@@ -4,7 +4,7 @@
 #include "../../core/src/base/task/nimbus_task.h"
 #include "../../core/src/base/event/nimbus_event_listener.h"
 #include "../../core/src/base/event/nimbus_event_stream.h"
-
+#include "../../core/src/base/event/nimbus_event_distributor.h"
 
 #include "../network/event_connection.h"
 #include <tyranscript/tyran_mocha_api.h>
@@ -14,9 +14,14 @@ struct nimbus_resource_handler;
 typedef struct nimbus_engine {
 	tyran_mocha_api mocha_api;
 	struct nimbus_resource_handler* resource_handler;
-	nimbus_event_write_stream event_stream;
 	nimbus_event_listener event_listener;
 	nimbus_event_connection event_connection;
+	nimbus_update update_object;
+	
+	nimbus_event_distributor event_distributor;
+	
+	nimbus_update** update_objects;
+	int update_objects_count;
 	int frame_counter;
 } nimbus_engine;
 

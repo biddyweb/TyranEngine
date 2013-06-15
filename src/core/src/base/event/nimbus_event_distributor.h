@@ -10,7 +10,7 @@ typedef struct nimbus_event_distributor {
 	int event_buffer_used_octet_size;
 } nimbus_event_distributor;
 
-nimbus_event_distributor* nimbus_event_distributor_new(struct tyran_memory* memory);
-void nimbus_event_distributor_distribute_events(nimbus_event_distributor* self, struct nimbus_update* objects, int object_count);
+void nimbus_event_distributor_init(nimbus_event_distributor* self, struct tyran_memory* memory);
+void nimbus_event_distributor_distribute_events(nimbus_event_distributor* self, struct nimbus_update** objects, int object_count);
 
 #endif

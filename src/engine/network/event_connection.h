@@ -9,6 +9,7 @@
 #include "../stream/in_stream.h"
 
 #include "../resource/resource_id.h"
+#include "../../core/src/base/update/nimbus_update.h"
 
 
 struct tyran_memory;
@@ -19,8 +20,11 @@ typedef struct nimbus_event_connection {
 	nimbus_in_stream in_stream;
 	u8t* in_buffer;
 	int in_buffer_size;
-	nimbus_event_listener event_listener;
+
 	nimbus_event_write_stream out_event_stream;
+	
+	nimbus_update update_object;
+	
 	nimbus_connecting_socket socket;
 	nimbus_resource_id resource_id;
 

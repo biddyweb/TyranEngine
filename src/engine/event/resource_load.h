@@ -3,10 +3,11 @@
 
 #include "../resource/resource_id.h"
 
-const u8t NIMBUS_EVENT_RESOURCE_LOAD = 1;
+extern const u8t NIMBUS_EVENT_RESOURCE_LOAD;
 
 typedef struct nimbus_resource_load {
 	nimbus_resource_id resource_id;
 } nimbus_resource_load;
+
 
 #endif

@@ -4,10 +4,12 @@
 #include <tyranscript/tyran_types.h>
 
 #include "../event/nimbus_event_stream.h"
+#include "../event/nimbus_event_listener.h"
 
 typedef struct nimbus_update {
     nimbus_event_write_stream event_write_stream;
     nimbus_event_read_stream event_read_stream;
+   	nimbus_event_listener event_listener;
 } nimbus_update;
 
 

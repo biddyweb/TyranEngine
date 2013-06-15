@@ -9,7 +9,7 @@
 #include "../resource/resource_id.h"
 #include "../resource/resource_reader.h"
 #include "../../core/src/base/event/nimbus_event_stream.h"
-
+#include "../event/resource_load.h"
 #include <tyranscript/tyran_log.h>
 
 void nimbus_event_connection_send_request(nimbus_event_connection* self, nimbus_resource_id resource_id)
@@ -44,11 +44,9 @@ void nimbus_event_connection_init(nimbus_event_connection* self, tyran_memory* m
 	nimbus_ring_buffer_init(&self->buffer, memory, 1024);
 	nimbus_out_stream_init(&self->out_stream, memory, 1024);
 	nimbus_connecting_socket_init(&self->socket, host, port);
-	nimbus_event_write_stream_init(&self->out_event_stream, memory, 1024);
+	nimbus_update_init(&self->update_object, memory);
 
-	const int RESOURCE_REQUEST_ID = 2;
-
-	nimbus_event_listener_listen(&self->event_listener, RESOURCE_REQUEST_ID, _on_resource_request);
+	nimbus_event_listener_listen(&self->update_object.event_listener, NIMBUS_EVENT_RESOURCE_LOAD, _on_resource_request);
 }
 
 void nimbus_event_connection_free(nimbus_event_connection* self)

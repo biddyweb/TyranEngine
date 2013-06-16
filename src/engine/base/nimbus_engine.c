@@ -14,18 +14,27 @@ TYRAN_RUNTIME_CALL_FUNC(nimbus_engine_load_library)
 }
 
 
-void nimbus_engine_update_objects(nimbus_engine* self)
+void schedule_update_tasks(nimbus_engine* self, nimbus_task_queue* queue)
 {
-	TYRAN_LOG("UPDATE OBJECTS");
-	nimbus_event_distributor_distribute_events(&self->event_distributor, self->update_objects, self->update_objects_count);
+	for (int i=1; i<self->update_objects_count; ++i) {
+		nimbus_task* task = &self->update_objects[i]->task;
+		nimbus_task_queue_add_task(queue, task);
+	}
+}
 
+void distribute_events(nimbus_engine* self)
+{
+	nimbus_event_distributor_distribute_events(&self->event_distributor, self->update_objects, self->update_objects_count);
 }
 
 int nimbus_engine_update(nimbus_engine* self, nimbus_task_queue* queue)
 {
 //	nimbus_task_queue_add()
 	TYRAN_LOG("Engine::Update");
-	nimbus_engine_update_objects(self);
+
+	distribute_events(self);
+	schedule_update_tasks(self, queue);
+
 	self->frame_counter++;
 	if (self->frame_counter > 10) {
 		return 1;
@@ -33,6 +42,10 @@ int nimbus_engine_update(nimbus_engine* self, nimbus_task_queue* queue)
 	return 0;
 }
 
+static void _dummy_update(void* _self)
+{
+	
+}
 
 static void boot_resource(nimbus_engine* self)
 {
@@ -72,12 +85,12 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory)
 	tyran_mocha_api_add_function(&self->mocha_api, global, "load_library", nimbus_engine_load_library);
 
 	self->resource_handler = nimbus_resource_handler_new(memory);
-	nimbus_event_listener_init(&self->event_listener);
+	nimbus_event_listener_init(&self->event_listener, self);
 	
 	self->update_objects = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_update*, 256);
 	self->update_objects_count = 0;
 	
-	nimbus_update_init(&self->update_object, memory);
+	nimbus_update_init(&self->update_object, memory, _dummy_update, 0);
 	
 	nimbus_engine_add_update_object(self, &self->update_object);
 	start_event_connection(self, memory, "198.74.60.114", 32000);

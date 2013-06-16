@@ -72,7 +72,7 @@ void nimbus_boot_manually_update_affinity_zero_tasks(nimbus_boot* self)
 			break;
 		} else {
 			TYRAN_LOG("Found a task:%p", (void*)task);
-			task->work(task, self->task_queue);
+			nimbus_task_call(task, self->task_queue);
 			nimbus_task_queue_task_completed(self->task_queue, task);
 		}
 	}

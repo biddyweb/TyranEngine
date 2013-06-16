@@ -3,6 +3,7 @@
 #include "nimbus_task.h"
 #include "../thread/nimbus_thread_sleep.h"
 #include <tyranscript/tyran_memory.h>
+#include <tyranscript/tyran_log.h>
 
 nimbus_task_thread* nimbus_task_thread_new(tyran_memory* memory, nimbus_task_queue* task_queue, int affinity)
 {
@@ -20,7 +21,8 @@ void nimbus_task_thread_work(nimbus_task_thread* self)
 		if (task == 0) {
 			nimbus_thread_sleep(0.1f);
 		} else {
-			task->work(task->self, self->task_queue);
+			TYRAN_LOG("Found task:%p other_self:%p", (void*)task, task->self);
+			nimbus_task_call(task, self->task_queue);
 			nimbus_task_queue_task_completed(self->task_queue, task);
 		}
 	}

@@ -19,6 +19,7 @@ void nimbus_event_process(nimbus_event_listener* self, const u8t* raw_event_poin
 	const u8t* start_event_pointer;
 	const u8t* end_pointer = raw_event_pointer + octet_size;
 	const int alignment = 8;
+	void* other_self = self->other_self;
 
 	for (const u8t* pointer = raw_event_pointer; pointer < end_pointer; ) {
 		nimbus_event_type_id id = *((nimbus_event_type_id*) pointer);
@@ -40,21 +41,22 @@ void nimbus_event_process(nimbus_event_listener* self, const u8t* raw_event_poin
 		if (func) {
 			nimbus_event_read_stream stream;
 			stream.pointer = start_event_pointer;
-			func->event_reader(func, &stream);
+			func->event_reader(other_self, &stream);
 		}
 
 		if (self->listen_to_all) {
 			nimbus_event_read_stream stream;
 			stream.pointer = start_event_pointer;
 			stream.event_type_id = id;
-			self->listen_to_all(func, &stream);
+			self->listen_to_all(other_self, &stream);
 		}
 	}
 }
 
 
-void nimbus_event_listener_init(nimbus_event_listener* self)
+void nimbus_event_listener_init(nimbus_event_listener* self, void* other_self)
 {
+	self->other_self = other_self;
 	self->function_count = 0;
 }
 

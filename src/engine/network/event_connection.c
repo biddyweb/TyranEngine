@@ -15,6 +15,7 @@
 void nimbus_event_connection_send_request(nimbus_event_connection* self, nimbus_resource_id resource_id)
 {
 	nimbus_out_stream_clear(&self->out_stream);
+	nimbus_out_stream_write_u32(&self->out_stream, 5);
 	nimbus_out_stream_write_u8(&self->out_stream, 2);
 	nimbus_out_stream_write_u32(&self->out_stream, resource_id);
 
@@ -38,14 +39,21 @@ static void _on_resource_request(void* _self, struct nimbus_event_read_stream* s
 	on_resource_request(self, resource_id);
 }
 
+
+void nimbus_event_connection_on_update(void* self)
+{
+	TYRAN_LOG("connection.update");
+}
+
 void nimbus_event_connection_init(nimbus_event_connection* self, tyran_memory* memory, const char* host, int port)
 {
 	TYRAN_LOG("Booting event connection");
 	nimbus_ring_buffer_init(&self->buffer, memory, 1024);
 	nimbus_out_stream_init(&self->out_stream, memory, 1024);
 	nimbus_connecting_socket_init(&self->socket, host, port);
-	nimbus_update_init(&self->update_object, memory);
+	nimbus_update_init(&self->update_object, memory, nimbus_event_connection_on_update, self);
 
+	nimbus_event_listener_init(&self->update_object.event_listener, self);
 	nimbus_event_listener_listen(&self->update_object.event_listener, NIMBUS_EVENT_RESOURCE_LOAD, _on_resource_request);
 }
 

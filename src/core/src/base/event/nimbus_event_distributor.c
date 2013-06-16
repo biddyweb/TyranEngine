@@ -45,6 +45,7 @@ void nimbus_event_distributor_write_events_to_buffer(nimbus_event_distributor* s
 	}
 
 	self->event_buffer_used_octet_size = (p - self->event_buffer);
+	TYRAN_LOG("EVENT BUFFER NOW HOLDS %d OCTETS", self->event_buffer_used_octet_size);
 }
 
 void nimbus_event_distributor_distribute_events(nimbus_event_distributor* self, nimbus_update** objects, int object_count)

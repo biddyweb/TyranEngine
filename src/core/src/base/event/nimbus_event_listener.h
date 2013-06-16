@@ -17,9 +17,10 @@ typedef struct nimbus_event_listener {
 	int function_count;
 	nimbus_event_read listen_to_all;
 	struct tyran_memory* memory;
+	void* other_self;
 } nimbus_event_listener;
 
-void nimbus_event_listener_init(nimbus_event_listener* self);
+void nimbus_event_listener_init(nimbus_event_listener* self, void* other_self);
 void nimbus_event_listener_listen(nimbus_event_listener* self, nimbus_event_type_id id, nimbus_event_read reader);
-
+void nimbus_event_process(nimbus_event_listener* self, const u8t* raw_event_pointer, size_t octet_size);
 #endif

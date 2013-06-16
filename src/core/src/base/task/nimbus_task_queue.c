@@ -29,6 +29,8 @@ void nimbus_task_queue_add_task(nimbus_task_queue* self, nimbus_task* task)
 {
 	TYRAN_ASSERT(task, "MUST BE zero");
 	TYRAN_ASSERT(self->task_count < self->task_max_count, "FULL");
+	TYRAN_ASSERT(task->work!=0, "work must not be zero");
+	TYRAN_ASSERT(task->self!=0, "self must not be zero in task");
 	nimbus_mutex_lock(&self->mutex);
 
 	task->task_queue = self;

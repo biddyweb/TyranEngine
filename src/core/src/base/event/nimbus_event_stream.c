@@ -21,7 +21,7 @@ void nimbus_event_write_stream_free(nimbus_event_write_stream* stream)
 
 int nimbus_event_write_stream_length(nimbus_event_write_stream* self)
 {
-    return self->end_pointer - self->buffer;
+    return self->pointer - self->buffer;
 }
 
 
@@ -40,6 +40,7 @@ void nimbus_event_stream_read_octets(nimbus_event_read_stream* stream, u8t* data
 
 void nimbus_event_stream_read_init(nimbus_event_read_stream* self, const u8t* pointer, int length)
 {
+	TYRAN_LOG("Setting read to %p with %d octets", (const void*) pointer, length);
     self->pointer = pointer;
     self->end_pointer = pointer + length;
 }

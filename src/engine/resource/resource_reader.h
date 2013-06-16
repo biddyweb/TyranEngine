@@ -8,7 +8,7 @@ struct tyran_memory;
 struct nimbus_update;
 
 typedef struct nimbus_resource_reader {
-	struct nimbus_event_listener* event_listener;
+	struct nimbus_event_listener event_listener;
 	struct nimbus_resource_handler* resource_handler;
 	struct nimbus_update* update_object;
 

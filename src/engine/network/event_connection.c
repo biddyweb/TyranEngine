@@ -98,6 +98,7 @@ static void read_message_type(nimbus_event_connection* self, nimbus_in_stream* i
 	nimbus_in_stream_read_u8(in_stream, &message_type);
 	nimbus_resource_id resource_id;
 	read_resource_id(in_stream, &resource_id);
+	TYRAN_LOG("read_message_type:%d resource_id:%d", message_type, resource_id);
 	switch (message_type) {
 		case 0: // Delete
 			handle_deleted(self, resource_id);
@@ -138,13 +139,15 @@ static void on_payload_done(nimbus_event_connection* self)
 
 	nimbus_event_write_stream_clear(&self->out_event_stream);
 	nimbus_event_stream_write_event_header(&self->out_event_stream, RESOURCE_UPDATED, self->expected_payload_size + sizeof(resource_id));
-	nimbus_event_stream_write_align(&self->out_event_stream);
 	nimbus_event_stream_write_type(&self->out_event_stream, self->resource_id);
+
 	nimbus_ring_buffer_read_pointer(&self->buffer, self->expected_payload_size, &temp_buffer, &temp_buffer_size);
+	TYRAN_LOG("Ring bufferA:%d", temp_buffer_size);
 	self->expected_payload_size -= temp_buffer_size;
 	nimbus_event_stream_write_octets(&self->out_event_stream, temp_buffer, temp_buffer_size);
 
 	nimbus_ring_buffer_read_pointer(&self->buffer, self->expected_payload_size, &temp_buffer, &temp_buffer_size);
+	TYRAN_LOG("Ring bufferB:%d", temp_buffer_size);
 	self->expected_payload_size -= temp_buffer_size;
 	nimbus_event_stream_write_octets(&self->out_event_stream, temp_buffer, temp_buffer_size);
 
@@ -158,9 +161,10 @@ static int receive(nimbus_event_connection* self)
 	int temp_buffer_size;
 
 	nimbus_ring_buffer_write_pointer(&self->buffer, &temp_buffer, &temp_buffer_size);
-
+	TYRAN_LOG("write_pointer %d", temp_buffer_size);
 	int octets_read = nimbus_connecting_socket_read(&self->socket, temp_buffer, temp_buffer_size);
 	if (octets_read > 0) {
+		TYRAN_LOG("Received octets:%d (%c)", octets_read, temp_buffer[0]);
 		nimbus_ring_buffer_write_pointer_advance(&self->buffer, octets_read);
 		if (self->waiting_for_header) {
 			check_header(self);
@@ -194,6 +198,8 @@ void nimbus_event_connection_init(nimbus_event_connection* self, tyran_memory* m
 	TYRAN_LOG("Booting event connection");
 	nimbus_ring_buffer_init(&self->buffer, memory, 1024);
 	nimbus_out_stream_init(&self->out_stream, memory, 1024);
+	
+	nimbus_event_write_stream_init(&self->out_event_stream, memory, 1024);
 	nimbus_connecting_socket_init(&self->socket, host, port);
 	send_connect(self);
 	nimbus_update_init(&self->update_object, memory, _on_update, self);

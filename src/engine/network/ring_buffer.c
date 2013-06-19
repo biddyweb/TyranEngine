@@ -6,6 +6,9 @@ void nimbus_ring_buffer_init(nimbus_ring_buffer* self, tyran_memory* memory, int
 {
 	self->buffer = TYRAN_MEMORY_ALLOC(memory, max_length, "circular buffer");
 	self->max_size = max_length;
+	self->size = 0;
+	self->read_index = 0;
+	self->write_index = 0;
 }
 
 void nimbus_ring_buffer_write_pointer(nimbus_ring_buffer* self, u8t** data, int* length)
@@ -13,7 +16,6 @@ void nimbus_ring_buffer_write_pointer(nimbus_ring_buffer* self, u8t** data, int*
 	*data = self->buffer + self->write_index;
 	*length = self->max_size - self->write_index;
 }
-
 
 int nimbus_ring_buffer_size(nimbus_ring_buffer* self)
 {
@@ -27,6 +29,7 @@ void nimbus_ring_buffer_free(nimbus_ring_buffer* self)
 
 void nimbus_ring_buffer_write_pointer_advance(nimbus_ring_buffer* self, int size)
 {
+	TYRAN_LOG("write_pointer_advance(%d)", size);
 	self->write_index += size;
 	self->write_index %= self->max_size;
 	self->size += size;
@@ -54,7 +57,7 @@ static void read_advance(nimbus_ring_buffer* self, u8t* data_pointer, int size)
 void nimbus_ring_buffer_read_pointer(nimbus_ring_buffer* self, int size, u8t** data, int* length)
 {
 	int available;
-	if (self->read_index < self->write_index) {
+	if (self->read_index <= self->write_index) {
 		available = self->write_index - self->read_index;
 	} else {
 		available = self->max_size - self->read_index;
@@ -68,6 +71,7 @@ void nimbus_ring_buffer_read_pointer(nimbus_ring_buffer* self, int size, u8t** d
 
 int nimbus_ring_buffer_write(nimbus_ring_buffer* self, const void* data, int len)
 {
+	TYRAN_LOG("ring_buffer_write %d", len);
 	int write_octets_left = self->max_size - self->size;
 	if (len > write_octets_left) {
 		return -1;
@@ -88,10 +92,12 @@ int nimbus_ring_buffer_write(nimbus_ring_buffer* self, const void* data, int len
 
 int nimbus_ring_buffer_read(nimbus_ring_buffer* self, void* data, int len)
 {
+	TYRAN_LOG("ring_buffer_read %d", len);
 	int read_octets_left = self->size;
 	if (len > read_octets_left) {
 		len = read_octets_left;
 	}
+	TYRAN_LOG("ring_buffer_read_max %d", len);
 	int len_to_read = (len > read_octets_left) ? read_octets_left : len;
 	u8t* data_pointer = (u8t*) data;
 

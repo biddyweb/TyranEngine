@@ -3,13 +3,14 @@
 
 #include <tyranscript/tyran_memory.h>
 
+#include "../task/nimbus_task_thread.h"
+
 struct nimbus_task_queue;
-struct nimbus_task_thread;
 struct nimbus_engine;
 
 typedef struct nimbus_boot {
 	struct nimbus_task_queue* task_queue;
-	struct nimbus_task_thread* task_threads[8];
+	struct nimbus_task_thread task_threads[8];
 	struct nimbus_engine* engine;
 	int task_thread_count;
 	tyran_memory memory;

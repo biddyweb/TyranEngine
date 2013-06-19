@@ -5,21 +5,17 @@
 #include <tyranscript/tyran_memory.h>
 #include <tyranscript/tyran_log.h>
 
-nimbus_task_thread* nimbus_task_thread_new(tyran_memory* memory, nimbus_task_queue* task_queue, int affinity)
+static void work(void* _self)
 {
-	nimbus_task_thread* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_task_thread);
-	self->affinity = affinity;
-	self->task_queue = task_queue;
+	nimbus_task_thread* self = _self;
+	TYRAN_LOG("task_thread_work");
 
-	return self;
-}
-
-void nimbus_task_thread_work(nimbus_task_thread* self)
-{
 	for (;;) {
+	TYRAN_LOG("task_thread_work:: fetch task");
 		nimbus_task* task = nimbus_task_queue_fetch_next_task(self->task_queue, self->affinity);
+	TYRAN_LOG("task_thread_work:: fetch task (after)");
 		if (task == 0) {
-			nimbus_thread_sleep(0.1f);
+			nimbus_thread_sleep(1.1f);
 		} else {
 			TYRAN_LOG("Found task:%p other_self:%p", (void*)task, task->self);
 			nimbus_task_call(task, self->task_queue);
@@ -27,3 +23,12 @@ void nimbus_task_thread_work(nimbus_task_thread* self)
 		}
 	}
 }
+
+void nimbus_task_thread_init(nimbus_task_thread* self, nimbus_task_queue* task_queue, int affinity)
+{
+	self->affinity = affinity;
+	self->task_queue = task_queue;
+	
+	nimbus_thread_init(&self->thread, work, self);
+}
+

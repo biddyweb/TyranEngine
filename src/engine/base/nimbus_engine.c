@@ -36,7 +36,7 @@ int nimbus_engine_update(nimbus_engine* self, nimbus_task_queue* queue)
 	schedule_update_tasks(self, queue);
 
 	self->frame_counter++;
-	if (self->frame_counter > 0) {
+	if (self->frame_counter > 10) {
 		return 1;
 	}
 	return 0;
@@ -64,13 +64,14 @@ void nimbus_engine_add_update_object(nimbus_engine* self, nimbus_update* o)
 	self->update_objects[index] = o;
 }
 
-void start_event_connection(nimbus_engine* self, tyran_memory* memory, const char* host, int port)
+void start_event_connection(nimbus_engine* self, tyran_memory* memory, const char* host, int port, struct nimbus_task_queue* task_queue)
 {
 	nimbus_event_connection_init(&self->event_connection, memory, host, port);
 	nimbus_engine_add_update_object(self, &self->event_connection.update_object);
+	nimbus_task_queue_add_task(task_queue, &self->event_connection.receive_task);
 }
 
-nimbus_engine* nimbus_engine_new(tyran_memory* memory)
+nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue* task_queue)
 {
 	nimbus_engine* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_engine);
 	self->frame_counter = 0;
@@ -94,7 +95,7 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory)
 	nimbus_update_init(&self->update_object, memory, _dummy_update, 0);
 	
 	nimbus_engine_add_update_object(self, &self->update_object);
-	start_event_connection(self, memory, "198.74.60.114", 32000);
+	start_event_connection(self, memory, "198.74.60.114", 32000, task_queue);
 
 	boot_resource(self);
 

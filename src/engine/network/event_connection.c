@@ -20,6 +20,7 @@ void send_stream(nimbus_event_connection* self)
 	nimbus_connecting_socket_write(&self->socket, buffer, length);
 }
 
+
 static void send_connect(nimbus_event_connection* self)
 {
 	nimbus_out_stream_clear(&self->out_stream);
@@ -69,18 +70,6 @@ void _on_update(void* self)
 	TYRAN_LOG("connection.update");
 }
 
-void nimbus_event_connection_init(nimbus_event_connection* self, tyran_memory* memory, const char* host, int port)
-{
-	TYRAN_LOG("Booting event connection");
-	nimbus_ring_buffer_init(&self->buffer, memory, 1024);
-	nimbus_out_stream_init(&self->out_stream, memory, 1024);
-	nimbus_connecting_socket_init(&self->socket, host, port);
-	send_connect(self);
-	nimbus_update_init(&self->update_object, memory, _on_update, self);
-
-	nimbus_event_listener_init(&self->update_object.event_listener, self);
-	nimbus_event_listener_listen(&self->update_object.event_listener, NIMBUS_EVENT_RESOURCE_LOAD, _on_resource_request);
-}
 
 void nimbus_event_connection_free(nimbus_event_connection* self)
 {
@@ -114,7 +103,7 @@ static void read_message_type(nimbus_event_connection* self, nimbus_in_stream* i
 			handle_deleted(self, resource_id);
 			break;
 		case 1: // New
-		case 2: // Update
+		case 9: // Update
 			handle_updated(self, in_stream, resource_id);
 			break;
 	}
@@ -139,6 +128,7 @@ void check_header(nimbus_event_connection* self)
 
 static void on_payload_done(nimbus_event_connection* self)
 {
+	TYRAN_LOG("Payload received!");
 	u8t* temp_buffer;
 	int temp_buffer_size;
 
@@ -185,20 +175,32 @@ static int receive(nimbus_event_connection* self)
 	return octets_read;
 }
 
-void run(nimbus_event_connection* self)
+static void receive_task(void* _self, struct nimbus_task_queue* task_queue)
 {
+	TYRAN_LOG("receive task!");
+	nimbus_event_connection* self = _self;
 	while (1) {
+		TYRAN_LOG("Receive loop");
 		int octets_read = receive(self);
 		if (octets_read == -1) {
+			TYRAN_LOG("Receive -1");
 			break;
 		}
 	}
 }
 
-void nimbus_event_connection_run(void* _self)
+void nimbus_event_connection_init(nimbus_event_connection* self, tyran_memory* memory, const char* host, int port)
 {
-	nimbus_event_connection* self = (nimbus_event_connection*) _self;
+	TYRAN_LOG("Booting event connection");
+	nimbus_ring_buffer_init(&self->buffer, memory, 1024);
+	nimbus_out_stream_init(&self->out_stream, memory, 1024);
+	nimbus_connecting_socket_init(&self->socket, host, port);
+	send_connect(self);
+	nimbus_update_init(&self->update_object, memory, _on_update, self);
+	
+	nimbus_task_init(&self->receive_task, receive_task, self);
 
-	run(self);
+	nimbus_event_listener_init(&self->update_object.event_listener, self);
+	nimbus_event_listener_listen(&self->update_object.event_listener, NIMBUS_EVENT_RESOURCE_LOAD, _on_resource_request);
 }
 

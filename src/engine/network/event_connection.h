@@ -25,6 +25,8 @@ typedef struct nimbus_event_connection {
 	
 	nimbus_update update_object;
 	
+	nimbus_task receive_task;
+	
 	nimbus_connecting_socket socket;
 	nimbus_resource_id resource_id;
 
@@ -32,8 +34,6 @@ typedef struct nimbus_event_connection {
 	int waiting_for_header;
 } nimbus_event_connection;
 
-
-void nimbus_event_connection_run(void* _self);
 void nimbus_event_connection_init(nimbus_event_connection* self, struct tyran_memory* memory, const char* host, int port);
 
 #endif

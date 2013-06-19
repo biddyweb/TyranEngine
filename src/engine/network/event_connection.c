@@ -12,23 +12,44 @@
 #include "../event/resource_load.h"
 #include <tyranscript/tyran_log.h>
 
-void nimbus_event_connection_send_request(nimbus_event_connection* self, nimbus_resource_id resource_id)
+void send_stream(nimbus_event_connection* self)
 {
-	nimbus_out_stream_clear(&self->out_stream);
-	nimbus_out_stream_write_u32(&self->out_stream, 5);
-	nimbus_out_stream_write_u8(&self->out_stream, 2);
-	nimbus_out_stream_write_u32(&self->out_stream, resource_id);
-
 	const u8t* buffer;
 	int length;
 	nimbus_out_stream_info(&self->out_stream, &buffer, &length);
 	nimbus_connecting_socket_write(&self->socket, buffer, length);
 }
 
+static void send_connect(nimbus_event_connection* self)
+{
+	nimbus_out_stream_clear(&self->out_stream);
+
+	const u8t connect_id = 99;
+	nimbus_out_stream_write_u8(&self->out_stream, connect_id);
+
+	const u8t protocol_type_game = 0x01;
+	nimbus_out_stream_write_u8(&self->out_stream, protocol_type_game);
+
+	const u32t version = 0x01;
+	nimbus_out_stream_write_u32(&self->out_stream, version);
+
+	send_stream(self);
+}
+
+
+void send_request(nimbus_event_connection* self, nimbus_resource_id resource_id)
+{
+	nimbus_out_stream_clear(&self->out_stream);
+	const u8t request_resource_id = 8;
+	nimbus_out_stream_write_u8(&self->out_stream, request_resource_id);
+	nimbus_out_stream_write_u32(&self->out_stream, resource_id);
+	send_stream(self);
+}
+
 static void on_resource_request(nimbus_event_connection* self, nimbus_resource_id resource_id)
 {
 	TYRAN_LOG("ON Request %d", resource_id);
-	nimbus_event_connection_send_request(self, resource_id);
+	send_request(self, resource_id);
 }
 
 static void _on_resource_request(void* _self, struct nimbus_event_read_stream* stream)
@@ -40,7 +61,7 @@ static void _on_resource_request(void* _self, struct nimbus_event_read_stream* s
 }
 
 
-void nimbus_event_connection_on_update(void* self)
+void _on_update(void* self)
 {
 	TYRAN_LOG("connection.update");
 }
@@ -51,7 +72,8 @@ void nimbus_event_connection_init(nimbus_event_connection* self, tyran_memory* m
 	nimbus_ring_buffer_init(&self->buffer, memory, 1024);
 	nimbus_out_stream_init(&self->out_stream, memory, 1024);
 	nimbus_connecting_socket_init(&self->socket, host, port);
-	nimbus_update_init(&self->update_object, memory, nimbus_event_connection_on_update, self);
+	send_connect(self);
+	nimbus_update_init(&self->update_object, memory, _on_update, self);
 
 	nimbus_event_listener_init(&self->update_object.event_listener, self);
 	nimbus_event_listener_listen(&self->update_object.event_listener, NIMBUS_EVENT_RESOURCE_LOAD, _on_resource_request);
@@ -63,7 +85,7 @@ void nimbus_event_connection_free(nimbus_event_connection* self)
 	nimbus_out_stream_free(&self->out_stream);
 }
 
-static void handle_deleted(nimbus_event_connection* self)
+static void handle_deleted(nimbus_event_connection* self, nimbus_resource_id resource_id)
 {
 	self->expected_payload_size = 0;
 }
@@ -86,7 +108,7 @@ static void read_message_type(nimbus_event_connection* self, nimbus_in_stream* i
 	read_resource_id(in_stream, &resource_id);
 	switch (message_type) {
 		case 0: // Delete
-			handle_deleted(self);
+			handle_deleted(self, resource_id);
 			break;
 		case 1: // New
 		case 2: // Update
@@ -160,7 +182,6 @@ static int receive(nimbus_event_connection* self)
 	return octets_read;
 }
 
-
 void run(nimbus_event_connection* self)
 {
 	while (1) {
@@ -170,10 +191,6 @@ void run(nimbus_event_connection* self)
 		}
 	}
 }
-
-
-
-
 
 void nimbus_event_connection_run(void* _self)
 {

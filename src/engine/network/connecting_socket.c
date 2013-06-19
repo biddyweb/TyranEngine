@@ -59,6 +59,7 @@ void nimbus_connecting_socket_init(nimbus_connecting_socket* self, const char* h
 
 void nimbus_connecting_socket_write(nimbus_connecting_socket* self, const u8t* data, int length)
 {
+	TYRAN_LOG("SENDING %d octets on socket", length);
 	send(self->socket_handle, data, length, 0);
 }
 

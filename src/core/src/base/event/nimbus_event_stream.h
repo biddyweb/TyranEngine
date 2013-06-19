@@ -19,19 +19,28 @@ typedef struct nimbus_event_read_stream {
 	nimbus_event_type_id event_type_id;
 } nimbus_event_read_stream;
 
+typedef struct nimbus_event_stream_header {
+	u8t event_type_id;
+	u32t event_octet_size;
+} nimbus_event_stream_header;
+
 void nimbus_event_write_stream_init(nimbus_event_write_stream* stream, struct tyran_memory* memory, int max_length);
 void nimbus_event_write_stream_free(nimbus_event_write_stream* stream);
 void nimbus_event_write_stream_clear(nimbus_event_write_stream* self);
 int nimbus_event_write_stream_length(nimbus_event_write_stream* self);
 void nimbus_event_stream_write_octets(nimbus_event_write_stream* stream, const void* data, int len);
+void nimbus_event_stream_write_align(nimbus_event_write_stream* self);
 
 void nimbus_event_stream_read_init(nimbus_event_read_stream* self, const u8t* pointer, int length);
 void nimbus_event_stream_read_octets(nimbus_event_read_stream* stream, u8t* data, int len);
+void nimbus_event_stream_read_align(nimbus_event_read_stream* self);
+void nimbus_event_stream_read_skip(nimbus_event_read_stream* self, int length);
 
-#define nimbus_event_stream_write_type(stream, variable) {  nimbus_event_stream_write_octets(stream, (const u8t*)(&variable), sizeof(variable)); }
-#define nimbus_event_stream_write_event_header(stream, event_type_id, len) { nimbus_event_stream_write_type(stream, event_type_id); nimbus_event_stream_write_type(stream, len); }
+#define nimbus_event_stream_write_type(stream, variable) { nimbus_event_stream_write_octets(stream, (const u8t*)(&variable), sizeof(variable)); }
+#define nimbus_event_stream_write_event_header(stream, ID, len) { nimbus_event_stream_header header; header.event_type_id = ID; header.event_octet_size = len; nimbus_event_stream_write_type(stream, header); }
 #define nimbus_event_stream_write_event(stream, event_type_id, variable) { u16t len = sizeof(variable); nimbus_event_stream_write_event_header(stream, event_type_id, len); nimbus_event_stream_write_type(stream, variable); }
-#define nimbus_event_stream_read_type(stream, variable) nimbus_event_stream_read_octets(stream, (u8t*)(&variable), sizeof(variable));
+
+#define nimbus_event_stream_read_type(stream, variable) { nimbus_event_stream_read_align(stream); nimbus_event_stream_read_octets(stream, (u8t*)(&variable), sizeof(variable)); }
 
 
 #endif

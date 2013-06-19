@@ -14,42 +14,31 @@ nimbus_event_listener_function* nimbus_event_function_from_event_id(nimbus_event
 	return 0;
 }
 
-void nimbus_event_process(nimbus_event_listener* self, const u8t* raw_event_pointer, size_t octet_size)
+void nimbus_event_process(nimbus_event_listener* self, struct nimbus_event_read_stream* read_stream)
 {
-	const u8t* start_event_pointer;
-	const u8t* end_pointer = raw_event_pointer + octet_size;
-	const int alignment = 8;
 	void* other_self = self->other_self;
+	
+	nimbus_event_stream_header header;
 
-	for (const u8t* pointer = raw_event_pointer; pointer < end_pointer; ) {
-		nimbus_event_type_id id = *((nimbus_event_type_id*) pointer);
-		pointer += sizeof(nimbus_event_type_id);
+	for (; read_stream->pointer < read_stream->end_pointer; ) {
+		nimbus_event_stream_read_type(read_stream, header);
 
-		u32t event_octet_size = *(u32t*) pointer;
-		pointer += sizeof(u32t);
-
-		start_event_pointer = pointer;
-
-		pointer += event_octet_size;
-
-		if (((tyran_pointer_to_number)pointer % alignment) != 0) {
-			pointer += alignment - ((tyran_pointer_to_number)pointer % alignment);
-		}
-
-		nimbus_event_listener_function* func = nimbus_event_function_from_event_id(self, id);
+		nimbus_event_listener_function* func = nimbus_event_function_from_event_id(self, header.event_type_id);
 
 		if (func) {
 			nimbus_event_read_stream stream;
-			stream.pointer = start_event_pointer;
+			nimbus_event_stream_read_init(&stream, read_stream->pointer, header.event_octet_size);
 			func->event_reader(other_self, &stream);
 		}
 
 		if (self->listen_to_all) {
 			nimbus_event_read_stream stream;
-			stream.pointer = start_event_pointer;
-			stream.event_type_id = id;
+			nimbus_event_stream_read_init(&stream, read_stream->pointer, header.event_octet_size);
+			stream.event_type_id = header.event_type_id;
 			self->listen_to_all(other_self, &stream);
 		}
+
+		nimbus_event_stream_read_skip(read_stream, header.event_octet_size);
 	}
 }
 

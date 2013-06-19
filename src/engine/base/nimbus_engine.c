@@ -36,7 +36,7 @@ int nimbus_engine_update(nimbus_engine* self, nimbus_task_queue* queue)
 	schedule_update_tasks(self, queue);
 
 	self->frame_counter++;
-	if (self->frame_counter > 10) {
+	if (self->frame_counter > 0) {
 		return 1;
 	}
 	return 0;
@@ -50,6 +50,7 @@ static void _dummy_update(void* _self)
 static void boot_resource(nimbus_engine* self)
 {
 	nimbus_resource_id boot_id = nimbus_resource_handler_add(self->resource_handler, "boot");
+	TYRAN_LOG("boot resource id:%d", boot_id);
 
 	nimbus_resource_load event;
 	event.resource_id = boot_id;

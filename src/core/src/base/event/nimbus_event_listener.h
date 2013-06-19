@@ -22,5 +22,6 @@ typedef struct nimbus_event_listener {
 
 void nimbus_event_listener_init(nimbus_event_listener* self, void* other_self);
 void nimbus_event_listener_listen(nimbus_event_listener* self, nimbus_event_type_id id, nimbus_event_read reader);
-void nimbus_event_process(nimbus_event_listener* self, const u8t* raw_event_pointer, size_t octet_size);
+
+void nimbus_event_process(nimbus_event_listener* self, struct nimbus_event_read_stream* read_stream);
 #endif

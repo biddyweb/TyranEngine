@@ -7,9 +7,7 @@ void nimbus_update_update(void* _self, struct nimbus_task_queue* queue)
 	TYRAN_LOG("internal UPDATE, %p name:'%s'", _self, self->name);
 	
 	nimbus_event_read_stream* read_stream = &self->event_read_stream;
-	int read_stream_length = read_stream->end_pointer - read_stream->pointer;
-	TYRAN_LOG("Processing %d octets in read stream", read_stream_length);
-	nimbus_event_process(&self->event_listener, read_stream->pointer, read_stream_length);
+	nimbus_event_process(&self->event_listener, read_stream);
 	
 	TYRAN_ASSERT(self->update_function != 0, "OMG POITNER BAD!");
 	self->update_function(self->update_function_self);

@@ -39,6 +39,7 @@ static void send_connect(nimbus_event_connection* self)
 
 void send_request(nimbus_event_connection* self, nimbus_resource_id resource_id)
 {
+	TYRAN_LOG("send_request resource_id:%d", resource_id);
 	nimbus_out_stream_clear(&self->out_stream);
 	const u8t request_resource_id = 8;
 	nimbus_out_stream_write_u8(&self->out_stream, request_resource_id);
@@ -56,6 +57,8 @@ static void _on_resource_request(void* _self, struct nimbus_event_read_stream* s
 {
 	nimbus_event_connection* self = (nimbus_event_connection*) _self;
 	nimbus_resource_id resource_id = nimbus_resource_id_from_stream(stream);
+	
+	TYRAN_LOG("on_resource_request:%d", resource_id);
 
 	on_resource_request(self, resource_id);
 }
@@ -145,8 +148,8 @@ static void on_payload_done(nimbus_event_connection* self)
 
 	nimbus_event_write_stream_clear(&self->out_event_stream);
 	nimbus_event_stream_write_event_header(&self->out_event_stream, RESOURCE_UPDATED, self->expected_payload_size + sizeof(resource_id));
+	nimbus_event_stream_write_align(&self->out_event_stream);
 	nimbus_event_stream_write_type(&self->out_event_stream, self->resource_id);
-
 	nimbus_ring_buffer_read_pointer(&self->buffer, self->expected_payload_size, &temp_buffer, &temp_buffer_size);
 	self->expected_payload_size -= temp_buffer_size;
 	nimbus_event_stream_write_octets(&self->out_event_stream, temp_buffer, temp_buffer_size);

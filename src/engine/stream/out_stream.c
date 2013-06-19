@@ -40,6 +40,7 @@ void nimbus_out_stream_write_u16(nimbus_out_stream* self, u16t data)
 
 void nimbus_out_stream_write_u32(nimbus_out_stream* self, u32t data)
 {
+	TYRAN_LOG("Stream_u32:%d", data);
 	u32t network_long = nimbus_endian_u32_to_network(data);
 	nimbus_out_stream_write_octets(self, &network_long, 4);
 }

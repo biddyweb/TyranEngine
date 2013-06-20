@@ -4,7 +4,6 @@
 
 void nimbus_task_init(nimbus_task* self, nimbus_task_function work, void* work_self)
 {
-	TYRAN_LOG("Init task:%p other_self:%p", (void*) self, work_self);
 	TYRAN_ASSERT(work != 0, "Must have a proper function");
 	TYRAN_ASSERT(work_self != 0, "Self can not be null");
 	self->self = work_self;

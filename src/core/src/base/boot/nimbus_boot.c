@@ -65,14 +65,12 @@ void nimbus_boot_destroy(nimbus_boot* self)
 
 void nimbus_boot_manually_update_affinity_zero_tasks(nimbus_boot* self)
 {
-	TYRAN_LOG("checking...");
 	const int affinity = 0;
 	for (;;) {
 		nimbus_task* task = nimbus_task_queue_fetch_next_task(self->task_queue, affinity);
 		if (task == 0) {
 			break;
 		} else {
-			TYRAN_LOG("Found a task:%p", (void*)task);
 			nimbus_task_call(task, self->task_queue);
 			nimbus_task_queue_task_completed(self->task_queue, task);
 		}

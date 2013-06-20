@@ -24,11 +24,9 @@ int nimbus_event_write_stream_length(nimbus_event_write_stream* self)
     return self->pointer - self->buffer;
 }
 
-
 void nimbus_event_stream_write_octets(nimbus_event_write_stream* stream, const void* data, int len)
 {
 	TYRAN_ASSERT(stream->pointer + len < stream->end_pointer, "Overwrite!");
-	TYRAN_LOG("Writing event stream %d", len);
 	tyran_memcpy_type(u8t, stream->pointer, data, len);
 	stream->pointer += len;
 }
@@ -41,6 +39,12 @@ void nimbus_event_stream_write_align(nimbus_event_write_stream* self)
 	}
 }
 
+void nimbus_event_stream_write_event_end(nimbus_event_write_stream* self)
+{
+	int octet_size = self->pointer - ((u8t*)self->last_header) - sizeof(nimbus_event_stream_header);
+	self->last_header->event_octet_size = octet_size;
+}
+
 void nimbus_event_stream_read_octets(nimbus_event_read_stream* stream, u8t* data, int len)
 {
 	tyran_memcpy_type(u8t, data, stream->pointer, len);
@@ -49,7 +53,6 @@ void nimbus_event_stream_read_octets(nimbus_event_read_stream* stream, u8t* data
 
 void nimbus_event_stream_read_init(nimbus_event_read_stream* self, const u8t* pointer, int length)
 {
-	TYRAN_LOG("Setting read to %p with %d octets", (const void*) pointer, length);
     self->pointer = pointer;
     self->end_pointer = pointer + length;
 }

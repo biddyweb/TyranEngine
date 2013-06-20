@@ -3,7 +3,7 @@
 
 void tyran_variable_scopes_push_scope(tyran_variable_scopes* scopes, tyran_memory* memory, tyran_memory_pool* variable_info_pool, tyran_memory_pool* register_pool)
 {
-	TYRAN_LOG("PUSH SCOPE ***");
+	// TYRAN_LOG("PUSH SCOPE ***");
 	TYRAN_ASSERT(scopes->scope_count < scopes->allocated_scope_count, "Out of memory adding a scope");
 	tyran_variable_scope* scope = &scopes->scopes[scopes->scope_count++];
 	scope->allocated_variable_count = 1024;
@@ -15,14 +15,14 @@ void tyran_variable_scopes_push_scope(tyran_variable_scopes* scopes, tyran_memor
 
 void tyran_variable_scopes_pop_scope(tyran_variable_scopes* scopes)
 {
-	TYRAN_LOG("POP SCOPE ***");
+	// TYRAN_LOG("POP SCOPE ***");
 	TYRAN_ASSERT(scopes->scope_count > 0, "Popped too much");
 	scopes->scope_count --;
 }
 
 tyran_variable_scopes* tyran_variable_scopes_new(tyran_memory_pool* scopes_pool, tyran_memory* memory, tyran_memory_pool* scope_pool, tyran_memory_pool* variable_info_pool, tyran_memory_pool* register_pool, int max_count)
 {
-	TYRAN_LOG("NEW SCOPES....");
+	// TYRAN_LOG("NEW SCOPES....");
 	tyran_variable_scopes* scopes = TYRAN_CALLOC_TYPE(scopes_pool, tyran_variable_scopes);
 	scopes->allocated_scope_count = max_count;
 	scopes->scopes = TYRAN_MALLOC_NO_POOL_TYPE_COUNT(memory, tyran_variable_scope, scopes->allocated_scope_count);

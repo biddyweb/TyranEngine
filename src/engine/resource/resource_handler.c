@@ -44,14 +44,11 @@ nimbus_resource_id nimbus_resource_handler_find_name(nimbus_resource_handler* se
 
 nimbus_resource_id nimbus_resource_handler_add(nimbus_resource_handler* self, const char* name)
 {
-	TYRAN_LOG("Add");
 	nimbus_resource_id id = nimbus_resource_handler_find_name(self, name);
 	if (!id) {
 		int index = self->resource_infos_count++;
-		TYRAN_LOG("Index:%d", index);
 		nimbus_resource_info* info = &self->resource_infos[index];
 		id = nimbus_resource_handler_calculate_resource_id(name);
-		TYRAN_LOG("Name:'%s' -> %d", name, id);
 		info->resource_id = id;
 		info->filename = tyran_str_dup(self->memory, name);
 	}

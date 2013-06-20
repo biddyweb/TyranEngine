@@ -29,7 +29,6 @@ void nimbus_ring_buffer_free(nimbus_ring_buffer* self)
 
 void nimbus_ring_buffer_write_pointer_advance(nimbus_ring_buffer* self, int size)
 {
-	TYRAN_LOG("write_pointer_advance(%d)", size);
 	self->write_index += size;
 	self->write_index %= self->max_size;
 	self->size += size;
@@ -71,7 +70,6 @@ void nimbus_ring_buffer_read_pointer(nimbus_ring_buffer* self, int size, u8t** d
 
 int nimbus_ring_buffer_write(nimbus_ring_buffer* self, const void* data, int len)
 {
-	TYRAN_LOG("ring_buffer_write %d", len);
 	int write_octets_left = self->max_size - self->size;
 	if (len > write_octets_left) {
 		return -1;
@@ -92,12 +90,10 @@ int nimbus_ring_buffer_write(nimbus_ring_buffer* self, const void* data, int len
 
 int nimbus_ring_buffer_read(nimbus_ring_buffer* self, void* data, int len)
 {
-	TYRAN_LOG("ring_buffer_read %d", len);
 	int read_octets_left = self->size;
 	if (len > read_octets_left) {
 		len = read_octets_left;
 	}
-	TYRAN_LOG("ring_buffer_read_max %d", len);
 	int len_to_read = (len > read_octets_left) ? read_octets_left : len;
 	u8t* data_pointer = (u8t*) data;
 

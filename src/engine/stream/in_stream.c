@@ -16,8 +16,9 @@ void nimbus_in_stream_free(nimbus_in_stream* self)
 
 int nimbus_in_stream_read_octets(nimbus_in_stream* self, void* data, int length)
 {
-	TYRAN_ASSERT(self->pointer + length < self->end_buffer, "Read too far");
+	TYRAN_ASSERT(self->pointer + length <= self->end_buffer, "Read too far");
 	tyran_memcpy_octets(data, self->pointer, length);
+
 	self->pointer += length;
 
 	return 0;

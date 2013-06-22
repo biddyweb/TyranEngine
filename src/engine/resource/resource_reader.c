@@ -45,7 +45,6 @@ nimbus_resource_id nimbus_resource_id_from_stream(nimbus_event_read_stream* stre
 	return id;
 }
 
-
 nimbus_resource_reader* nimbus_resource_reader_new(tyran_memory* memory, nimbus_resource_handler* resource_handler)
 {
 	nimbus_resource_reader* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_resource_reader);
@@ -55,6 +54,3 @@ nimbus_resource_reader* nimbus_resource_reader_new(tyran_memory* memory, nimbus_
 
 	return self;
 }
-
-
-

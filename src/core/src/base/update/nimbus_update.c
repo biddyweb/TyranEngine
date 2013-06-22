@@ -3,11 +3,12 @@
 
 void nimbus_update_update(void* _self, struct nimbus_task_queue* queue)
 {
+	TYRAN_LOG("Update_Update!");
 	nimbus_update* self = _self;
 	nimbus_event_read_stream* read_stream = &self->event_read_stream;
 	nimbus_event_process(&self->event_listener, read_stream);
 	
-	TYRAN_ASSERT(self->update_function != 0, "OMG POITNER BAD!");
+	TYRAN_ASSERT(self->update_function != 0, "null pointer as update_function");
 	self->update_function(self->update_function_self);
 }
 

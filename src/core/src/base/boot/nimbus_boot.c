@@ -20,7 +20,7 @@ void nimbus_boot_task_queue(nimbus_boot* self)
 
 void nimbus_boot_task_threads(nimbus_boot* self)
 {
-	self->task_thread_count = 2;
+	self->task_thread_count = 3;
 	TYRAN_LOG("Tyran Engine v0.1 boot. Starting %d thread(s).", self->task_thread_count);
 	for (int i=1; i<self->task_thread_count; ++i) {
 		TYRAN_LOG("Init task thread");
@@ -32,7 +32,6 @@ void nimbus_boot_task_threads(nimbus_boot* self)
 void nimbus_boot_engine(nimbus_boot* self)
 {
 	self->engine = nimbus_engine_new(&self->memory, self->task_queue);
-//	nimbus_task_queue_add_task(self->task_queue, self->engine->task);
 }
 
 nimbus_boot* nimbus_boot_new()
@@ -93,7 +92,7 @@ tyran_boolean nimbus_boot_should_render(nimbus_boot* self)
 int nimbus_boot_update(nimbus_boot* self)
 {
 	int err = nimbus_engine_update(self->engine, self->task_queue);
-	nimbus_boot_manually_update_affinity_zero_tasks(self);
+	// nimbus_boot_manually_update_affinity_zero_tasks(self);
 	
 	return err;
 }

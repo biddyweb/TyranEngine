@@ -122,6 +122,7 @@ void check_header(nimbus_event_connection* self)
 
 }
 
+
 static void fire_resource_updated(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id, nimbus_ring_buffer* buffer, int expected_payload_size)
 {
 	TYRAN_LOG("Fire resource updated:%d size:%d", resource_id, expected_payload_size);
@@ -130,6 +131,7 @@ static void fire_resource_updated(nimbus_event_write_stream* out_event_stream, n
 
 	nimbus_resource_updated resource_updated;
 	resource_updated.resource_id = resource_id;
+	resource_updated.payload_size = expected_payload_size;
 
 	nimbus_event_write_stream_clear(out_event_stream);
 	nimbus_event_stream_write_event_header(out_event_stream, NIMBUS_EVENT_RESOURCE_UPDATED);
@@ -144,6 +146,7 @@ static void fire_resource_updated(nimbus_event_write_stream* out_event_stream, n
 	nimbus_event_stream_write_octets(out_event_stream, temp_buffer, temp_buffer_size);
 	
 	nimbus_event_stream_write_event_end(out_event_stream);
+	TYRAN_LOG("Fire resource done!");
 }
 
 static void on_payload_done(nimbus_event_connection* self)
@@ -151,7 +154,7 @@ static void on_payload_done(nimbus_event_connection* self)
 	TYRAN_LOG("Payload received, please consume it");
 	self->waiting_for_header = 1;
 	
-	fire_resource_updated(&self->out_event_stream, self->resource_id, &self->buffer, self->expected_payload_size);
+	fire_resource_updated(&self->update_object.event_write_stream, self->resource_id, &self->buffer, self->expected_payload_size);
 }
 
 static void consume(nimbus_event_connection* self)
@@ -175,8 +178,10 @@ static int receive(nimbus_event_connection* self)
 	u8t* temp_buffer;
 	int temp_buffer_size;
 
+	TYRAN_LOG("receive: Consume");
 	consume(self);
 
+	TYRAN_LOG("receive: READ");
 	nimbus_ring_buffer_write_pointer(&self->buffer, &temp_buffer, &temp_buffer_size);
 	int octets_read = nimbus_connecting_socket_read(&self->socket, temp_buffer, temp_buffer_size);
 	if (octets_read > 0) {
@@ -186,6 +191,7 @@ static int receive(nimbus_event_connection* self)
 		nimbus_ring_buffer_write_pointer_advance(&self->buffer, octets_read);
 	}
 
+	TYRAN_LOG("receive: returned %d", octets_read);
 
 	return octets_read;
 }
@@ -202,13 +208,14 @@ static void receive_task(void* _self, struct nimbus_task_queue* task_queue)
 	}
 }
 
+
 void nimbus_event_connection_init(nimbus_event_connection* self, tyran_memory* memory, const char* host, int port)
 {
 	self->waiting_for_header = 1;
 	nimbus_ring_buffer_init(&self->buffer, memory, 1024);
 	nimbus_out_stream_init(&self->out_stream, memory, 1024);
 	
-	nimbus_event_write_stream_init(&self->out_event_stream, memory, 1024);
+	//nimbus_event_write_stream_init(&self->out_event_stream, memory, 1024);
 	nimbus_connecting_socket_init(&self->socket, host, port);
 	send_connect(self);
 	nimbus_update_init(&self->update_object, memory, _on_update, self);

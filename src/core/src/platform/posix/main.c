@@ -8,9 +8,12 @@ int main()
 	
 	while (1)
 	{
-		int err = nimbus_boot_update(boot);
-		if (err) {
-			break;
+		printf("main::update\n");
+		if (nimbus_boot_ready_for_next_frame(boot)) {
+			int err = nimbus_boot_update(boot);
+			if (err) {
+				break;
+			}
 		}
 		nimbus_thread_sleep(0.5f);
 	}

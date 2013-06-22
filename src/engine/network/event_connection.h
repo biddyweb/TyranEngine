@@ -21,7 +21,7 @@ typedef struct nimbus_event_connection {
 	u8t* in_buffer;
 	int in_buffer_size;
 
-	nimbus_event_write_stream out_event_stream;
+//	nimbus_event_write_stream out_event_stream;
 	
 	nimbus_update update_object;
 	

@@ -18,6 +18,7 @@ void schedule_update_tasks(nimbus_engine* self, nimbus_task_queue* queue)
 {
 	for (int i=1; i<self->update_objects_count; ++i) {
 		nimbus_task* task = &self->update_objects[i]->task;
+		TYRAN_LOG("adding task:%d", i);
 		nimbus_task_queue_add_task(queue, task);
 	}
 }
@@ -44,7 +45,7 @@ int nimbus_engine_update(nimbus_engine* self, nimbus_task_queue* queue)
 
 static void _dummy_update(void* _self)
 {
-	
+	TYRAN_LOG("Engine::dummy_Update");
 }
 
 static void boot_resource(nimbus_engine* self)
@@ -95,6 +96,12 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	nimbus_update_init(&self->update_object, memory, _dummy_update, 0);
 	
 	nimbus_engine_add_update_object(self, &self->update_object);
+	
+	nimbus_object_loader_init(&self->object_loader, memory, &self->mocha_api, global);
+	
+	nimbus_engine_add_update_object(self, &self->object_loader.update);
+	
+	
 	start_event_connection(self, memory, "198.74.60.114", 32000, task_queue);
 
 	boot_resource(self);

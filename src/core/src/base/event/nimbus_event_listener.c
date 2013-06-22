@@ -1,6 +1,7 @@
 #include "nimbus_event_listener.h"
 #include "nimbus_event_stream.h"
 #include <tyranscript/tyran_memory.h>
+#include <tyranscript/tyran_log.h>
 
 nimbus_event_listener_function* nimbus_event_function_from_event_id(nimbus_event_listener* self, nimbus_event_type_id id)
 {
@@ -22,6 +23,8 @@ void nimbus_event_process(nimbus_event_listener* self, struct nimbus_event_read_
 
 	for (; read_stream->pointer < read_stream->end_pointer; ) {
 		nimbus_event_stream_read_type(read_stream, header);
+		
+		TYRAN_LOG("event process: Found event type:%d", header.event_type_id);
 
 		nimbus_event_listener_function* func = nimbus_event_function_from_event_id(self, header.event_type_id);
 

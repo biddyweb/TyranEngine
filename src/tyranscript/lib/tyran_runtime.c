@@ -61,7 +61,7 @@ void tyran_runtime_execute(tyran_runtime* runtime, struct tyran_value* return_va
 	tyran_value rcx;
 	tyran_value rcy;
 	int i;
-	int argument_count;
+//	int argument_count;
 	int test;
 	tyran_object* object;
 	tyran_value* r;

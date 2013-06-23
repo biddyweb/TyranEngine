@@ -32,6 +32,7 @@ nimbus_resource_id nimbus_resource_handler_calculate_resource_id(const char* nam
 }
 
 
+
 nimbus_resource_id nimbus_resource_handler_find_name(nimbus_resource_handler* self, const char* name)
 {
 	for (int i=0; i<self->resource_infos_count; ++i) {
@@ -41,6 +42,12 @@ nimbus_resource_id nimbus_resource_handler_find_name(nimbus_resource_handler* se
 	}
 	return 0;
 }
+
+nimbus_resource_id nimbus_resource_handler_name_to_id(nimbus_resource_handler* self, const char* name)
+{
+	return nimbus_resource_handler_find_name(self, name);
+}
+
 
 nimbus_resource_id nimbus_resource_handler_add(nimbus_resource_handler* self, const char* name)
 {

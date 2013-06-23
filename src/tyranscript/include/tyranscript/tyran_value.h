@@ -143,5 +143,6 @@ int tyran_value_is_true(const tyran_value* v);
 int tyran_value_length(const tyran_value* v);
 
 void tyran_value_set_program_specific(struct tyran_value* value, void* program_specific_context);
+#define tyran_value_program_specific(v) v->data.object->program_specific
 
 #endif

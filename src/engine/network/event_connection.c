@@ -178,20 +178,13 @@ static int receive(nimbus_event_connection* self)
 	u8t* temp_buffer;
 	int temp_buffer_size;
 
-	TYRAN_LOG("receive: Consume");
 	consume(self);
 
-	TYRAN_LOG("receive: READ");
 	nimbus_ring_buffer_write_pointer(&self->buffer, &temp_buffer, &temp_buffer_size);
 	int octets_read = nimbus_connecting_socket_read(&self->socket, temp_buffer, temp_buffer_size);
 	if (octets_read > 0) {
-		for (int i=0; i<octets_read; ++i) {
-			TYRAN_LOG("Received octets:%d (%02X) '%c'", octets_read, temp_buffer[i], temp_buffer[i]);
-		}
 		nimbus_ring_buffer_write_pointer_advance(&self->buffer, octets_read);
 	}
-
-	TYRAN_LOG("receive: returned %d", octets_read);
 
 	return octets_read;
 }

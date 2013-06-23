@@ -6,13 +6,45 @@
 #include "../event/resource_load.h"
 #include "../../core/src/base/event/nimbus_event_stream.h"
 #include "../../core/src/base/event/nimbus_event_listener.h"
+#include "../resource/resource_handler.h"
 
+static void fire_load_resource(nimbus_engine* self, nimbus_resource_id id)
+{
+	nimbus_resource_load event;
+	event.resource_id = id;
+	nimbus_event_stream_write_event(&self->update_object.event_write_stream, NIMBUS_EVENT_RESOURCE_LOAD, event);
+}
+
+static void on_load_state(nimbus_engine* self, const char* state_name)
+{
+	nimbus_resource_id id = nimbus_resource_handler_calculate_resource_id(state_name);
+	fire_load_resource(self, id);
+}
 
 TYRAN_RUNTIME_CALL_FUNC(nimbus_engine_load_library)
 {
 	return 0;
 }
 
+TYRAN_RUNTIME_CALL_FUNC(load_state)
+{
+	const struct tyran_string* state_name = tyran_value_string(&arguments[0]);
+	char state_name_buf[1024];
+	tyran_string_to_c_str(state_name_buf, 1024, state_name);
+	
+	
+	TYRAN_LOG("LoadState: '%s'", state_name_buf);
+	nimbus_engine* _self = tyran_value_program_specific(self);
+
+	on_load_state(_self, state_name_buf);
+	return 0;
+}
+
+TYRAN_RUNTIME_CALL_FUNC(log_output)
+{
+	TYRAN_LOG("Log!");
+	return 0;
+}
 
 void schedule_update_tasks(nimbus_engine* self, nimbus_task_queue* queue)
 {
@@ -53,15 +85,14 @@ static void boot_resource(nimbus_engine* self)
 	nimbus_resource_id boot_id = nimbus_resource_handler_add(self->resource_handler, "boot");
 	TYRAN_LOG("boot resource id:%d", boot_id);
 
-	nimbus_resource_load event;
-	event.resource_id = boot_id;
-	nimbus_event_stream_write_event(&self->update_object.event_write_stream, NIMBUS_EVENT_RESOURCE_LOAD, event);
+	fire_load_resource(self, boot_id);
 }
 
 
 void nimbus_engine_add_update_object(nimbus_engine* self, nimbus_update* o)
 {
 	int index = self->update_objects_count++;
+	o->task.group = 1;
 	self->update_objects[index] = o;
 }
 
@@ -85,7 +116,10 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	
 
 	tyran_value* global = tyran_runtime_context(self->mocha_api.default_runtime);
+	tyran_value_set_program_specific(global, self);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "load_library", nimbus_engine_load_library);
+	tyran_mocha_api_add_function(&self->mocha_api, global, "loadState", load_state);
+	tyran_mocha_api_add_function(&self->mocha_api, global, "log", log_output);
 
 	self->resource_handler = nimbus_resource_handler_new(memory);
 	nimbus_event_listener_init(&self->event_listener, self);

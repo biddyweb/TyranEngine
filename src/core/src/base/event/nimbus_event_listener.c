@@ -24,8 +24,6 @@ void nimbus_event_process(nimbus_event_listener* self, struct nimbus_event_read_
 	for (; read_stream->pointer < read_stream->end_pointer; ) {
 		nimbus_event_stream_read_type(read_stream, header);
 		
-		TYRAN_LOG("event process: Found event type:%d", header.event_type_id);
-
 		nimbus_event_listener_function* func = nimbus_event_function_from_event_id(self, header.event_type_id);
 
 		if (func) {

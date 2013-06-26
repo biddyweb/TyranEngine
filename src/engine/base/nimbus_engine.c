@@ -10,14 +10,12 @@
 
 static void fire_load_resource(nimbus_engine* self, nimbus_resource_id id)
 {
-	nimbus_resource_load event;
-	event.resource_id = id;
-	nimbus_event_stream_write_event(&self->update_object.event_write_stream, NIMBUS_EVENT_RESOURCE_LOAD, event);
+	nimbus_resource_load_send(&self->update_object.event_write_stream, id);
 }
 
 static void on_load_state(nimbus_engine* self, const char* state_name)
 {
-	nimbus_resource_id id = nimbus_resource_handler_calculate_resource_id(state_name);
+	nimbus_resource_id id = nimbus_resource_id_from_string(state_name);
 	fire_load_resource(self, id);
 }
 

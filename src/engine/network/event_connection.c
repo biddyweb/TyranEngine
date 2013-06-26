@@ -21,7 +21,6 @@ void send_stream(nimbus_event_connection* self)
 	nimbus_connecting_socket_write(&self->socket, buffer, length);
 }
 
-
 static void send_connect(nimbus_event_connection* self)
 {
 	nimbus_out_stream_clear(&self->out_stream);
@@ -37,7 +36,6 @@ static void send_connect(nimbus_event_connection* self)
 
 	send_stream(self);
 }
-
 
 void send_request(nimbus_event_connection* self, nimbus_resource_id resource_id)
 {
@@ -67,7 +65,6 @@ void _on_update(void* self)
 {
 	TYRAN_LOG("connection.update");
 }
-
 
 void nimbus_event_connection_free(nimbus_event_connection* self)
 {
@@ -121,7 +118,6 @@ void check_header(nimbus_event_connection* self)
 	}
 
 }
-
 
 static void fire_resource_updated(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id, nimbus_ring_buffer* buffer, int expected_payload_size)
 {
@@ -200,7 +196,6 @@ static void receive_task(void* _self, struct nimbus_task_queue* task_queue)
 		}
 	}
 }
-
 
 void nimbus_event_connection_init(nimbus_event_connection* self, tyran_memory* memory, const char* host, int port)
 {

@@ -7,7 +7,7 @@ static void evaluate(nimbus_object_loader* self, const char* data, size_t len, t
 	tyran_mocha_api_eval(self->mocha, self->context, return_value, data, len);
 }
 
-static void add_object(nimbus_object_loader* self, tyran_value* value)
+static void add_object(nimbus_object_loader* self, nimbus_resource_id resource_id, tyran_value* value)
 {
 	
 }
@@ -20,7 +20,7 @@ static void on_resource_updated(nimbus_object_loader* self, struct nimbus_event_
 	
 	tyran_value return_value;
 	evaluate(self, (const char*)self->script_buffer, payload_size, &return_value);
-	add_object(self, &return_value);
+	add_object(self, resource_id, &return_value);
 }
 
 static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* stream)

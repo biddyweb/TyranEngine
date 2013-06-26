@@ -13,23 +13,6 @@ nimbus_resource_handler* nimbus_resource_handler_new(tyran_memory* memory)
 	return self;
 }
 
-nimbus_resource_id nimbus_resource_handler_calculate_resource_id(const char* name)
-{
-	const char* p;
-	u32t h = 0;
-	u32t g = 0;
-
-	for(p = name; *p != '\0'; p = p + 1) {
-		h = (h << 4) + *p;
-
-		if ((g = h & 0xf0000000) != 0) {
-			h = h ^ (g >> 24);
-			h = h ^ g;
-		}
-	}
-
-	return (nimbus_resource_id)h;
-}
 
 
 
@@ -43,11 +26,6 @@ nimbus_resource_id nimbus_resource_handler_find_name(nimbus_resource_handler* se
 	return 0;
 }
 
-nimbus_resource_id nimbus_resource_handler_name_to_id(nimbus_resource_handler* self, const char* name)
-{
-	return nimbus_resource_handler_find_name(self, name);
-}
-
 
 nimbus_resource_id nimbus_resource_handler_add(nimbus_resource_handler* self, const char* name)
 {
@@ -55,7 +33,7 @@ nimbus_resource_id nimbus_resource_handler_add(nimbus_resource_handler* self, co
 	if (!id) {
 		int index = self->resource_infos_count++;
 		nimbus_resource_info* info = &self->resource_infos[index];
-		id = nimbus_resource_handler_calculate_resource_id(name);
+		id = nimbus_resource_id_from_string(name);
 		info->resource_id = id;
 		info->filename = tyran_str_dup(self->memory, name);
 	}

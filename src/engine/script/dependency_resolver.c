@@ -1,241 +1,208 @@
-/*
-void add_reference(resource_loading_job& info, tyran_value* combine, tyran_value* target, const std::string& reference)
+#include "dependency_resolver.h"
+#include <tyranscript/tyran_memory.h>
+#include <tyranscript/tyran_clib.h>
+#include <tyranscript/tyran_value.h>
+#include <tyranscript/tyran_object.h>
+#include <tyranscript/tyran_string.h>
+#include <tyranscript/tyran_symbol_table.h>
+#include <tyranscript/tyran_value_object.h>
+#include "../event/resource_load.h"
+#include "../resource/resource_cache.h"
+
+static void load_resource(nimbus_dependency_resolver* self, nimbus_resource_id resource_id)
 {
-	reference_type* t = &info.references[info.reference_count];
-	info.reference_count++;
-	t->reference = reference;
-	t->combine = combine;
-	t->target = target;
+	self->loading_resources[self->loading_resources_count] = resource_id;
+	self->loading_resources_count++;
+	nimbus_resource_load_send(self->event_write_stream, resource_id);
 }
 
-void add_resource_reference(resource_loading_job& info, tyran_value* target, resource_id_type id)
+static tyran_boolean is_loading_in_progress(nimbus_dependency_resolver* self, nimbus_resource_id resource_id)
 {
-	resource_reference_type* t = &info.resource_references[info.resource_reference_count];
-	info.resource_reference_count++;
-	t->id = id;
-	t->target = target;
+	for (int i=0; i<self->loading_resources_count; ++i) {
+		if (self->loading_resources[i] == resource_id) {
+			return TYRAN_TRUE;
+		}
+	}
 	
-	load_resource_if_needed(info, id);
+	return TYRAN_FALSE;
 }
 
-void request_inherits_and_references(resource_loading_job& info, tyran_value* combine, tyran_value* o)
+static void loading_done(nimbus_dependency_resolver* self, nimbus_resource_id resource_id)
+{
+	for (int i=0; i<self->loading_resources_count; ++i) {
+		if (self->loading_resources[i] == resource_id) {
+			tyran_memmove_type(nimbus_resource_id, &self->loading_resources[i], &self->loading_resources[i + 1], self->loading_resources_count - i - 1);
+			self->loading_resources_count--;
+			return;
+		}
+	}
+}
+
+static nimbus_resource_dependency_info* resource_depency_info_new(nimbus_dependency_resolver* self, nimbus_resource_id resource_id, tyran_value* target)
+{
+	TYRAN_LOG("Starting resource loading of id: %d", resource_id);
+	TYRAN_ASSERT(!is_loading_in_progress(self, resource_id), "Can't start a loading job for a resource only in loading");
+	TYRAN_ASSERT(nimbus_resource_cache_find(&self->resource_cache, resource_id) == 0, "Can't start resource loading job if resource already is ready?");
+
+	nimbus_resource_dependency_info* info = &self->dependency_infos[self->dependency_info_count++];
+	nimbus_resource_dependency_info_init(info, resource_id, target);
+	
+	return info;
+}
+
+static void load_resource_if_needed(nimbus_dependency_resolver* self, nimbus_resource_id resource_id)
+{
+	tyran_value* resource_value = nimbus_resource_cache_find(&self->resource_cache, resource_id);
+	if (!resource_value) {
+		if (!is_loading_in_progress(self, resource_id)) {
+			load_resource(self, resource_id);
+		} else {
+			TYRAN_LOG("LOAD(%d) already loading - ignoring request", resource_id);
+		}
+	} else {
+		TYRAN_LOG("LOAD(%d) already loaded", resource_id);
+	}
+}
+
+static void inherit_resource(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* target, nimbus_resource_id resource_id)
+{
+	nimbus_resource_dependency_info_inherit(info, resource_id);
+	load_resource_if_needed(self, resource_id);
+}
+
+static void add_resource_reference(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* target, nimbus_resource_id resource_id)
+{
+	nimbus_resource_dependency_info_add_resource(info, target, resource_id);
+	load_resource_if_needed(self, resource_id);
+}
+
+static int request_inherits_and_references(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* combine, tyran_value* v)
 {
 	// tyran_print_value("Checking out the inherits", o, 1);
-	tyran_value iterator_value;
-	tyran_value_object_fetch_key_iterator(runtime, o, &iterator_value);
+	char value_string[128];
+	int resources_that_are_loading = 0;
 
-	tyran_object_iterator *io = iterator_value.data.object->data.iterator;
-	for (int key_index = 0; key_index < io->count; ++key_index)
-	{
-		const tyran_object_key* key = io->keys[key_index];
-		tyran_object_key_flag_type flag = 0;
-		tyran_value* value = tyran_value_object_lookup_prototype(o, key, &flag);
-		char c_key[128];
-		tyran_string_to_c_str(c_key, 128, key);
-		TORNADO_LOG("key:" << c_key);
-		if (value->type == TYRAN_VALUE_TYPE_STRING)
-		{
-			tyran_string_to_c_str(c_key, 128, value->data.str);
-			const char* svalue = c_key;
-			if (svalue[0] == '@')
-			{
-				std::string resource_name(&svalue[1]);
-				// TORNADO_LOG("found a resource reference to '" << resource_name);
-				resource_id_type id = resource_id(resource_name.c_str()).serializable_id();
-				tyran_value* resource = find_resource(id);
-				if (resource != 0)
-				{
+	tyran_object* o = tyran_value_object(v);
+	tyran_object* combine_object = tyran_value_object(combine);
+	
+	for (int i = 0; i < o->property_count; ++i) {
+		tyran_object_property* property = &o->properties[i];
+		tyran_value* value = &property->value;
+
+		if (tyran_value_is_string(value)) {
+			tyran_string_to_c_str(value_string, 128, tyran_object_string(value->data.object));
+			if (value_string[0] == '@') {
+				nimbus_resource_id resource_id = nimbus_resource_id_from_string(&value_string[1]);
+				tyran_value* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
+				if (resource != 0) {
 					tyran_value_release(*value);
 					tyran_value_copy(*value, *resource);
+				} else {
+					TYRAN_LOG("RESOURCE REFERENCE: '%s'", value_string);
+					resources_that_are_loading++;
+					add_resource_reference(self, info, value, resource_id);
 				}
-				else
-				{
-					TORNADO_LOG("RESOURCE REFERENCE:" << resource_name);
+			} else if (value_string[0] == '#') {
+				tyran_symbol symbol;
+				tyran_symbol_table_add(self->symbol_table, &symbol, &value_string[1]);
 
-					add_resource_reference(info, value, id);
+				tyran_value looked_up_value;
+				tyran_object_lookup_prototype(&looked_up_value, combine_object, &symbol);
+				
+				tyran_value_replace(*v, looked_up_value);
+			} else {
+				const char* key_string = tyran_symbol_table_lookup(self->symbol_table, &property->symbol);
+				if (tyran_strcmp(key_string, "inherit") == 0) {
+					TYRAN_LOG("Found inherit:'%s'", value_string);
+
+					nimbus_resource_id resource_id = nimbus_resource_id_from_string(value_string);
+					tyran_value* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
+					if (!resource) {
+						resources_that_are_loading++;
+						inherit_resource(self, info, v, resource_id);
+					}
 				}
 			}
-			else if (svalue[0] == '#')
-			{
-				std::string reference(&svalue[1]);
-				// TORNADO_LOG("found a reference to '" << reference);
-				add_reference(info, combine, value, reference);
+		} else if (tyran_value_is_object(value)) {
+			if (!tyran_value_is_function(value)) {
+				request_inherits_and_references(self, info, combine, value);
 			}
-			else if (tyran_string_strcmp(key, tyran_string_from_c_str("inherit")) == 0)
-			{
-				tyran_string_to_c_str(c_key, 128, value->data.str);
-				const char* class_name = c_key;
-				TORNADO_LOG("Found inherit:'" << class_name << "'");
-				inherit_resource(info, o, resource_id(class_name).serializable_id());
-				tyran_object_delete(o->data.object, key);
-			}
-		}
-		else if (value->type == TYRAN_VALUE_TYPE_OBJECT)
-		{
-			if (tyran_value_is_function(value))
-			{
-			}
-			else
-			{
-				request_inherits_and_references(info, combine, value);
-			}
-		}
-	}
-}
-
-void resolve_reference_stack(resource_loading_job& info)
-{
-	for (uint i = 0; i < info.reference_count; ++i)
-	{
-		reference_type* t = &info.references[i];
-		const tyran_string* uni_string = tyran_string_from_c_str(t->reference.c_str());
-		const tyran_object_key* key = tyran_object_key_new(uni_string, 0);
-
-		tyran_object_key_flag_type flag;
-		tyran_value* value = tyran_value_object_lookup_prototype(t->combine, key, &flag);
-		if (value == 0) {
-			TORNADO_ERROR("Couldn't find reference: '" << t->reference << "'");
-		}		
-		tyran_value_copy(*t->target, *value);
-	}
-	info.reference_count = 0;
-}
-
-void resolve_resource_reference_stack(resource_loading_job& info)
-{
-	for (uint i = 0; i < info.resource_reference_count; ++i)
-	{
-		resource_reference_type* t = &info.resource_references[i];
-		tyran_value* resource = get_resource(t->id);
-		tyran_value_release(*t->target);
-		tyran_value_copy(*t->target, *resource);
-	}
-	info.resource_reference_count = 0;
-}
-
-
-void inherit_resource(resource_loading_job& info, tyran_value* target, resource_id_type resource_id_value)
-{
-	load_resource_if_needed(info, resource_id_value);
-	TORNADO_ASSERT(info.inherit_count < 100, "Too many inherits");
-	info.inherits[info.inherit_count].resource_value_id = resource_id_value;
-	tyran_value* copy = tyran_value_duplicate(target);
-	info.inherits[info.inherit_count].target = copy;
-	info.inherit_count++;
-}
-
-void resolve_inherit_stack(resource_loading_job& info)
-{
-	for (int i = info.inherit_count - 1; i >= 0; --i)
-	{
-		inherit_type* t = &info.inherits[i];
-		TORNADO_LOG("#" << i << " Setting reference from #" << t->resource_value_id);
-		tyran_value* base = get_resource(t->resource_value_id);
-
-		// tyran_value* v = tyran_value_new();
-		//tyran_value_set_object(*v, tyran_object_new());
-	//	quadwheel_clone(v, base);
-		tyran_value_object_set_prototype(t->target, base);
-	}
-
-	info.inherit_count = 0;
-}
-
-tyran_value* get_resource(resource_id_type resource_id_value)
-{
-	tyran_value* v = find_resource(resource_id_value);
-	TORNADO_ASSERT(v != 0, "get_resource requires an existing resource:" << resource_id_value);
-	
-	return v;
-}
-
-tyran_value* find_resource(resource_id_type resource_id_value)
-{
-	std::map<resource_id_type, tyran_value*>::const_iterator it = resources.find(resource_id_value);
-	if (it == resources.end())
-	{
-		return 0;
-	}
-
-	return it->second;
-}
-
-bool is_loading_in_progress(resource_id_type id)
-{
-	for (resource_loading_collection::const_iterator it = resource_loading_jobs.begin(); it != resource_loading_jobs.end(); ++it)
-	{
-		const resource_loading_job& info = * (*it);
-		if (info.target_resource_id == id)
-		{
-			return true;
 		}
 	}
 	
-	return false;
+	return resources_that_are_loading;
 }
 
-quadwheel_engine::resource_loading_job* start_resource_loading_job(const std::string& description, resource_id_type resource_id_value)
+void nimbus_dependency_resolver_init(nimbus_dependency_resolver* self, struct tyran_memory* memory, tyran_symbol_table* symbol_table, struct nimbus_event_write_stream* stream)
 {
-	TORNADO_LOG("Starting resource loading:" << description << " id:" << resource_id_value);
-	TORNADO_ASSERT(!is_loading_in_progress(resource_id_value), "Can't start a loading job for a resource only in loading");
-	TORNADO_ASSERT(find_resource(resource_id_value) == 0, "Can't start resource loading job if resource already is ready?");
+	self->dependency_info_count = 0;
+	self->symbol_table = symbol_table;
+	self->event_write_stream = stream;
+	nimbus_resource_cache_init(&self->resource_cache, memory);
+}
 
-	resource_loading_job* job = new resource_loading_job;
-	job->source_instance_id = 0;
-	job->target_resource_id = resource_id_value;
-	job->description = description;
-	job->should_clone = false;
-	job->should_spawn = false;
-	tyran_value_set_undefined(job->root_target_value);
-	job->reference_count = 0;
-	job->resource_reference_count = 0;
-	job->inherit_count = 0;
+static void check_if_resolved(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info);
+
+static void check_if_someone_wants(nimbus_dependency_resolver* self, nimbus_resource_id resource_id, tyran_value* v)
+{
+	for (int i=0; i<self->dependency_info_count; ++i) {
+		nimbus_resource_dependency_info* dependency_info = &self->dependency_infos[i];
+		if (dependency_info->inherit_resource_id == resource_id) {
+				tyran_value_object_set_prototype(dependency_info->target, v);
+				dependency_info->inherit_resource_id = 0;
+		}
+		
+		for (int j=0; j<dependency_info->resource_dependencies_count; ) {
+			nimbus_resource_dependency* dependency = &dependency_info->resource_dependencies[j];
+			if (dependency->resource_id == resource_id) {
+				tyran_value_replace(*dependency->target, *v);
+				nimbus_resource_dependency_info_delete_at(dependency_info, j);
+			} else {
+				++j;
+			}
+		}
 	
-	resource_loading_jobs.push_back(job);
-	load_resource(*job, resource_id_value);
-
-	return job;
-}
-
-void load_resource(resource_loading_job& info, resource_id_type resource_id_value)
-{
-	TORNADO_LOG("load sub resource " << resource_id_value << " requested by job " << info.description);
-	if (resource_id_value != info.target_resource_id)
-	{
-		info.resources_to_load.push_back(resource_id_value);
+		check_if_resolved(self, dependency_info);
 	}
-	send_resource_request(resource_id_value);
 }
 
-void send_resource_request(resource_id_type resource_id_value)
+static void delete_dependency_info(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info)
 {
-	TORNADO_LOG("Sending out a resource request for " << resource_id_value);
-	resource_requested e;
-	e.resource_id_value = resource_id_value;
-	e_dispatcher.send_event(&e, sizeof(e), resource_requested_id, 0);
-}
-
-void load_resource_if_needed(resource_loading_job& job, resource_id_type resource_id_value)
-{
-	tyran_value* resource_value = find_resource(resource_id_value);
-	if (!resource_value)
-	{
-		job.resources_to_load.push_back(resource_id_value);
-		if (!is_loading_in_progress(resource_id_value))
-		{
-			std::ostringstream s;
-			s << job.description << " needed " << resource_id_value;
-			start_resource_loading_job(s.str(), resource_id_value);
-		}
-		else
-		{
-			TORNADO_LOG("LOAD(" << resource_id_value << ") already loading - ignoring request");
+	for (int i=0; i<self->dependency_info_count; ++i) {
+		if (&self->dependency_infos[i] == info) {
+			int index = i;
+			nimbus_resource_dependency_info_free(info);
+			tyran_memmove_type(nimbus_resource_dependency, &self->dependency_infos[index], &self->dependency_infos[index + 1], self->dependency_info_count - index - 1);
+			self->dependency_info_count--;
+			return;
 		}
 	}
-	else
-	{
-		TORNADO_LOG("LOAD(" << resource_id_value << ") already loaded");
+	TYRAN_ERROR("Couldn't find dependency info to delete");
+}
+
+static void resource_resolved(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info)
+{
+	loading_done(self, info->resource_id);
+	nimbus_resource_cache_add(&self->resource_cache, info->resource_id, info->target);
+	check_if_someone_wants(self, info->resource_id, info->target);
+	delete_dependency_info(self, info);
+}
+
+static void check_if_resolved(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info)
+{
+	if (nimbus_resource_dependency_info_is_satisfied(info)) {
+		resource_resolved(self, info);
 	}
 }
-*/
-int a;
+
+void nimbus_dependency_resolver_object_loaded(nimbus_dependency_resolver* self, tyran_value* v, nimbus_resource_id resource_id)
+{
+	nimbus_resource_dependency_info* info = resource_depency_info_new(self, resource_id, v);
+	request_inherits_and_references(self, info, v, v);
+	check_if_resolved(self, info);
+}
+
+tyran_boolean nimbus_dependency_resolver_done(nimbus_dependency_resolver* self)
+{
+	return self->dependency_info_count == 0;
+}

@@ -43,7 +43,7 @@ static void loading_done(nimbus_dependency_resolver* self, nimbus_resource_id re
 
 static nimbus_resource_dependency_info* resource_depency_info_new(nimbus_dependency_resolver* self, nimbus_resource_id resource_id, tyran_value* target)
 {
-	TYRAN_LOG("Starting resource loading of id: %d", resource_id);
+	TYRAN_LOG("Starting dependency tracking of resource: %d", resource_id);
 	TYRAN_ASSERT(!is_loading_in_progress(self, resource_id), "Can't start a loading job for a resource only in loading");
 	TYRAN_ASSERT(nimbus_resource_cache_find(&self->resource_cache, resource_id) == 0, "Can't start resource loading job if resource already is ready?");
 	TYRAN_ASSERT(self->dependency_info_count < self->dependency_info_max_count, "too many dependency infos");
@@ -87,6 +87,7 @@ static int request_inherits_and_references(nimbus_dependency_resolver* self, nim
 	int resources_that_are_loading = 0;
 
 	tyran_object* o = tyran_value_object(v);
+	TYRAN_LOG("Checking inherits and references");
 	
 	for (int i = 0; i < o->property_count; ++i) {
 		tyran_object_property* property = &o->properties[i];
@@ -94,6 +95,7 @@ static int request_inherits_and_references(nimbus_dependency_resolver* self, nim
 
 		if (tyran_value_is_string(value)) {
 			tyran_string_to_c_str(value_string, 128, tyran_object_string(value->data.object));
+			TYRAN_LOG("Value was string: '%s'", value_string);
 			if (value_string[0] == '@') {
 				nimbus_resource_id resource_id = nimbus_resource_id_from_string(&value_string[1]);
 				tyran_value* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
@@ -131,6 +133,7 @@ static int request_inherits_and_references(nimbus_dependency_resolver* self, nim
 				}
 			}
 		} else if (tyran_value_is_object(value)) {
+			TYRAN_LOG("value is object!");
 			if (!tyran_value_is_function(value)) {
 				request_inherits_and_references(self, info, combine, value);
 			}
@@ -143,6 +146,7 @@ static int request_inherits_and_references(nimbus_dependency_resolver* self, nim
 void nimbus_dependency_resolver_init(nimbus_dependency_resolver* self, struct tyran_memory* memory, tyran_symbol_table* symbol_table, struct nimbus_event_write_stream* stream)
 {
 	self->dependency_info_count = 0;
+	self->loading_resources_count = 0;
 	self->symbol_table = symbol_table;
 	self->event_write_stream = stream;
 	self->loading_resources_max_count = sizeof(self->loading_resources) / sizeof(nimbus_resource_id);

@@ -10,13 +10,19 @@
 
 static void fire_load_resource(nimbus_engine* self, nimbus_resource_id id)
 {
+	TYRAN_LOG("self:%p", (void*)self);
+	TYRAN_LOG("stream:%p", (void*)&self->update_object.event_write_stream);
 	nimbus_resource_load_send(&self->update_object.event_write_stream, id);
 }
 
 static void on_load_state(nimbus_engine* self, const char* state_name)
 {
+	TYRAN_LOG("on_load_state:'%s'", state_name);
+	TYRAN_LOG("on?load?state self:%p", (void*)self);
 	nimbus_resource_id id = nimbus_resource_id_from_string(state_name);
+	TYRAN_LOG("resource_id from state:%d", id);
 	fire_load_resource(self, id);
+	TYRAN_LOG("fire_load_resource done");
 }
 
 TYRAN_RUNTIME_CALL_FUNC(nimbus_engine_load_library)

@@ -26,7 +26,7 @@ int nimbus_event_write_stream_length(nimbus_event_write_stream* self)
 
 void nimbus_event_stream_write_octets(nimbus_event_write_stream* stream, const void* data, int len)
 {
-	TYRAN_ASSERT(stream->pointer + len < stream->end_pointer, "Overwrite!");
+	TYRAN_ASSERT(stream->pointer + len < stream->end_pointer, "Event Stream Overwrite. Len:%d", len);
 	tyran_memcpy_type(u8t, stream->pointer, data, len);
 	stream->pointer += len;
 }

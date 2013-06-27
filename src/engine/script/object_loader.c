@@ -4,13 +4,29 @@
 
 static void evaluate(nimbus_object_loader* self, const char* data, size_t len, tyran_value* return_value)
 {
-	tyran_mocha_api_eval(self->mocha, self->context, return_value, data, len);
+	TYRAN_LOG("1");
+	tyran_value new_object = tyran_mocha_api_create_object(self->mocha);
+	tyran_value_set_program_specific(&new_object, self);
+
+	TYRAN_LOG("2");
+	tyran_value_object_set_prototype(&new_object, self->context);
+	TYRAN_LOG("3");
+	tyran_value temp_value;
+	TYRAN_LOG("4");
+	tyran_value_set_nil(temp_value);
+	TYRAN_LOG("5");
+	tyran_mocha_api_eval(self->mocha, &new_object, &temp_value, data, len);
+	TYRAN_LOG("6");
+	tyran_value_copy(*return_value, new_object);
+	TYRAN_LOG("7");
 }
 
 static void add_object(nimbus_object_loader* self, nimbus_resource_id resource_id, tyran_value* value)
 {
 	TYRAN_LOG("add_object(%d)", resource_id);
-	nimbus_dependency_resolver_object_loaded(&self->dependency_resolver, value, resource_id);
+	if (resource_id != 431716) {
+		nimbus_dependency_resolver_object_loaded(&self->dependency_resolver, value, resource_id);
+	}
 }
 
 static void on_resource_updated(nimbus_object_loader* self, struct nimbus_event_read_stream* stream, nimbus_resource_id resource_id, int payload_size)

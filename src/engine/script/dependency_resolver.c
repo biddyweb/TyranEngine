@@ -11,6 +11,7 @@
 
 static void load_resource(nimbus_dependency_resolver* self, nimbus_resource_id resource_id)
 {
+	TYRAN_ASSERT(self->loading_resources_count < self->loading_resources_max_count, " Too many loading resources");
 	self->loading_resources[self->loading_resources_count] = resource_id;
 	self->loading_resources_count++;
 	nimbus_resource_load_send(self->event_write_stream, resource_id);
@@ -36,6 +37,8 @@ static void loading_done(nimbus_dependency_resolver* self, nimbus_resource_id re
 			return;
 		}
 	}
+	
+	TYRAN_SOFT_ERROR("Couldn't find that we were loading (%d)", resource_id);
 }
 
 static nimbus_resource_dependency_info* resource_depency_info_new(nimbus_dependency_resolver* self, nimbus_resource_id resource_id, tyran_value* target)
@@ -43,7 +46,7 @@ static nimbus_resource_dependency_info* resource_depency_info_new(nimbus_depende
 	TYRAN_LOG("Starting resource loading of id: %d", resource_id);
 	TYRAN_ASSERT(!is_loading_in_progress(self, resource_id), "Can't start a loading job for a resource only in loading");
 	TYRAN_ASSERT(nimbus_resource_cache_find(&self->resource_cache, resource_id) == 0, "Can't start resource loading job if resource already is ready?");
-
+	TYRAN_ASSERT(self->dependency_info_count < self->dependency_info_max_count, "too many dependency infos");
 	nimbus_resource_dependency_info* info = &self->dependency_infos[self->dependency_info_count++];
 	nimbus_resource_dependency_info_init(info, resource_id, target);
 	
@@ -55,12 +58,13 @@ static void load_resource_if_needed(nimbus_dependency_resolver* self, nimbus_res
 	tyran_value* resource_value = nimbus_resource_cache_find(&self->resource_cache, resource_id);
 	if (!resource_value) {
 		if (!is_loading_in_progress(self, resource_id)) {
+			TYRAN_LOG("LOAD(%d) need to request it", resource_id);
 			load_resource(self, resource_id);
 		} else {
 			TYRAN_LOG("LOAD(%d) already loading - ignoring request", resource_id);
 		}
 	} else {
-		TYRAN_LOG("LOAD(%d) already loaded", resource_id);
+		TYRAN_LOG("LOAD(%d) already loaded in cache!?", resource_id);
 	}
 }
 
@@ -83,7 +87,6 @@ static int request_inherits_and_references(nimbus_dependency_resolver* self, nim
 	int resources_that_are_loading = 0;
 
 	tyran_object* o = tyran_value_object(v);
-	tyran_object* combine_object = tyran_value_object(combine);
 	
 	for (int i = 0; i < o->property_count; ++i) {
 		tyran_object_property* property = &o->properties[i];
@@ -95,25 +98,29 @@ static int request_inherits_and_references(nimbus_dependency_resolver* self, nim
 				nimbus_resource_id resource_id = nimbus_resource_id_from_string(&value_string[1]);
 				tyran_value* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
 				if (resource != 0) {
-					tyran_value_release(*value);
-					tyran_value_copy(*value, *resource);
+					TYRAN_LOG("RESOURCE REFERENCE (found): '%s'", value_string);
+					tyran_value_replace(*value, *resource);
 				} else {
-					TYRAN_LOG("RESOURCE REFERENCE: '%s'", value_string);
+					TYRAN_LOG("RESOURCE REFERENCE (dependency): '%s'", value_string);
 					resources_that_are_loading++;
 					add_resource_reference(self, info, value, resource_id);
 				}
 			} else if (value_string[0] == '#') {
+				TYRAN_LOG("COMBINE REFERENCE: '%s'", value_string);
+				tyran_value symbol_value;
 				tyran_symbol symbol;
+
 				tyran_symbol_table_add(self->symbol_table, &symbol, &value_string[1]);
+				tyran_value_set_symbol(symbol_value, symbol);
 
 				tyran_value looked_up_value;
-				tyran_object_lookup_prototype(&looked_up_value, combine_object, &symbol);
+				tyran_value_object_lookup_prototype(&looked_up_value, combine, &symbol_value);
 				
-				tyran_value_replace(*v, looked_up_value);
+				tyran_value_replace(*value, looked_up_value);
 			} else {
 				const char* key_string = tyran_symbol_table_lookup(self->symbol_table, &property->symbol);
 				if (tyran_strcmp(key_string, "inherit") == 0) {
-					TYRAN_LOG("Found inherit:'%s'", value_string);
+					TYRAN_LOG("INHERIT: '%s'", value_string);
 
 					nimbus_resource_id resource_id = nimbus_resource_id_from_string(value_string);
 					tyran_value* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
@@ -138,6 +145,8 @@ void nimbus_dependency_resolver_init(nimbus_dependency_resolver* self, struct ty
 	self->dependency_info_count = 0;
 	self->symbol_table = symbol_table;
 	self->event_write_stream = stream;
+	self->loading_resources_max_count = sizeof(self->loading_resources) / sizeof(nimbus_resource_id);
+	self->dependency_info_max_count = sizeof(self->dependency_infos) / sizeof(nimbus_resource_dependency_info);
 	nimbus_resource_cache_init(&self->resource_cache, memory);
 }
 

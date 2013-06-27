@@ -16,6 +16,7 @@ void nimbus_resource_cache_free(nimbus_resource_cache* self)
 
 void nimbus_resource_cache_add(nimbus_resource_cache* self, nimbus_resource_id resource_id, tyran_value* value)
 {
+	TYRAN_ASSERT(self->entries_count < self->max_entries_count, "Resource cache out of space");
 	nimbus_resource_cache_entry* entry = &self->entries[self->entries_count];
 	self->entries_count++;
 	entry->resource_id = resource_id;

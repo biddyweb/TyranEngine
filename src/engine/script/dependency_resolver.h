@@ -14,7 +14,9 @@ typedef struct nimbus_dependency_resolver {
 	struct tyran_symbol_table* symbol_table;
 	int dependency_info_count;
 	nimbus_resource_dependency_info dependency_infos[64];
+	int dependency_info_max_count;
 	nimbus_resource_id loading_resources[64];
+	int loading_resources_max_count;
 	int loading_resources_count;
 	nimbus_resource_cache resource_cache;
 	struct nimbus_event_write_stream* event_write_stream;

@@ -12,6 +12,9 @@ static void fire_load_resource(nimbus_engine* self, nimbus_resource_id id)
 {
 	TYRAN_LOG("self:%p", (void*)self);
 	TYRAN_LOG("stream:%p", (void*)&self->update_object.event_write_stream);
+	TYRAN_LOG("current_length:%d", nimbus_event_write_stream_length(&self->update_object.event_write_stream));
+	TYRAN_LOG("available:%lu", self->update_object.event_write_stream.end_pointer - self->update_object.event_write_stream.pointer);
+	
 	nimbus_resource_load_send(&self->update_object.event_write_stream, id);
 }
 
@@ -38,7 +41,7 @@ TYRAN_RUNTIME_CALL_FUNC(load_state)
 	
 	
 	TYRAN_LOG("LoadState: '%s'", state_name_buf);
-	nimbus_engine* _self = tyran_value_program_specific(self);
+	nimbus_engine* _self = runtime->program_specific_context;
 
 	on_load_state(_self, state_name_buf);
 	return 0;
@@ -115,12 +118,11 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	//nimbus_event_listener_listen(self->listener, 1, );
 
 	tyran_mocha_api_new(&self->mocha_api, 1024);
-	
+	self->mocha_api.default_runtime->program_specific_context = self;
 	nimbus_event_distributor_init(&self->event_distributor, memory);
 	
 
 	tyran_value* global = tyran_runtime_context(self->mocha_api.default_runtime);
-	tyran_value_set_program_specific(global, self);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "load_library", nimbus_engine_load_library);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "loadState", load_state);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "log", log_output);
@@ -132,6 +134,10 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	self->update_objects_count = 0;
 	
 	nimbus_update_init(&self->update_object, memory, _dummy_update, 0);
+	TYRAN_LOG("init self:%p", (void*)self);
+	TYRAN_LOG("init stream:%p", (void*)&self->update_object.event_write_stream);
+	TYRAN_LOG("init current_length:%d", nimbus_event_write_stream_length(&self->update_object.event_write_stream));
+	TYRAN_LOG("init available:%lu", self->update_object.event_write_stream.end_pointer - self->update_object.event_write_stream.pointer);
 	
 	nimbus_engine_add_update_object(self, &self->update_object);
 	

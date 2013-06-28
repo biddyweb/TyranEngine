@@ -6,7 +6,6 @@ static void evaluate(nimbus_object_loader* self, const char* data, size_t len, t
 {
 	TYRAN_LOG("1");
 	tyran_value new_object = tyran_mocha_api_create_object(self->mocha);
-	tyran_value_set_program_specific(&new_object, self);
 
 	TYRAN_LOG("2");
 	tyran_value_object_set_prototype(&new_object, self->context);

@@ -9,6 +9,7 @@ void nimbus_event_write_stream_clear(nimbus_event_write_stream* self)
 
 void nimbus_event_write_stream_init(nimbus_event_write_stream* self, tyran_memory* memory, int max_length)
 {
+	TYRAN_LOG("stream_init:%d", max_length);
 	self->buffer = TYRAN_MEMORY_ALLOC(memory, max_length, "event write buffer");
 	nimbus_event_write_stream_clear(self);
 	self->end_pointer = self->buffer + max_length;

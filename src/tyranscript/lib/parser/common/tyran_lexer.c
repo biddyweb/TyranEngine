@@ -26,8 +26,7 @@ tyran_lexer* tyran_lexer_new(tyran_memory_pool* lexer_pool, tyran_memory* memory
 	lexer->current_indentation = 0;
 	lexer->last_was_whitespace = TYRAN_TRUE;
 
-	tyran_memcpy_type(char, lexer->buffer, buf, lexer->size - 1);
-	lexer->buffer[lexer->size] = 0;
+	tyran_memcpy_type(char, lexer->buffer, buf, lexer->size);
 	return lexer;
 }
 

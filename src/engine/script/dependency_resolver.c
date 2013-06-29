@@ -197,8 +197,10 @@ static void resource_resolved(nimbus_dependency_resolver* self, nimbus_resource_
 {
 	loading_done(self, info->resource_id);
 	nimbus_resource_cache_add(&self->resource_cache, info->resource_id, info->target);
-	check_if_someone_wants(self, info->resource_id, info->target);
+	nimbus_resource_id resource_id = info->resource_id;
+	tyran_value* target = info->target;
 	delete_dependency_info(self, info);
+	check_if_someone_wants(self, resource_id, target);
 }
 
 static void check_if_resolved(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info)

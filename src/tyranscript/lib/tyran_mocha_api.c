@@ -54,9 +54,9 @@ void tyran_mocha_api_new(tyran_mocha_api* api, int hunk_size)
 	api->default_variable_scopes = tyran_variable_scopes_new(scopes_pool, api->memory, scope_pool, api->default_variable_info_pool, api->default_register_pool, 1024);
 }
 
-void tyran_mocha_api_eval(tyran_mocha_api* api, tyran_value* context, tyran_value* return_value, const char* buf, size_t length)
+void tyran_mocha_api_eval(tyran_mocha_api* api, tyran_value* context, tyran_value* return_value, const char* buf)
 {
-	tyran_mocha_lexer* mocha_lexer = tyran_mocha_lexer_lex(api->mocha_lexer_pool, api->mocha_token_pool, api->lexer_pool, api->memory, buf, length);
+	tyran_mocha_lexer* mocha_lexer = tyran_mocha_lexer_lex(api->mocha_lexer_pool, api->mocha_token_pool, api->lexer_pool, api->memory, buf);
 	tyran_mocha_lexer_debug(mocha_lexer);
 
 	const int default_size = 100;

@@ -2,7 +2,7 @@
 #include "../event/resource_updated.h"
 #include <tyranscript/tyran_mocha_api.h>
 
-static void evaluate(nimbus_object_loader* self, const char* data, size_t len, tyran_value* return_value)
+static void evaluate(nimbus_object_loader* self, const char* data, tyran_value* return_value)
 {
 	TYRAN_LOG("1");
 	tyran_value new_object = tyran_mocha_api_create_object(self->mocha);
@@ -14,7 +14,7 @@ static void evaluate(nimbus_object_loader* self, const char* data, size_t len, t
 	TYRAN_LOG("4");
 	tyran_value_set_nil(temp_value);
 	TYRAN_LOG("5");
-	tyran_mocha_api_eval(self->mocha, &new_object, &temp_value, data, len);
+	tyran_mocha_api_eval(self->mocha, &new_object, &temp_value, data);
 	TYRAN_LOG("6");
 	tyran_value_copy(*return_value, new_object);
 	TYRAN_LOG("7");
@@ -33,9 +33,10 @@ static void on_resource_updated(nimbus_object_loader* self, struct nimbus_event_
 	TYRAN_ASSERT(payload_size <= self->script_buffer_size, "Buffer too small for script");
 	
 	nimbus_event_stream_read_octets(stream, self->script_buffer, payload_size);
+	self->script_buffer[payload_size] = 0;
 	
 	tyran_value return_value;
-	evaluate(self, (const char*)self->script_buffer, payload_size, &return_value);
+	evaluate(self, (const char*)self->script_buffer, &return_value);
 	add_object(self, resource_id, &return_value);
 }
 

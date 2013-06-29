@@ -218,6 +218,7 @@ void tyran_mocha_parser_push_root_right(tyran_mocha_parser* parser, tyran_parser
 void tyran_mocha_parser_push_last_inserted_right(tyran_mocha_parser* parser, tyran_parser_node_operand_binary* node, tyran_mocha_token_id token_id, int precedence)
 {
 	NODE* last_node = tyran_mocha_parser_last_node(parser);
+	TYRAN_LOG("B last precedence token id (%d)", token_id);
 	parser->last_precedence = precedence;
 	parser->last_precedence_token = token_id;
 	tyran_mocha_parser_push_right(parser, node, last_node);
@@ -228,6 +229,7 @@ void tyran_mocha_parser_push_last_operator_right(tyran_mocha_parser* parser, tyr
 	NODE* last_node = tyran_mocha_parser_last_operator_node(parser);
 	tyran_mocha_parser_push_right(parser, node, last_node);
 	parser->last_precedence = precedence;
+	TYRAN_LOG("C last precedence token:%d", token_id);
 	parser->last_precedence_token = token_id;
 }
 
@@ -365,6 +367,7 @@ tyran_mocha_parser* tyran_mocha_parser_new(tyran_memory_pool* mocha_parser_pool,
 	parser->parser_parameter_pool = parser_parameter_pool;
 	parser->mocha_token_pool = mocha_token_pool;
 	parser->last_precedence = -1;
+	parser->last_precedence_token = 0;
 	parser->root_precedence = -1;
 	parser->last_bracket_node = 0;
 	return parser;
@@ -569,10 +572,12 @@ void debug_precedence(int precedence, tyran_mocha_token_id precedence_token_id, 
 	tyran_mocha_token precedence_token;
 	precedence_token.token_id = precedence_token_id;
 
+	TYRAN_LOG("precedence:%d (%s)", precedence_token_id, description);
 	tyran_mocha_lexer_debug_token(&precedence_token);
 
 	tyran_mocha_token compare_precedence_token;
 	compare_precedence_token.token_id = compare_precendence_token_id;
+	TYRAN_LOG("compare_precendence_token_id:%d (%s)", compare_precendence_token_id, description);
 	tyran_mocha_lexer_debug_token(&compare_precedence_token);
 }
 
@@ -580,6 +585,7 @@ NODE tyran_mocha_parser_add_default_operator(tyran_memory* memory, tyran_mocha_p
 {
 	NODE return_node;
 
+	TYRAN_LOG("Default operator:%d", token_id);
 	if (tyran_mocha_lexer_is_unary_operator(token_id)) {
 		TYRAN_LOG("Unary: precedence:%d", precedence);
 		tyran_parser_node_operand_unary* node = tyran_parser_operand_unary(memory, tyran_mocha_parser_convert_unary_operand(token_id), 0, 0);
@@ -615,6 +621,7 @@ NODE tyran_mocha_parser_add_default_operator(tyran_memory* memory, tyran_mocha_p
 	}
 	if (parser->last_precedence == -1) {
 		parser->last_precedence = precedence;
+		TYRAN_LOG("A last_precedence token:%d", token_id);
 		parser->last_precedence_token = token_id;
 	}
 	if (parser->root_precedence == -1) {
@@ -826,7 +833,7 @@ void tyran_mocha_parser_add_token(tyran_memory* memory, tyran_mocha_parser* pars
 {
 	static tyran_boolean last_literal = 0;
 
-#if 0
+#if 1
 	TYRAN_LOG("ADD TOKEN:")
 	tyran_mocha_lexer_debug_token(token);
 	TYRAN_LOG(" rootp:%d lastp:%d", parser->root_precedence, parser->last_precedence);

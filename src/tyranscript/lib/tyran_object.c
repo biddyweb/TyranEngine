@@ -104,7 +104,9 @@ void tyran_object_delete(struct tyran_object* object, const struct tyran_symbol*
 
 void tyran_object_set_prototype(struct tyran_object* target, struct tyran_object* proto)
 {
-	TYRAN_ASSERT(target->prototype == 0, "Prototype already set, this is a problem");
+	if (target->prototype) {
+		TYRAN_OBJECT_RELEASE(target->prototype);
+	}
 	TYRAN_OBJECT_RETAIN(proto);
 	target->prototype = proto;
 }

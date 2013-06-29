@@ -44,7 +44,7 @@ static void loading_done(nimbus_dependency_resolver* self, nimbus_resource_id re
 static nimbus_resource_dependency_info* resource_depency_info_new(nimbus_dependency_resolver* self, nimbus_resource_id resource_id, tyran_value* target)
 {
 	TYRAN_LOG("Starting dependency tracking of resource: %d", resource_id);
-	TYRAN_ASSERT(!is_loading_in_progress(self, resource_id), "Can't start a loading job for a resource only in loading");
+	// TYRAN_ASSERT(!is_loading_in_progress(self, resource_id), "Can't start a loading job for a resource only in loading");
 	TYRAN_ASSERT(nimbus_resource_cache_find(&self->resource_cache, resource_id) == 0, "Can't start resource loading job if resource already is ready?");
 	TYRAN_ASSERT(self->dependency_info_count < self->dependency_info_max_count, "too many dependency infos");
 	nimbus_resource_dependency_info* info = &self->dependency_infos[self->dependency_info_count++];

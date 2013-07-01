@@ -762,6 +762,14 @@ tyran_reg_or_constant_index tyran_generator_traverse_for(tyran_memory* memory, t
 tyran_reg_or_constant_index tyran_generator_traverse(tyran_memory* memory, tyran_code_state* code, tyran_parser_node* node, tyran_label_id true_label, tyran_label_id false_label, tyran_label_id loop_start, tyran_label_id loop_end, tyran_reg_index self_index, tyran_reg_index comparison_index, tyran_boolean invert_logic)
 {
 	tyran_reg_or_constant_index result;
+	
+	if (true_label == -1 && false_label == -1) {
+		tyran_parser_node_operand_unary* block = tyran_parser_unary_operator_type_cast(node, TYRAN_PARSER_UNARY_BLOCK);
+		if (block) {
+			TYRAN_LOG("Converting to object!");
+			block->operator_type = TYRAN_PARSER_UNARY_OBJECT;
+		}
+	}
 
 	switch (node->type) {
 		case TYRAN_PARSER_NODE_TYPE_OPERAND_BINARY: {

@@ -856,8 +856,6 @@ void tyran_mocha_parser_add_token(tyran_memory* memory, tyran_mocha_parser* pars
 	} else {
 		tyran_mocha_operator_info info = tyran_mocha_parser_get_operator_info(token->token_id);
 		if (info.token_id != TYRAN_MOCHA_TOKEN_END) {
-			tyran_parser_node_operand_unary* last_bracket = parser->last_bracket_node;
-			parser->last_bracket_node = 0;
 			tyran_mocha_token_id end_closing_token_id = tyran_mocha_enclosing_start_token(token->token_id);
 
 		if (end_closing_token_id != TYRAN_MOCHA_TOKEN_END) {
@@ -875,7 +873,7 @@ void tyran_mocha_parser_add_token(tyran_memory* memory, tyran_mocha_parser* pars
 				tyran_mocha_parser_add_enclosure(parser, (tyran_parser_node_operand_unary*)terminal, token->token_id, end_closing_token_id);
 			} else {
 						if (last_was_bracket) {
-				last_bracket->operator_type = TYRAN_PARSER_UNARY_ARRAY;
+				last_was_bracket->operator_type = TYRAN_PARSER_UNARY_ARRAY;
 			}
 
 			}

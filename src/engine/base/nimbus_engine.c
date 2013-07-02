@@ -76,7 +76,7 @@ int nimbus_engine_update(nimbus_engine* self, nimbus_task_queue* queue)
 	schedule_update_tasks(self, queue);
 
 	self->frame_counter++;
-	if (self->frame_counter > 10) {
+	if (self->frame_counter > 9999) {
 		return 1;
 	}
 	return 0;

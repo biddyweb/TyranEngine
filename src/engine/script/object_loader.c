@@ -23,11 +23,13 @@ static void add_object(nimbus_object_loader* self, nimbus_resource_id resource_i
 
 static void on_resource_updated(nimbus_object_loader* self, struct nimbus_event_read_stream* stream, nimbus_resource_id resource_id, int payload_size)
 {
-	TYRAN_ASSERT(payload_size <= self->script_buffer_size, "Buffer too small for script");
+	TYRAN_ASSERT(payload_size <= self->script_buffer_size, "Buffer too small for script. payload:%d max:%d", payload_size, self->script_buffer_size);
 	
 	nimbus_event_stream_read_octets(stream, self->script_buffer, payload_size);
 	self->script_buffer[payload_size] = 0;
-	
+
+	TYRAN_LOG("*** EVALUATE *** %d octet_size:%d", resource_id, payload_size);
+	TYRAN_LOG("SCRIPT:'%s'", self->script_buffer);
 	tyran_value return_value;
 	evaluate(self, (const char*)self->script_buffer, &return_value);
 	add_object(self, resource_id, &return_value);
@@ -54,7 +56,7 @@ void nimbus_object_loader_init(nimbus_object_loader* self, tyran_memory* memory,
 {
 	self->mocha = mocha;
 	self->context = context;
-	self->script_buffer_size = 1024;
+	self->script_buffer_size = 16 * 1024;
 	self->script_buffer = TYRAN_MEMORY_ALLOC(memory, self->script_buffer_size, "Script buffer");
 	nimbus_update_init(&self->update, memory, _dummy_update, self);
 	nimbus_event_listener_init(&self->update.event_listener, self);

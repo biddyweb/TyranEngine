@@ -133,14 +133,18 @@ static void fire_resource_updated(nimbus_event_write_stream* out_event_stream, n
 	nimbus_event_stream_write_event_header(out_event_stream, NIMBUS_EVENT_RESOURCE_UPDATED);
 	nimbus_event_stream_write_type(out_event_stream, resource_updated);
 
-	nimbus_ring_buffer_read_pointer(buffer, expected_payload_size, &temp_buffer, &temp_buffer_size);
-	expected_payload_size -= temp_buffer_size;
-	nimbus_event_stream_write_octets(out_event_stream, temp_buffer, temp_buffer_size);
+	nimbus_ring_buffer_read_pointer(buffer, &temp_buffer, &temp_buffer_size);
+	int read_count = expected_payload_size > temp_buffer_size ? temp_buffer_size : expected_payload_size;
+	nimbus_ring_buffer_read_pointer_advance(buffer, read_count);
+	expected_payload_size -= read_count;
+	nimbus_event_stream_write_octets(out_event_stream, temp_buffer, read_count);
 
-	nimbus_ring_buffer_read_pointer(buffer, expected_payload_size, &temp_buffer, &temp_buffer_size);
-	expected_payload_size -= temp_buffer_size;
-	nimbus_event_stream_write_octets(out_event_stream, temp_buffer, temp_buffer_size);
-	
+	nimbus_ring_buffer_read_pointer(buffer, &temp_buffer, &temp_buffer_size);
+	read_count = expected_payload_size > temp_buffer_size ? temp_buffer_size : expected_payload_size;
+	nimbus_ring_buffer_read_pointer_advance(buffer, read_count);
+	expected_payload_size -= read_count;
+	nimbus_event_stream_write_octets(out_event_stream, temp_buffer, read_count);
+
 	nimbus_event_stream_write_event_end(out_event_stream);
 	TYRAN_LOG("Fire resource done!");
 }

@@ -19,10 +19,13 @@ void nimbus_event_process(nimbus_event_listener* self, struct nimbus_event_read_
 {
 	void* other_self = self->other_self;
 	
+	TYRAN_LOG("Process events...");
+	
 	nimbus_event_stream_header header;
 
 	for (; read_stream->pointer < read_stream->end_pointer; ) {
 		nimbus_event_stream_read_type(read_stream, header);
+		TYRAN_LOG("Read event header type:%d octet_size:%d", header.event_type_id, header.event_octet_size);
 		
 		nimbus_event_listener_function* func = nimbus_event_function_from_event_id(self, header.event_type_id);
 
@@ -41,6 +44,7 @@ void nimbus_event_process(nimbus_event_listener* self, struct nimbus_event_read_
 
 		nimbus_event_stream_read_skip(read_stream, header.event_octet_size);
 	}
+	TYRAN_LOG("Processed all events...");
 }
 
 

@@ -87,11 +87,13 @@ static int request_inherits_and_references(nimbus_dependency_resolver* self, nim
 	int resources_that_are_loading = 0;
 
 	tyran_object* o = tyran_value_object(v);
-	TYRAN_LOG("Checking inherits and references");
+	TYRAN_LOG("Checking inherits and references. Property count:%d", o->property_count);
 	
 	for (int i = 0; i < o->property_count; ++i) {
 		tyran_object_property* property = &o->properties[i];
 		tyran_value* value = &property->value;
+		const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &property->symbol);
+		TYRAN_LOG("Property(%d) key:'%s'", i, debug_key_string);
 
 		if (tyran_value_is_string(value)) {
 			tyran_string_to_c_str(value_string, 128, tyran_object_string(value->data.object));

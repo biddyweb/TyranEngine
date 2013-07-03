@@ -5,7 +5,7 @@
 #include <tyranscript/debug/parser/tyran_print_parser_tree.h>
 #include <tyranscript/parser/common/tyran_parser_tree.h>
 
-#define TYRAN_MOCHA_PARSER_DEBUG
+// #define TYRAN_MOCHA_PARSER_DEBUG
 
 typedef struct tyran_mocha_operator_info {
 	tyran_mocha_token_id token_id;
@@ -585,9 +585,9 @@ NODE tyran_mocha_parser_add_default_operator(tyran_memory* memory, tyran_mocha_p
 {
 	NODE return_node;
 
-	TYRAN_LOG("Default operator:%d", token_id);
+	// TYRAN_LOG("Default operator:%d", token_id);
 	if (tyran_mocha_lexer_is_unary_operator(token_id)) {
-		TYRAN_LOG("Unary: precedence:%d", precedence);
+		// TYRAN_LOG("Unary: precedence:%d", precedence);
 		tyran_parser_node_operand_unary* node = tyran_parser_operand_unary(memory, tyran_mocha_parser_convert_unary_operand(token_id), 0, 0);
 		return_node = (NODE) node;
 		switch (node->operator_type) {
@@ -609,19 +609,19 @@ NODE tyran_mocha_parser_add_default_operator(tyran_memory* memory, tyran_mocha_p
 			TYRAN_LOG("It was parentheses, push last operator right");
 			tyran_mocha_parser_push_last_operator_right(parser, node, token_id, precedence);
 		} else if (right_associative && precedence <= parser->root_precedence) {
-			debug_precedence(precedence, token_id, parser->root_precedence, parser->root_precedence_token, "root");
+			// debug_precedence(precedence, token_id, parser->root_precedence, parser->root_precedence_token, "root");
 			tyran_mocha_parser_push_root_right(parser, node, token_id, precedence);
 		} else if (parser->next_node_to_overwrite == 0 && (precedence < parser->last_precedence)) {
-			debug_precedence(precedence, token_id, parser->last_precedence, parser->last_precedence_token, "last operator");
+			// debug_precedence(precedence, token_id, parser->last_precedence, parser->last_precedence_token, "last operator");
 			tyran_mocha_parser_push_last_operator_right(parser, node, token_id, precedence);
 		} else {
-			debug_precedence(precedence, token_id, parser->last_precedence, parser->last_precedence_token, "last inserted");
+			// debug_precedence(precedence, token_id, parser->last_precedence, parser->last_precedence_token, "last inserted");
 			tyran_mocha_parser_push_last_inserted_right(parser, node, token_id, precedence);
 		}
 	}
 	if (parser->last_precedence == -1) {
 		parser->last_precedence = precedence;
-		TYRAN_LOG("A last_precedence token:%d", token_id);
+		// TYRAN_LOG("A last_precedence token:%d", token_id);
 		parser->last_precedence_token = token_id;
 	}
 	if (parser->root_precedence == -1) {

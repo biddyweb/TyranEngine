@@ -16,9 +16,10 @@ static void evaluate(nimbus_object_loader* self, const char* data, tyran_value* 
 static void add_object(nimbus_object_loader* self, nimbus_resource_id resource_id, tyran_value* value)
 {
 	TYRAN_LOG("add_object(%d)", resource_id);
-	if (resource_id != 431716) {
 		nimbus_dependency_resolver_object_loaded(&self->dependency_resolver, value, resource_id);
-	}
+		if (nimbus_dependency_resolver_done(&self->dependency_resolver)) {
+			TYRAN_LOG("We have loaded");
+		}
 }
 
 static void on_resource_updated(nimbus_object_loader* self, struct nimbus_event_read_stream* stream, nimbus_resource_id resource_id, int payload_size)

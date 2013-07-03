@@ -156,11 +156,11 @@ void nimbus_dependency_resolver_init(nimbus_dependency_resolver* self, struct ty
 	nimbus_resource_cache_init(&self->resource_cache, memory);
 }
 
-static void check_if_resolved(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info);
+static tyran_boolean check_if_resolved(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info);
 
 static void check_if_someone_wants(nimbus_dependency_resolver* self, nimbus_resource_id resource_id, tyran_value* v)
 {
-	for (int i=0; i<self->dependency_info_count; ++i) {
+	for (int i=0; i<self->dependency_info_count; ) {
 		nimbus_resource_dependency_info* dependency_info = &self->dependency_infos[i];
 		if (dependency_info->inherit_resource_id == resource_id) {
 				tyran_value_object_set_prototype(dependency_info->target, v);
@@ -177,7 +177,11 @@ static void check_if_someone_wants(nimbus_dependency_resolver* self, nimbus_reso
 			}
 		}
 	
-		check_if_resolved(self, dependency_info);
+		if (check_if_resolved(self, dependency_info)) {
+			i = i;
+		} else {
+			++i;
+		}
 	}
 }
 
@@ -205,11 +209,14 @@ static void resource_resolved(nimbus_dependency_resolver* self, nimbus_resource_
 	check_if_someone_wants(self, resource_id, target);
 }
 
-static void check_if_resolved(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info)
+static tyran_boolean check_if_resolved(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info)
 {
 	if (nimbus_resource_dependency_info_is_satisfied(info)) {
 		resource_resolved(self, info);
+		return TYRAN_TRUE;
 	}
+
+	return TYRAN_FALSE;
 }
 
 void nimbus_dependency_resolver_object_loaded(nimbus_dependency_resolver* self, tyran_value* v, nimbus_resource_id resource_id)
@@ -221,5 +228,14 @@ void nimbus_dependency_resolver_object_loaded(nimbus_dependency_resolver* self, 
 
 tyran_boolean nimbus_dependency_resolver_done(nimbus_dependency_resolver* self)
 {
+	TYRAN_LOG("DONE count:%d", self->dependency_info_count);
+	if (self->dependency_info_count > 0) {
+		nimbus_resource_dependency_info* dependency_info = &self->dependency_infos[0];
+		for (int j=0; j<dependency_info->resource_dependencies_count; ) {
+			nimbus_resource_dependency* dependency = &dependency_info->resource_dependencies[j];
+			TYRAN_LOG("waiting for dependency:%d", dependency->resource_id);
+		}
+		TYRAN_LOG("waiting for inherit:%d", dependency_info->inherit_resource_id);
+	}
 	return self->dependency_info_count == 0;
 }

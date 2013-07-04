@@ -67,8 +67,7 @@ void nimbus_ring_buffer_read_pointer(nimbus_ring_buffer* self, u8t** data, int* 
 	int available;
 	if (self->size == 0) {
 		available = 0;
-	}
-	else if (self->read_index < self->write_index) {
+	} else if (self->read_index < self->write_index) {
 		available = self->write_index - self->read_index;
 	} else {
 		available = self->max_size - self->read_index;

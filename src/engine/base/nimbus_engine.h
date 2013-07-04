@@ -18,10 +18,10 @@ typedef struct nimbus_engine {
 	nimbus_event_listener event_listener;
 	nimbus_event_connection event_connection;
 	nimbus_update update_object;
-	
+
 	nimbus_object_loader object_loader;
 	nimbus_event_distributor event_distributor;
-	
+
 	nimbus_update** update_objects;
 	int update_objects_count;
 	int frame_counter;

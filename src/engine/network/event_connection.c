@@ -63,7 +63,6 @@ static void _on_resource_request(void* _self, struct nimbus_event_read_stream* s
 
 void _on_update(void* self)
 {
-	TYRAN_LOG("connection.update");
 }
 
 void nimbus_event_connection_free(nimbus_event_connection* self)
@@ -153,7 +152,7 @@ static void on_payload_done(nimbus_event_connection* self)
 {
 	TYRAN_LOG("Payload received, please consume it");
 	self->waiting_for_header = 1;
-	
+
 	fire_resource_updated(&self->update_object.event_write_stream, self->resource_id, &self->buffer, self->expected_payload_size);
 }
 
@@ -206,13 +205,13 @@ void nimbus_event_connection_init(nimbus_event_connection* self, tyran_memory* m
 	self->waiting_for_header = 1;
 	nimbus_ring_buffer_init(&self->buffer, memory, 1024);
 	nimbus_out_stream_init(&self->out_stream, memory, 1024);
-	
+
 	//nimbus_event_write_stream_init(&self->out_event_stream, memory, 1024);
 	nimbus_connecting_socket_init(&self->socket, host, port);
 	send_connect(self);
-	nimbus_update_init(&self->update_object, memory, _on_update, self);
-	
-	nimbus_task_init(&self->receive_task, receive_task, self);
+	nimbus_update_init(&self->update_object, memory, _on_update, self, "connection");
+
+	nimbus_task_init(&self->receive_task, receive_task, self, "event_connection_receive_task");
 
 	nimbus_event_listener_init(&self->update_object.event_listener, self);
 	nimbus_event_listener_listen(&self->update_object.event_listener, NIMBUS_EVENT_RESOURCE_LOAD, _on_resource_request);

@@ -12,7 +12,7 @@ typedef struct nimbus_resource_dependency_info {
 	nimbus_resource_id resource_id;
 	nimbus_resource_dependency resource_dependencies[32];
 	int resource_dependencies_count;
-	
+
 	nimbus_resource_id inherit_resource_id;
 	struct tyran_value* target;
 } nimbus_resource_dependency_info;

@@ -21,7 +21,7 @@ typedef struct nimbus_event_write_stream {
 
 typedef struct nimbus_event_read_stream {
 	const u8t* pointer;
-    const u8t* end_pointer;
+	const u8t* end_pointer;
 	nimbus_event_type_id event_type_id;
 } nimbus_event_read_stream;
 

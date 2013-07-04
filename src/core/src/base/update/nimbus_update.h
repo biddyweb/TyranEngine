@@ -10,19 +10,19 @@
 typedef void (*nimbus_update_function)(void*);
 
 typedef struct nimbus_update {
-    nimbus_event_write_stream event_write_stream;
-    nimbus_event_read_stream event_read_stream;
-   	nimbus_event_listener event_listener;
-   	nimbus_task task;
-   	
-   	
-   	nimbus_update_function update_function;
-   	void* update_function_self;
-   	
-   	const char* name;
+	nimbus_event_write_stream event_write_stream;
+	nimbus_event_read_stream event_read_stream;
+	nimbus_event_listener event_listener;
+	nimbus_task task;
+
+
+	nimbus_update_function update_function;
+	void* update_function_self;
+
+	const char* name;
 } nimbus_update;
 
 
-void nimbus_update_init(nimbus_update* self, struct tyran_memory* memory, nimbus_update_function func, void* func_self);
+void nimbus_update_init(nimbus_update* self, struct tyran_memory* memory, nimbus_update_function func, void* func_self, const char* name);
 
 #endif

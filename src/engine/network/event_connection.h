@@ -22,11 +22,11 @@ typedef struct nimbus_event_connection {
 	int in_buffer_size;
 
 //	nimbus_event_write_stream out_event_stream;
-	
+
 	nimbus_update update_object;
-	
+
 	nimbus_task receive_task;
-	
+
 	nimbus_connecting_socket socket;
 	nimbus_resource_id resource_id;
 

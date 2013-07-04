@@ -11,7 +11,7 @@ void nimbus_resource_dependency_info_init(nimbus_resource_dependency_info* self,
 
 void nimbus_resource_dependency_info_free(nimbus_resource_dependency_info* self)
 {
-	
+
 }
 
 void nimbus_resource_dependency_info_add_resource(nimbus_resource_dependency_info* self, tyran_value* target, nimbus_resource_id resource_id)

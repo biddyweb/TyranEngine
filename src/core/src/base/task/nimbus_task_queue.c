@@ -46,10 +46,26 @@ void nimbus_task_queue_add_task(nimbus_task_queue* self, nimbus_task* task)
 	nimbus_mutex_unlock(&self->mutex);
 }
 
+static void debug_log_all_tasks(nimbus_task_queue* self, int group)
+{
+	int task_index = self->task_read_index;
+	for (int i=0; i<self->task_count; ++i) {
+		nimbus_task* task = self->tasks[task_index];
+		if (task->group == group) {
+			TYRAN_LOG("Remaining task:'%s'", task->name);
+		}
+		task_index ++;
+		task_index %= self->task_max_count;
+	}
+}
+
 tyran_boolean nimbus_task_queue_has_pending_tasks_from_group(nimbus_task_queue* self, int group)
 {
 	nimbus_mutex_lock(&self->mutex);
 	int tasks_left = self->group_counter[group];
+	if (tasks_left > 0) {
+		debug_log_all_tasks(self, group);
+	}
 	nimbus_mutex_unlock(&self->mutex);
 
 	return (tasks_left != 0);

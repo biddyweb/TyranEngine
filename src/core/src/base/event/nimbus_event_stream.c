@@ -9,7 +9,6 @@ void nimbus_event_write_stream_clear(nimbus_event_write_stream* self)
 
 void nimbus_event_write_stream_init(nimbus_event_write_stream* self, tyran_memory* memory, int max_length)
 {
-	TYRAN_LOG("stream_init:%d", max_length);
 	self->buffer = TYRAN_MEMORY_ALLOC(memory, max_length, "event write buffer");
 	nimbus_event_write_stream_clear(self);
 	self->end_pointer = self->buffer + max_length;
@@ -22,7 +21,7 @@ void nimbus_event_write_stream_free(nimbus_event_write_stream* stream)
 
 int nimbus_event_write_stream_length(nimbus_event_write_stream* self)
 {
-    return self->pointer - self->buffer;
+	return self->pointer - self->buffer;
 }
 
 void nimbus_event_stream_write_octets(nimbus_event_write_stream* stream, const void* data, int len)
@@ -54,8 +53,8 @@ void nimbus_event_stream_read_octets(nimbus_event_read_stream* stream, u8t* data
 
 void nimbus_event_stream_read_init(nimbus_event_read_stream* self, const u8t* pointer, int length)
 {
-    self->pointer = pointer;
-    self->end_pointer = pointer + length;
+	self->pointer = pointer;
+	self->end_pointer = pointer + length;
 }
 
 void nimbus_event_stream_read_skip(nimbus_event_read_stream* self, int length)

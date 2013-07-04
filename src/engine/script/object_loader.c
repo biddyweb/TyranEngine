@@ -15,17 +15,17 @@ static void evaluate(nimbus_object_loader* self, const char* data, tyran_value* 
 
 static void add_object(nimbus_object_loader* self, nimbus_resource_id resource_id, tyran_value* value)
 {
-	TYRAN_LOG("add_object(%d)", resource_id);
-		nimbus_dependency_resolver_object_loaded(&self->dependency_resolver, value, resource_id);
-		if (nimbus_dependency_resolver_done(&self->dependency_resolver)) {
-			TYRAN_LOG("We have loaded");
-		}
+	TYRAN_LOG("add resolved object(%d)", resource_id);
+	nimbus_dependency_resolver_object_loaded(&self->dependency_resolver, value, resource_id);
+	if (nimbus_dependency_resolver_done(&self->dependency_resolver)) {
+		TYRAN_LOG("******** We have loaded!!!!! *********");
+	}
 }
 
 static void on_resource_updated(nimbus_object_loader* self, struct nimbus_event_read_stream* stream, nimbus_resource_id resource_id, int payload_size)
 {
 	TYRAN_ASSERT(payload_size <= self->script_buffer_size, "Buffer too small for script. payload:%d max:%d", payload_size, self->script_buffer_size);
-	
+
 	nimbus_event_stream_read_octets(stream, self->script_buffer, payload_size);
 	self->script_buffer[payload_size] = 0;
 
@@ -40,11 +40,11 @@ static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* s
 {
 	TYRAN_LOG("ObjectLoader::on_resource!!!!");
 	nimbus_object_loader* self = _self;
-	
+
 	nimbus_resource_updated updated;
-	
+
 	nimbus_event_stream_read_type(stream, updated);
-	
+
 	on_resource_updated(self, stream, updated.resource_id, updated.payload_size);
 }
 
@@ -59,9 +59,9 @@ void nimbus_object_loader_init(nimbus_object_loader* self, tyran_memory* memory,
 	self->context = context;
 	self->script_buffer_size = 16 * 1024;
 	self->script_buffer = TYRAN_MEMORY_ALLOC(memory, self->script_buffer_size, "Script buffer");
-	nimbus_update_init(&self->update, memory, _dummy_update, self);
+	nimbus_update_init(&self->update, memory, _dummy_update, self, "loader");
 	nimbus_event_listener_init(&self->update.event_listener, self);
 	nimbus_event_listener_listen(&self->update.event_listener, NIMBUS_EVENT_RESOURCE_UPDATED, _on_resource_updated);
-	
+
 	nimbus_dependency_resolver_init(&self->dependency_resolver, memory, mocha->default_runtime->symbol_table, &self->update.event_write_stream);
 }

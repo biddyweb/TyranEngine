@@ -30,7 +30,7 @@ tyran_value* nimbus_resource_cache_find(nimbus_resource_cache* self, nimbus_reso
 			return self->entries[i].value;
 		}
 	}
-	
+
 	return 0;
 }
 

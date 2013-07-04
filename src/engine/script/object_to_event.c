@@ -191,7 +191,7 @@ int convert_from_object_to_event(uint8* buf, int max_size, tyran_object* _this, 
 			}
 			break;
 		}
-		
+
 		// TORNADO_C_LOG(" Name:%s tyran_value:%s ", name, value);
 	}
 

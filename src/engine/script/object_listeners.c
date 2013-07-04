@@ -13,7 +13,7 @@ void quadwheel_engine::check_for_listening_functions_on_object(const tyran_runti
 		std::string name(c_key);
 		tyran_object_key_flag_type flag = 0;
 		tyran_value* value = tyran_value_object_lookup_prototype(o, key, &flag);
-		
+
 		if (value->type == TYRAN_VALUE_TYPE_OBJECT)
 		{
 			if (tyran_value_is_function(value))

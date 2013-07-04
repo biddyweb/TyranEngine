@@ -11,19 +11,19 @@ void quadwheel_engine::on_all_events(const tornado::event_type_id& id, uint octe
 	if (found_listener == event_to_listening_objects.end()) {
 		return;
 	}
-	
+
 //	TORNADO_LOG("Someone is listening to this event: " << id);
 
 	tyran_runtime_callbacks callbacks;
 	callbacks.assign_callback = script_AssignCallback;
-	
-	
+
+
 	std::map<tornado::event_type_id, const tornado::class_definition*>::const_iterator found_definition;
-	
+
 	found_definition = event_id_to_definition.find(id);
 	TORNADO_ASSERT(found_definition != event_id_to_definition.end(), "Couldn't find event type id:" << id);
 	const tornado::class_definition* definition = found_definition->second;
-	
+
 	std::list<listening_object*>* listening_objects = found_listener->second;
 	std::list<listening_object*>::const_iterator listening_function;
 	for (listening_function = listening_objects->begin(); listening_function != listening_objects->end(); ++listening_function)

@@ -24,7 +24,7 @@ void nimbus_task_thread_init(nimbus_task_thread* self, nimbus_task_queue* task_q
 {
 	self->affinity = affinity;
 	self->task_queue = task_queue;
-	
+
 	nimbus_thread_init(&self->thread, work, self);
 }
 

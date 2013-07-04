@@ -186,7 +186,7 @@ tyran_value* convert_from_event_to_object(tyran_runtime* runtime, const script_w
 			}
 			break;
 		}
-		
+
 		if (use_index)
 		{
 			tyran_value_object_insert_array(o, i, v);

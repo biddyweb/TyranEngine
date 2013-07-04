@@ -111,7 +111,7 @@ GLfloat gCubeVertexData[216] =
     GLKView *view = (GLKView *)self.view;
     view.context = self.context;
     view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
-    
+    self->boot = nimbus_boot_new();
     [self setupGL];
 }
 
@@ -214,6 +214,9 @@ GLfloat gCubeVertexData[216] =
     _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
     
     _rotation += self.timeSinceLastUpdate * 0.5f;
+    if (nimbus_boot_ready_for_next_frame(self->boot)) {
+	    nimbus_boot_update(self->boot);
+	}
 }
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect

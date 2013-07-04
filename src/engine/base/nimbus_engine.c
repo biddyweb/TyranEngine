@@ -10,22 +10,14 @@
 
 static void fire_load_resource(nimbus_engine* self, nimbus_resource_id id)
 {
-	TYRAN_LOG("self:%p", (void*)self);
-	TYRAN_LOG("stream:%p", (void*)&self->update_object.event_write_stream);
-	TYRAN_LOG("current_length:%d", nimbus_event_write_stream_length(&self->update_object.event_write_stream));
-	TYRAN_LOG("available:%lu", self->update_object.event_write_stream.end_pointer - self->update_object.event_write_stream.pointer);
-	
 	nimbus_resource_load_send(&self->update_object.event_write_stream, id);
 }
 
 static void on_load_state(nimbus_engine* self, const char* state_name)
 {
 	TYRAN_LOG("on_load_state:'%s'", state_name);
-	TYRAN_LOG("on?load?state self:%p", (void*)self);
 	nimbus_resource_id id = nimbus_resource_id_from_string(state_name);
-	TYRAN_LOG("resource_id from state:%d", id);
 	fire_load_resource(self, id);
-	TYRAN_LOG("fire_load_resource done");
 }
 
 TYRAN_RUNTIME_CALL_FUNC(nimbus_engine_load_library)
@@ -38,8 +30,8 @@ TYRAN_RUNTIME_CALL_FUNC(load_state)
 	const struct tyran_string* state_name = tyran_value_string(&arguments[0]);
 	char state_name_buf[1024];
 	tyran_string_to_c_str(state_name_buf, 1024, state_name);
-	
-	
+
+
 	TYRAN_LOG("LoadState: '%s'", state_name_buf);
 	nimbus_engine* _self = runtime->program_specific_context;
 
@@ -57,7 +49,7 @@ void schedule_update_tasks(nimbus_engine* self, nimbus_task_queue* queue)
 {
 	for (int i=1; i<self->update_objects_count; ++i) {
 		nimbus_task* task = &self->update_objects[i]->task;
-		TYRAN_LOG("adding task:%d", i);
+		TYRAN_LOG("adding task:%d (%s)", i, self->update_objects[i]->name);
 		nimbus_task_queue_add_task(queue, task);
 	}
 }
@@ -69,9 +61,6 @@ void distribute_events(nimbus_engine* self)
 
 int nimbus_engine_update(nimbus_engine* self, nimbus_task_queue* queue)
 {
-//	nimbus_task_queue_add()
-	TYRAN_LOG("Engine::Update");
-
 	distribute_events(self);
 	schedule_update_tasks(self, queue);
 
@@ -120,7 +109,7 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	tyran_mocha_api_new(&self->mocha_api, 1024);
 	self->mocha_api.default_runtime->program_specific_context = self;
 	nimbus_event_distributor_init(&self->event_distributor, memory);
-	
+
 
 	tyran_value* global = tyran_runtime_context(self->mocha_api.default_runtime);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "load_library", nimbus_engine_load_library);
@@ -129,23 +118,19 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 
 	self->resource_handler = nimbus_resource_handler_new(memory);
 	nimbus_event_listener_init(&self->event_listener, self);
-	
+
 	self->update_objects = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_update*, 256);
 	self->update_objects_count = 0;
-	
-	nimbus_update_init(&self->update_object, memory, _dummy_update, 0);
-	TYRAN_LOG("init self:%p", (void*)self);
-	TYRAN_LOG("init stream:%p", (void*)&self->update_object.event_write_stream);
-	TYRAN_LOG("init current_length:%d", nimbus_event_write_stream_length(&self->update_object.event_write_stream));
-	TYRAN_LOG("init available:%lu", self->update_object.event_write_stream.end_pointer - self->update_object.event_write_stream.pointer);
-	
+
+	nimbus_update_init(&self->update_object, memory, _dummy_update, 0, "engine");
+
 	nimbus_engine_add_update_object(self, &self->update_object);
-	
+
 	nimbus_object_loader_init(&self->object_loader, memory, &self->mocha_api, global);
-	
+
 	nimbus_engine_add_update_object(self, &self->object_loader.update);
-	
-	
+
+
 	start_event_connection(self, memory, "198.74.60.114", 32000, task_queue);
 
 	boot_resource(self);

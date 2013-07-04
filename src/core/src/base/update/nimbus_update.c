@@ -11,14 +11,19 @@ void nimbus_update_update(void* _self, struct nimbus_task_queue* queue)
 	self->update_function(self->update_function_self);
 }
 
-void nimbus_update_init(nimbus_update* self, struct tyran_memory* memory, nimbus_update_function func, void* update_self, const char* name)
+void nimbus_update_init_ex(nimbus_update* self, struct tyran_memory* memory, nimbus_update_function func, void* update_self, int max_size, const char* name)
 {
-	const int max_size = 1024;
 	TYRAN_ASSERT(func != 0, "Must give me a proper function");
 	self->update_function = func;
 	self->update_function_self = update_self;
 	nimbus_event_write_stream_init(&self->event_write_stream, memory, max_size);
 	self->name = name;
 	nimbus_task_init(&self->task, nimbus_update_update, self, name);
+}
+
+void nimbus_update_init(nimbus_update* self, struct tyran_memory* memory, nimbus_update_function func, void* update_self, const char* name)
+{
+	const int max_size = 1024;
+	nimbus_update_init_ex(self, memory, func, self, max_size, name);
 }
 

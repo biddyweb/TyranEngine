@@ -75,10 +75,10 @@ nimbus_task* nimbus_task_queue_fetch_next_task(nimbus_task_queue* self, int requ
 {
 	nimbus_task* task;
 
+	nimbus_mutex_lock(&self->mutex);
 	if (self->task_count == 0) {
 		task = 0;
 	} else {
-		nimbus_mutex_lock(&self->mutex);
 		task = self->tasks[self->task_read_index];
 
 		if (task->affinity != -1 && requested_affinity != task->affinity) {
@@ -90,8 +90,8 @@ nimbus_task* nimbus_task_queue_fetch_next_task(nimbus_task_queue* self, int requ
 			self->task_read_index %= self->task_max_count;
 			self->task_count--;
 		}
-		nimbus_mutex_unlock(&self->mutex);
 	}
+	nimbus_mutex_unlock(&self->mutex);
 
 	return task;
 }

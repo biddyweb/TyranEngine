@@ -73,8 +73,6 @@ void nimbus_ring_buffer_read_pointer(nimbus_ring_buffer* self, u8t** data, int* 
 		available = self->max_size - self->read_index;
 	}
 
-	TYRAN_LOG("read ri:%d, wi:%d, len:%d", self->read_index, self->write_index, available);
-
 	*data = self->buffer + self->read_index;
 	*length = available;
 }

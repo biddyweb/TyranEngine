@@ -68,7 +68,7 @@ tyran_reg_index tyran_variable_scopes_define_temporary_variable(tyran_variable_s
 void tyran_variable_scope_add_identifier(tyran_memory* memory, tyran_variable_scope* scope, const char* variable_name, tyran_reg_index register_index)
 {
 	TYRAN_ASSERT(scope->variable_count < scope->allocated_variable_count, "Out of memory adding an identifier");
-	TYRAN_LOG("Defining variable '%s' to register %d", variable_name, register_index);
+	// TYRAN_LOG("Defining variable '%s' to register %d", variable_name, register_index);
 	tyran_variable_info* info = &scope->variables[scope->variable_count++];
 	info->name = tyran_strdup(memory, variable_name);
 	info->register_index = register_index;

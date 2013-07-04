@@ -12,7 +12,7 @@ static void work(void* _self)
 	for (;;) {
 		nimbus_task* task = nimbus_task_queue_fetch_next_task(self->task_queue, self->affinity);
 		if (task == 0) {
-			nimbus_thread_sleep(1.1f);
+			nimbus_thread_sleep(0.0f);
 		} else {
 			nimbus_task_call(task, self->task_queue);
 			nimbus_task_queue_task_completed(self->task_queue, task);

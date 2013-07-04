@@ -263,16 +263,13 @@ void tyran_mocha_parser_parameters(tyran_parser_node_parameter* parameter_nodes,
 
 	tyran_parser_node_operand_binary* binary = tyran_parser_binary_operator_cast(node);
 	if (binary && (binary->operator_type == TYRAN_PARSER_COMMA || binary->operator_type == TYRAN_PARSER_CONCAT)) {
-		TYRAN_LOG("Comma parameters!");
 		tyran_mocha_parser_parameters(parameter_nodes, index, binary->left);
 		tyran_mocha_parser_parameters(parameter_nodes, index, binary->right);
 	} else {
 		tyran_parser_node_parameter parameter_node;
 		if (binary && (binary->operator_type ==  TYRAN_PARSER_ASSIGNMENT)) {
-			TYRAN_LOG("*** Assignment");
 			parameter_node.default_value = binary->right;
 			node = binary->left;
-			TYRAN_LOG("Node:%d", node->type);
 		} else {
 			parameter_node.default_value = 0;
 		}
@@ -603,7 +600,6 @@ NODE tyran_mocha_parser_add_default_operator(tyran_memory* memory, tyran_mocha_p
 		tyran_parser_node_operand_binary* node = tyran_parser_operand_binary(memory, tyran_mocha_parser_convert_binary_operand(token_id), 0, 0);
 		return_node = (NODE) node;
 		if (token_id == TYRAN_MOCHA_TOKEN_CALL && parser->last_was_parentheses) {
-			TYRAN_LOG("It was parentheses, push last operator right");
 			tyran_mocha_parser_push_last_operator_right(parser, node, token_id, precedence);
 		} else if (right_associative && precedence <= parser->root_precedence) {
 			// debug_precedence(precedence, token_id, parser->root_precedence, parser->root_precedence_token, "root");

@@ -13,12 +13,24 @@ static void evaluate(nimbus_object_loader* self, const char* data, tyran_value* 
 	tyran_value_copy(*return_value, new_object);
 }
 
+static void send_resource_update(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id, nimbus_resource_type_id type_id, tyran_object* object)
+{
+	nimbus_resource_updated updated;
+	updated.resource_id = resource_id;
+	updated.resource_type_id = type_id;
+	updated.payload_size = sizeof(tyran_object*);
+
+	nimbus_event_stream_write_event_header(out_event_stream, NIMBUS_EVENT_RESOURCE_UPDATED);
+	nimbus_event_stream_write_octets(out_event_stream, &object, sizeof(tyran_object*));
+}
+
 static void add_object(nimbus_object_loader* self, nimbus_resource_id resource_id, tyran_value* value)
 {
 	TYRAN_LOG("add resolved object(%d)", resource_id);
 	nimbus_dependency_resolver_object_loaded(&self->dependency_resolver, value, resource_id);
 	if (nimbus_dependency_resolver_done(&self->dependency_resolver)) {
 		TYRAN_LOG("******** We have loaded!!!!! *********");
+		// send_resource_update
 	}
 }
 
@@ -38,7 +50,6 @@ static void on_resource_updated(nimbus_object_loader* self, struct nimbus_event_
 
 static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* stream)
 {
-	TYRAN_LOG("ObjectLoader::on_resource!!!!");
 	nimbus_object_loader* self = _self;
 
 	nimbus_resource_updated updated;
@@ -50,7 +61,6 @@ static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* s
 
 static void _dummy_update(void* _self)
 {
-	TYRAN_LOG("Object Loader update");
 }
 
 void nimbus_object_loader_init(nimbus_object_loader* self, tyran_memory* memory, tyran_mocha_api* mocha, tyran_value* context)

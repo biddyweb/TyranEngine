@@ -233,7 +233,6 @@ void nimbus_dependency_resolver_object_loaded(nimbus_dependency_resolver* self, 
 
 tyran_boolean nimbus_dependency_resolver_done(nimbus_dependency_resolver* self)
 {
-	TYRAN_LOG("DONE count:%d", self->dependency_info_count);
 	if (self->dependency_info_count > 0) {
 		nimbus_resource_dependency_info* dependency_info = &self->dependency_infos[0];
 		for (int j=0; j<dependency_info->resource_dependencies_count; ) {

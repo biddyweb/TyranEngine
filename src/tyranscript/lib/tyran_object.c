@@ -147,3 +147,9 @@ struct tyran_array* tyran_object_array(struct tyran_object* o) {
 	TYRAN_ASSERT(o->type == TYRAN_OBJECT_TYPE_ARRAY, "must be array");
 	return o->data.array;
 }
+
+const struct tyran_function* tyran_object_function(struct tyran_object* o) {
+	TYRAN_ASSERT(o->type == TYRAN_OBJECT_TYPE_FUNCTION, "must be array");
+	return o->data.function->static_function;
+}
+

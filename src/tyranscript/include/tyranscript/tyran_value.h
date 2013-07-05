@@ -132,6 +132,7 @@ typedef struct tyran_value {
 tyran_number tyran_value_number(tyran_value* v);
 tyran_boolean tyran_value_boolean(tyran_value* v);
 const struct tyran_string* tyran_value_string(tyran_value* v);
+const struct tyran_function* tyran_value_function(tyran_value* v);
 
 struct tyran_object* tyran_value_object(tyran_value* v);
 

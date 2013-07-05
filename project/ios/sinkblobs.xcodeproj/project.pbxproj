@@ -1403,7 +1403,7 @@
 				0000000000000000000001C7 /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		0000000000000000000001CF /* Build configuration list for PBXProject "sinkblobs" */ = {
 			isa = XCConfigurationList;
@@ -1414,7 +1414,7 @@
 				0000000000000000000001CE /* AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};

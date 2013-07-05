@@ -19,7 +19,7 @@
 #include <tyranscript/debug/tyran_print_runtime_state.h>
 
 #if defined TYRAN_CONFIGURATION_DEBUG
-// #define TYRAN_RUNTIME_DEBUG
+#define TYRAN_RUNTIME_DEBUG
 #endif
 
 #define TYRAN_RUNTIME_INVOKE_BINARY_OPERATOR(DESTINATION, OBJECT, PARAMS, PARAM_COUNT, OPERATOR) \

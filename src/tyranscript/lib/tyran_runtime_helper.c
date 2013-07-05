@@ -14,6 +14,7 @@
 #include <tyranscript/tyran_string.h>
 #include <tyranscript/tyran_object_macros.h>
 #include <tyranscript/tyran_symbol_table.h>
+#include <tyranscript/tyran_function.h>
 
 
 void tyran_runtime_setup_binary_operators(tyran_runtime* rt)
@@ -81,3 +82,9 @@ void tyran_runtime_push_call(tyran_runtime* rt, const struct tyran_opcodes* opco
 	rt->stack[rt->stack_pointer] = *runtime_info;
 	rt->stack_pointer++;
 }
+
+void tyran_runtime_push_call_ex(tyran_runtime* rt, const tyran_function* func, const struct tyran_value* _this)
+{
+	tyran_runtime_push_call(rt, func->data.opcodes, func->constants, _this);
+}
+

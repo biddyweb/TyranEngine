@@ -24,5 +24,5 @@ void nimbus_update_init_ex(nimbus_update* self, struct tyran_memory* memory, nim
 void nimbus_update_init(nimbus_update* self, struct tyran_memory* memory, nimbus_update_function func, void* update_self, const char* name)
 {
 	const int max_size = 1024;
-	nimbus_update_init_ex(self, memory, func, self, max_size, name);
+	nimbus_update_init_ex(self, memory, func, update_self, max_size, name);
 }

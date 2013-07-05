@@ -81,6 +81,11 @@ static void handle_updated(nimbus_event_connection* self, nimbus_in_stream* in_s
 	nimbus_in_stream_read_u32(in_stream, &self->expected_payload_size);
 }
 
+static int read_resource_type_id(nimbus_in_stream* stream, nimbus_resource_type_id* resource_type_id)
+{
+	return nimbus_in_stream_read_u32(stream, resource_type_id);
+}
+
 static int read_resource_id(nimbus_in_stream* stream, nimbus_resource_id* resource_id)
 {
 	return nimbus_in_stream_read_u32(stream, resource_id);
@@ -91,7 +96,9 @@ static void read_message_type(nimbus_event_connection* self, nimbus_in_stream* i
 	u8t message_type;
 	nimbus_in_stream_read_u8(in_stream, &message_type);
 	read_resource_id(in_stream, &self->resource_id);
-	TYRAN_LOG("read_message_type:%d resource_id:%d", message_type, self->resource_id);
+	read_resource_type_id(in_stream, &self->resource_type_id);
+
+	TYRAN_LOG("read_message_type:%d resource_id:%d type:%d", message_type, self->resource_id, self->resource_type_id);
 	switch (message_type) {
 		case 0: // Delete
 			handle_deleted(self, self->resource_id);
@@ -106,7 +113,7 @@ static void read_message_type(nimbus_event_connection* self, nimbus_in_stream* i
 void check_header(nimbus_event_connection* self)
 {
 	int buffer_size = nimbus_ring_buffer_size(&self->buffer);
-	const int header_size = 9;
+	const int header_size = 13;
 	if (buffer_size >= header_size) {
 		u8t temp_buffer[header_size];
 
@@ -118,13 +125,14 @@ void check_header(nimbus_event_connection* self)
 
 }
 
-static void fire_resource_updated(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id, nimbus_ring_buffer* buffer, int expected_payload_size)
+static void fire_resource_updated(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id, nimbus_ring_buffer* buffer, int expected_payload_size)
 {
 	u8t* temp_buffer;
 	int temp_buffer_size;
 
 	nimbus_resource_updated resource_updated;
 	resource_updated.resource_id = resource_id;
+	resource_updated.resource_type_id = resource_type_id;
 	resource_updated.payload_size = expected_payload_size;
 
 	nimbus_event_write_stream_clear(out_event_stream);
@@ -149,7 +157,7 @@ static void fire_resource_updated(nimbus_event_write_stream* out_event_stream, n
 static void on_payload_done(nimbus_event_connection* self)
 {
 	self->waiting_for_header = 1;
-	fire_resource_updated(&self->update_object.event_write_stream, self->resource_id, &self->buffer, self->expected_payload_size);
+	fire_resource_updated(&self->update_object.event_write_stream, self->resource_id, self->resource_type_id, &self->buffer, self->expected_payload_size);
 }
 
 static void consume(nimbus_event_connection* self)

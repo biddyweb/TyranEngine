@@ -23,7 +23,7 @@ void nimbus_event_process(nimbus_event_listener* self, struct nimbus_event_read_
 
 	for (; read_stream->pointer < read_stream->end_pointer; ) {
 		nimbus_event_stream_read_type(read_stream, header);
-		// TYRAN_LOG("Read event header type:%d octet_size:%d", header.event_type_id, header.event_octet_size);
+		TYRAN_LOG("Read event header type:%d octet_size:%d", header.event_type_id, header.event_octet_size);
 
 		nimbus_event_listener_function* func = nimbus_event_function_from_event_id(self, header.event_type_id);
 

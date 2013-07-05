@@ -2,6 +2,7 @@
 #define nimbus_object_loader_h
 
 #include "../../core/src/base/update/nimbus_update.h"
+#include "../resource/resource_type_id.h"
 #include "dependency_resolver.h"
 
 struct tyran_mocha_api;
@@ -14,6 +15,9 @@ typedef struct nimbus_object_loader {
 	u8t* script_buffer;
 	int script_buffer_size;
 	nimbus_dependency_resolver dependency_resolver;
+	nimbus_resource_type_id object_type_id;
+	nimbus_resource_type_id wire_object_type_id;
+	nimbus_resource_type_id script_object_type_id;
 } nimbus_object_loader;
 
 void nimbus_object_loader_init(nimbus_object_loader* self, struct tyran_memory* memory, struct tyran_mocha_api* mocha, struct tyran_value* context);

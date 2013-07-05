@@ -47,6 +47,7 @@ void nimbus_event_stream_write_event_end(nimbus_event_write_stream* self)
 
 void nimbus_event_stream_read_octets(nimbus_event_read_stream* stream, u8t* data, int len)
 {
+	TYRAN_ASSERT(stream->pointer + len <= stream->end_pointer, "Read too far");
 	tyran_memcpy_type(u8t, data, stream->pointer, len);
 	stream->pointer += len;
 }
@@ -59,6 +60,7 @@ void nimbus_event_stream_read_init(nimbus_event_read_stream* self, const u8t* po
 
 void nimbus_event_stream_read_skip(nimbus_event_read_stream* self, int length)
 {
+	TYRAN_ASSERT(self->pointer + length <= self->end_pointer, "Read skipped too far");
 	self->pointer += length;
 }
 

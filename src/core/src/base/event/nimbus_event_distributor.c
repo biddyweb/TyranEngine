@@ -15,7 +15,7 @@ void nimbus_event_distributor_init(nimbus_event_distributor* self, tyran_memory*
 void nimbus_event_distributor_set_buffer_for_objects_to_parse(nimbus_event_distributor* self, nimbus_update** objects, int object_count)
 {
 	for (int i=0; i<object_count; ++i) {
-		// TYRAN_LOG("** Setting up stream read init (%d) %d", i, self->event_buffer_used_octet_size);
+		// TYRAN_LOG("** Setting up stream read init (index:%d) octets:%d", i, self->event_buffer_used_octet_size);
 
 		nimbus_update* o = objects[i];
 		nimbus_event_stream_read_init(&o->event_read_stream, self->event_buffer, self->event_buffer_used_octet_size);

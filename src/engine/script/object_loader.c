@@ -20,8 +20,11 @@ static void send_resource_update(nimbus_event_write_stream* out_event_stream, ni
 	updated.resource_type_id = type_id;
 	updated.payload_size = sizeof(tyran_object*);
 
+
 	nimbus_event_stream_write_event_header(out_event_stream, NIMBUS_EVENT_RESOURCE_UPDATED);
+	nimbus_event_stream_write_type(out_event_stream, updated);
 	nimbus_event_stream_write_octets(out_event_stream, &object, sizeof(tyran_object*));
+	nimbus_event_stream_write_event_end(out_event_stream);
 }
 
 static void add_object(nimbus_object_loader* self, nimbus_resource_id resource_id, tyran_value* value)
@@ -29,8 +32,11 @@ static void add_object(nimbus_object_loader* self, nimbus_resource_id resource_i
 	TYRAN_LOG("add resolved object(%d)", resource_id);
 	nimbus_dependency_resolver_object_loaded(&self->dependency_resolver, value, resource_id);
 	if (nimbus_dependency_resolver_done(&self->dependency_resolver)) {
-		TYRAN_LOG("******** We have loaded!!!!! *********");
-		// send_resource_update
+		TYRAN_LOG("******** Resource loaded!!!!! *********");
+		if (resource_id != 431716) {
+			TYRAN_LOG("******** We have loaded!!!!! *********");
+			send_resource_update(&self->update.event_write_stream, resource_id, self->object_type_id, tyran_value_object(value));
+		}
 	}
 }
 
@@ -48,6 +54,16 @@ static void on_resource_updated(nimbus_object_loader* self, struct nimbus_event_
 	add_object(self, resource_id, &return_value);
 }
 
+static void on_wire_object_updated(nimbus_object_loader* self, struct nimbus_event_read_stream* stream, nimbus_resource_id resource_id, int payload_size)
+{
+	on_resource_updated(self, stream, resource_id, payload_size);
+}
+
+static void on_script_object_updated(nimbus_object_loader* self, struct nimbus_event_read_stream* stream, nimbus_resource_id resource_id, int payload_size)
+{
+	on_resource_updated(self, stream, resource_id, payload_size);
+}
+
 static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* stream)
 {
 	nimbus_object_loader* self = _self;
@@ -55,8 +71,11 @@ static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* s
 	nimbus_resource_updated updated;
 
 	nimbus_event_stream_read_type(stream, updated);
-
-	on_resource_updated(self, stream, updated.resource_id, updated.payload_size);
+	if (self->wire_object_type_id == updated.resource_type_id) {
+		on_wire_object_updated(self, stream, updated.resource_id, updated.payload_size);
+	} else if (self->script_object_type_id == updated.resource_type_id) {
+		on_script_object_updated(self, stream, updated.resource_id, updated.payload_size);
+	}
 }
 
 static void _dummy_update(void* _self)
@@ -69,6 +88,10 @@ void nimbus_object_loader_init(nimbus_object_loader* self, tyran_memory* memory,
 	self->context = context;
 	self->script_buffer_size = 16 * 1024;
 	self->script_buffer = TYRAN_MEMORY_ALLOC(memory, self->script_buffer_size, "Script buffer");
+	self->object_type_id = nimbus_resource_type_id_from_string("object");
+	self->wire_object_type_id = nimbus_resource_type_id_from_string("oec");
+	self->script_object_type_id = nimbus_resource_type_id_from_string("oes");
+
 	nimbus_update_init(&self->update, memory, _dummy_update, self, "loader");
 	nimbus_event_listener_init(&self->update.event_listener, self);
 	nimbus_event_listener_listen(&self->update.event_listener, NIMBUS_EVENT_RESOURCE_UPDATED, _on_resource_updated);

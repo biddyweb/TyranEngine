@@ -89,6 +89,7 @@ void nimbus_object_loader_init(nimbus_object_loader* self, tyran_memory* memory,
 	self->script_buffer_size = 16 * 1024;
 	self->script_buffer = TYRAN_MEMORY_ALLOC(memory, self->script_buffer_size, "Script buffer");
 	self->object_type_id = nimbus_resource_type_id_from_string("object");
+	TYRAN_LOG("OBJECT ID IS TYPE:%d", self->object_type_id);
 	self->wire_object_type_id = nimbus_resource_type_id_from_string("oec");
 	self->script_object_type_id = nimbus_resource_type_id_from_string("oes");
 

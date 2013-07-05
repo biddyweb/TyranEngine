@@ -9,6 +9,7 @@
 #include "../network/event_connection.h"
 #include <tyranscript/tyran_mocha_api.h>
 #include "../script/object_loader.h"
+#include "../script/object_listeners.h"
 
 struct nimbus_resource_handler;
 
@@ -20,6 +21,7 @@ typedef struct nimbus_engine {
 	nimbus_update update_object;
 
 	nimbus_object_loader object_loader;
+	nimbus_object_listener object_listener;
 	nimbus_event_distributor event_distributor;
 
 	nimbus_update** update_objects;

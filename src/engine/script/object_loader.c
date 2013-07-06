@@ -2,7 +2,7 @@
 #include "../event/resource_updated.h"
 #include <tyranscript/tyran_mocha_api.h>
 
-static void evaluate(nimbus_object_loader* self, const char* data, tyran_value* return_value)
+static tyran_object* evaluate(nimbus_object_loader* self, const char* data)
 {
 	tyran_value new_object = tyran_mocha_api_create_object(self->mocha);
 
@@ -10,7 +10,7 @@ static void evaluate(nimbus_object_loader* self, const char* data, tyran_value* 
 	tyran_value temp_value;
 	tyran_value_set_nil(temp_value);
 	tyran_mocha_api_eval(self->mocha, &new_object, &temp_value, data);
-	tyran_value_copy(*return_value, new_object);
+	return tyran_value_object(&new_object);
 }
 
 static void send_resource_update(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id, nimbus_resource_type_id type_id, tyran_object* object)
@@ -20,22 +20,24 @@ static void send_resource_update(nimbus_event_write_stream* out_event_stream, ni
 	updated.resource_type_id = type_id;
 	updated.payload_size = sizeof(tyran_object*);
 
-
 	nimbus_event_stream_write_event_header(out_event_stream, NIMBUS_EVENT_RESOURCE_UPDATED);
 	nimbus_event_stream_write_type(out_event_stream, updated);
 	nimbus_event_stream_write_octets(out_event_stream, &object, sizeof(tyran_object*));
 	nimbus_event_stream_write_event_end(out_event_stream);
 }
 
-static void add_object(nimbus_object_loader* self, nimbus_resource_id resource_id, tyran_value* value)
+static void add_object(nimbus_object_loader* self, nimbus_resource_id resource_id, tyran_object* o)
 {
 	TYRAN_LOG("add resolved object(%d)", resource_id);
-	nimbus_dependency_resolver_object_loaded(&self->dependency_resolver, value, resource_id);
+	tyran_value temp_object;
+	tyran_value_set_object(temp_object, o);
+	tyran_print_value("yeahoo", &temp_object, 1, self->mocha->default_runtime->symbol_table);
+	nimbus_dependency_resolver_object_loaded(&self->dependency_resolver, o, resource_id);
 	if (nimbus_dependency_resolver_done(&self->dependency_resolver)) {
 		TYRAN_LOG("******** Resource loaded!!!!! *********");
 		if (resource_id != 431716) {
 			TYRAN_LOG("******** We have loaded!!!!! *********");
-			send_resource_update(&self->update.event_write_stream, resource_id, self->object_type_id, tyran_value_object(value));
+			send_resource_update(&self->update.event_write_stream, resource_id, self->object_type_id, o);
 		}
 	}
 }
@@ -49,9 +51,8 @@ static void on_resource_updated(nimbus_object_loader* self, struct nimbus_event_
 
 	TYRAN_LOG("*** EVALUATE *** %d octet_size:%d", resource_id, payload_size);
 	TYRAN_LOG("SCRIPT:'%s'", self->script_buffer);
-	tyran_value return_value;
-	evaluate(self, (const char*)self->script_buffer, &return_value);
-	add_object(self, resource_id, &return_value);
+	tyran_object* o = evaluate(self, (const char*)self->script_buffer);
+	add_object(self, resource_id, o);
 }
 
 static void on_wire_object_updated(nimbus_object_loader* self, struct nimbus_event_read_stream* stream, nimbus_resource_id resource_id, int payload_size)

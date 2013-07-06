@@ -1,7 +1,7 @@
 #include "resource_dependency_info.h"
 #include <tyranscript/tyran_value.h>
 
-void nimbus_resource_dependency_info_init(nimbus_resource_dependency_info* self, nimbus_resource_id resource_id, tyran_value* target)
+void nimbus_resource_dependency_info_init(nimbus_resource_dependency_info* self, nimbus_resource_id resource_id, struct tyran_object* target)
 {
 	self->target = target;
 	self->resource_id = resource_id;

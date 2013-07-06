@@ -4,6 +4,7 @@
 #include <tyranscript/tyran_symbol_table.h>
 #include <tyranscript/tyran_runtime.h>
 #include <tyranscript/tyran_function.h>
+#include <tyranscript/tyran_property_iterator.h>
 
 #include "../event/resource_updated.h"
 
@@ -120,11 +121,16 @@ static void add_listening_function(nimbus_object_listener* self, tyran_value* fu
 static void scan_for_listening_functions_on_object(nimbus_object_listener* self, tyran_value* object_value)
 {
 	tyran_object* o = tyran_value_object(object_value);
-	for (int i = 0; i < o->property_count; ++i) {
-		tyran_object_property* property = &o->properties[i];
-		tyran_value* value = &property->value;
-		const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &property->symbol);
-		TYRAN_LOG("Property(%d) key:'%s'", i, debug_key_string);
+	tyran_property_iterator it;
+
+	tyran_property_iterator_init(&it, o);
+
+	tyran_symbol symbol;
+	tyran_value* value;
+
+	while (tyran_property_iterator_next(&it, &symbol, &value)) {
+		const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
+		TYRAN_LOG("Property key:'%s'", debug_key_string);
 		if (tyran_value_is_object(value)) {
 			TYRAN_LOG("It is an object at least");
 			if (tyran_value_is_function(value)) {
@@ -137,6 +143,8 @@ static void scan_for_listening_functions_on_object(nimbus_object_listener* self,
 			}
 		}
 	}
+
+	tyran_property_iterator_free(&it);
 }
 
 static void on_object_updated(nimbus_object_listener* self, tyran_object* o)

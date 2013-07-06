@@ -14,10 +14,10 @@ typedef struct nimbus_resource_dependency_info {
 	int resource_dependencies_count;
 
 	nimbus_resource_id inherit_resource_id;
-	struct tyran_value* target;
+	struct tyran_object* target;
 } nimbus_resource_dependency_info;
 
-void nimbus_resource_dependency_info_init(nimbus_resource_dependency_info* self, nimbus_resource_id resource_id, struct tyran_value* target);
+void nimbus_resource_dependency_info_init(nimbus_resource_dependency_info* self, nimbus_resource_id resource_id, struct tyran_object* target);
 void nimbus_resource_dependency_info_add_resource(nimbus_resource_dependency_info* self, struct tyran_value* target, nimbus_resource_id resource_id);
 void nimbus_resource_dependency_info_inherit(nimbus_resource_dependency_info* self, nimbus_resource_id resource_id);
 void nimbus_resource_dependency_info_delete_at(nimbus_resource_dependency_info* info, int index);

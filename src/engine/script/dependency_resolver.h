@@ -23,7 +23,7 @@ typedef struct nimbus_dependency_resolver {
 } nimbus_dependency_resolver;
 
 void nimbus_dependency_resolver_init(nimbus_dependency_resolver* self, struct tyran_memory* memory, struct tyran_symbol_table* symbol_table, struct nimbus_event_write_stream* stream);
-void nimbus_dependency_resolver_object_loaded(nimbus_dependency_resolver* self, struct tyran_value* v, nimbus_resource_id resource_id);
+void nimbus_dependency_resolver_object_loaded(nimbus_dependency_resolver* self, struct tyran_object* v, nimbus_resource_id resource_id);
 tyran_boolean nimbus_dependency_resolver_done(nimbus_dependency_resolver* self);
 
 #endif

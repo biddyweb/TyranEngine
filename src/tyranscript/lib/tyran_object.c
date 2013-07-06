@@ -107,6 +107,8 @@ void tyran_object_set_prototype(struct tyran_object* target, struct tyran_object
 	if (target->prototype) {
 		TYRAN_OBJECT_RELEASE(target->prototype);
 	}
+	TYRAN_ASSERT(proto != target, "Can not set prototype to self");
+
 	TYRAN_OBJECT_RETAIN(proto);
 	target->prototype = proto;
 }

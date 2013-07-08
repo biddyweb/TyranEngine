@@ -6,7 +6,9 @@
 #include <tyranscript/tyran_string.h>
 #include <tyranscript/tyran_symbol_table.h>
 #include <tyranscript/tyran_value_object.h>
+#include "../../core/src/base/event/nimbus_event_stream.h"
 #include "../event/resource_load.h"
+#include "../event/resource_updated.h"
 #include "../resource/resource_cache.h"
 
 static void load_resource(nimbus_dependency_resolver* self, nimbus_resource_id resource_id)
@@ -15,6 +17,21 @@ static void load_resource(nimbus_dependency_resolver* self, nimbus_resource_id r
 	self->loading_resources[self->loading_resources_count] = resource_id;
 	self->loading_resources_count++;
 	nimbus_resource_load_send(self->event_write_stream, resource_id);
+}
+
+
+
+static void send_resource_update(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id, nimbus_resource_type_id type_id, tyran_object* object)
+{
+	nimbus_resource_updated updated;
+	updated.resource_id = resource_id;
+	updated.resource_type_id = type_id;
+	updated.payload_size = sizeof(tyran_object*);
+
+	nimbus_event_stream_write_event_header(out_event_stream, NIMBUS_EVENT_RESOURCE_UPDATED);
+	nimbus_event_stream_write_type(out_event_stream, updated);
+	nimbus_event_stream_write_octets(out_event_stream, &object, sizeof(tyran_object*));
+	nimbus_event_stream_write_event_end(out_event_stream);
 }
 
 static tyran_boolean is_loading_in_progress(nimbus_dependency_resolver* self, nimbus_resource_id resource_id)
@@ -155,6 +172,7 @@ void nimbus_dependency_resolver_init(nimbus_dependency_resolver* self, struct ty
 	self->event_write_stream = stream;
 	self->loading_resources_max_count = sizeof(self->loading_resources) / sizeof(nimbus_resource_id);
 	self->dependency_info_max_count = sizeof(self->dependency_infos) / sizeof(nimbus_resource_dependency_info);
+	self->object_type_id = nimbus_resource_type_id_from_string("object");
 	nimbus_resource_cache_init(&self->resource_cache, memory);
 }
 
@@ -208,6 +226,7 @@ static void resource_resolved(nimbus_dependency_resolver* self, nimbus_resource_
 	nimbus_resource_id resource_id = info->resource_id;
 	tyran_object* target = info->target;
 	delete_dependency_info(self, info);
+	send_resource_update(self->event_write_stream, resource_id, self->object_type_id, target);
 	check_if_someone_wants(self, resource_id, target);
 }
 
@@ -228,15 +247,3 @@ void nimbus_dependency_resolver_object_loaded(nimbus_dependency_resolver* self, 
 	check_if_resolved(self, info);
 }
 
-tyran_boolean nimbus_dependency_resolver_done(nimbus_dependency_resolver* self)
-{
-	if (self->dependency_info_count > 0) {
-		nimbus_resource_dependency_info* dependency_info = &self->dependency_infos[0];
-		for (int j=0; j<dependency_info->resource_dependencies_count; ) {
-			nimbus_resource_dependency* dependency = &dependency_info->resource_dependencies[j];
-			TYRAN_LOG("waiting for dependency:%d", dependency->resource_id);
-		}
-		TYRAN_LOG("waiting for inherit:%d", dependency_info->inherit_resource_id);
-	}
-	return self->dependency_info_count == 0;
-}

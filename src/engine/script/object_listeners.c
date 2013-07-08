@@ -6,6 +6,8 @@
 #include <tyranscript/tyran_function.h>
 #include <tyranscript/tyran_property_iterator.h>
 
+#include <tyranscript/debug/tyran_print_opcodes.h>
+
 #include "../event/resource_updated.h"
 
 
@@ -28,7 +30,6 @@ static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* s
 	nimbus_event_stream_read_type(stream, updated);
 	TYRAN_LOG("Listener::_on_resource_updated.type:%d", updated.resource_type_id);
 	if (self->object_type_id == updated.resource_type_id) {
-		TYRAN_LOG("Got a match!");
 		tyran_object* o;
 		nimbus_event_stream_read_octets(stream, (u8t*)&o, sizeof(tyran_object*));
 		on_object_updated(self, o);
@@ -63,6 +64,13 @@ static void call_event(nimbus_object_listener* self, tyran_symbol symbol)
 {
 	nimbus_object_listener_info* info = find_info_from_symbol(self, symbol);
 	if (!info) {
+		TYRAN_LOG("No script objects needed update");
+		return;
+	}
+
+
+	if (info->function_count == 0) {
+		TYRAN_LOG("No function count for that symbol");
 		return;
 	}
 
@@ -70,6 +78,10 @@ static void call_event(nimbus_object_listener* self, tyran_symbol symbol)
 	tyran_value return_value;
 	for (int i=0; i<info->function_count; ++i) {
 		nimbus_object_listener_function* func_info = &info->functions[i];
+		TYRAN_LOG("UPDATE function:%p, function_context:%p", func_info->function, &func_info->function_context);
+
+		tyran_print_opcodes(func_info->function->data.opcodes, 0, func_info->function->constants);
+
 		tyran_runtime_push_call_ex(self->runtime, func_info->function, &func_info->function_context);
 		tyran_runtime_execute(self->runtime, &return_value, 0);
 	}
@@ -118,7 +130,7 @@ static void add_listening_function(nimbus_object_listener* self, tyran_value* fu
 }
 
 
-static void scan_for_listening_functions_on_object(nimbus_object_listener* self, tyran_value* object_value)
+static void scan_for_listening_functions_on_object(nimbus_object_listener* self, tyran_value* object_value, tyran_value* combine, int depth)
 {
 	tyran_object* o = tyran_value_object(object_value);
 	tyran_property_iterator it;
@@ -130,16 +142,16 @@ static void scan_for_listening_functions_on_object(nimbus_object_listener* self,
 
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
-		TYRAN_LOG("Property key:'%s'", debug_key_string);
 		if (tyran_value_is_object(value)) {
-			TYRAN_LOG("It is an object at least");
 			if (tyran_value_is_function(value)) {
 				if (debug_key_string[0] == 'o' && debug_key_string[1] == 'n') {
 					TYRAN_LOG("found a listening func :)");
 					add_listening_function(self, object_value, value, &debug_key_string[2]);
 				}
 			} else {
-				scan_for_listening_functions_on_object(self, value);
+				if (depth == 0) {
+					scan_for_listening_functions_on_object(self, value, value, depth + 1);
+				}
 			}
 		}
 	}
@@ -151,6 +163,6 @@ static void on_object_updated(nimbus_object_listener* self, tyran_object* o)
 {
 	tyran_value v;
 	tyran_value_set_object(v, o);
-	scan_for_listening_functions_on_object(self, &v);
+	scan_for_listening_functions_on_object(self, &v, &v, 0);
 	tyran_value_release(v);
 }

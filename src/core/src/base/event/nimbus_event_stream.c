@@ -1,7 +1,6 @@
 #include "nimbus_event_stream.h"
 #include <tyranscript/tyran_clib.h>
 
-
 void nimbus_event_write_stream_clear(nimbus_event_write_stream* self)
 {
 	self->pointer = self->buffer;
@@ -31,11 +30,16 @@ void nimbus_event_stream_write_octets(nimbus_event_write_stream* stream, const v
 	stream->pointer += len;
 }
 
+void write_skip(nimbus_event_write_stream* self, int length)
+{
+	self->pointer += length;
+}
+
 void nimbus_event_stream_write_align(nimbus_event_write_stream* self)
 {
 	const int alignment = 8;
 	if (((tyran_pointer_to_number)self->pointer % alignment) != 0) {
-		self->pointer += alignment - ((tyran_pointer_to_number)self->pointer % alignment);
+		write_skip(self, alignment - ((tyran_pointer_to_number)self->pointer % alignment));
 	}
 }
 

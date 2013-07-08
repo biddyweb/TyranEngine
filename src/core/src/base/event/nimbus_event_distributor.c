@@ -15,8 +15,6 @@ void nimbus_event_distributor_init(nimbus_event_distributor* self, tyran_memory*
 void nimbus_event_distributor_set_buffer_for_objects_to_parse(nimbus_event_distributor* self, nimbus_update** objects, int object_count)
 {
 	for (int i=0; i<object_count; ++i) {
-		// TYRAN_LOG("** Setting up stream read init (index:%d) octets:%d", i, self->event_buffer_used_octet_size);
-
 		nimbus_update* o = objects[i];
 		nimbus_event_stream_read_init(&o->event_read_stream, self->event_buffer, self->event_buffer_used_octet_size);
 	}
@@ -31,6 +29,11 @@ void nimbus_event_distributor_write_events_to_buffer(nimbus_event_distributor* s
 
 		int events_octet_size = nimbus_event_write_stream_length(&o->event_write_stream);
 		if (events_octet_size != 0) {
+			const int alignment = 8;
+			if (((tyran_pointer_to_number)p % alignment) != 0) {
+				int skip = alignment - ((tyran_pointer_to_number)p % alignment);
+				p += skip;
+			}
 			const u8t* events = o->event_write_stream.buffer;
 			TYRAN_ASSERT((p - self->event_buffer) + events_octet_size < self->event_buffer_size, "Out of event buffer memory");
 

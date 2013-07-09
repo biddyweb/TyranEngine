@@ -20,7 +20,7 @@ void tyran_mocha_api_new(tyran_mocha_api* api, int hunk_size)
 	start += sizeof(tyran_memory);
 	tyran_memory_construct(memory, start, hunk_size - sizeof(tyran_memory));
 
-	const int default_size = 100;
+	const int default_size = 512;
 
 	api->mocha_lexer_pool = TYRAN_MEMORY_POOL_CONSTRUCT(memory, tyran_mocha_lexer, default_size);
 	api->mocha_token_pool = TYRAN_MEMORY_POOL_CONSTRUCT(memory, tyran_mocha_token, default_size);

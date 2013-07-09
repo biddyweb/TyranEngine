@@ -5,7 +5,6 @@ void nimbus_resource_dependency_info_init(nimbus_resource_dependency_info* self,
 {
 	self->target = target;
 	self->resource_id = resource_id;
-	self->inherit_resource_id = 0;
 	self->resource_dependencies_count = 0;
 }
 
@@ -14,12 +13,18 @@ void nimbus_resource_dependency_info_free(nimbus_resource_dependency_info* self)
 
 }
 
-void nimbus_resource_dependency_info_add_resource(nimbus_resource_dependency_info* self, tyran_value* target, nimbus_resource_id resource_id)
+static void add_dependency(nimbus_resource_dependency_info* self, tyran_value* target, nimbus_resource_id resource_id, tyran_boolean is_inherit)
 {
 	nimbus_resource_dependency* dependency = &self->resource_dependencies[self->resource_dependencies_count];
 	self->resource_dependencies_count++;
 	dependency->resource_id = resource_id;
+	dependency->is_inherit = is_inherit;
 	dependency->target = target;
+}
+
+void nimbus_resource_dependency_info_add_resource(nimbus_resource_dependency_info* self, tyran_value* target, nimbus_resource_id resource_id)
+{
+	add_dependency(self, target, resource_id, TYRAN_FALSE);
 }
 
 void nimbus_resource_dependency_info_delete_at(nimbus_resource_dependency_info* info, int index)
@@ -28,12 +33,12 @@ void nimbus_resource_dependency_info_delete_at(nimbus_resource_dependency_info* 
 	info->resource_dependencies_count--;
 }
 
-void nimbus_resource_dependency_info_inherit(nimbus_resource_dependency_info* self, nimbus_resource_id resource_id)
+void nimbus_resource_dependency_info_inherit(nimbus_resource_dependency_info* self, tyran_value* target, nimbus_resource_id resource_id)
 {
-	self->inherit_resource_id = resource_id;
+	add_dependency(self, target, resource_id, TYRAN_TRUE);
 }
 
 tyran_boolean nimbus_resource_dependency_info_is_satisfied(nimbus_resource_dependency_info* self)
 {
-	return (self->inherit_resource_id == 0) && (self->resource_dependencies_count == 0);
+	return self->resource_dependencies_count == 0;
 }

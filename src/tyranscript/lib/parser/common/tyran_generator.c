@@ -146,7 +146,6 @@ tyran_reg_index tyran_generator_comparison_operator(tyran_code_state* code, tyra
 			tyran_opcodes_op_eq(codes, result, left, right, TYRAN_FALSE);
 			break;
 		case TYRAN_PARSER_NOT_EQUAL:
-			TYRAN_LOG("Inserting NEQ $$$$");
 			tyran_opcodes_op_eq(codes, result, left, right, TYRAN_TRUE);
 			break;
 		case TYRAN_PARSER_LESS:

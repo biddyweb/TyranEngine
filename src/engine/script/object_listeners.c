@@ -19,7 +19,7 @@ static void info_add_function(nimbus_object_listener_info* self, tyran_value* fu
 }
 
 
-static void on_object_updated(nimbus_object_listener* self, tyran_object* o);
+static void on_state_updated(nimbus_object_listener* self, tyran_object* o);
 
 static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* stream)
 {
@@ -28,11 +28,12 @@ static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* s
 	nimbus_resource_updated updated;
 
 	nimbus_event_stream_read_type(stream, updated);
-	TYRAN_LOG("Listener::_on_resource_updated.type:%d", updated.resource_type_id);
-	if (self->object_type_id == updated.resource_type_id) {
+	TYRAN_LOG("Listener::_on_resource_updated. %d of type:%d", updated.resource_id, updated.resource_type_id);
+	if (updated.resource_type_id == self->state_type_id) {
+		TYRAN_LOG("STATE %d IS UPDATED", updated.resource_id);
 		tyran_object* o;
 		nimbus_event_stream_read_octets(stream, (u8t*)&o, sizeof(tyran_object*));
-		on_object_updated(self, o);
+		on_state_updated(self, o);
 	}
 }
 
@@ -64,7 +65,6 @@ static void call_event(nimbus_object_listener* self, tyran_symbol symbol)
 {
 	nimbus_object_listener_info* info = find_info_from_symbol(self, symbol);
 	if (!info) {
-		TYRAN_LOG("No script objects needed update");
 		return;
 	}
 
@@ -79,6 +79,7 @@ static void call_event(nimbus_object_listener* self, tyran_symbol symbol)
 	for (int i=0; i<info->function_count; ++i) {
 		nimbus_object_listener_function* func_info = &info->functions[i];
 		TYRAN_LOG("UPDATE function:%p, function_context:%p", func_info->function, &func_info->function_context);
+		tyran_print_value("context", &func_info->function_context, 1, self->symbol_table);
 
 		tyran_print_opcodes(func_info->function->data.opcodes, 0, func_info->function->constants);
 
@@ -102,7 +103,8 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 	nimbus_update_init(&self->update, memory, _dummy_update_2, self, "script listener");
 	nimbus_event_listener_init(&self->update.event_listener, self);
 	nimbus_event_listener_listen(&self->update.event_listener, NIMBUS_EVENT_RESOURCE_UPDATED, _on_resource_updated);
-	self->object_type_id = nimbus_resource_type_id_from_string("object");
+	self->state_type_id = nimbus_resource_type_id_from_string("state");
+	TYRAN_LOG("State type is %d", self->state_type_id);
 
 
 	tyran_symbol_table_add(self->symbol_table, &self->frame_symbol, "Frame");
@@ -130,9 +132,8 @@ static void add_listening_function(nimbus_object_listener* self, tyran_value* fu
 }
 
 
-static void scan_for_listening_functions_on_object(nimbus_object_listener* self, tyran_value* object_value, tyran_value* combine, int depth)
+static void scan_for_listening_functions_on_object(nimbus_object_listener* self, tyran_object* o, tyran_object* combine, int depth)
 {
-	tyran_object* o = tyran_value_object(object_value);
 	tyran_property_iterator it;
 
 	tyran_property_iterator_init(&it, o);
@@ -142,15 +143,19 @@ static void scan_for_listening_functions_on_object(nimbus_object_listener* self,
 
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
+		TYRAN_LOG("%d Iterating state. Found property '%s'", depth, debug_key_string);
 		if (tyran_value_is_object(value)) {
 			if (tyran_value_is_function(value)) {
 				if (debug_key_string[0] == 'o' && debug_key_string[1] == 'n') {
 					TYRAN_LOG("found a listening func :)");
-					add_listening_function(self, object_value, value, &debug_key_string[2]);
+					tyran_value object_value;
+					tyran_value_set_object(object_value, o);
+					tyran_print_value("listening context", &object_value, 1, self->runtime->symbol_table);
+					add_listening_function(self, &object_value, value, &debug_key_string[2]);
 				}
 			} else {
 				if (depth == 0) {
-					scan_for_listening_functions_on_object(self, value, value, depth + 1);
+					scan_for_listening_functions_on_object(self, tyran_value_object(value), combine, depth + 1);
 				}
 			}
 		}
@@ -159,10 +164,7 @@ static void scan_for_listening_functions_on_object(nimbus_object_listener* self,
 	tyran_property_iterator_free(&it);
 }
 
-static void on_object_updated(nimbus_object_listener* self, tyran_object* o)
+static void on_state_updated(nimbus_object_listener* self, tyran_object* o)
 {
-	tyran_value v;
-	tyran_value_set_object(v, o);
-	scan_for_listening_functions_on_object(self, &v, &v, 0);
-	tyran_value_release(v);
+	scan_for_listening_functions_on_object(self, o, o, 0);
 }

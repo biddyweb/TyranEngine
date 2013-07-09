@@ -27,7 +27,7 @@ typedef struct nimbus_object_listener {
 	int info_max_count;
 	struct tyran_symbol_table* symbol_table;
 	nimbus_update update;
-	nimbus_resource_type_id object_type_id;
+	nimbus_resource_type_id state_type_id;
 	tyran_symbol frame_symbol;
 	struct tyran_runtime* runtime;
 } nimbus_object_listener;

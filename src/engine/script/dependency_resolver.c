@@ -10,6 +10,7 @@
 #include "../event/resource_load.h"
 #include "../event/resource_updated.h"
 #include "../resource/resource_cache.h"
+#include <tyranscript/tyran_property_iterator.h>
 
 static void load_resource(nimbus_dependency_resolver* self, nimbus_resource_id resource_id)
 {
@@ -23,15 +24,7 @@ static void load_resource(nimbus_dependency_resolver* self, nimbus_resource_id r
 
 static void send_resource_update(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id, nimbus_resource_type_id type_id, tyran_object* object)
 {
-	nimbus_resource_updated updated;
-	updated.resource_id = resource_id;
-	updated.resource_type_id = type_id;
-	updated.payload_size = sizeof(tyran_object*);
-
-	nimbus_event_stream_write_event_header(out_event_stream, NIMBUS_EVENT_RESOURCE_UPDATED);
-	nimbus_event_stream_write_type(out_event_stream, updated);
-	nimbus_event_stream_write_octets(out_event_stream, &object, sizeof(tyran_object*));
-	nimbus_event_stream_write_event_end(out_event_stream);
+	nimbus_resource_updated_send(out_event_stream, resource_id, type_id, &object, sizeof(tyran_object*));
 }
 
 static tyran_boolean is_loading_in_progress(nimbus_dependency_resolver* self, nimbus_resource_id resource_id)
@@ -85,9 +78,9 @@ static void load_resource_if_needed(nimbus_dependency_resolver* self, nimbus_res
 	}
 }
 
-static void inherit_resource(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_object* target, nimbus_resource_id resource_id)
+static void inherit_resource(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* target, nimbus_resource_id resource_id)
 {
-	nimbus_resource_dependency_info_inherit(info, resource_id);
+	nimbus_resource_dependency_info_inherit(info, target, resource_id);
 	load_resource_if_needed(self, resource_id);
 }
 
@@ -97,42 +90,36 @@ static void add_resource_reference(nimbus_dependency_resolver* self, nimbus_reso
 	load_resource_if_needed(self, resource_id);
 }
 
-static int request_inherits_and_references(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_object* combine, tyran_object* o, int depth)
+static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* v, tyran_object* combine)
 {
+	tyran_property_iterator it;
 
-	char tabs[200];
-	int octet_count = depth * 5;
-	tyran_memset_type_n(tabs, '.', octet_count);
-	tabs[octet_count] = 0;
+	tyran_object* o = tyran_value_object(v);
+	tyran_property_iterator_init(&it, o);
 
+	tyran_value* value;
+	tyran_symbol symbol;
 
-	// tyran_print_value("Checking out the inherits", o, 1);
 	char value_string[128];
+
 	int resources_that_are_loading = 0;
 
-	TYRAN_LOG("%s Checking inherits and references. Property count:%d", tabs, o->property_count);
-
-	for (int i = 0; i < o->property_count; ++i) {
-		tyran_object_property* property = &o->properties[i];
-		tyran_value* value = &property->value;
-		const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &property->symbol);
-		TYRAN_LOG("%s Property(%d) key:'%s'", tabs, i, debug_key_string);
-
+	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		if (tyran_value_is_string(value)) {
 			tyran_string_to_c_str(value_string, 128, tyran_object_string(value->data.object));
 			if (value_string[0] == '@') {
 				nimbus_resource_id resource_id = nimbus_resource_id_from_string(&value_string[1]);
 				tyran_object* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
 				if (resource != 0) {
-					TYRAN_LOG("%s RESOURCE REFERENCE (found): '%s'", tabs, value_string);
+					TYRAN_LOG("RESOURCE REFERENCE (found): '%s'", value_string);
 					tyran_value_replace_object(*value, resource);
 				} else {
-					TYRAN_LOG("%s RESOURCE REFERENCE (dependency): '%s'", tabs, value_string);
+					TYRAN_LOG("RESOURCE REFERENCE (dependency): '%s'", value_string);
 					resources_that_are_loading++;
 					add_resource_reference(self, info, value, resource_id);
 				}
 			} else if (value_string[0] == '#') {
-				TYRAN_LOG("%s COMBINE REFERENCE: '%s'", tabs, value_string);
+				TYRAN_LOG("COMBINE REFERENCE: '%s'", value_string);
 				tyran_symbol symbol;
 
 				tyran_symbol_table_add(self->symbol_table, &symbol, &value_string[1]);
@@ -142,26 +129,47 @@ static int request_inherits_and_references(nimbus_dependency_resolver* self, nim
 
 				tyran_value_replace(*value, looked_up_value);
 			} else {
-				const char* key_string = tyran_symbol_table_lookup(self->symbol_table, &property->symbol);
+				const char* key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
 				if (tyran_strcmp(key_string, "inherit") == 0) {
-					TYRAN_LOG("%s INHERIT: '%s'", tabs, value_string);
+					TYRAN_LOG("INHERIT: '%s'", value_string);
 
 					nimbus_resource_id resource_id = nimbus_resource_id_from_string(value_string);
 					tyran_object* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
 					if (!resource) {
 						resources_that_are_loading++;
-						inherit_resource(self, info, o, resource_id);
+						inherit_resource(self, info, v, resource_id);
 					}
 				}
 			}
-		} else if (tyran_value_is_object(value)) {
+		}
+	}
+}
+
+static int request_inherits_and_references(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_object* combine)
+{
+
+	tyran_property_iterator it;
+
+	tyran_property_iterator_init(&it, combine);
+
+	// tyran_print_value("Checking out the inherits", o, 1);
+
+	tyran_value* value;
+	tyran_symbol symbol;
+
+	while (tyran_property_iterator_next(&it, &symbol, &value)) {
+		if (tyran_value_is_object(value)) {
 			if (!tyran_value_is_function(value)) {
-				request_inherits_and_references(self, info, combine, tyran_value_object(value), depth + 1);
+				const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
+				TYRAN_LOG("scanning object:'%s'", debug_key_string);
+				check_inherits_and_reference_on_object(self, info, value, combine);
 			}
 		}
 	}
 
-	return resources_that_are_loading;
+	tyran_property_iterator_free(&it);
+
+	return 0;
 }
 
 void nimbus_dependency_resolver_init(nimbus_dependency_resolver* self, struct tyran_memory* memory, tyran_symbol_table* symbol_table, struct nimbus_event_write_stream* stream)
@@ -173,6 +181,7 @@ void nimbus_dependency_resolver_init(nimbus_dependency_resolver* self, struct ty
 	self->loading_resources_max_count = sizeof(self->loading_resources) / sizeof(nimbus_resource_id);
 	self->dependency_info_max_count = sizeof(self->dependency_infos) / sizeof(nimbus_resource_dependency_info);
 	self->object_type_id = nimbus_resource_type_id_from_string("object");
+	self->wire_object_type_id = nimbus_resource_type_id_from_string("oec");
 	nimbus_resource_cache_init(&self->resource_cache, memory);
 }
 
@@ -182,15 +191,16 @@ static void check_if_someone_wants(nimbus_dependency_resolver* self, nimbus_reso
 {
 	for (int i=0; i<self->dependency_info_count; ) {
 		nimbus_resource_dependency_info* dependency_info = &self->dependency_infos[i];
-		if (dependency_info->inherit_resource_id == resource_id) {
-			tyran_object_set_prototype(dependency_info->target, v);
-			dependency_info->inherit_resource_id = 0;
-		}
 
 		for (int j=0; j<dependency_info->resource_dependencies_count; ) {
 			nimbus_resource_dependency* dependency = &dependency_info->resource_dependencies[j];
 			if (dependency->resource_id == resource_id) {
-				tyran_value_replace_object(*dependency->target, v);
+				if (dependency->is_inherit) {
+					TYRAN_LOG("Resource %d inherited from %d", dependency_info->resource_id, resource_id);
+					tyran_object_set_prototype(tyran_value_object(dependency->target), v);
+				} else {
+					tyran_value_replace_object(*dependency->target, v);
+				}
 				nimbus_resource_dependency_info_delete_at(dependency_info, j);
 			} else {
 				++j;
@@ -221,6 +231,7 @@ static void delete_dependency_info(nimbus_dependency_resolver* self, nimbus_reso
 
 static void resource_resolved(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info)
 {
+	TYRAN_LOG("Resource %d completely resolved", info->resource_id);
 	loading_done(self, info->resource_id);
 	nimbus_resource_cache_add(&self->resource_cache, info->resource_id, info->target);
 	nimbus_resource_id resource_id = info->resource_id;
@@ -240,10 +251,12 @@ static tyran_boolean check_if_resolved(nimbus_dependency_resolver* self, nimbus_
 	return TYRAN_FALSE;
 }
 
-void nimbus_dependency_resolver_object_loaded(nimbus_dependency_resolver* self, tyran_object* v, nimbus_resource_id resource_id)
+void nimbus_dependency_resolver_object_loaded(nimbus_dependency_resolver* self, tyran_object* v, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id)
 {
 	nimbus_resource_dependency_info* info = resource_depency_info_new(self, resource_id, v);
-	request_inherits_and_references(self, info, v, v, 0);
+	if (resource_type_id == self->wire_object_type_id) {
+		request_inherits_and_references(self, info, v);
+	}
 	check_if_resolved(self, info);
 }
 

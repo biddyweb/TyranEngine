@@ -11,6 +11,7 @@
 #include "../resource/resource_id.h"
 #include "../resource/resource_type_id.h"
 #include "../../core/src/base/update/nimbus_update.h"
+#include "../../core/src/base/mutex/nimbus_mutex.h"
 
 
 struct tyran_memory;
@@ -31,6 +32,8 @@ typedef struct nimbus_event_connection {
 	nimbus_connecting_socket socket;
 	nimbus_resource_id resource_id;
 	nimbus_resource_type_id resource_type_id;
+
+	nimbus_mutex ring_buffer_mutex;
 
 	u32t expected_payload_size;
 	int waiting_for_header;

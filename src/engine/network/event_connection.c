@@ -61,12 +61,9 @@ static void _on_resource_request(void* _self, struct nimbus_event_read_stream* s
 	on_resource_request(self, resource_id);
 }
 
-void _on_update(void* self)
-{
-}
-
 void nimbus_event_connection_free(nimbus_event_connection* self)
 {
+	tyran_free(self->in_buffer);
 	nimbus_ring_buffer_free(&self->buffer);
 	nimbus_out_stream_free(&self->out_stream);
 }
@@ -106,6 +103,7 @@ static void read_message_type(nimbus_event_connection* self, nimbus_in_stream* i
 		case 1: // New
 		case 9: // Update
 			handle_updated(self, in_stream, self->resource_id);
+			TYRAN_LOG("Updated/New. Payload:%d", self->expected_payload_size);
 			break;
 	}
 }
@@ -122,7 +120,6 @@ void check_header(nimbus_event_connection* self)
 		read_message_type(self, &self->in_stream);
 		self->waiting_for_header = 0;
 	}
-
 }
 
 static void fire_resource_updated(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id, nimbus_ring_buffer* buffer, int expected_payload_size)
@@ -135,7 +132,6 @@ static void fire_resource_updated(nimbus_event_write_stream* out_event_stream, n
 	resource_updated.resource_type_id = resource_type_id;
 	resource_updated.payload_size = expected_payload_size;
 
-	nimbus_event_write_stream_clear(out_event_stream);
 	nimbus_event_stream_write_event_header(out_event_stream, NIMBUS_EVENT_RESOURCE_UPDATED);
 	nimbus_event_stream_write_type(out_event_stream, resource_updated);
 
@@ -156,6 +152,7 @@ static void fire_resource_updated(nimbus_event_write_stream* out_event_stream, n
 
 static void on_payload_done(nimbus_event_connection* self)
 {
+	TYRAN_LOG("Payload done. Fire:%d of type:%d payload size:%d", self->resource_id, self->resource_type_id, self->expected_payload_size);
 	self->waiting_for_header = 1;
 	fire_resource_updated(&self->update_object.event_write_stream, self->resource_id, self->resource_type_id, &self->buffer, self->expected_payload_size);
 }
@@ -164,7 +161,8 @@ static void consume(nimbus_event_connection* self)
 {
 	int buffer_size = nimbus_ring_buffer_size(&self->buffer);
 	if (self->waiting_for_header) {
-		if (buffer_size >= 9) {
+		if (buffer_size >= 13) {
+			TYRAN_LOG("Header is ready, check it out");
 			check_header(self);
 			consume(self);
 		} else {
@@ -174,21 +172,30 @@ static void consume(nimbus_event_connection* self)
 			on_payload_done(self);
 			consume(self);
 		} else {
+			TYRAN_LOG("Waiting for payload. Got %d of %d", buffer_size, self->expected_payload_size);
 		}
 	}
 }
 
+static void on_update(nimbus_event_connection* self)
+{
+	nimbus_mutex_lock(&self->ring_buffer_mutex);
+	consume(self);
+	nimbus_mutex_unlock(&self->ring_buffer_mutex);
+}
+
+static void _on_update(void* self)
+{
+	on_update(self);
+}
+
 static int receive(nimbus_event_connection* self)
 {
-	u8t* temp_buffer;
-	int temp_buffer_size;
-
-	consume(self);
-
-	nimbus_ring_buffer_write_pointer(&self->buffer, &temp_buffer, &temp_buffer_size);
-	int octets_read = nimbus_connecting_socket_read(&self->socket, temp_buffer, temp_buffer_size);
+	int octets_read = nimbus_connecting_socket_read(&self->socket, self->in_buffer, self->in_buffer_size);
 	if (octets_read > 0) {
-		nimbus_ring_buffer_write_pointer_advance(&self->buffer, octets_read);
+		nimbus_mutex_lock(&self->ring_buffer_mutex);
+		nimbus_ring_buffer_write(&self->buffer, self->in_buffer, octets_read);
+		nimbus_mutex_unlock(&self->ring_buffer_mutex);
 	}
 
 	return octets_read;
@@ -210,6 +217,10 @@ void nimbus_event_connection_init(nimbus_event_connection* self, tyran_memory* m
 {
 	self->waiting_for_header = 1;
 	// Ring buffer must be big enough to hold the largest resource file.
+
+	self->in_buffer_size = 8 * 1024;
+	self->in_buffer = TYRAN_MEMORY_ALLOC(memory, self->in_buffer_size, "event connection buffer");
+
 	const int largest_resource_file = 256 * 1024;
 	nimbus_ring_buffer_init(&self->buffer, memory, largest_resource_file);
 
@@ -222,4 +233,5 @@ void nimbus_event_connection_init(nimbus_event_connection* self, tyran_memory* m
 
 	nimbus_event_listener_init(&self->update_object.event_listener, self);
 	nimbus_event_listener_listen(&self->update_object.event_listener, NIMBUS_EVENT_RESOURCE_LOAD, _on_resource_request);
+	nimbus_mutex_init(&self->ring_buffer_mutex);
 }

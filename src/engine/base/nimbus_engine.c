@@ -4,20 +4,28 @@
 #include "../resource/resource_handler.h"
 
 #include "../event/resource_load.h"
+#include "../event/resource_load_state.h"
+
 #include "../../core/src/base/event/nimbus_event_stream.h"
 #include "../../core/src/base/event/nimbus_event_listener.h"
 #include "../resource/resource_handler.h"
+
+static void fire_load_state(nimbus_engine* self, nimbus_resource_id id)
+{
+	nimbus_resource_load_state_send(&self->update_object.event_write_stream, id);
+}
 
 static void fire_load_resource(nimbus_engine* self, nimbus_resource_id id)
 {
 	nimbus_resource_load_send(&self->update_object.event_write_stream, id);
 }
 
+
 static void on_load_state(nimbus_engine* self, const char* state_name)
 {
 	TYRAN_LOG("on_load_state:'%s'", state_name);
 	nimbus_resource_id id = nimbus_resource_id_from_string(state_name);
-	fire_load_resource(self, id);
+	fire_load_state(self, id);
 }
 
 TYRAN_RUNTIME_CALL_FUNC(nimbus_engine_load_library)

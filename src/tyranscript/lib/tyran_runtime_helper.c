@@ -31,7 +31,7 @@ tyran_runtime* tyran_runtime_new(tyran_memory_pool* runtime_pool, tyran_memory* 
 	tyran_runtime* rt = TYRAN_CALLOC_TYPE(runtime_pool, tyran_runtime);
 
 	rt->stack = TYRAN_MALLOC_NO_POOL_TYPE_COUNT(memory, tyran_runtime_stack, 128);
-	rt->registers = TYRAN_MALLOC_NO_POOL_TYPE_COUNT(memory, tyran_value, 128);
+	rt->registers = TYRAN_MALLOC_NO_POOL_TYPE_COUNT(memory, tyran_value, 1024);
 	rt->object_key_pool = object_key_pool;
 	rt->function_pool = function_pool;
 	rt->function_object_pool = function_object_pool;

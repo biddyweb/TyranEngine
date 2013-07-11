@@ -26,12 +26,19 @@ void tyran_runtime_setup_binary_operators(tyran_runtime* rt)
 	}
 }
 
+void tyran_runtime_clear(tyran_runtime* rt)
+{
+	rt->stack_pointer = 0;
+}
+
 tyran_runtime* tyran_runtime_new(tyran_memory_pool* runtime_pool, tyran_memory* memory, tyran_memory_pool* string_pool, tyran_memory_pool* object_key_pool, tyran_memory_pool* object_iterator_pool, tyran_memory_pool* function_pool, tyran_memory_pool* function_object_pool, tyran_memory_pool* runtime_stack_pool, tyran_memory_pool* object_pool, tyran_memory_pool* registers_value_pool, tyran_memory_pool* value_pool, tyran_memory_pool* array_node_pool)
 {
 	tyran_runtime* rt = TYRAN_CALLOC_TYPE(runtime_pool, tyran_runtime);
 
-	rt->stack = TYRAN_MALLOC_NO_POOL_TYPE_COUNT(memory, tyran_runtime_stack, 128);
-	rt->registers = TYRAN_MALLOC_NO_POOL_TYPE_COUNT(memory, tyran_value, 1024);
+	rt->stack_depth = 128;
+	rt->stack = TYRAN_MALLOC_NO_POOL_TYPE_COUNT(memory, tyran_runtime_stack, rt->stack_depth);
+	rt->register_depth = 1024;
+	rt->registers = TYRAN_MALLOC_NO_POOL_TYPE_COUNT(memory, tyran_value, rt->register_depth);
 	rt->object_key_pool = object_key_pool;
 	rt->function_pool = function_pool;
 	rt->function_object_pool = function_object_pool;
@@ -69,7 +76,7 @@ void tyran_runtime_free(tyran_runtime* rt)
 void tyran_runtime_push_call(tyran_runtime* rt, const struct tyran_opcodes* opcodes, const struct tyran_constants* constants, const struct tyran_value* _this)
 {
 	/* Save return state */
-	tyran_runtime_stack* runtime_info = tyran_runtime_stack_new(rt->runtime_stack_pool);
+	tyran_runtime_stack* runtime_info = &rt->stack[rt->stack_pointer];
 	tyran_value_copy(runtime_info->_this, *_this);
 	// tyran_value_copy(runtime_info->function_scope, *function_scope);
 	// runtime_info->scope = scope;
@@ -79,7 +86,6 @@ void tyran_runtime_push_call(tyran_runtime* rt, const struct tyran_opcodes* opco
 	runtime_info->pc = opcodes->codes;
 	runtime_info->r = rt->registers;
 	runtime_info->argument_count = 0;
-	rt->stack[rt->stack_pointer] = *runtime_info;
 	rt->stack_pointer++;
 }
 

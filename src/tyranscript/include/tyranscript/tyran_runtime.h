@@ -20,6 +20,7 @@ typedef void (*tyran_value_delete_callback)(const struct tyran_runtime* program_
 
 typedef struct tyran_runtime {
 	struct tyran_runtime_stack* stack;
+	int stack_depth;
 	tyran_value_delete_callback delete_callback;
 	int stack_pointer;
 	void* program_specific_context;
@@ -36,6 +37,7 @@ typedef struct tyran_runtime {
 	struct tyran_object* _array_iterator_class;
 
 	struct tyran_value* registers;
+	int register_depth;
 
 	struct tyran_value* global;
 
@@ -60,6 +62,7 @@ struct tyran_runtime_callbacks;
 
 tyran_runtime* tyran_runtime_new(struct tyran_memory_pool* runtime_pool, struct tyran_memory* memory, struct tyran_memory_pool* string_pool, struct tyran_memory_pool* object_key_pool, struct tyran_memory_pool* object_iterator_pool, struct tyran_memory_pool* function_pool, struct tyran_memory_pool* function_object_pool, struct tyran_memory_pool* runtime_stack_pool, struct tyran_memory_pool* object_pool, struct tyran_memory_pool* value_registers_pool, struct tyran_memory_pool* value_pool, struct tyran_memory_pool* array_node_pool);
 void tyran_runtime_free(tyran_runtime* rt);
+void tyran_runtime_clear(tyran_runtime* rt);
 void tyran_runtime_execute(tyran_runtime* runtime, struct tyran_value* return_value, const struct tyran_runtime_callbacks* callbacks);
 void tyran_runtime_push_call(tyran_runtime* rt, const struct tyran_opcodes* opcodes, const struct tyran_constants* constants, const struct tyran_value* _this);
 void tyran_runtime_push_call_ex(tyran_runtime* rt, const struct tyran_function* func, const struct tyran_value* _this);

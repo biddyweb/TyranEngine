@@ -5,7 +5,7 @@
 #include <tyranscript/debug/parser/tyran_print_parser_tree.h>
 #include <tyranscript/parser/common/tyran_parser_tree.h>
 
-// #define TYRAN_MOCHA_PARSER_DEBUG
+#define TYRAN_MOCHA_PARSER_DEBUG
 
 typedef struct tyran_mocha_operator_info {
 	tyran_mocha_token_id token_id;
@@ -77,6 +77,9 @@ tyran_mocha_operator_info tyran_mocha_parser_get_operator_info(tyran_mocha_token
 
 	tyran_mocha_operator_info empty;
 
+	empty.is_enclosing = TYRAN_FALSE;
+	empty.right_associative = TYRAN_FALSE;
+	empty.precedence = 0;
 	empty.token_id = TYRAN_MOCHA_TOKEN_END;
 
 	return empty;
@@ -263,13 +266,17 @@ void tyran_mocha_parser_parameters(tyran_parser_node_parameter* parameter_nodes,
 
 	tyran_parser_node_operand_binary* binary = tyran_parser_binary_operator_cast(node);
 	if (binary && (binary->operator_type == TYRAN_PARSER_COMMA || binary->operator_type == TYRAN_PARSER_CONCAT)) {
+		TYRAN_LOG("Comma parameters!");
 		tyran_mocha_parser_parameters(parameter_nodes, index, binary->left);
 		tyran_mocha_parser_parameters(parameter_nodes, index, binary->right);
 	} else {
 		tyran_parser_node_parameter parameter_node;
+		parameter_node.node.type = 0;
 		if (binary && (binary->operator_type ==  TYRAN_PARSER_ASSIGNMENT)) {
+			TYRAN_LOG("*** Assignment");
 			parameter_node.default_value = binary->right;
 			node = binary->left;
+			TYRAN_LOG("Node:%d", node->type);
 		} else {
 			parameter_node.default_value = 0;
 		}
@@ -566,12 +573,10 @@ void debug_precedence(int precedence, tyran_mocha_token_id precedence_token_id, 
 	tyran_mocha_token precedence_token;
 	precedence_token.token_id = precedence_token_id;
 
-	TYRAN_LOG("precedence:%d (%s)", precedence_token_id, description);
 	tyran_mocha_lexer_debug_token(&precedence_token);
 
 	tyran_mocha_token compare_precedence_token;
 	compare_precedence_token.token_id = compare_precendence_token_id;
-	TYRAN_LOG("compare_precendence_token_id:%d (%s)", compare_precendence_token_id, description);
 	tyran_mocha_lexer_debug_token(&compare_precedence_token);
 }
 
@@ -796,9 +801,6 @@ void tyran_mocha_parser_end_enclosure(tyran_mocha_parser* parser, tyran_memory* 
 	if (parentheses) {
 		NODE node = tyran_mocha_parser_concat_peek_position(parser, 1);
 		if (node && node->type == TYRAN_PARSER_NODE_TYPE_FUNCTION) {
-#if defined TYRAN_MOCHA_PARSER_DEBUG
-			tyran_mocha_parser_node_print_tree(parser, "function_parameters", 0);
-#endif
 			tyran_mocha_parser_concat_pop(parser);
 			tyran_parser_node_function* function = (tyran_parser_node_function*) node;
 
@@ -853,28 +855,26 @@ void tyran_mocha_parser_add_token(tyran_memory* memory, tyran_mocha_parser* pars
 					tyran_mocha_token index_token;
 					index_token.token_id = TYRAN_MOCHA_TOKEN_INDEX;
 					tyran_mocha_parser_add_token(memory, parser, &index_token);
+					last_was_bracket = 0;
 				}
 			}
-
 
 			NODE terminal = tyran_mocha_parser_add_terminal(memory, parser, token->token_id, info.precedence, info.right_associative);
 			parser->last_operator_node = terminal;
 			if (end_closing_token_id != TYRAN_MOCHA_TOKEN_END) {
 				tyran_mocha_parser_add_enclosure(parser, (tyran_parser_node_operand_unary*)terminal, token->token_id, end_closing_token_id);
-			} else {
-				if (last_was_bracket) {
-					last_was_bracket->operator_type = TYRAN_PARSER_UNARY_ARRAY;
-				}
-
 			}
 			last_literal = TYRAN_FALSE;
 		} else {
 			if (last_was_bracket) {
+				//tyran_parser_node_operand_unary* old_bracket = parser->last_bracket_node;
 				tyran_mocha_token index_token;
 				index_token.token_id = TYRAN_MOCHA_TOKEN_INDEX;
 				tyran_mocha_parser_add_token(memory, parser, &index_token);
+				last_was_bracket = 0;
 			}
 			if (last_literal) {
+				TYRAN_LOG("CALL!!!!!!!!");
 				tyran_mocha_token* t = TYRAN_CALLOC_TYPE(parser->mocha_token_pool, tyran_mocha_token);
 				t->token_id = TYRAN_MOCHA_TOKEN_CALL;
 				tyran_mocha_parser_add_token(memory, parser, t);
@@ -885,6 +885,10 @@ void tyran_mocha_parser_add_token(tyran_memory* memory, tyran_mocha_parser* pars
 			last_literal = TYRAN_TRUE;
 			parser->last_was_parentheses = TYRAN_FALSE;
 		}
+	}
+
+	if (last_was_bracket) {
+		last_was_bracket->operator_type = TYRAN_PARSER_UNARY_ARRAY;
 	}
 }
 

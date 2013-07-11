@@ -47,9 +47,19 @@ TYRAN_RUNTIME_CALL_FUNC(load_state)
 	return 0;
 }
 
+static void print_value(tyran_runtime* runtime, tyran_value* v)
+{
+        const int buf_len = 512;
+        char buf[buf_len];
+        tyran_value_to_c_string(runtime->symbol_table, v, buf, buf_len, 0);
+        puts(buf);
+}
+
 TYRAN_RUNTIME_CALL_FUNC(log_output)
 {
-	TYRAN_LOG("Log!");
+        struct tyran_value* v = &arguments[0];
+        print_value(runtime, v);
+//        tyran_value_set_number(*return_value, 16.0f);
 	return 0;
 }
 

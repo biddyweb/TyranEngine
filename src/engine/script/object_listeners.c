@@ -78,11 +78,13 @@ static void call_event(nimbus_object_listener* self, tyran_symbol symbol)
 	tyran_value return_value;
 	for (int i=0; i<info->function_count; ++i) {
 		nimbus_object_listener_function* func_info = &info->functions[i];
+
+#if defined OBJECT_LISTENERS_DEBUG
 		TYRAN_LOG("UPDATE function:%p, function_context:%p", func_info->function, &func_info->function_context);
 		tyran_print_value("context", &func_info->function_context, 1, self->symbol_table);
-
 		tyran_print_opcodes(func_info->function->data.opcodes, 0, func_info->function->constants);
-
+#endif
+		tyran_runtime_clear(self->runtime);
 		tyran_runtime_push_call_ex(self->runtime, func_info->function, &func_info->function_context);
 		tyran_runtime_execute(self->runtime, &return_value, 0);
 	}

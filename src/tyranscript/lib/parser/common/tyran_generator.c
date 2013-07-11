@@ -200,6 +200,9 @@ tyran_reg_index tyran_generator_call_or_new(tyran_memory* memory, tyran_code_sta
 void tyran_generator_argument_nodes(NODE* argument_nodes, int* index, NODE node)
 {
 	tyran_parser_node_operand_binary* comma = tyran_parser_binary_operator_type_cast(node, TYRAN_PARSER_COMMA);
+	if (!comma) {
+		comma = tyran_parser_binary_operator_type_cast(node, TYRAN_PARSER_CONCAT);
+	}
 	if (comma) {
 		tyran_generator_argument_nodes(argument_nodes, index, comma->left);
 		tyran_generator_argument_nodes(argument_nodes, index, comma->right);
@@ -600,7 +603,7 @@ tyran_reg_or_constant_index tyran_generator_traverse_if(tyran_memory* memory, ty
 	tyran_reg_or_constant_index result = tyran_variable_scopes_define_temporary_variable(code->scope);
 
 
-	tyran_reg_or_constant_index then_index = tyran_generator_traverse(memory, code, then_node, -1, -1, loop_start, loop_end, self_index, -1, TYRAN_TRUE);
+	tyran_reg_or_constant_index then_index = tyran_generator_traverse(memory, code, then_node, -1, if_false_label, loop_start, loop_end, self_index, -1, TYRAN_TRUE);
 	if (then_index != TYRAN_OPCODE_REGISTER_ILLEGAL) {
 		tyran_generator_ld(code->opcodes, result, then_index);
 	}
@@ -609,7 +612,7 @@ tyran_reg_or_constant_index tyran_generator_traverse_if(tyran_memory* memory, ty
 		tyran_generator_label_reference(code, end_of_if);
 		tyran_generator_define_label(code, if_false_label);
 
-		tyran_reg_or_constant_index else_index = tyran_generator_traverse(memory, code, else_node, -1, -1, loop_start, loop_end, self_index, -1, TYRAN_TRUE);
+		tyran_reg_or_constant_index else_index = tyran_generator_traverse(memory, code, else_node, -1, end_of_if, loop_start, loop_end, self_index, -1, TYRAN_TRUE);
 		tyran_generator_ld(code->opcodes, result, else_index);
 
 		tyran_generator_define_label(code, end_of_if);
@@ -747,6 +750,7 @@ tyran_reg_or_constant_index tyran_generator_traverse_for(tyran_memory* memory, t
 	tyran_label_id end_of_for_loop = tyran_generator_prepare_label(code);
 	tyran_opcodes_op_next(code->opcodes, key_register, iterator_register);
 	tyran_generator_label_reference(code, end_of_for_loop);
+	TYRAN_LOG(">>>> start_of:%d end_of_loop:%d", start_of_for_loop, end_of_for_loop);
 
 	tyran_generator_traverse(memory, code, for_node->block, start_of_for_loop, end_of_for_loop, start_of_for_loop, end_of_for_loop, self_index, -1, TYRAN_FALSE);
 	tyran_generator_label_reference(code, start_of_for_loop);
@@ -766,7 +770,7 @@ tyran_reg_or_constant_index tyran_generator_traverse(tyran_memory* memory, tyran
 		if (block) {
 			block->operator_type = TYRAN_PARSER_UNARY_OBJECT;
 		}
-	}
+	}	
 
 	switch (node->type) {
 		case TYRAN_PARSER_NODE_TYPE_OPERAND_BINARY: {

@@ -19,7 +19,7 @@
 #include <tyranscript/debug/tyran_print_runtime_state.h>
 
 #if defined TYRAN_CONFIGURATION_DEBUG
-#define TYRAN_RUNTIME_DEBUG
+	// #define TYRAN_RUNTIME_DEBUG
 #endif
 
 #define TYRAN_RUNTIME_INVOKE_BINARY_OPERATOR(DESTINATION, OBJECT, PARAMS, PARAM_COUNT, OPERATOR) \
@@ -160,7 +160,6 @@ void tyran_runtime_execute(tyran_runtime* runtime, struct tyran_value* return_va
 					test = tyran_number_operator_comparison(comparison_index, rcx.data.number, rcy.data.number);
 					tyran_value_replace_boolean(r[a], test);
 				}
-				TYRAN_LOG("b:%d", b);
 				test = r[a].data.boolean;
 				if (b) {
 					test = !test;

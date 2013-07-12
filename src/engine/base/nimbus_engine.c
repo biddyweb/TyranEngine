@@ -23,7 +23,6 @@ static void fire_load_resource(nimbus_engine* self, nimbus_resource_id id)
 
 static void on_load_state(nimbus_engine* self, const char* state_name)
 {
-	TYRAN_LOG("on_load_state:'%s'", state_name);
 	nimbus_resource_id id = nimbus_resource_id_from_string(state_name);
 	fire_load_state(self, id);
 }
@@ -124,6 +123,8 @@ void start_event_connection(nimbus_engine* self, tyran_memory* memory, const cha
 	nimbus_task_queue_add_task(task_queue, &self->event_connection.receive_task);
 }
 
+void nimbus_register_modules(nimbus_modules* modules);
+
 nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue* task_queue)
 {
 	nimbus_engine* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_engine);
@@ -156,7 +157,9 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 
 	nimbus_object_listener_init(&self->object_listener, memory, self->mocha_api.default_runtime);
 	nimbus_engine_add_update_object(self, &self->object_listener.update);
-
+	nimbus_modules_init(&self->modules);
+	
+	nimbus_register_modules(&self->modules);
 
 	start_event_connection(self, memory, "198.74.60.114", 32000, task_queue);
 

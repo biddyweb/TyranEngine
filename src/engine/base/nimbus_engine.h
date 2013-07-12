@@ -10,6 +10,7 @@
 #include <tyranscript/tyran_mocha_api.h>
 #include "../script/object_loader.h"
 #include "../script/object_listeners.h"
+#include "../module/nimbus_modules.h"
 
 struct nimbus_resource_handler;
 
@@ -23,6 +24,7 @@ typedef struct nimbus_engine {
 	nimbus_object_loader object_loader;
 	nimbus_object_listener object_listener;
 	nimbus_event_distributor event_distributor;
+	nimbus_modules modules;
 
 	nimbus_update** update_objects;
 	int update_objects_count;

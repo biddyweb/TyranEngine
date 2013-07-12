@@ -48,12 +48,10 @@ static void loading_done(nimbus_dependency_resolver* self, nimbus_resource_id re
 		}
 	}
 
-	TYRAN_SOFT_ERROR("Couldn't find that we were loading (%d)", resource_id);
 }
 
 static nimbus_resource_dependency_info* resource_depency_info_new(nimbus_dependency_resolver* self, nimbus_resource_id resource_id, tyran_object* target)
 {
-	TYRAN_LOG("Starting dependency tracking of resource: %d", resource_id);
 	// TYRAN_ASSERT(!is_loading_in_progress(self, resource_id), "Can't start a loading job for a resource only in loading");
 	TYRAN_ASSERT(nimbus_resource_cache_find(&self->resource_cache, resource_id) == 0, "Can't start resource loading job if resource already is ready?");
 	TYRAN_ASSERT(self->dependency_info_count < self->dependency_info_max_count, "too many dependency infos");
@@ -68,13 +66,10 @@ static void load_resource_if_needed(nimbus_dependency_resolver* self, nimbus_res
 	tyran_object* resource_value = nimbus_resource_cache_find(&self->resource_cache, resource_id);
 	if (!resource_value) {
 		if (!is_loading_in_progress(self, resource_id)) {
-			TYRAN_LOG("LOAD(%d) need to request it", resource_id);
 			load_resource(self, resource_id);
 		} else {
-			TYRAN_LOG("LOAD(%d) already loading - ignoring request", resource_id);
 		}
 	} else {
-		TYRAN_LOG("LOAD(%d) already loaded in cache!?", resource_id);
 	}
 }
 
@@ -111,15 +106,12 @@ static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* s
 				nimbus_resource_id resource_id = nimbus_resource_id_from_string(&value_string[1]);
 				tyran_object* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
 				if (resource != 0) {
-					TYRAN_LOG("RESOURCE REFERENCE (found): '%s'", value_string);
 					tyran_value_replace_object(*value, resource);
 				} else {
-					TYRAN_LOG("RESOURCE REFERENCE (dependency): '%s'", value_string);
 					resources_that_are_loading++;
 					add_resource_reference(self, info, value, resource_id);
 				}
 			} else if (value_string[0] == '#') {
-				TYRAN_LOG("COMBINE REFERENCE: '%s'", value_string);
 				tyran_symbol symbol;
 
 				tyran_symbol_table_add(self->symbol_table, &symbol, &value_string[1]);
@@ -131,8 +123,6 @@ static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* s
 			} else {
 				const char* key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
 				if (tyran_strcmp(key_string, "inherit") == 0) {
-					TYRAN_LOG("INHERIT: '%s'", value_string);
-
 					nimbus_resource_id resource_id = nimbus_resource_id_from_string(value_string);
 					tyran_object* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
 					if (!resource) {
@@ -160,8 +150,6 @@ static int request_inherits_and_references(nimbus_dependency_resolver* self, nim
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		if (tyran_value_is_object(value)) {
 			if (!tyran_value_is_function(value)) {
-				const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
-				TYRAN_LOG("scanning object:'%s'", debug_key_string);
 				check_inherits_and_reference_on_object(self, info, value, combine);
 			}
 		}
@@ -196,7 +184,6 @@ static void check_if_someone_wants(nimbus_dependency_resolver* self, nimbus_reso
 			nimbus_resource_dependency* dependency = &dependency_info->resource_dependencies[j];
 			if (dependency->resource_id == resource_id) {
 				if (dependency->is_inherit) {
-					TYRAN_LOG("Resource %d inherited from %d", dependency_info->resource_id, resource_id);
 					tyran_object_set_prototype(tyran_value_object(dependency->target), v);
 				} else {
 					tyran_value_replace_object(*dependency->target, v);
@@ -231,7 +218,6 @@ static void delete_dependency_info(nimbus_dependency_resolver* self, nimbus_reso
 
 static void resource_resolved(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info)
 {
-	TYRAN_LOG("Resource %d completely resolved", info->resource_id);
 	loading_done(self, info->resource_id);
 	nimbus_resource_cache_add(&self->resource_cache, info->resource_id, info->target);
 	nimbus_resource_id resource_id = info->resource_id;

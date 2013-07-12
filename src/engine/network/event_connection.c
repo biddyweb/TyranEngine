@@ -39,7 +39,6 @@ static void send_connect(nimbus_event_connection* self)
 
 void send_request(nimbus_event_connection* self, nimbus_resource_id resource_id)
 {
-	TYRAN_LOG("send_request resource_id:%d", resource_id);
 	nimbus_out_stream_clear(&self->out_stream);
 	const u8t request_resource_id = 8;
 	nimbus_out_stream_write_u8(&self->out_stream, request_resource_id);
@@ -49,7 +48,6 @@ void send_request(nimbus_event_connection* self, nimbus_resource_id resource_id)
 
 static void on_resource_request(nimbus_event_connection* self, nimbus_resource_id resource_id)
 {
-	TYRAN_LOG("event_connection: OnResourceRequest %d", resource_id);
 	send_request(self, resource_id);
 }
 
@@ -95,7 +93,6 @@ static void read_message_type(nimbus_event_connection* self, nimbus_in_stream* i
 	read_resource_id(in_stream, &self->resource_id);
 	read_resource_type_id(in_stream, &self->resource_type_id);
 
-	TYRAN_LOG("read_message_type:%d resource_id:%d type:%d", message_type, self->resource_id, self->resource_type_id);
 	switch (message_type) {
 		case 0: // Delete
 			handle_deleted(self, self->resource_id);
@@ -103,7 +100,6 @@ static void read_message_type(nimbus_event_connection* self, nimbus_in_stream* i
 		case 1: // New
 		case 9: // Update
 			handle_updated(self, in_stream, self->resource_id);
-			TYRAN_LOG("Updated/New. Payload:%d", self->expected_payload_size);
 			break;
 	}
 }
@@ -152,7 +148,6 @@ static void fire_resource_updated(nimbus_event_write_stream* out_event_stream, n
 
 static void on_payload_done(nimbus_event_connection* self)
 {
-	TYRAN_LOG("Payload done. Fire:%d of type:%d payload size:%d", self->resource_id, self->resource_type_id, self->expected_payload_size);
 	self->waiting_for_header = 1;
 	fire_resource_updated(&self->update_object.event_write_stream, self->resource_id, self->resource_type_id, &self->buffer, self->expected_payload_size);
 }
@@ -162,7 +157,6 @@ static void consume(nimbus_event_connection* self)
 	int buffer_size = nimbus_ring_buffer_size(&self->buffer);
 	if (self->waiting_for_header) {
 		if (buffer_size >= 13) {
-			TYRAN_LOG("Header is ready, check it out");
 			check_header(self);
 			consume(self);
 		} else {
@@ -172,7 +166,6 @@ static void consume(nimbus_event_connection* self)
 			on_payload_done(self);
 			consume(self);
 		} else {
-			TYRAN_LOG("Waiting for payload. Got %d of %d", buffer_size, self->expected_payload_size);
 		}
 	}
 }

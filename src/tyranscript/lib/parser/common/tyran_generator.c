@@ -118,7 +118,6 @@ tyran_reg_or_constant_index tyran_generator_logical_operator(tyran_memory* memor
 		}
 		break;
 		case TYRAN_PARSER_OR: {
-			TYRAN_LOG("GENERATE OR!!!!!");
 			tyran_label_id or_true = tyran_generator_prepare_label(code);
 			tyran_label_id or_false = false_label;
 			tyran_reg_or_constant_index left_index = tyran_generator_traverse(memory, code, binary->left, TYRAN_OPCODE_REGISTER_ILLEGAL, or_true, -1, -1, self_index, result, TYRAN_TRUE);
@@ -750,7 +749,6 @@ tyran_reg_or_constant_index tyran_generator_traverse_for(tyran_memory* memory, t
 	tyran_label_id end_of_for_loop = tyran_generator_prepare_label(code);
 	tyran_opcodes_op_next(code->opcodes, key_register, iterator_register);
 	tyran_generator_label_reference(code, end_of_for_loop);
-	TYRAN_LOG(">>>> start_of:%d end_of_loop:%d", start_of_for_loop, end_of_for_loop);
 
 	tyran_generator_traverse(memory, code, for_node->block, start_of_for_loop, end_of_for_loop, start_of_for_loop, end_of_for_loop, self_index, -1, TYRAN_FALSE);
 	tyran_generator_label_reference(code, start_of_for_loop);

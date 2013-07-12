@@ -28,9 +28,8 @@ static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* s
 	nimbus_resource_updated updated;
 
 	nimbus_event_stream_read_type(stream, updated);
-	TYRAN_LOG("Listener::_on_resource_updated. %d of type:%d", updated.resource_id, updated.resource_type_id);
+	// TYRAN_LOG("Listener::_on_resource_updated. %d of type:%d", updated.resource_id, updated.resource_type_id);
 	if (updated.resource_type_id == self->state_type_id) {
-		TYRAN_LOG("STATE %d IS UPDATED", updated.resource_id);
 		tyran_object* o;
 		nimbus_event_stream_read_octets(stream, (u8t*)&o, sizeof(tyran_object*));
 		on_state_updated(self, o);
@@ -145,14 +144,11 @@ static void scan_for_listening_functions_on_object(nimbus_object_listener* self,
 
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
-		TYRAN_LOG("%d Iterating state. Found property '%s'", depth, debug_key_string);
 		if (tyran_value_is_object(value)) {
 			if (tyran_value_is_function(value)) {
 				if (debug_key_string[0] == 'o' && debug_key_string[1] == 'n') {
-					TYRAN_LOG("found a listening func :)");
 					tyran_value object_value;
 					tyran_value_set_object(object_value, o);
-					tyran_print_value("listening context", &object_value, 1, self->runtime->symbol_table);
 					add_listening_function(self, &object_value, value, &debug_key_string[2]);
 				}
 			} else {

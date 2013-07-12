@@ -17,10 +17,6 @@ static tyran_object* evaluate(nimbus_object_loader* self, const char* data)
 
 static void add_object(nimbus_object_loader* self, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id, tyran_object* o)
 {
-	TYRAN_LOG("add resolved object(%d)", resource_id);
-	tyran_value temp_object;
-	tyran_value_set_object(temp_object, o);
-	tyran_print_value("yeahoo", &temp_object, 1, self->mocha->default_runtime->symbol_table);
 	nimbus_dependency_resolver_object_loaded(&self->dependency_resolver, o, resource_id, resource_type_id);
 }
 
@@ -31,8 +27,8 @@ static void on_script_source_updated(nimbus_object_loader* self, struct nimbus_e
 	nimbus_event_stream_read_octets(stream, self->script_buffer, payload_size);
 	self->script_buffer[payload_size] = 0;
 
-	TYRAN_LOG("*** EVALUATE *** %d octet_size:%d", resource_id, payload_size);
-	TYRAN_LOG("SCRIPT:'%s'", self->script_buffer);
+	// TYRAN_LOG("*** EVALUATE *** %d octet_size:%d", resource_id, payload_size);
+	// TYRAN_LOG("SCRIPT:'%s'", self->script_buffer);
 	tyran_object* o = evaluate(self, (const char*)self->script_buffer);
 
 	add_object(self, resource_id, resource_type_id, o);
@@ -73,7 +69,6 @@ static void _on_resource_load_state(void* _self, struct nimbus_event_read_stream
 	nimbus_resource_load_send(&self->update.event_write_stream, load_state.resource_id);
 
 	self->waiting_for_state_resource_id = load_state.resource_id;
-	TYRAN_LOG("####### waiting for state %d", self->waiting_for_state_resource_id);
 }
 
 
@@ -89,7 +84,6 @@ void nimbus_object_loader_init(nimbus_object_loader* self, tyran_memory* memory,
 	self->script_buffer = TYRAN_MEMORY_ALLOC(memory, self->script_buffer_size, "Script buffer");
 	self->object_type_id = nimbus_resource_type_id_from_string("object");
 	self->state_type_id = nimbus_resource_type_id_from_string("state");
-	TYRAN_LOG("OBJECT ID IS TYPE:%d", self->object_type_id);
 	self->wire_object_type_id = nimbus_resource_type_id_from_string("oec");
 	self->script_object_type_id = nimbus_resource_type_id_from_string("oes");
 	self->waiting_for_state_resource_id = 0;

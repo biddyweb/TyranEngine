@@ -5,7 +5,7 @@
 #include <tyranscript/debug/parser/tyran_print_parser_tree.h>
 #include <tyranscript/parser/common/tyran_parser_tree.h>
 
-#define TYRAN_MOCHA_PARSER_DEBUG
+// #define TYRAN_MOCHA_PARSER_DEBUG
 
 typedef struct tyran_mocha_operator_info {
 	tyran_mocha_token_id token_id;
@@ -49,6 +49,8 @@ tyran_mocha_operator_info tyran_mocha_parser_get_operator_info(tyran_mocha_token
 		{TYRAN_MOCHA_TOKEN_BLOCK_END, 1, 1, 0},
 		{TYRAN_MOCHA_TOKEN_NOT_EQUAL, 1, 0, 0},
 		{TYRAN_MOCHA_TOKEN_IN, 1, 0, 0},
+		{TYRAN_MOCHA_TOKEN_RANGE_EXCLUSIVE, 1, 0, 0},
+		{TYRAN_MOCHA_TOKEN_RANGE_INCLUSIVE, 1, 0, 0},
 		{TYRAN_MOCHA_TOKEN_COMMA, 1, 0, 0},
 		{TYRAN_MOCHA_TOKEN_COLON, 1, 0, 0},
 		{TYRAN_MOCHA_TOKEN_ADD, 1, 0, 0},
@@ -58,8 +60,6 @@ tyran_mocha_operator_info tyran_mocha_parser_get_operator_info(tyran_mocha_token
 		{TYRAN_MOCHA_TOKEN_DIVIDE, 1, 0, 0},
 		{TYRAN_MOCHA_TOKEN_MEMBER, 1, 0, 0},
 		{TYRAN_MOCHA_TOKEN_INDEX, 0, 0, 0},
-		{TYRAN_MOCHA_TOKEN_RANGE_EXCLUSIVE, 1, 0, 0},
-		{TYRAN_MOCHA_TOKEN_RANGE_INCLUSIVE, 1, 0, 0},
 		{TYRAN_MOCHA_TOKEN_LINE_START, 1, 1, 0},
 		{TYRAN_MOCHA_TOKEN_FUNCTION_GLYPH, 1, 0, 0},
 		{TYRAN_MOCHA_TOKEN_FUNCTION_GLYPH_BOUND, 1, 0, 0},
@@ -266,17 +266,14 @@ void tyran_mocha_parser_parameters(tyran_parser_node_parameter* parameter_nodes,
 
 	tyran_parser_node_operand_binary* binary = tyran_parser_binary_operator_cast(node);
 	if (binary && (binary->operator_type == TYRAN_PARSER_COMMA || binary->operator_type == TYRAN_PARSER_CONCAT)) {
-		TYRAN_LOG("Comma parameters!");
 		tyran_mocha_parser_parameters(parameter_nodes, index, binary->left);
 		tyran_mocha_parser_parameters(parameter_nodes, index, binary->right);
 	} else {
 		tyran_parser_node_parameter parameter_node;
 		parameter_node.node.type = 0;
 		if (binary && (binary->operator_type ==  TYRAN_PARSER_ASSIGNMENT)) {
-			TYRAN_LOG("*** Assignment");
 			parameter_node.default_value = binary->right;
 			node = binary->left;
-			TYRAN_LOG("Node:%d", node->type);
 		} else {
 			parameter_node.default_value = 0;
 		}
@@ -874,7 +871,6 @@ void tyran_mocha_parser_add_token(tyran_memory* memory, tyran_mocha_parser* pars
 				last_was_bracket = 0;
 			}
 			if (last_literal) {
-				TYRAN_LOG("CALL!!!!!!!!");
 				tyran_mocha_token* t = TYRAN_CALLOC_TYPE(parser->mocha_token_pool, tyran_mocha_token);
 				t->token_id = TYRAN_MOCHA_TOKEN_CALL;
 				tyran_mocha_parser_add_token(memory, parser, t);

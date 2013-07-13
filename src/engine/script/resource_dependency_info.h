@@ -1,7 +1,7 @@
 #ifndef nimbus_resource_dependency_info_h
 #define nimbus_resource_dependency_info_h
 
-#include "../resource/resource_id.h"
+#include <tyran_engine/resource/id.h>
 
 typedef struct nimbus_resource_dependency {
 	nimbus_resource_id resource_id;

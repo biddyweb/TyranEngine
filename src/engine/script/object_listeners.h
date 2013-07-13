@@ -1,8 +1,8 @@
 #ifndef sinkblobs_object_listeners_h
 #define sinkblobs_object_listeners_h
 
-#include "../../core/src/base/update/nimbus_update.h"
-#include "../resource/resource_type_id.h"
+#include <tyran_core/update/update.h>
+#include <tyran_engine/resource/type_id.h>
 #include <tyranscript/tyran_symbol.h>
 #include <tyranscript/tyran_value.h>
 

@@ -1,7 +1,7 @@
 #ifndef nimbus_resource_reader_h
 #define nimbus_resource_reader_h
 
-#include "resource_id.h"
+#include <tyran_engine/resource/id.h>
 
 struct nimbus_event_listener;
 struct tyran_memory;

@@ -1,7 +1,7 @@
 #ifndef nimbus_event_listener_h
 #define nimbus_event_listener_h
 
-#include "nimbus_event_stream.h"
+#include <tyran_core/event/event_stream.h>
 
 struct tyran_memory;
 

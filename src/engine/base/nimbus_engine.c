@@ -1,13 +1,13 @@
 #include "nimbus_engine.h"
 #include "../../core/src/base/task/nimbus_task_queue.h"
-#include "../resource/resource_id.h"
+#include <tyran_engine/resource/id.h>
 #include "../resource/resource_handler.h"
 
 #include "../event/resource_load.h"
 #include "../event/resource_load_state.h"
 
-#include "../../core/src/base/event/nimbus_event_stream.h"
-#include "../../core/src/base/event/nimbus_event_listener.h"
+#include <tyran_core/event/event_stream.h>
+#include <tyran_core/event/event_listener.h>
 #include "../resource/resource_handler.h"
 
 static void fire_load_state(nimbus_engine* self, nimbus_resource_id id)

@@ -1,7 +1,7 @@
 #ifndef resource_handler_h
 #define resource_handler_h
 
-#include "resource_id.h"
+#include <tyran_engine/resource/id.h>
 
 struct tyran_memory;
 

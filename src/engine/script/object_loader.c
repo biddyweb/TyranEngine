@@ -1,5 +1,5 @@
 #include "object_loader.h"
-#include "../event/resource_updated.h"
+#include <tyran_engine/event/resource_updated.h>
 #include "../event/resource_load_state.h"
 #include "../event/resource_load.h"
 #include <tyranscript/tyran_mocha_api.h>

@@ -3,9 +3,9 @@
 
 #include <tyranscript/tyran_types.h>
 
-#include "../event/nimbus_event_stream.h"
-#include "../event/nimbus_event_listener.h"
-#include "../task/nimbus_task.h"
+#include <tyran_core/event/event_stream.h>
+#include <tyran_core/event/event_listener.h>
+#include <tyran_core/task/task.h>
 
 typedef void (*nimbus_update_function)(void*);
 

@@ -1,4 +1,4 @@
-#include "resource_id.h"
+#include <tyran_engine/resource/id.h>
 
 nimbus_resource_id nimbus_resource_id_from_string(const char* name)
 {

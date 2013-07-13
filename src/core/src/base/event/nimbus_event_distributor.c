@@ -3,7 +3,7 @@
 
 
 #include "nimbus_event_distributor.h"
-#include "../update/nimbus_update.h"
+#include <tyran_core/update/update.h>
 
 void nimbus_event_distributor_init(nimbus_event_distributor* self, tyran_memory* memory)
 {

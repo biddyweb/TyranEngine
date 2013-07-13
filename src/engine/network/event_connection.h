@@ -3,14 +3,14 @@
 
 #include "connecting_socket.h"
 #include "ring_buffer.h"
-#include "../../core/src/base/event/nimbus_event_listener.h"
+#include <tyran_core/event/event_listener.h>
 
 #include "../stream/out_stream.h"
 #include "../stream/in_stream.h"
 
-#include "../resource/resource_id.h"
-#include "../resource/resource_type_id.h"
-#include "../../core/src/base/update/nimbus_update.h"
+#include <tyran_engine/resource/id.h>
+#include <tyran_engine/resource/type_id.h>
+#include <tyran_core/update/update.h>
 #include "../../core/src/base/mutex/nimbus_mutex.h"
 
 

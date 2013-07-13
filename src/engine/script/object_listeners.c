@@ -8,8 +8,7 @@
 
 #include <tyranscript/debug/tyran_print_opcodes.h>
 
-#include "../event/resource_updated.h"
-
+#include <tyran_engine/event/resource_updated.h>
 
 static void info_add_function(nimbus_object_listener_info* self, tyran_value* function_context, const tyran_function* function)
 {

@@ -3,6 +3,9 @@
 	<!-- core -->
 	<header directory="tyranscript/include" />
 	<header directory="engine/include" />
+	<header directory="core/include" />
+
+
 	<source directory="tyranscript/lib" recursive="true" />
 
 	<source directory="core/src/base" recursive="true" />

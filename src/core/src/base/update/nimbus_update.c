@@ -1,4 +1,4 @@
-#include "nimbus_update.h"
+#include <tyran_core/update/update.h>
 #include <tyranscript/tyran_log.h>
 
 void nimbus_update_update(void* _self, struct nimbus_task_queue* queue)

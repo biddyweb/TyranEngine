@@ -2,8 +2,8 @@
 #define nimbus_dependency_resolver_h
 
 #include "../resource/resource_cache.h"
-#include "../resource/resource_id.h"
-#include "../resource/resource_type_id.h"
+#include <tyran_engine/resource/id.h>
+#include <tyran_engine/resource/type_id.h>
 #include "resource_dependency_info.h"
 
 struct tyran_symbol_table;

@@ -1,5 +1,5 @@
-#include "nimbus_event_listener.h"
-#include "nimbus_event_stream.h"
+#include <tyran_core/event/event_listener.h>
+#include <tyran_core/event/event_stream.h>
 #include <tyranscript/tyran_memory.h>
 #include <tyranscript/tyran_log.h>
 

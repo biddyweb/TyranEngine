@@ -1,8 +1,8 @@
 #ifndef nimbus_object_loader_h
 #define nimbus_object_loader_h
 
-#include "../../core/src/base/update/nimbus_update.h"
-#include "../resource/resource_type_id.h"
+#include <tyran_core/update/update.h>
+#include <tyran_engine/resource/type_id.h>
 #include "dependency_resolver.h"
 
 struct tyran_mocha_api;

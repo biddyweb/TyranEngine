@@ -1,7 +1,7 @@
 #ifndef nimbus_resource_load_h
 #define nimbus_resource_load_h
 
-#include "../resource/resource_id.h"
+#include <tyran_engine/resource/id.h>
 
 extern const u8t NIMBUS_EVENT_RESOURCE_LOAD;
 

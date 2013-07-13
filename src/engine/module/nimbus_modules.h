@@ -1,7 +1,7 @@
 #ifndef nimbus_modules_h
 #define nimbus_modules_h
 
-#include "../../core/src/base/update/nimbus_update.h"
+#include <tyran_core/update/update.h>
 
 typedef nimbus_update* (*nimbus_module_create_function)(struct tyran_memory* memory);
 

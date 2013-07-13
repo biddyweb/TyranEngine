@@ -6,11 +6,11 @@
 #include "../stream/in_stream.h"
 #include "ring_buffer.h"
 #include "connecting_socket.h"
-#include "../resource/resource_id.h"
+#include <tyran_engine/resource/id.h>
 #include "../resource/resource_reader.h"
-#include "../../core/src/base/event/nimbus_event_stream.h"
+#include <tyran_core/event/event_stream.h>
 #include "../event/resource_load.h"
-#include "../event/resource_updated.h"
+#include <tyran_engine/event/resource_updated.h>
 #include <tyranscript/tyran_log.h>
 
 void send_stream(nimbus_event_connection* self)

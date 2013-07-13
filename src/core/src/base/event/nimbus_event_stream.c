@@ -1,4 +1,4 @@
-#include "nimbus_event_stream.h"
+#include <tyran_core/event/event_stream.h>
 #include <tyranscript/tyran_clib.h>
 
 void nimbus_event_write_stream_clear(nimbus_event_write_stream* self)
@@ -47,6 +47,13 @@ void nimbus_event_stream_write_event_end(nimbus_event_write_stream* self)
 {
 	int octet_size = self->pointer - ((u8t*)self->last_header) - sizeof(nimbus_event_stream_header);
 	self->last_header->event_octet_size = octet_size;
+}
+
+void nimbus_event_stream_read_pointer(nimbus_event_read_stream* stream, const u8t** data, int len)
+{
+	TYRAN_ASSERT(stream->pointer + len <= stream->end_pointer, "Read too far");
+	*data = stream->pointer;
+	stream->pointer += len;
 }
 
 void nimbus_event_stream_read_octets(nimbus_event_read_stream* stream, u8t* data, int len)

@@ -10,7 +10,7 @@
 #include <tyranscript/tyran_mocha_api.h>
 #include "../script/object_loader.h"
 #include "../script/object_listeners.h"
-#include "../module/nimbus_modules.h"
+#include <tyran_engine/module/modules.h>
 
 struct nimbus_resource_handler;
 
@@ -30,7 +30,6 @@ typedef struct nimbus_engine {
 	int update_objects_count;
 	int frame_counter;
 } nimbus_engine;
-
 
 nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue* task_queue);
 tyran_boolean nimbus_engine_should_render(nimbus_engine* engine);

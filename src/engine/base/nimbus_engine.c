@@ -10,6 +10,8 @@
 #include <tyran_core/event/event_listener.h>
 #include "../resource/resource_handler.h"
 
+#include "../module/nimbus_module.h"
+
 static void fire_load_state(nimbus_engine* self, nimbus_resource_id id)
 {
 	nimbus_resource_load_state_send(&self->update_object.event_write_stream, id);
@@ -125,6 +127,17 @@ void start_event_connection(nimbus_engine* self, tyran_memory* memory, const cha
 
 void nimbus_register_modules(nimbus_modules* modules);
 
+static void create_modules(nimbus_engine* self, tyran_memory* memory)
+{
+	nimbus_modules* modules = &self->modules;
+	for (int i=0; i < modules->modules_count; ++i) {
+		nimbus_module* module = &modules->modules[i];
+		void* instance = nimbus_module_create(module, memory);
+		nimbus_update* instance_update = nimbus_module_get_update(module, instance);
+		nimbus_engine_add_update_object(self, instance_update);
+	}
+}
+
 nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue* task_queue)
 {
 	nimbus_engine* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_engine);
@@ -160,7 +173,9 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	nimbus_modules_init(&self->modules);
 	
 	nimbus_register_modules(&self->modules);
-
+	
+	create_modules(self, memory);
+	
 	start_event_connection(self, memory, "198.74.60.114", 32000, task_queue);
 
 	boot_resource(self);

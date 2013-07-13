@@ -1,4 +1,4 @@
-#include "nimbus_modules.h"
+#include <tyran_engine/module/modules.h>
 
 void nimbus_modules_init(nimbus_modules* self)
 {
@@ -6,9 +6,11 @@ void nimbus_modules_init(nimbus_modules* self)
 	self->modules_max_count = 16;
 }
 
-void nimbus_modules_add(nimbus_modules* self, const char* name, nimbus_module_create_function func)
+void nimbus_modules_add(nimbus_modules* self, const char* name, size_t octet_size, nimbus_module_init_function func, size_t update_offset)
 {
 	nimbus_module* module = &self->modules[self->modules_count++];
-	module->func = func;
+	module->init_func = func;
 	module->name = name;
+	module->octet_size = octet_size;
+	module->update_offset = update_offset;
 }

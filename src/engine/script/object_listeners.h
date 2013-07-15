@@ -20,6 +20,10 @@ typedef struct nimbus_object_listener_info {
 	int max_function_count;
 } nimbus_object_listener_info;
 
+typedef struct nimbus_object_layer {
+	char* name;
+} nimbus_object_layer;
+
 
 typedef struct nimbus_object_listener {
 	struct nimbus_object_listener_info infos[64];
@@ -30,6 +34,11 @@ typedef struct nimbus_object_listener {
 	nimbus_resource_type_id state_type_id;
 	tyran_symbol frame_symbol;
 	struct tyran_runtime* runtime;
+	tyran_symbol type_symbol;
+	struct tyran_memory* memory;
+	nimbus_object_layer* layers;
+	int max_layers_count;
+	int layers_count;
 } nimbus_object_listener;
 
 

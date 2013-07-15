@@ -88,6 +88,7 @@ void tyran_mocha_lexer_debug_token(tyran_mocha_token* token)
 		"NUMBER",
 		"STRING",
 		"IDENTIFIER",
+		"SYMBOL",
 		"CALL",
 		"FUNC_GLYPH",
 		"FUNC_GLYPH_BOUND",

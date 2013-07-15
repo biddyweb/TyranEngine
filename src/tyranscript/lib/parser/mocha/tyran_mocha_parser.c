@@ -332,6 +332,7 @@ void tyran_mocha_parser_add_to_empty(tyran_memory* memory, tyran_mocha_parser* p
 				case TYRAN_PARSER_UNARY_BRACKET:
 				case TYRAN_PARSER_UNARY_PARENTHESES:
 				case TYRAN_PARSER_UNARY_ARRAY:
+				case TYRAN_PARSER_UNARY_NOT:
 					parser->next_node_to_overwrite = &unary->expression;
 					break;
 				default:
@@ -547,6 +548,8 @@ NODE tyran_mocha_parser_token_to_literal(tyran_memory* memory, tyran_mocha_token
 			return tyran_parser_break(memory);
 		case TYRAN_MOCHA_TOKEN_CONTINUE:
 			return tyran_parser_continue(memory);
+		case TYRAN_MOCHA_TOKEN_SYMBOL:
+			return tyran_parser_symbol(memory, (const char*) first->token_data);
 		default:
 			TYRAN_ERROR("Illegal literal token:%d", first->token_id);
 			return 0;
@@ -906,7 +909,13 @@ NODE tyran_mocha_parser_parse(tyran_memory* memory, tyran_mocha_lexer* lexer, ty
 	tyran_mocha_token* last = tyran_mocha_lexer_last(lexer);
 
 	tyran_mocha_parser* parser = tyran_mocha_parser_new(mocha_parser_pool, enclosure_pool, enclosure_info_pool, parser_parameter_pool, mocha_token_pool, memory);
+	
+#if defined TYRAN_MOCHA_PARSER_DEBUG
+	tyran_mocha_lexer_debug_tokens("Parsed", first, last);
+#endif
+
 	tyran_mocha_parser_add_all(memory, parser, first, last);
+
 #if defined TYRAN_MOCHA_PARSER_DEBUG
 	tyran_parser_node_print("Parsed", &parser->original_root, parser->root);
 #endif

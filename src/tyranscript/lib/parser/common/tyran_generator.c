@@ -85,6 +85,11 @@ tyran_constant_index tyran_generator_literal_to_constant_index(tyran_constants* 
 			result = tyran_constants_add_string(constants, runtime, str);
 		}
 		break;
+		case TYRAN_PARSER_NODE_TYPE_SYMBOL: {
+			tyran_parser_node_symbol* symbol = (tyran_parser_node_symbol*) node;
+			result = tyran_constants_add_symbol_from_c_string(constants, symbol->string);
+		}
+		break;
 		case TYRAN_PARSER_NODE_TYPE_NIL:
 			result = tyran_constants_add_nil(constants);
 			break;

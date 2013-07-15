@@ -87,6 +87,12 @@ void tyran_parser_node_print_helper(const char* description, tyran_parser_node**
 				tyran_parser_node_print_helper_output(buf, description, tab_count);
 			}
 			break;
+			case TYRAN_PARSER_NODE_TYPE_SYMBOL: {
+				tyran_parser_node_symbol* identifier = (tyran_parser_node_symbol*)node;
+				tyran_snprintf(buf, buf_size, "symbol: '%s'", identifier->string);
+				tyran_parser_node_print_helper_output(buf, description, tab_count);
+			}
+			break;
 			case TYRAN_PARSER_NODE_TYPE_ASSIGNMENT: {
 				tyran_snprintf(buf, buf_size, "assignment");
 				tyran_parser_node_print_helper_output(buf, description, tab_count);

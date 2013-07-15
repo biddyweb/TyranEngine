@@ -36,6 +36,12 @@ tyran_boolean tyran_value_boolean(tyran_value* v)
 	return v->data.boolean;
 }
 
+tyran_symbol tyran_value_symbol(tyran_value* v)
+{
+	TYRAN_ASSERT(tyran_value_is_symbol(v), "Must be symbol");
+	return v->data.symbol;
+}
+
 tyran_object* tyran_value_object(tyran_value* v)
 {
 	TYRAN_ASSERT(tyran_value_is_object(v), "Must be object");

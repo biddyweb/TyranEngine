@@ -11,6 +11,8 @@
 #include <tyran_engine/event/resource_updated.h>
 #include "../resource/resource_cache.h"
 #include <tyranscript/tyran_property_iterator.h>
+#include <tyranscript/tyran_symbol_table.h>
+#include "object_info.h"
 
 static void load_resource(nimbus_dependency_resolver* self, nimbus_resource_id resource_id)
 {
@@ -19,8 +21,6 @@ static void load_resource(nimbus_dependency_resolver* self, nimbus_resource_id r
 	self->loading_resources_count++;
 	nimbus_resource_load_send(self->event_write_stream, resource_id);
 }
-
-
 
 static void send_resource_update(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id, nimbus_resource_type_id type_id, tyran_object* object)
 {
@@ -85,6 +85,18 @@ static void add_resource_reference(nimbus_dependency_resolver* self, nimbus_reso
 	load_resource_if_needed(self, resource_id);
 }
 
+static void decorate_object(tyran_value* v, struct tyran_memory* memory, tyran_symbol symbol)
+{
+	TYRAN_LOG("decorate");	
+	nimbus_object_info* info = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_object_info);
+	info->symbol = symbol;
+	info->instance_id = 0; // self->instance_id++;
+
+	void* current = tyran_value_program_specific(v);
+	TYRAN_ASSERT(current == 0, "Current must be null");
+	tyran_value_set_program_specific(v, info);
+}
+
 static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* v, tyran_object* combine)
 {
 	tyran_property_iterator it;
@@ -99,8 +111,15 @@ static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* s
 
 	int resources_that_are_loading = 0;
 
+
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
-		if (tyran_value_is_string(value)) {
+		if (tyran_symbol_equal(&symbol, &self->type_symbol)) {
+			tyran_symbol type_value = tyran_value_symbol(value);
+			const char* type_value_string = tyran_symbol_table_lookup(self->symbol_table, &type_value);
+			TYRAN_LOG("Found type '%s'", type_value_string);
+			
+			decorate_object(v, self->memory, type_value);
+		} else if (tyran_value_is_string(value)) {
 			tyran_string_to_c_str(value_string, 128, tyran_object_string(value->data.object));
 			if (value_string[0] == '@') {
 				nimbus_resource_id resource_id = nimbus_resource_id_from_string(&value_string[1]);
@@ -166,10 +185,12 @@ void nimbus_dependency_resolver_init(nimbus_dependency_resolver* self, struct ty
 	self->loading_resources_count = 0;
 	self->symbol_table = symbol_table;
 	self->event_write_stream = stream;
+	self->memory = memory;
 	self->loading_resources_max_count = sizeof(self->loading_resources) / sizeof(nimbus_resource_id);
 	self->dependency_info_max_count = sizeof(self->dependency_infos) / sizeof(nimbus_resource_dependency_info);
 	self->object_type_id = nimbus_resource_type_id_from_string("object");
 	self->wire_object_type_id = nimbus_resource_type_id_from_string("oec");
+	tyran_symbol_table_add(symbol_table, &self->type_symbol, "type");
 	nimbus_resource_cache_init(&self->resource_cache, memory);
 }
 

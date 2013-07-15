@@ -119,13 +119,13 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 	self->info_max_count = 64;
 	self->info_count = 0;
 	self->memory = memory;
-	
+
 	self->max_layers_count = 8;
 	self->layers_count = 0;
 	self->layers = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_object_layer, self->max_layers_count);
-	
+
 	nimbus_object_layers_add_layer(self, "render", memory);
-	
+
 	/*
 		self->infos = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_object_listener_info, self->info_max_count);
 		for (int i=0; i<self->info_max_count; ++i) {
@@ -175,23 +175,23 @@ static void scan_for_listening_functions_on_object(nimbus_object_listener* self,
 static nimbus_resource_id resource_id_for_layer(const char* layer_name, tyran_symbol_table* symbol_table, tyran_symbol symbol)
 {
 	const char* type_name_string = tyran_symbol_table_lookup(symbol_table, &symbol);
-	
+
 	const int temp_buf_size = 128;
 	char temp[temp_buf_size];
 	tyran_strncpy(temp, temp_buf_size, layer_name, tyran_strlen(layer_name));
 	tyran_strncat(temp, "/", temp_buf_size);
 	tyran_strncat(temp, type_name_string, temp_buf_size);
-	
+
 	TYRAN_LOG("Layer-specific name:'%s'", temp);
 	nimbus_resource_id layer_specific_resource_id = nimbus_resource_id_from_string(temp);
-	
+
 	return layer_specific_resource_id;
 }
 
 
 static void decorate_object(tyran_object* o, struct tyran_memory* memory, tyran_symbol symbol)
 {
-	TYRAN_LOG("decorate");	
+	TYRAN_LOG("decorate");
 	nimbus_object_info* info = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_object_info);
 	info->symbol = symbol;
 	info->instance_id = 0; // self->instance_id++;
@@ -253,7 +253,7 @@ static void scan_combine(nimbus_object_listener* self, tyran_object* combine)
 			}
 		}
 	}
-	
+
 	tyran_property_iterator_free(&it);
 }
 

@@ -909,7 +909,7 @@ NODE tyran_mocha_parser_parse(tyran_memory* memory, tyran_mocha_lexer* lexer, ty
 	tyran_mocha_token* last = tyran_mocha_lexer_last(lexer);
 
 	tyran_mocha_parser* parser = tyran_mocha_parser_new(mocha_parser_pool, enclosure_pool, enclosure_info_pool, parser_parameter_pool, mocha_token_pool, memory);
-	
+
 #if defined TYRAN_MOCHA_PARSER_DEBUG
 	tyran_mocha_lexer_debug_tokens("Parsed", first, last);
 #endif

@@ -67,7 +67,7 @@
 	sp->argument_count = x; \
 	TYRAN_ASSERT(sp - runtime->stack < runtime->stack_depth, "STACK OVERPUSHED"); \
 	sp++; \
-
+ 
 #define TYRAN_STACK_POP \
 	sp--; \
 	r = sp->r; \

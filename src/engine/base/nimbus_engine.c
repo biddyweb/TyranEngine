@@ -50,16 +50,16 @@ TYRAN_RUNTIME_CALL_FUNC(load_state)
 
 static void print_value(tyran_runtime* runtime, tyran_value* v)
 {
-        const int buf_len = 512;
-        char buf[buf_len];
-        tyran_value_to_c_string(runtime->symbol_table, v, buf, buf_len, 0);
-        puts(buf);
+	const int buf_len = 512;
+	char buf[buf_len];
+	tyran_value_to_c_string(runtime->symbol_table, v, buf, buf_len, 0);
+	puts(buf);
 }
 
 TYRAN_RUNTIME_CALL_FUNC(log_output)
 {
-        struct tyran_value* v = &arguments[0];
-        print_value(runtime, v);
+	struct tyran_value* v = &arguments[0];
+	print_value(runtime, v);
 //        tyran_value_set_number(*return_value, 16.0f);
 	return 0;
 }
@@ -105,7 +105,6 @@ static void _dummy_update(void* _self)
 static void boot_resource(nimbus_engine* self)
 {
 	nimbus_resource_id boot_id = nimbus_resource_handler_add(self->resource_handler, "boot");
-	TYRAN_LOG("boot resource id:%d", boot_id);
 
 	fire_load_resource(self, boot_id);
 }
@@ -171,11 +170,11 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	nimbus_object_listener_init(&self->object_listener, memory, self->mocha_api.default_runtime);
 	nimbus_engine_add_update_object(self, &self->object_listener.update);
 	nimbus_modules_init(&self->modules);
-	
+
 	nimbus_register_modules(&self->modules);
-	
+
 	create_modules(self, memory);
-	
+
 	start_event_connection(self, memory, "198.74.60.114", 32000, task_queue);
 
 	boot_resource(self);

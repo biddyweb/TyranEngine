@@ -773,7 +773,7 @@ tyran_reg_or_constant_index tyran_generator_traverse(tyran_memory* memory, tyran
 		if (block) {
 			block->operator_type = TYRAN_PARSER_UNARY_OBJECT;
 		}
-	}	
+	}
 
 	switch (node->type) {
 		case TYRAN_PARSER_NODE_TYPE_OPERAND_BINARY: {

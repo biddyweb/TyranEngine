@@ -7,7 +7,15 @@ void tyran_property_iterator_init(tyran_property_iterator* self, tyran_object* o
 	self->object = object;
 	self->visited_symbols_count = 0;
 	self->visited_symbols_max_count = 64;
+	self->is_shallow = 0;
 }
+
+void tyran_property_iterator_init_shallow(tyran_property_iterator* self, tyran_object* object)
+{
+	tyran_property_iterator_init(self, object);
+	self->is_shallow = TYRAN_TRUE;
+}
+
 
 void tyran_property_iterator_free(tyran_property_iterator* self)
 {
@@ -36,7 +44,7 @@ tyran_boolean tyran_property_iterator_next(tyran_property_iterator* self, tyran_
 	if (self->property_index >= self->object->property_count) {
 		tyran_object* parent = self->object->prototype;
 		TYRAN_ASSERT(parent != self->object, "Prototype can not be self!");
-		if (!parent) {
+		if (!parent || self->is_shallow) {
 			return TYRAN_FALSE;
 		} else {
 			self->property_index = 0;

@@ -80,4 +80,7 @@ const struct tyran_string* tyran_object_string(struct tyran_object* o);
 struct tyran_array* tyran_object_array(struct tyran_object* o);
 const struct tyran_function* tyran_object_function(struct tyran_object* o);
 
+#define tyran_object_set_program_specific(o, p)	o->program_specific = p;
+#define tyran_object_program_specific(o)	(o->program_specific)
+
 #endif

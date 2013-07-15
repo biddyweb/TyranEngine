@@ -9,7 +9,7 @@ extern tyran_value* tyran_array_prototype;
 
 void tyran_value_set_program_specific(tyran_value* value, void* program_specific_context)
 {
-	value->data.object->program_specific = program_specific_context;
+	tyran_object_set_program_specific(value->data.object, program_specific_context);
 }
 
 tyran_value* tyran_value_new(tyran_memory_pool* value_pool)

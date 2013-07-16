@@ -7,7 +7,7 @@
 #include <tyranscript/tyran_symbol_table.h>
 #include <tyranscript/tyran_value_object.h>
 #include <tyran_core/event/event_stream.h>
-#include "../event/resource_load.h"
+#include <tyran_engine/event/resource_load.h>
 #include <tyran_engine/event/resource_updated.h>
 #include "../resource/resource_cache.h"
 #include <tyranscript/tyran_property_iterator.h>

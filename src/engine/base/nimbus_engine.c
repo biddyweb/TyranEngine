@@ -3,7 +3,7 @@
 #include <tyran_engine/resource/id.h>
 #include "../resource/resource_handler.h"
 
-#include "../event/resource_load.h"
+#include <tyran_engine/event/resource_load.h>
 #include "../event/resource_load_state.h"
 
 #include <tyran_core/event/event_stream.h>

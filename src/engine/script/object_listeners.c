@@ -15,6 +15,8 @@
 
 #include "event_definition.h"
 
+#include <tyran_engine/event/resource_load.h>
+
 
 void nimbus_object_collection_init(nimbus_object_collection* self, struct tyran_memory* memory)
 {
@@ -200,7 +202,8 @@ static void trigger_spawn_in_layers(nimbus_object_listener* self, tyran_symbol t
 {
 	for (int i=0; i<self->layers_count; ++i) {
 		nimbus_object_layer* layer = &self->layers[i];
-		resource_id_for_layer(layer->name, self->symbol_table, type_name);
+		nimbus_resource_id layer_specific_resource_id = resource_id_for_layer(layer->name, self->symbol_table, type_name);
+		nimbus_resource_load_send(&self->update.event_write_stream, layer_specific_resource_id);
 	}
 }
 

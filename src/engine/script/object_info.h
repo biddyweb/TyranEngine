@@ -14,6 +14,7 @@ typedef struct nimbus_object_info {
 	int instance_id;
 	nimbus_object_info_layer layers[8];
 	int layers_count;
+	int track_index;
 } nimbus_object_info;
 
 #endif

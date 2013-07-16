@@ -13,7 +13,7 @@
 #include <tyran_engine/type/size2i.h>
 #include <tyran_engine/type/vector2.h>
 
-#define NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN() { const int alignment = 4; if (((intptr_t)d % alignment) != 0) { d += alignment - ((intptr_t)d % alignment); } }
+#define NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN() { const int alignment = 4; d += (alignment - ((intptr_t)(d-buf) % alignment)) % alignment; }
 
 void nimbus_object_to_event_init(nimbus_object_to_event* self, struct tyran_memory* memory, tyran_symbol_table* symbol_table)
 {
@@ -27,18 +27,20 @@ void nimbus_object_to_event_free(nimbus_object_to_event* self)
 	tyran_free(self->temp_buf);
 }
 
-void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_write_stream* stream, tyran_object* _this, struct tyran_object* o, nimbus_event_definition* e)
+void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_write_stream* stream, struct tyran_object* o, nimbus_event_definition* e)
 {
 	nimbus_object_info* info = (nimbus_object_info*) tyran_object_program_specific(o);
 	nimbus_property_reader* reader = &self->property_reader;
+	const u8t* buf = self->temp_buf;
 
 	u8t* d = self->temp_buf;
 
 	if (e->has_index) {
 		int index = info->track_index; // world->types[info->world_index].tracks[info->track_index].get_object_index(_this);
 		TYRAN_ASSERT(index != -1,  "Index can not be null. tyran_object has not been assigned an index");
-		*(u16t*) d = index;
-		d += sizeof(u16t);
+		*(int*) d = index;
+		d += sizeof(int);
+		NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN();
 	}
 
 	tyran_value value;
@@ -62,10 +64,14 @@ void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_w
 			}
 			break;
 			case NIMBUS_EVENT_DEFINITION_OBJECT: {
+				int index = -1;
 				tyran_object_lookup_prototype(&value, o, &p->symbol);
-				tyran_object* value_object = tyran_value_object(&value);
-				nimbus_object_info* info = tyran_object_program_specific(value_object);
-				*(int*)d = info->track_index;
+				if (!tyran_value_is_nil(&value)) {
+					tyran_object* value_object = tyran_value_object(&value);
+					nimbus_object_info* info = tyran_object_program_specific(value_object);
+					index = info->track_index;
+				}
+				*(int*)d = index;
 				d += sizeof(int);
 			}
 			break;
@@ -103,7 +109,6 @@ void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_w
 		NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN();
 	}
 
-	const u8t* buf = self->temp_buf;
 	int octets_written = d - buf;
 
 	nimbus_event_stream_write_event_header(stream, e->event_type_id);

@@ -4,6 +4,8 @@
 #include <tyranscript/tyran_types.h>
 #include <tyranscript/tyran_symbol.h>
 
+struct tyran_symbol_table;
+
 typedef enum nimbus_event_definition_type {
 	NIMBUS_EVENT_DEFINITION_FLOAT,
 	NIMBUS_EVENT_DEFINITION_INTEGER,
@@ -27,9 +29,12 @@ typedef struct nimbus_event_definition {
 	int properties_count;
 	tyran_boolean has_index;
 	u8t event_type_id;
+	const char* name;
+	tyran_symbol type_symbol;
+	struct tyran_symbol_table* symbol_table;
 } nimbus_event_definition;
 
-
+void nimbus_event_definition_init(nimbus_event_definition* self, struct tyran_symbol_table* symbol_table, const char* name, u8t event_type_id);
 void nimbus_event_definition_add_property(nimbus_event_definition* self, const char* name, nimbus_event_definition_type type);
 
 #endif

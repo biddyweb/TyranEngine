@@ -13,6 +13,22 @@
 #include <tyranscript/tyran_symbol_table.h>
 #include "object_info.h"
 
+#include "event_definition.h"
+
+
+void nimbus_object_collection_init(nimbus_object_collection* self, struct tyran_memory* memory)
+{
+	self->count = 0;
+	self->max_count = 1024;
+	self->entries = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, tyran_object*, self->max_count);
+}
+
+void nimbus_object_collection_add(nimbus_object_collection* self, tyran_object* o)
+{
+	self->entries[self->count++] = o;
+}
+
+
 static void info_add_function(nimbus_object_listener_info* self, tyran_value* function_context, const tyran_function* function)
 {
 	nimbus_object_listener_function* func_info = &self->functions[self->function_count++];
@@ -90,12 +106,7 @@ static void call_event(nimbus_object_listener* self, tyran_symbol symbol)
 	}
 }
 
-static void _dummy_update_2(void* _self2)
-{
-	nimbus_object_listener* c = _self2;
 
-	call_event(c, c->frame_symbol);
-}
 
 static void nimbus_object_layers_add_layer(nimbus_object_listener* self, const char* name, struct tyran_memory* memory)
 {
@@ -103,37 +114,20 @@ static void nimbus_object_layers_add_layer(nimbus_object_listener* self, const c
 	layer->name = tyran_strdup(memory, name);
 }
 
-
-void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* memory, tyran_runtime* runtime)
+static void setup_collection_for_event_definition(nimbus_object_listener* self, struct tyran_memory* memory, nimbus_event_definition* event_definition)
 {
-	self->runtime = runtime;
-	self->symbol_table = runtime->symbol_table;
-	nimbus_update_init(&self->update, memory, _dummy_update_2, self, "script listener");
-	nimbus_event_listener_init(&self->update.event_listener, self);
-	nimbus_event_listener_listen(&self->update.event_listener, NIMBUS_EVENT_RESOURCE_UPDATED, _on_resource_updated);
-	self->state_type_id = nimbus_resource_type_id_from_string("state");
-	tyran_symbol_table_add(runtime->symbol_table, &self->type_symbol, "type");
+	TYRAN_LOG("Defining collection for type '%s'", event_definition->name);
+	nimbus_object_collection_for_type* collection = &self->object_collection_for_types[self->object_collection_for_types_count++];
+	collection->event_definition = event_definition;
+	nimbus_object_collection_init(&collection->collection, memory);
+}
 
-	tyran_symbol_table_add(self->symbol_table, &self->frame_symbol, "Frame");
-
-	self->info_max_count = 64;
-	self->info_count = 0;
-	self->memory = memory;
-
-	self->max_layers_count = 8;
-	self->layers_count = 0;
-	self->layers = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_object_layer, self->max_layers_count);
-
-	nimbus_object_layers_add_layer(self, "render", memory);
-
-	/*
-		self->infos = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_object_listener_info, self->info_max_count);
-		for (int i=0; i<self->info_max_count; ++i) {
-			nimbus_object_listener_info* info = &self->infos[i];
-			info->max_function_count = 64;
-			info->functions = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_object_listener_function, info->max_function_count);
-		}
-	*/
+static void setup_collections_for_event_definitions(nimbus_object_listener* self, struct tyran_memory* memory, nimbus_event_definition* event_definitions, int event_definition_count)
+{
+	for (int i=0; i<event_definition_count; ++i) {
+		struct nimbus_event_definition* definition = &event_definitions[i];
+		setup_collection_for_event_definition(self, memory, definition);
+	}
 }
 
 
@@ -210,11 +204,46 @@ static void trigger_spawn_in_layers(nimbus_object_listener* self, tyran_symbol t
 	}
 }
 
+
+static nimbus_object_collection* object_collection_for_type(nimbus_object_listener* self, tyran_symbol type_name)
+{
+	for (int i=0; i < self->object_collection_for_types_count; ++i) {
+		nimbus_object_collection_for_type* collection = &self->object_collection_for_types[i];
+		if (tyran_symbol_equal(&collection->event_definition->type_symbol, &type_name)) {
+			return &collection->collection;
+		}
+	}
+
+	return 0;
+}
+
+static void serialize_object_collection(nimbus_object_listener* self, nimbus_object_collection* collection, struct nimbus_event_definition* e)
+{
+	tyran_object** entries = collection->entries;
+	for (int i=0; i<collection->count; ++i) {
+		tyran_object* object = entries[i];
+		nimbus_object_to_event_convert(&self->object_to_event, &self->update.event_write_stream, object, e);
+	}
+}
+
+static void serialize_all(nimbus_object_listener* self)
+{
+	for (int i=0; i<self->object_collection_for_types_count; ++i) {
+		nimbus_object_collection_for_type* type_collection = &self->object_collection_for_types[i];
+		serialize_object_collection(self, &type_collection->collection, type_collection->event_definition);
+	}
+}
+
 static void handle_type_object(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name, const char* type_name_string)
 {
 	TYRAN_LOG("Found type: '%s'", type_name_string);
 	decorate_object(o, self->memory, type_name);
 	trigger_spawn_in_layers(self, type_name);
+
+	nimbus_object_collection* collection = object_collection_for_type(self, type_name);
+	if (collection) {
+		nimbus_object_collection_add(collection, o);
+	}
 }
 
 static void check_for_type_on_component(nimbus_object_listener* self, tyran_object* component)
@@ -262,3 +291,51 @@ static void on_state_updated(nimbus_object_listener* self, tyran_object* o)
 {
 	scan_combine(self, o);
 }
+
+static void _update(void* _self)
+{
+	nimbus_object_listener* self = _self;
+
+	call_event(self, self->frame_symbol);
+	serialize_all(self);
+}
+
+void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* memory, tyran_runtime* runtime, nimbus_event_definition* event_definitions, int event_definition_count)
+{
+	self->object_collection_for_types_count = 0;
+	self->runtime = runtime;
+	self->symbol_table = runtime->symbol_table;
+	const int max_event_octets = 16 * 1024;
+	nimbus_update_init_ex(&self->update, memory, _update, self, max_event_octets, "script object listener");
+	nimbus_event_listener_init(&self->update.event_listener, self);
+	nimbus_event_listener_listen(&self->update.event_listener, NIMBUS_EVENT_RESOURCE_UPDATED, _on_resource_updated);
+	self->state_type_id = nimbus_resource_type_id_from_string("state");
+	tyran_symbol_table_add(runtime->symbol_table, &self->type_symbol, "type");
+
+	tyran_symbol_table_add(self->symbol_table, &self->frame_symbol, "Frame");
+
+	nimbus_object_to_event_init(&self->object_to_event, memory, runtime->symbol_table);
+
+
+	self->info_max_count = 64;
+	self->info_count = 0;
+	self->memory = memory;
+
+	self->max_layers_count = 8;
+	self->layers_count = 0;
+	self->layers = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_object_layer, self->max_layers_count);
+
+	nimbus_object_layers_add_layer(self, "render", memory);
+
+	setup_collections_for_event_definitions(self, memory, event_definitions, event_definition_count);
+
+	/*
+		self->infos = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_object_listener_info, self->info_max_count);
+		for (int i=0; i<self->info_max_count; ++i) {
+			nimbus_object_listener_info* info = &self->infos[i];
+			info->max_function_count = 64;
+			info->functions = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_object_listener_function, info->max_function_count);
+		}
+	*/
+}
+

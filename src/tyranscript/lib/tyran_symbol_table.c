@@ -5,6 +5,8 @@
 tyran_symbol_table* tyran_symbol_table_new(tyran_memory* memory)
 {
 	tyran_symbol_table* table = TYRAN_MALLOC_NO_POOL_TYPE(memory, tyran_symbol_table);
+	table->entries_max_count = 512;
+	table->entries = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, tyran_symbol_table_entry, table->entries_max_count);
 	table->entry_count = 0;
 	table->memory = memory;
 
@@ -35,7 +37,7 @@ void tyran_symbol_table_add(tyran_symbol_table* table, tyran_symbol* symbol, con
 	int index = tyran_symbol_table_find(table, str);
 	if (index == -1) {
 		index = table->entry_count;
-		TYRAN_ASSERT(table->entry_count < 100, "Out of memory");
+		TYRAN_ASSERT(table->entry_count < table->entries_max_count, "Out of memory");
 		table->entry_count++;
 		tyran_symbol_table_entry* entry = &table->entries[index];
 		entry->string = tyran_strdup(table->memory, str);

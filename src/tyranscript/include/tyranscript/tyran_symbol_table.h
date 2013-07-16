@@ -10,8 +10,9 @@ typedef struct tyran_symbol_table_entry {
 } tyran_symbol_table_entry;
 
 typedef struct tyran_symbol_table {
-	tyran_symbol_table_entry entries[100];
+	tyran_symbol_table_entry* entries;
 	int entry_count;
+	int entries_max_count;
 	struct tyran_memory* memory;
 } tyran_symbol_table;
 

@@ -45,6 +45,7 @@ void nimbus_event_stream_read_skip(nimbus_event_read_stream* self, int length);
 #define nimbus_event_stream_write_event(stream, event_type_id, variable) { nimbus_event_stream_write_event_header(stream, event_type_id); nimbus_event_stream_write_type(stream, variable); nimbus_event_stream_write_event_end(stream); }
 
 #define nimbus_event_stream_read_type(stream, variable) { nimbus_event_stream_read_align(stream); nimbus_event_stream_read_octets(stream, (u8t*)(&variable), sizeof(variable)); }
+#define nimbus_event_stream_read_type_pointer(stream, variable, type) { nimbus_event_stream_read_align(stream); variable = (type*) stream->pointer; nimbus_event_stream_read_skip(stream, sizeof(type)); }
 
 
 #endif

@@ -7,16 +7,19 @@
 
 struct tyran_mocha_api;
 struct tyran_value;
+struct tyran_memory;
 
 typedef struct nimbus_object_loader {
 	struct tyran_mocha_api* mocha;
 	struct tyran_value* context;
+	struct tyran_memory* memory;
 	nimbus_update update;
 	u8t* script_buffer;
 	int script_buffer_size;
 	nimbus_dependency_resolver dependency_resolver;
 	nimbus_resource_type_id state_type_id;
 	nimbus_resource_type_id object_type_id;
+	nimbus_resource_type_id module_resource_type_id;
 	nimbus_resource_type_id wire_object_type_id;
 	nimbus_resource_type_id script_object_type_id;
 	nimbus_resource_id waiting_for_state_resource_id;

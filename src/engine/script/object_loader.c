@@ -2,7 +2,10 @@
 #include <tyran_engine/event/resource_updated.h>
 #include "../event/resource_load_state.h"
 #include <tyran_engine/event/resource_load.h>
+#include <tyran_engine/event/module_resource_updated.h>
 #include <tyranscript/tyran_mocha_api.h>
+#include <tyran_engine/script/object_decorator.h>
+#include "object_info.h"
 
 static tyran_object* evaluate(nimbus_object_loader* self, const char* data)
 {
@@ -13,6 +16,17 @@ static tyran_object* evaluate(nimbus_object_loader* self, const char* data)
 	tyran_value_set_nil(temp_value);
 	tyran_mocha_api_eval(self->mocha, &new_object, &temp_value, data);
 	return tyran_value_object(&new_object);
+}
+
+static tyran_object* get_or_create_resource_object(nimbus_object_loader* self, nimbus_resource_id resource_id, int track_index)
+{
+	tyran_value new_object = tyran_mocha_api_create_object(self->mocha);
+	tyran_object* object = tyran_value_object(&new_object);
+	nimbus_object_info* info = nimbus_decorate_object(object, self->memory);
+	info->is_module_resource = TYRAN_TRUE;
+	info->track_index = track_index;
+
+	return object;
 }
 
 static void add_object(nimbus_object_loader* self, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id, tyran_object* o)
@@ -45,6 +59,18 @@ static void on_object_updated(nimbus_object_loader* self, struct nimbus_event_re
 	}
 }
 
+static void on_module_resource_updated(nimbus_object_loader* self, struct nimbus_event_read_stream* stream, nimbus_resource_id resource_id, int payload_size)
+{
+	int index;
+
+	nimbus_event_stream_read_octets(stream, (u8t*)&index, sizeof(index));
+	TYRAN_LOG("Module resource updated: resource_id:%d, index:%d", resource_id, index);
+
+	tyran_object* o = get_or_create_resource_object(self, resource_id, index);
+
+	add_object(self, resource_id, self->module_resource_type_id, o);
+}
+
 static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* stream)
 {
 	nimbus_object_loader* self = _self;
@@ -56,6 +82,8 @@ static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* s
 		on_script_source_updated(self, stream, updated.resource_id, updated.resource_type_id, updated.payload_size);
 	} else if (self->object_type_id == updated.resource_type_id) {
 		on_object_updated(self, stream, updated.resource_id, updated.payload_size);
+	} else if (self->module_resource_type_id == updated.resource_type_id) {
+		on_module_resource_updated(self, stream, updated.resource_id, updated.payload_size);
 	}
 }
 
@@ -85,8 +113,10 @@ void nimbus_object_loader_init(nimbus_object_loader* self, tyran_memory* memory,
 	self->object_type_id = nimbus_resource_type_id_from_string("object");
 	self->state_type_id = nimbus_resource_type_id_from_string("state");
 	self->wire_object_type_id = nimbus_resource_type_id_from_string("oec");
+	self->module_resource_type_id = nimbus_resource_type_id_from_string("module_resource");
 	self->script_object_type_id = nimbus_resource_type_id_from_string("oes");
 	self->waiting_for_state_resource_id = 0;
+	self->memory = memory;
 
 	nimbus_update_init(&self->update, memory, _dummy_update, self, "loader");
 	nimbus_event_listener_init(&self->update.event_listener, self);

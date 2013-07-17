@@ -185,18 +185,6 @@ static nimbus_resource_id resource_id_for_layer(const char* layer_name, tyran_sy
 }
 
 
-static void decorate_object(tyran_object* o, struct tyran_memory* memory, tyran_symbol symbol)
-{
-	TYRAN_LOG("decorate");
-	nimbus_object_info* info = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_object_info);
-	info->symbol = symbol;
-	info->instance_id = 0; // self->instance_id++;
-	info->layers_count = 0;
-
-	void* current = tyran_object_program_specific(o);
-	TYRAN_ASSERT(current == 0, "Current must be null");
-	tyran_object_set_program_specific(o, info);
-}
 
 static void trigger_spawn_in_layers(nimbus_object_listener* self, tyran_symbol type_name)
 {
@@ -240,7 +228,7 @@ static void serialize_all(nimbus_object_listener* self)
 static void handle_type_object(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name, const char* type_name_string)
 {
 	TYRAN_LOG("Found type: '%s'", type_name_string);
-	decorate_object(o, self->memory, type_name);
+	nimbus_decorate_object(o, self->memory);
 	trigger_spawn_in_layers(self, type_name);
 
 	nimbus_object_collection* collection = object_collection_for_type(self, type_name);

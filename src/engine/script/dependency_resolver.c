@@ -233,8 +233,15 @@ static void resource_resolved(nimbus_dependency_resolver* self, nimbus_resource_
 static tyran_boolean check_if_resolved(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info)
 {
 	if (nimbus_resource_dependency_info_is_satisfied(info)) {
+		TYRAN_LOG("Resource %d is satisfied", info->resource_id);
 		resource_resolved(self, info);
 		return TYRAN_TRUE;
+	} else {
+		TYRAN_LOG("Resource %d is missing:", info->resource_id);
+		for (int i=0; i<info->resource_dependencies_count; ++i) {
+			nimbus_resource_dependency* dependency = &info->resource_dependencies[i];
+			TYRAN_LOG("....resource %d", dependency->resource_id);
+		}
 	}
 
 	return TYRAN_FALSE;
@@ -242,6 +249,7 @@ static tyran_boolean check_if_resolved(nimbus_dependency_resolver* self, nimbus_
 
 void nimbus_dependency_resolver_object_loaded(nimbus_dependency_resolver* self, tyran_object* v, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id)
 {
+	TYRAN_LOG(" Resource:%d is loaded!", resource_id);
 	nimbus_resource_dependency_info* info = resource_depency_info_new(self, resource_id, v);
 	if (resource_type_id == self->wire_object_type_id) {
 		request_inherits_and_references(self, info, v);

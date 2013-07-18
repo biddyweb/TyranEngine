@@ -14,6 +14,7 @@
 #include "object_info.h"
 
 #include "event_definition.h"
+#include "object_spawner.h"
 
 #include <tyran_engine/event/resource_load.h>
 
@@ -184,6 +185,29 @@ static nimbus_resource_id resource_id_for_layer(const char* layer_name, tyran_sy
 	return layer_specific_resource_id;
 }
 
+static tyran_object* find_resource(nimbus_object_listener* self, nimbus_resource_id layer_specific_resource_id)
+{
+	return 0;
+}
+
+static tyran_object* fetch_resource(nimbus_object_listener* self, nimbus_resource_id layer_specific_resource_id)
+{
+	tyran_object* o = find_resource(self, layer_specific_resource_id);
+	if (!o) {
+		nimbus_resource_load_send(&self->update.event_write_stream, layer_specific_resource_id);
+	}
+	
+	return o;
+}
+
+static tyran_object* spawn(nimbus_object_listener* self, tyran_object* combine)
+{
+	nimbus_object_spawner spawner;
+	nimbus_object_spawner_init(&spawner, self->runtime, combine);
+	tyran_object* spawned_combine = nimbus_object_spawner_spawn(&spawner);
+	
+	return spawned_combine;
+}
 
 
 static void trigger_spawn_in_layers(nimbus_object_listener* self, tyran_symbol type_name)
@@ -191,10 +215,12 @@ static void trigger_spawn_in_layers(nimbus_object_listener* self, tyran_symbol t
 	for (int i=0; i<self->layers_count; ++i) {
 		nimbus_object_layer* layer = &self->layers[i];
 		nimbus_resource_id layer_specific_resource_id = resource_id_for_layer(layer->name, self->symbol_table, type_name);
-		nimbus_resource_load_send(&self->update.event_write_stream, layer_specific_resource_id);
+		tyran_object* combine = fetch_resource(self, layer_specific_resource_id);
+		if (combine) {
+			spawn(self, combine);
+		}
 	}
 }
-
 
 static nimbus_object_collection* object_collection_for_type(nimbus_object_listener* self, tyran_symbol type_name)
 {

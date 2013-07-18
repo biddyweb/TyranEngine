@@ -3,6 +3,7 @@
 
 #include <tyran_core/update/update.h>
 #include <tyran_engine/resource/type_id.h>
+#include <tyran_engine/resource/id.h>
 #include <tyranscript/tyran_symbol.h>
 #include <tyranscript/tyran_value.h>
 #include "object_to_event.h"
@@ -32,11 +33,28 @@ typedef struct nimbus_object_collection {
 } nimbus_object_collection;
 
 
-
 typedef struct nimbus_object_collection_for_type {
 	nimbus_object_collection collection;
 	struct nimbus_event_definition* event_definition;
 } nimbus_object_collection_for_type;
+
+typedef struct nimbus_type_to_layers_info {
+	nimbus_resource_id resource_id;
+	struct tyran_object* combine;
+} nimbus_type_to_layers_info;
+
+typedef struct nimbus_type_to_layers {
+	tyran_symbol type_name;
+	nimbus_type_to_layers_info infos[32];
+	int infos_count;
+	int infos_max_count;
+} nimbus_type_to_layers;
+
+typedef struct nimbus_layer_association {
+	nimbus_type_to_layers* type_to_layers;
+	struct tyran_object* layer_objects[32];
+	struct tyran_object* source_object;
+} nimbus_layer_association;
 
 
 typedef struct nimbus_object_listener {
@@ -57,6 +75,14 @@ typedef struct nimbus_object_listener {
 
 	nimbus_object_collection_for_type object_collection_for_types[32];
 	int object_collection_for_types_count;
+
+	nimbus_type_to_layers type_to_layers[64];
+	int type_to_layers_count;
+	int type_to_layers_max_count;
+
+	nimbus_layer_association* associations;
+	int associations_count;
+	int associations_max_count;
 } nimbus_object_listener;
 
 

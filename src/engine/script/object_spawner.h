@@ -7,7 +7,7 @@ struct tyran_object;
 typedef struct nimbus_object_spawner_association {
 	struct tyran_object* destination_component;
 	struct tyran_object* source_component;
-} nimbus_object_spawner_association; 
+} nimbus_object_spawner_association;
 
 typedef struct nimbus_object_spawner {
 	struct tyran_runtime* runtime;

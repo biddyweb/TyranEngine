@@ -12,7 +12,7 @@
 
 #include <tyranscript/tyran_symbol_table.h>
 #include "object_info.h"
-
+#include "object_decorator.h"
 #include "event_definition.h"
 #include "object_spawner.h"
 
@@ -196,7 +196,7 @@ static tyran_object* fetch_resource(nimbus_object_listener* self, nimbus_resourc
 	if (!o) {
 		nimbus_resource_load_send(&self->update.event_write_stream, layer_specific_resource_id);
 	}
-	
+
 	return o;
 }
 
@@ -205,21 +205,98 @@ static tyran_object* spawn(nimbus_object_listener* self, tyran_object* combine)
 	nimbus_object_spawner spawner;
 	nimbus_object_spawner_init(&spawner, self->runtime, combine);
 	tyran_object* spawned_combine = nimbus_object_spawner_spawn(&spawner);
-	
+
 	return spawned_combine;
 }
 
-
-static void trigger_spawn_in_layers(nimbus_object_listener* self, tyran_symbol type_name)
+static nimbus_layer_association* find_layer_association(nimbus_object_listener* self, tyran_object* source_object)
 {
+	for (int i=0; i<self->associations_count; ++i) {
+		nimbus_layer_association* association = &self->associations[i];
+		if (association->source_object == source_object) {
+			return association;
+		}
+	}
+	return 0;
+}
+
+
+static void nimbus_layer_association_init(nimbus_layer_association* self, nimbus_type_to_layers* type_to_layers, tyran_object* source_object)
+{
+	for (int i=0; i<32; ++i) {
+		self->layer_objects[i] = 0;
+	}
+
+	self->source_object = source_object;
+	self->type_to_layers = type_to_layers;
+}
+
+static nimbus_layer_association* get_layer_association(nimbus_object_listener* self, nimbus_type_to_layers* type_to_layers, tyran_object* source_object)
+{
+	nimbus_layer_association* association = find_layer_association(self, source_object);
+	if (!association) {
+		TYRAN_ASSERT(self->associations_count < self->associations_max_count, "too many associations");
+		association = &self->associations[self->associations_count++];
+		nimbus_layer_association_init(association, type_to_layers, source_object);
+	}
+
+	return association;
+}
+
+void nimbus_type_to_layers_init(nimbus_type_to_layers* self, tyran_symbol type_name)
+{
+	self->infos_count = 0;
+	self->infos_max_count = 32;
+	self->type_name = type_name;
+}
+
+void nimbus_type_to_layers_add(nimbus_type_to_layers* self, nimbus_resource_id layer_specific_resource_id)
+{
+	TYRAN_ASSERT(self->infos_count < self->infos_max_count, "Overwrite layers add");
+
+	nimbus_type_to_layers_info* info = &self->infos[self->infos_count++];
+	info->resource_id = layer_specific_resource_id;
+	info->combine = 0;
+}
+
+static void add_spawned_object(nimbus_object_listener* self, nimbus_type_to_layers* type, tyran_object* spawned_object)
+{
+	get_layer_association(self, type, spawned_object);
+}
+
+static nimbus_type_to_layers* add_type_to_layers(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name)
+{
+	nimbus_type_to_layers* type_to_layer = &self->type_to_layers[self->type_to_layers_count++];
+	nimbus_type_to_layers_init(type_to_layer, type_name);
 	for (int i=0; i<self->layers_count; ++i) {
 		nimbus_object_layer* layer = &self->layers[i];
 		nimbus_resource_id layer_specific_resource_id = resource_id_for_layer(layer->name, self->symbol_table, type_name);
-		tyran_object* combine = fetch_resource(self, layer_specific_resource_id);
-		if (combine) {
-			spawn(self, combine);
+		nimbus_type_to_layers_add(type_to_layer, layer_specific_resource_id);
+	}
+
+	return type_to_layer;
+}
+
+static nimbus_type_to_layers* find_type_to_layers(nimbus_object_listener* self, tyran_symbol type_name)
+{
+	for (int i=0; i<self->type_to_layers_count; ++i) {
+		nimbus_type_to_layers* type_to_layer = &self->type_to_layers[i];
+		if (tyran_symbol_equal(&type_to_layer->type_name, &type_name)) {
+			return type_to_layer;
 		}
 	}
+
+	return 0;
+}
+
+static nimbus_type_to_layers* get_type_to_layers(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name)
+{
+	nimbus_type_to_layers* type_to_layers = find_type_to_layers(self, type_name);
+	if (!type_to_layers) {
+		type_to_layers = add_type_to_layers(self, o, type_name);
+	}
+
+	return type_to_layers;
 }
 
 static nimbus_object_collection* object_collection_for_type(nimbus_object_listener* self, tyran_symbol type_name)
@@ -251,12 +328,14 @@ static void serialize_all(nimbus_object_listener* self)
 	}
 }
 
+
+
 static void handle_type_object(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name, const char* type_name_string)
 {
 	TYRAN_LOG("Found type: '%s'", type_name_string);
 	nimbus_decorate_object(o, self->memory);
-	trigger_spawn_in_layers(self, type_name);
-
+	nimbus_type_to_layers* type_to_layers = get_type_to_layers(self, o, type_name);
+	add_spawned_object(self, type_to_layers, o);
 	nimbus_object_collection* collection = object_collection_for_type(self, type_name);
 	if (collection) {
 		nimbus_object_collection_add(collection, o);
@@ -333,7 +412,9 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 
 	nimbus_object_to_event_init(&self->object_to_event, memory, runtime->symbol_table);
 
-
+	self->associations_max_count = 256;
+	self->associations = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_layer_association, self->associations_max_count);
+	self->associations_count = 0;
 	self->info_max_count = 64;
 	self->info_count = 0;
 	self->memory = memory;

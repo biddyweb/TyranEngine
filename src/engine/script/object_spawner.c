@@ -22,6 +22,32 @@ static void associate_components(nimbus_object_spawner* self, tyran_object* dest
 	association->source_component = source_component;
 }
 
+static void duplicate_component_objects(nimbus_object_spawner* self, tyran_object* destination_component, tyran_object* source_component)
+{
+	tyran_property_iterator it;
+	tyran_value* value;
+
+	tyran_symbol symbol;
+
+	tyran_property_iterator_init_shallow(&it, source_component);
+
+	while (tyran_property_iterator_next(&it, &symbol, &value)) {
+		if (tyran_value_is_object(value)) {
+			if (!tyran_value_is_function(value)) {
+				tyran_object* duplicate_component_object = tyran_object_new(self->runtime);
+				tyran_value duplicate_component_object_value;
+				tyran_value_set_object(duplicate_component_object_value, duplicate_component_object);
+				tyran_object_set_prototype(duplicate_component_object, tyran_value_object(value));
+				tyran_object_insert(destination_component, &symbol, &duplicate_component_object_value);
+				const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
+				TYRAN_LOG("Duplicate Component Object: '%s'", debug_key_string);
+			}
+		}
+	}
+
+	tyran_property_iterator_free(&it);
+}
+
 static void duplicate_component(nimbus_object_spawner* self, tyran_object* destination_combine, tyran_symbol symbol, tyran_object* source_component)
 {
 	tyran_object* destination_component = tyran_object_new(self->runtime);
@@ -29,6 +55,7 @@ static void duplicate_component(nimbus_object_spawner* self, tyran_object* desti
 	tyran_object_set_prototype(destination_component, source_component);
 
 	associate_components(self, destination_component, source_component);
+	duplicate_component_objects(self, destination_component, source_component);
 
 	tyran_value destination_component_value;
 	tyran_value_set_object(destination_component_value, destination_component);

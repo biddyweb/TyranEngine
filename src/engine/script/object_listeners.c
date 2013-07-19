@@ -40,21 +40,6 @@ static void info_add_function(nimbus_object_listener_info* self, tyran_value* fu
 }
 
 
-static void on_state_updated(nimbus_object_listener* self, tyran_object* o);
-
-static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* stream)
-{
-	nimbus_object_listener* self = _self;
-
-	nimbus_resource_updated updated;
-
-	nimbus_event_stream_read_type(stream, updated);
-	if (updated.resource_type_id == self->state_type_id) {
-		tyran_object* o;
-		nimbus_event_stream_read_octets(stream, (u8t*)&o, sizeof(tyran_object*));
-		on_state_updated(self, o);
-	}
-}
 
 static nimbus_object_listener_info* find_info_from_symbol(nimbus_object_listener* self, tyran_symbol symbol)
 {
@@ -200,14 +185,7 @@ static tyran_object* fetch_resource(nimbus_object_listener* self, nimbus_resourc
 	return o;
 }
 
-static tyran_object* spawn(nimbus_object_listener* self, tyran_object* combine)
-{
-	nimbus_object_spawner spawner;
-	nimbus_object_spawner_init(&spawner, self->runtime, combine);
-	tyran_object* spawned_combine = nimbus_object_spawner_spawn(&spawner);
 
-	return spawned_combine;
-}
 
 static nimbus_layer_association* find_layer_association(nimbus_object_listener* self, tyran_object* source_object)
 {
@@ -261,7 +239,8 @@ void nimbus_type_to_layers_add(nimbus_type_to_layers* self, nimbus_resource_id l
 
 static void add_spawned_object(nimbus_object_listener* self, nimbus_type_to_layers* type, tyran_object* spawned_object)
 {
-	get_layer_association(self, type, spawned_object);
+	nimbus_layer_association* association = get_layer_association(self, type, spawned_object);
+
 }
 
 static nimbus_type_to_layers* add_type_to_layers(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name)
@@ -272,6 +251,7 @@ static nimbus_type_to_layers* add_type_to_layers(nimbus_object_listener* self, t
 		nimbus_object_layer* layer = &self->layers[i];
 		nimbus_resource_id layer_specific_resource_id = resource_id_for_layer(layer->name, self->symbol_table, type_name);
 		nimbus_type_to_layers_add(type_to_layer, layer_specific_resource_id);
+		nimbus_resource_load_send(&self->update.event_write_stream, layer_specific_resource_id);
 	}
 
 	return type_to_layer;
@@ -293,6 +273,7 @@ static nimbus_type_to_layers* get_type_to_layers(nimbus_object_listener* self, t
 {
 	nimbus_type_to_layers* type_to_layers = find_type_to_layers(self, type_name);
 	if (!type_to_layers) {
+		TYRAN_LOG("This was an unknown layer type. Start loading it up!");
 		type_to_layers = add_type_to_layers(self, o, type_name);
 	}
 
@@ -333,7 +314,8 @@ static void serialize_all(nimbus_object_listener* self)
 static void handle_type_object(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name, const char* type_name_string)
 {
 	TYRAN_LOG("Found type: '%s'", type_name_string);
-	nimbus_decorate_object(o, self->memory);
+	nimbus_object_info* info = nimbus_decorate_object(o, self->memory);
+	info->track_index = 1;
 	nimbus_type_to_layers* type_to_layers = get_type_to_layers(self, o, type_name);
 	add_spawned_object(self, type_to_layers, o);
 	nimbus_object_collection* collection = object_collection_for_type(self, type_name);
@@ -382,11 +364,54 @@ static void scan_combine(nimbus_object_listener* self, tyran_object* combine)
 	tyran_property_iterator_free(&it);
 }
 
+static tyran_object* spawn(nimbus_object_listener* self, tyran_object* combine)
+{
+	nimbus_object_spawner spawner;
+	nimbus_object_spawner_init(&spawner, self->runtime, combine);
+	tyran_object* spawned_combine = nimbus_object_spawner_spawn(&spawner);
+	scan_combine(self, spawned_combine);
 
-static void on_state_updated(nimbus_object_listener* self, tyran_object* o)
+	return spawned_combine;
+}
+
+static void spawn_layer_objects_waiting_for_resource_id(nimbus_object_listener* self, nimbus_type_to_layers* layer, int index)
+{
+	for (int i=0; i<self->associations_count; ++i) {
+		nimbus_layer_association* association = &self->associations[i];
+		if (association->type_to_layers == layer) {
+			TYRAN_ASSERT(association->layer_objects[index] == 0, "Something bad happened when spawning");
+			association->layer_objects[index] = spawn(self, layer->infos[index].combine);
+		}
+	}
+}
+
+
+static void check_if_layer_resource(nimbus_object_listener* self, tyran_object* o, nimbus_resource_id resource_id)
+{
+	for (int i=0; i<self->type_to_layers_count; ++i) {
+		nimbus_type_to_layers* layer = &self->type_to_layers[i];
+		for (int j=0; j<layer->infos_count; ++j) {
+			nimbus_type_to_layers_info* info = &layer->infos[j];
+			if (info->resource_id == resource_id) {
+				TYRAN_LOG("Newly loaded resource layer:%d", resource_id);
+				info->combine = o;
+				spawn_layer_objects_waiting_for_resource_id(self, layer, j);
+			}
+		}
+	}
+}
+
+
+static void on_state_updated(nimbus_object_listener* self, tyran_object* o, nimbus_resource_id resource_id)
 {
 	scan_combine(self, o);
 }
+
+static void on_object_updated(nimbus_object_listener* self, tyran_object* o, nimbus_resource_id resource_id)
+{
+	check_if_layer_resource(self, o, resource_id);
+}
+
 
 static void _update(void* _self)
 {
@@ -394,6 +419,24 @@ static void _update(void* _self)
 
 	call_event(self, self->frame_symbol);
 	serialize_all(self);
+}
+
+static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* stream)
+{
+	nimbus_object_listener* self = _self;
+
+	nimbus_resource_updated updated;
+
+	nimbus_event_stream_read_type(stream, updated);
+	if (updated.resource_type_id == self->state_type_id) {
+		tyran_object* o;
+		nimbus_event_stream_read_octets(stream, (u8t*)&o, sizeof(tyran_object*));
+		on_state_updated(self, o, updated.resource_id);
+	} else if (updated.resource_type_id == self->object_type_id) {
+		tyran_object* o;
+		nimbus_event_stream_read_octets(stream, (u8t*)&o, sizeof(tyran_object*));
+		on_object_updated(self, o, updated.resource_id);
+	}
 }
 
 void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* memory, tyran_runtime* runtime, nimbus_event_definition* event_definitions, int event_definition_count)
@@ -406,13 +449,15 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 	nimbus_event_listener_init(&self->update.event_listener, self);
 	nimbus_event_listener_listen(&self->update.event_listener, NIMBUS_EVENT_RESOURCE_UPDATED, _on_resource_updated);
 	self->state_type_id = nimbus_resource_type_id_from_string("state");
+	self->object_type_id = nimbus_resource_type_id_from_string("object");
+
 	tyran_symbol_table_add(runtime->symbol_table, &self->type_symbol, "type");
 
 	tyran_symbol_table_add(self->symbol_table, &self->frame_symbol, "Frame");
 
 	nimbus_object_to_event_init(&self->object_to_event, memory, runtime->symbol_table);
 
-	self->associations_max_count = 256;
+	self->associations_max_count = 512;
 	self->associations = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_layer_association, self->associations_max_count);
 	self->associations_count = 0;
 	self->info_max_count = 64;

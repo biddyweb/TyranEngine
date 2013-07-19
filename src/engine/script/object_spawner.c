@@ -123,6 +123,10 @@ tyran_object* nimbus_object_spawner_spawn(nimbus_object_spawner* self)
 	tyran_object* destination_combine = tyran_object_new(self->runtime);
 	duplicate_components(self, destination_combine, self->object_to_spawn);
 	rewire_internal_references_on_combine(self, destination_combine, self->object_to_spawn);
+	tyran_value destination_combine_value;
+	tyran_value_set_object(destination_combine_value, destination_combine);
+
+	tyran_print_value("Spawned Object", &destination_combine_value, 1, self->symbol_table);
 
 	return destination_combine;
 }

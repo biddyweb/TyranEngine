@@ -25,7 +25,6 @@ static tyran_boolean have_visited_symbol(tyran_property_iterator* self, tyran_sy
 {
 	for (int i=0; i<self->visited_symbols_count; ++i) {
 		if (self->visited_symbols[i].hash == symbol.hash) {
-			TYRAN_LOG("Found match:%d == %d", self->visited_symbols[i].hash, symbol.hash);
 			return TYRAN_TRUE;
 		}
 	}

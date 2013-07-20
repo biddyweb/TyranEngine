@@ -5,7 +5,6 @@
 
 nimbus_object_info* nimbus_decorate_object(struct tyran_object* o, struct tyran_memory* memory)
 {
-	TYRAN_LOG("decorate");
 	nimbus_object_info* info = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_object_info);
 	info->instance_id = 0; // self->instance_id++;
 	info->track_index = -1;

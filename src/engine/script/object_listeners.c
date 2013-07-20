@@ -102,6 +102,17 @@ static void nimbus_object_layers_add_layer(nimbus_object_listener* self, const c
 	layer->name = tyran_strdup(memory, name);
 }
 
+static tyran_boolean is_event_type(nimbus_object_listener* self, tyran_symbol type_symbol)
+{
+	for (int i=0; i<self->object_collection_for_types_count; ++i) {
+		nimbus_object_collection_for_type* collection = &self->object_collection_for_types[i];
+		if (tyran_symbol_equal(&collection->event_definition->type_symbol, &type_symbol)) {
+			return TYRAN_TRUE;
+		}
+	}
+	return TYRAN_FALSE;
+}
+
 static void setup_collection_for_event_definition(nimbus_object_listener* self, struct tyran_memory* memory, nimbus_event_definition* event_definition)
 {
 	TYRAN_LOG("Defining collection for type '%s'", event_definition->name);
@@ -316,8 +327,10 @@ static void handle_type_object(nimbus_object_listener* self, tyran_object* o, ty
 	TYRAN_LOG("Found type: '%s'", type_name_string);
 	nimbus_object_info* info = nimbus_decorate_object(o, self->memory);
 	info->track_index = 1;
-	nimbus_type_to_layers* type_to_layers = get_type_to_layers(self, o, type_name);
-	add_spawned_object(self, type_to_layers, o);
+	if (!is_event_type(self, type_name)) {
+		nimbus_type_to_layers* type_to_layers = get_type_to_layers(self, o, type_name);
+		add_spawned_object(self, type_to_layers, o);
+	}
 	nimbus_object_collection* collection = object_collection_for_type(self, type_name);
 	if (collection) {
 		nimbus_object_collection_add(collection, o);

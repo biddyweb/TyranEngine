@@ -20,6 +20,7 @@ void nimbus_object_to_event_init(nimbus_object_to_event* self, struct tyran_memo
 	nimbus_property_reader_init(&self->property_reader, symbol_table);
 	self->temp_buf_max_size = 1024;
 	self->temp_buf = TYRAN_MEMORY_ALLOC(memory, self->temp_buf_max_size, "event creation buffer");
+	self->symbol_table = symbol_table;
 }
 
 void nimbus_object_to_event_free(nimbus_object_to_event* self)
@@ -46,6 +47,8 @@ void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_w
 	tyran_value value;
 	for (int i = 0; i < e->properties_count; ++i) {
 		nimbus_event_definition_property* p = &e->properties[i];
+		// const char* debug_name = tyran_symbol_table_lookup(self->symbol_table, &p->symbol);
+		// TYRAN_LOG("MEMBER:'%s'", debug_name);
 		switch (p->type) {
 			case NIMBUS_EVENT_DEFINITION_FLOAT: {
 				tyran_object_lookup_prototype(&value, o, &p->symbol);

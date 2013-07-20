@@ -1,4 +1,5 @@
 #include <tyran_engine/event/module_resource_updated.h>
+#include <tyran_engine/event/resource_updated.h>
 #include <tyran_engine/resource/type_id.h>
 
 void nimbus_event_module_resource_updated_send(struct nimbus_event_write_stream* stream, nimbus_resource_id id, module_resource_index index)

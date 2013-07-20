@@ -33,7 +33,7 @@ static void duplicate_component_objects(nimbus_object_spawner* self, tyran_objec
 
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		if (tyran_value_is_object(value)) {
-			if (!tyran_value_is_function(value)) {
+			if (!tyran_value_is_function(value) && !tyran_value_program_specific(value)) {
 				tyran_object* duplicate_component_object = tyran_object_new(self->runtime);
 				tyran_value duplicate_component_object_value;
 				tyran_value_set_object(duplicate_component_object_value, duplicate_component_object);

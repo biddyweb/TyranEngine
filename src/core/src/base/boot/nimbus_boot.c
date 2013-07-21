@@ -90,7 +90,7 @@ tyran_boolean nimbus_boot_should_render(nimbus_boot* self)
 int nimbus_boot_update(nimbus_boot* self)
 {
 	int err = nimbus_engine_update(self->engine, self->task_queue);
-	// nimbus_boot_manually_update_affinity_zero_tasks(self);
+	nimbus_boot_manually_update_affinity_zero_tasks(self);
 
 	return err;
 }

@@ -78,10 +78,12 @@
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
-	glClearColor(0.65f, 0.65f, 0.65f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (nimbus_boot_ready_for_next_frame(self->boot)) {
 		nimbus_boot_update(self->boot);
+	} else {
+		glClearColor(1.0f, 0.1f, 0.1f, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		NSLog(@"************* LOST FRAME *************");
 	}
 }
 

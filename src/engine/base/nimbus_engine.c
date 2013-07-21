@@ -109,13 +109,13 @@ static void boot_resource(nimbus_engine* self)
 	fire_load_resource(self, boot_id);
 }
 
-
 void nimbus_engine_add_update_object(nimbus_engine* self, nimbus_update* o)
 {
 	int index = self->update_objects_count++;
 	o->task.group = 1;
 	self->update_objects[index] = o;
 }
+
 
 void start_event_connection(nimbus_engine* self, tyran_memory* memory, const char* host, int port, struct nimbus_task_queue* task_queue)
 {
@@ -134,6 +134,10 @@ static void create_modules(nimbus_engine* self, tyran_memory* memory)
 		void* instance = nimbus_module_create(module, memory);
 		nimbus_update* instance_update = nimbus_module_get_update(module, instance);
 		nimbus_engine_add_update_object(self, instance_update);
+		if (module->affinity != -1) {
+			instance_update->task.group = 0;
+			instance_update->task.affinity = module->affinity;
+		}
 	}
 }
 

@@ -321,7 +321,6 @@ static void serialize_all(nimbus_object_listener* self)
 }
 
 
-
 static void handle_type_object(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name, const char* type_name_string)
 {
 	TYRAN_LOG("Found type: '%s'", type_name_string);

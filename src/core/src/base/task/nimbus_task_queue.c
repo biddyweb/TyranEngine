@@ -82,7 +82,6 @@ nimbus_task* nimbus_task_queue_fetch_next_task(nimbus_task_queue* self, int requ
 		task = self->tasks[self->task_read_index];
 
 		if (task->affinity != -1 && requested_affinity != task->affinity) {
-			TYRAN_LOG("Couldn't execute task");
 			task = 0;
 		} else {
 			self->tasks[self->task_read_index] = 0;

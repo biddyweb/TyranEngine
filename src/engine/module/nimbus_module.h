@@ -13,6 +13,7 @@ typedef struct nimbus_module {
 	nimbus_module_init_function init_func;
 	size_t update_offset;
 	size_t octet_size;
+	int affinity;
 } nimbus_module;
 
 void* nimbus_module_create(struct nimbus_module* self, struct tyran_memory* memory);

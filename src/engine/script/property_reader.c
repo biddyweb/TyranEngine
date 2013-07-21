@@ -37,11 +37,13 @@ void nimbus_property_reader_vector2(nimbus_property_reader* self, nimbus_vector2
 	FETCH_OBJECT_NUMBER(v->y, self->y_symbol);
 }
 
-void nimbus_property_reader_rect2(nimbus_property_reader* self, nimbus_rect2* v, tyran_object* o, tyran_symbol* s)
+void nimbus_property_reader_rect2(nimbus_property_reader* self, nimbus_rect* v, tyran_object* o, tyran_symbol* s)
 {
 	FETCH_OBJECT(s);
-	FETCH_OBJECT_NUMBER(v->width, self->width_symbol);
-	FETCH_OBJECT_NUMBER(v->height, self->height_symbol);
+	FETCH_OBJECT_NUMBER(v->vector.x, self->x_symbol);
+	FETCH_OBJECT_NUMBER(v->vector.y, self->y_symbol);
+	FETCH_OBJECT_NUMBER(v->size.width, self->width_symbol);
+	FETCH_OBJECT_NUMBER(v->size.height, self->height_symbol);
 }
 
 void nimbus_property_reader_size2(nimbus_property_reader* self, nimbus_size2* v, tyran_object* o, tyran_symbol* s)

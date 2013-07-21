@@ -99,8 +99,8 @@ void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_w
 			}
 			break;
 			case NIMBUS_EVENT_DEFINITION_RECT2: {
-				nimbus_property_reader_rect2(reader, (nimbus_rect2*)d, o, &p->symbol);
-				d += sizeof(nimbus_rect2);
+				nimbus_property_reader_rect2(reader, (nimbus_rect*)d, o, &p->symbol);
+				d += sizeof(nimbus_rect);
 			}
 			break;
 			case NIMBUS_EVENT_DEFINITION_ROTATION: {

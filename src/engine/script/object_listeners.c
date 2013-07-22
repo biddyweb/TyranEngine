@@ -336,7 +336,7 @@ static nimbus_track_info* track_info_from_type(nimbus_object_listener* self, tyr
 			return info;
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -346,7 +346,7 @@ static nimbus_track_info* get_or_create_track_info(nimbus_object_listener* self,
 	if (!track_info) {
 		track_info = add_track_info(self, type_name);
 	}
-	
+
 	return track_info;
 }
 
@@ -514,7 +514,7 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 	nimbus_object_layers_add_layer(self, "render", memory);
 
 	setup_collections_for_event_definitions(self, memory, event_definitions, event_definition_count);
-	
+
 	self->track_infos_max_count = 32;
 	self->track_infos = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_track_info, self->track_infos_max_count);
 	self->track_infos_count = 0;

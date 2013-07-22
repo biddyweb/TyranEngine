@@ -1,5 +1,5 @@
 #include <tyran_engine/type/quaternion.h>
-#include <tyran_engine/math/math.h>
+#include <tyran_engine/math/nimbus_math.h>
 
 void nimbus_quaternion_normalize(nimbus_quaternion* q)
 {

@@ -10,6 +10,8 @@
 
 struct tyran_memory;
 
+struct nimbus_track_info;
+
 typedef struct nimbus_object_listener_function {
 	tyran_value function_context;
 	const struct tyran_function* function;
@@ -84,6 +86,10 @@ typedef struct nimbus_object_listener {
 	nimbus_layer_association* associations;
 	int associations_count;
 	int associations_max_count;
+	
+	struct nimbus_track_info* track_infos;
+	int track_infos_max_count;
+	int track_infos_count;
 } nimbus_object_listener;
 
 

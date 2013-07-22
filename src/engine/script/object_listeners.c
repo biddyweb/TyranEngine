@@ -15,6 +15,7 @@
 #include "object_decorator.h"
 #include "event_definition.h"
 #include "object_spawner.h"
+#include "track_info.h"
 
 #include <tyran_engine/event/resource_load.h>
 
@@ -250,7 +251,7 @@ void nimbus_type_to_layers_add(nimbus_type_to_layers* self, nimbus_resource_id l
 
 static void add_spawned_object(nimbus_object_listener* self, nimbus_type_to_layers* type, tyran_object* spawned_object)
 {
-	nimbus_layer_association* association = get_layer_association(self, type, spawned_object);
+	get_layer_association(self, type, spawned_object);
 
 }
 
@@ -320,15 +321,45 @@ static void serialize_all(nimbus_object_listener* self)
 	}
 }
 
+static nimbus_track_info* add_track_info(nimbus_object_listener* self, tyran_symbol type_name)
+{
+	nimbus_track_info* info = &self->track_infos[self->track_infos_count++];
+	nimbus_track_info_init(info, self->memory, type_name);
+	return info;
+}
+
+static nimbus_track_info* track_info_from_type(nimbus_object_listener* self, tyran_symbol type_name)
+{
+	for (int i=0; i<self->track_infos_count; ++i) {
+		nimbus_track_info* info = &self->track_infos[i];
+		if (tyran_symbol_equal(&info->type_symbol, &type_name)) {
+			return info;
+		}
+	}
+	
+	return 0;
+}
+
+static nimbus_track_info* get_or_create_track_info(nimbus_object_listener* self, tyran_symbol type_name)
+{
+	nimbus_track_info* track_info = track_info_from_type(self, type_name);
+	if (!track_info) {
+		track_info = add_track_info(self, type_name);
+	}
+	
+	return track_info;
+}
 
 static void handle_type_object(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name, const char* type_name_string)
 {
 	TYRAN_LOG("Found type: '%s'", type_name_string);
 	nimbus_object_info* info = nimbus_decorate_object(o, self->memory);
-	info->track_index = 1;
 	if (!is_event_type(self, type_name)) {
 		nimbus_type_to_layers* type_to_layers = get_type_to_layers(self, o, type_name);
 		add_spawned_object(self, type_to_layers, o);
+	} else {
+		nimbus_track_info* track_info = get_or_create_track_info(self, type_name);
+		info->track_index = nimbus_track_info_get_free_index(track_info);
 	}
 	nimbus_object_collection* collection = object_collection_for_type(self, type_name);
 	if (collection) {
@@ -483,6 +514,10 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 	nimbus_object_layers_add_layer(self, "render", memory);
 
 	setup_collections_for_event_definitions(self, memory, event_definitions, event_definition_count);
+	
+	self->track_infos_max_count = 32;
+	self->track_infos = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_track_info, self->track_infos_max_count);
+	self->track_infos_count = 0;
 
 	/*
 		self->infos = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_object_listener_info, self->info_max_count);

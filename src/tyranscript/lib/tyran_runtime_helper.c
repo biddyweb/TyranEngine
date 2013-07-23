@@ -94,3 +94,12 @@ void tyran_runtime_push_call_ex(tyran_runtime* rt, const tyran_function* func, c
 	tyran_runtime_push_call(rt, func->data.opcodes, func->constants, _this);
 }
 
+void tyran_runtime_push_call_ex_arguments(tyran_runtime* rt, const tyran_function* func, const struct tyran_value* _this, struct tyran_value* arguments, int arguments_count)
+{
+	tyran_runtime_push_call_ex(rt, func, _this);
+	for (int i=0; i<arguments_count; ++i) {
+		tyran_value_copy(rt->registers[i+1], arguments[i]);
+	}
+}
+
+

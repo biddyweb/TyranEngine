@@ -66,7 +66,7 @@ void tyran_runtime_clear(tyran_runtime* rt);
 void tyran_runtime_execute(tyran_runtime* runtime, struct tyran_value* return_value, const struct tyran_runtime_callbacks* callbacks);
 void tyran_runtime_push_call(tyran_runtime* rt, const struct tyran_opcodes* opcodes, const struct tyran_constants* constants, const struct tyran_value* _this);
 void tyran_runtime_push_call_ex(tyran_runtime* rt, const struct tyran_function* func, const struct tyran_value* _this);
-
+void tyran_runtime_push_call_ex_arguments(tyran_runtime* rt, const struct tyran_function* func, const struct tyran_value* _this, struct tyran_value* arguments, int arguments_count);
 #define tyran_runtime_context(RUNTIME) (RUNTIME->global)
 
 #endif

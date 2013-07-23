@@ -211,7 +211,7 @@ static nimbus_layer_association* find_layer_association(nimbus_object_listener* 
 }
 
 
-static void nimbus_layer_association_init(nimbus_layer_association* self, nimbus_type_to_layers* type_to_layers, tyran_object* source_object)
+static void nimbus_layer_association_init(nimbus_layer_association* self, struct tyran_memory* memory, nimbus_type_to_layers* type_to_layers, tyran_object* source_object)
 {
 	for (int i=0; i<32; ++i) {
 		self->layer_objects[i] = 0;
@@ -219,6 +219,7 @@ static void nimbus_layer_association_init(nimbus_layer_association* self, nimbus
 
 	self->source_object = source_object;
 	self->type_to_layers = type_to_layers;
+	nimbus_object_collection_init(&self->update_objects, memory);
 }
 
 static nimbus_layer_association* get_layer_association(nimbus_object_listener* self, nimbus_type_to_layers* type_to_layers, tyran_object* source_object)
@@ -227,10 +228,45 @@ static nimbus_layer_association* get_layer_association(nimbus_object_listener* s
 	if (!association) {
 		TYRAN_ASSERT(self->associations_count < self->associations_max_count, "too many associations");
 		association = &self->associations[self->associations_count++];
-		nimbus_layer_association_init(association, type_to_layers, source_object);
+		nimbus_layer_association_init(association, self->memory, type_to_layers, source_object);
 	}
 
 	return association;
+}
+
+static void update_layer_association(nimbus_object_listener* self, nimbus_layer_association* association)
+{
+	tyran_value argument_value;
+	tyran_value_set_object(argument_value, association->source_object);
+
+	tyran_value return_value;
+
+	for (int i=0; i<association->update_objects.count; ++i) {
+		tyran_object* object = association->update_objects.entries[i];
+		if (!object) {
+			return;
+		}
+		tyran_runtime_clear(self->runtime);
+		tyran_value function_value;
+
+		tyran_object_lookup_prototype(&function_value, object, &self->on_update_symbol);
+		//if (!tyran_value_is_nil(&function_value)) {
+		const tyran_function* on_update_function = tyran_value_function(&function_value);
+		tyran_value this_value;
+		tyran_value_set_object(this_value, object);
+		tyran_runtime_push_call_ex_arguments(self->runtime, on_update_function, &this_value, &argument_value, 1);
+		tyran_runtime_execute(self->runtime, &return_value, 0);
+		//}
+	}
+}
+
+
+static void update_layer_associations(nimbus_object_listener* self)
+{
+	for (int i=0; i<self->associations_count; ++i) {
+		nimbus_layer_association* association = &self->associations[i];
+		update_layer_association(self, association);
+	}
 }
 
 void nimbus_type_to_layers_init(nimbus_type_to_layers* self, tyran_symbol type_name)
@@ -417,13 +453,41 @@ static tyran_object* spawn(nimbus_object_listener* self, tyran_object* combine)
 	return spawned_combine;
 }
 
+static void search_components_for_update_functions(nimbus_object_listener* self, nimbus_layer_association* association, tyran_object* combine)
+{
+	tyran_property_iterator it;
+
+	tyran_property_iterator_init_shallow(&it, combine);
+
+	tyran_symbol symbol;
+	tyran_value* value;
+
+	while (tyran_property_iterator_next(&it, &symbol, &value)) {
+		if (tyran_value_is_object(value) && !tyran_value_is_function(value)) {
+			const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
+			TYRAN_LOG("Component: '%s'", debug_key_string);
+			tyran_object* object = tyran_value_object(value);
+			tyran_value update_func_value;
+			tyran_object_lookup_prototype(&update_func_value, object, &self->on_update_symbol);
+			if (tyran_value_is_function(&update_func_value)) {
+				nimbus_object_collection_add(&association->update_objects, object);
+			}
+		}
+	}
+
+	tyran_property_iterator_free(&it);
+
+}
+
 static void spawn_layer_objects_waiting_for_resource_id(nimbus_object_listener* self, nimbus_type_to_layers* layer, int index)
 {
 	for (int i=0; i<self->associations_count; ++i) {
 		nimbus_layer_association* association = &self->associations[i];
 		if (association->type_to_layers == layer) {
 			TYRAN_ASSERT(association->layer_objects[index] == 0, "Something bad happened when spawning");
-			association->layer_objects[index] = spawn(self, layer->infos[index].combine);
+			tyran_object* spawned_combine = spawn(self, layer->infos[index].combine);
+			association->layer_objects[index] = spawned_combine;
+			search_components_for_update_functions(self, association, spawned_combine);
 		}
 	}
 }
@@ -461,6 +525,7 @@ static void _update(void* _self)
 	nimbus_object_listener* self = _self;
 
 	call_event(self, self->frame_symbol);
+	update_layer_associations(self);
 	serialize_all(self);
 }
 
@@ -497,6 +562,7 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 	tyran_symbol_table_add(runtime->symbol_table, &self->type_symbol, "type");
 
 	tyran_symbol_table_add(self->symbol_table, &self->frame_symbol, "Frame");
+	tyran_symbol_table_add(self->symbol_table, &self->on_update_symbol, "onUpdate");
 
 	nimbus_object_to_event_init(&self->object_to_event, memory, runtime->symbol_table);
 

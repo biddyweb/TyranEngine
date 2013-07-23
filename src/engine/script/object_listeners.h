@@ -56,6 +56,7 @@ typedef struct nimbus_layer_association {
 	nimbus_type_to_layers* type_to_layers;
 	struct tyran_object* layer_objects[32];
 	struct tyran_object* source_object;
+	nimbus_object_collection update_objects;
 } nimbus_layer_association;
 
 
@@ -68,6 +69,7 @@ typedef struct nimbus_object_listener {
 	nimbus_resource_type_id state_type_id;
 	nimbus_resource_id object_type_id;
 	tyran_symbol frame_symbol;
+	tyran_symbol on_update_symbol;
 	struct tyran_runtime* runtime;
 	tyran_symbol type_symbol;
 	struct tyran_memory* memory;

@@ -23,6 +23,7 @@ static void load_resource(nimbus_dependency_resolver* self, nimbus_resource_id r
 
 static void send_resource_update(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id, nimbus_resource_type_id type_id, tyran_object* object)
 {
+	TYRAN_LOG("Send Resource Update:%d object:%p", resource_id, object);
 	nimbus_resource_updated_send(out_event_stream, resource_id, type_id, &object, sizeof(tyran_object*));
 }
 
@@ -106,6 +107,7 @@ static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* s
 			tyran_string_to_c_str(value_string, 128, tyran_object_string(value->data.object));
 			if (value_string[0] == '@') {
 				nimbus_resource_id resource_id = nimbus_resource_id_from_string(&value_string[1]);
+				TYRAN_LOG("Resource '%s' = %d", value_string, resource_id);
 				tyran_object* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
 				if (resource != 0) {
 					tyran_value_replace_object(*value, resource);
@@ -126,6 +128,7 @@ static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* s
 				const char* key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
 				if (tyran_strcmp(key_string, "inherit") == 0) {
 					nimbus_resource_id resource_id = nimbus_resource_id_from_string(value_string);
+					TYRAN_LOG("Inherit Resource '%s' = %d", value_string, resource_id);
 					tyran_object* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
 					if (!resource) {
 						resources_that_are_loading++;
@@ -226,8 +229,10 @@ static void resource_resolved(nimbus_dependency_resolver* self, nimbus_resource_
 	nimbus_resource_id resource_id = info->resource_id;
 	tyran_object* target = info->target;
 	delete_dependency_info(self, info);
-	send_resource_update(self->event_write_stream, resource_id, self->object_type_id, target);
-	check_if_someone_wants(self, resource_id, target);
+	if (target) {
+		send_resource_update(self->event_write_stream, resource_id, self->object_type_id, target);
+		check_if_someone_wants(self, resource_id, target);
+	}
 }
 
 static tyran_boolean check_if_resolved(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info)

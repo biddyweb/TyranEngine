@@ -37,6 +37,7 @@ static void duplicate_component_objects(nimbus_object_spawner* self, tyran_objec
 				tyran_object* duplicate_component_object = tyran_object_new(self->runtime);
 				tyran_value duplicate_component_object_value;
 				tyran_value_set_object(duplicate_component_object_value, duplicate_component_object);
+				TYRAN_LOG("Duplicate %p prototype: %p", duplicate_component_object, tyran_value_object(value));
 				tyran_object_set_prototype(duplicate_component_object, tyran_value_object(value));
 				tyran_object_insert(destination_component, &symbol, &duplicate_component_object_value);
 				const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);

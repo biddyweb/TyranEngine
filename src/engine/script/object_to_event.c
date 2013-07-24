@@ -44,11 +44,13 @@ void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_w
 		NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN();
 	}
 
+	TYRAN_LOG("Convert object:%p prototype:%p", o, tyran_object_get_prototype(o));
+
 	tyran_value value;
 	for (int i = 0; i < e->properties_count; ++i) {
 		nimbus_event_definition_property* p = &e->properties[i];
-		// const char* debug_name = tyran_symbol_table_lookup(self->symbol_table, &p->symbol);
-		// TYRAN_LOG("MEMBER:'%s'", debug_name);
+		const char* debug_name = tyran_symbol_table_lookup(self->symbol_table, &p->symbol);
+		TYRAN_LOG("MEMBER:'%s'", debug_name);
 		switch (p->type) {
 			case NIMBUS_EVENT_DEFINITION_FLOAT: {
 				tyran_object_lookup_prototype(&value, o, &p->symbol);

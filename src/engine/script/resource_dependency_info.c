@@ -10,7 +10,9 @@ void nimbus_resource_dependency_info_init(nimbus_resource_dependency_info* self,
 
 void nimbus_resource_dependency_info_free(nimbus_resource_dependency_info* self)
 {
-
+	self->target = 0;
+	self->resource_id = 0;
+	self->resource_dependencies_count = 0;
 }
 
 static void add_dependency(nimbus_resource_dependency_info* self, tyran_value* target, nimbus_resource_id resource_id, tyran_boolean is_inherit)

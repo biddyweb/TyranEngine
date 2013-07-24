@@ -25,9 +25,15 @@ void nimbus_property_reader_float(nimbus_property_reader* self, float* v, tyran_
 void nimbus_property_reader_vector3(nimbus_property_reader* self, nimbus_vector3* v, tyran_object* o, tyran_symbol* s)
 {
 	FETCH_OBJECT(s);
+
+	TYRAN_LOG("Vector3 object:%p prototype:%p", value_object, tyran_object_get_prototype(value_object));
+
+
 	FETCH_OBJECT_NUMBER(v->x, self->x_symbol);
 	FETCH_OBJECT_NUMBER(v->y, self->y_symbol);
 	FETCH_OBJECT_NUMBER(v->z, self->z_symbol);
+
+	TYRAN_LOG("Read vector3: %f, %f, %f", v->x, v->y, v->z);
 }
 
 void nimbus_property_reader_vector2(nimbus_property_reader* self, nimbus_vector2* v, tyran_object* o, tyran_symbol* s)

@@ -7,10 +7,12 @@
 #include <tyranscript/tyran_symbol.h>
 #include <tyranscript/tyran_value.h>
 #include "object_to_event.h"
+#include "dependency_resolver.h"
 
 struct tyran_memory;
 
 struct nimbus_track_info;
+struct tyran_mocha_api;
 
 typedef struct nimbus_object_listener_function {
 	tyran_value function_context;
@@ -73,6 +75,7 @@ typedef struct nimbus_object_listener {
 	struct tyran_runtime* runtime;
 	tyran_symbol type_symbol;
 	struct tyran_memory* memory;
+	struct tyran_mocha_api* mocha;
 	nimbus_object_layer* layers;
 	int max_layers_count;
 	int layers_count;
@@ -92,9 +95,19 @@ typedef struct nimbus_object_listener {
 	struct nimbus_track_info* track_infos;
 	int track_infos_max_count;
 	int track_infos_count;
+
+	struct tyran_object* context;
+	u8t* script_buffer;
+	int script_buffer_size;
+	nimbus_dependency_resolver dependency_resolver;
+	nimbus_resource_type_id module_resource_type_id;
+	nimbus_resource_type_id wire_object_type_id;
+	nimbus_resource_type_id script_object_type_id;
+	nimbus_resource_id waiting_for_state_resource_id;
+
 } nimbus_object_listener;
 
 
-void nimbus_object_listener_init(nimbus_object_listener* self, struct tyran_memory* memory, struct tyran_runtime* runtime, struct nimbus_event_definition* event_definitions, int event_definition_count);
+void nimbus_object_listener_init(nimbus_object_listener* self, struct tyran_memory* memory, struct tyran_mocha_api* mocha, struct tyran_object* context, struct nimbus_event_definition* event_definitions, int event_definition_count);
 
 #endif

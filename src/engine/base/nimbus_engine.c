@@ -168,13 +168,10 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	nimbus_update_init(&self->update_object, memory, _dummy_update, 0, "engine");
 	nimbus_engine_add_update_object(self, &self->update_object);
 
-	nimbus_object_loader_init(&self->object_loader, memory, &self->mocha_api, global);
-	nimbus_engine_add_update_object(self, &self->object_loader.update);
-
 	nimbus_modules_init(&self->modules, memory, self->mocha_api.default_runtime->symbol_table);
 	nimbus_register_modules(&self->modules);
 
-	nimbus_object_listener_init(&self->object_listener, memory, self->mocha_api.default_runtime, self->modules.event_definitions, self->modules.event_definitions_count);
+	nimbus_object_listener_init(&self->object_listener, memory, &self->mocha_api, tyran_value_object(global), self->modules.event_definitions, self->modules.event_definitions_count);
 	nimbus_engine_add_update_object(self, &self->object_listener.update);
 
 

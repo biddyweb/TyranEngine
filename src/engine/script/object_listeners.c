@@ -1,5 +1,5 @@
 #include "object_listeners.h"
-
+#include <tyranscript/tyran_mocha_api.h>
 #include <tyranscript/tyran_object.h>
 #include <tyranscript/tyran_symbol_table.h>
 #include <tyranscript/tyran_runtime.h>
@@ -16,9 +16,84 @@
 #include "event_definition.h"
 #include "object_spawner.h"
 #include "track_info.h"
+#include "../event/resource_load_state.h"
 
 #include <tyran_engine/event/resource_load.h>
+#include <tyran_engine/event/resource_load.h>
+#include <tyran_engine/event/module_resource_updated.h>
 
+
+static tyran_object* evaluate(nimbus_object_listener* self, const char* data)
+{
+	tyran_value new_object = tyran_mocha_api_create_object(self->mocha);
+	tyran_object* object = tyran_value_object(&new_object);
+
+	tyran_object_set_prototype(object, self->context);
+	tyran_value temp_value;
+	tyran_value_set_nil(temp_value);
+	tyran_mocha_api_eval(self->mocha, &new_object, &temp_value, data);
+	return tyran_value_object(&new_object);
+}
+
+
+static tyran_object* get_or_create_resource_object(nimbus_object_listener* self, nimbus_resource_id resource_id, int track_index)
+{
+	tyran_value new_object = tyran_mocha_api_create_object(self->mocha);
+	tyran_object* object = tyran_value_object(&new_object);
+	nimbus_object_info* info = nimbus_decorate_object(object, self->memory);
+	info->is_module_resource = TYRAN_TRUE;
+	info->track_index = track_index;
+
+	return object;
+}
+
+static void add_object(nimbus_object_listener* self, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id, tyran_object* o)
+{
+	nimbus_dependency_resolver_object_loaded(&self->dependency_resolver, o, resource_id, resource_type_id);
+}
+
+
+
+static void on_script_source_updated(nimbus_object_listener* self, struct nimbus_event_read_stream* stream, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id, int payload_size)
+{
+	TYRAN_ASSERT(payload_size <= self->script_buffer_size, "Buffer too small for script. payload:%d max:%d", payload_size, self->script_buffer_size);
+
+	nimbus_event_stream_read_octets(stream, self->script_buffer, payload_size);
+	self->script_buffer[payload_size] = 0;
+
+	// TYRAN_LOG("*** EVALUATE *** %d octet_size:%d", resource_id, payload_size);
+	// TYRAN_LOG("SCRIPT:'%s'", self->script_buffer);
+	tyran_object* o = evaluate(self, (const char*)self->script_buffer);
+
+	add_object(self, resource_id, resource_type_id, o);
+}
+
+
+
+static void on_module_resource_updated(nimbus_object_listener* self, struct nimbus_event_read_stream* stream, nimbus_resource_id resource_id, int payload_size)
+{
+	int index;
+
+	nimbus_event_stream_read_octets(stream, (u8t*)&index, sizeof(index));
+	TYRAN_LOG("Module resource updated: resource_id:%d, index:%d", resource_id, index);
+
+	tyran_object* o = get_or_create_resource_object(self, resource_id, index);
+
+	add_object(self, resource_id, self->module_resource_type_id, o);
+}
+
+
+static void _on_resource_load_state(void* _self, struct nimbus_event_read_stream* stream)
+{
+	nimbus_object_listener* self = _self;
+
+	nimbus_resource_load_state load_state;
+	nimbus_event_stream_read_type(stream, load_state);
+
+	nimbus_resource_load_send(&self->update.event_write_stream, load_state.resource_id);
+
+	self->waiting_for_state_resource_id = load_state.resource_id;
+}
 
 void nimbus_object_collection_init(nimbus_object_collection* self, struct tyran_memory* memory)
 {
@@ -281,6 +356,7 @@ void nimbus_type_to_layers_add(nimbus_type_to_layers* self, nimbus_resource_id l
 	TYRAN_ASSERT(self->infos_count < self->infos_max_count, "Overwrite layers add");
 
 	nimbus_type_to_layers_info* info = &self->infos[self->infos_count++];
+	TYRAN_LOG("LAYER SPECIFIC RESOURCE:%d count:%d", layer_specific_resource_id, self->infos_count);
 	info->resource_id = layer_specific_resource_id;
 	info->combine = 0;
 }
@@ -445,6 +521,7 @@ static void scan_combine(nimbus_object_listener* self, tyran_object* combine)
 
 static tyran_object* spawn(nimbus_object_listener* self, tyran_object* combine)
 {
+	TYRAN_LOG("Spawning object: %p", combine);
 	nimbus_object_spawner spawner;
 	nimbus_object_spawner_init(&spawner, self->runtime, combine);
 	tyran_object* spawned_combine = nimbus_object_spawner_spawn(&spawner);
@@ -479,14 +556,15 @@ static void search_components_for_update_functions(nimbus_object_listener* self,
 
 }
 
-static void spawn_layer_objects_waiting_for_resource_id(nimbus_object_listener* self, nimbus_type_to_layers* layer, int index)
+static void spawn_layer_objects_waiting_for_resource_id(nimbus_object_listener* self, nimbus_type_to_layers* layer, tyran_object* combine, int layer_index)
 {
 	for (int i=0; i<self->associations_count; ++i) {
 		nimbus_layer_association* association = &self->associations[i];
 		if (association->type_to_layers == layer) {
-			TYRAN_ASSERT(association->layer_objects[index] == 0, "Something bad happened when spawning");
-			tyran_object* spawned_combine = spawn(self, layer->infos[index].combine);
-			association->layer_objects[index] = spawned_combine;
+			TYRAN_ASSERT(association->layer_objects[layer_index] == 0, "Something bad happened when spawning");
+			TYRAN_LOG("spawning for type '%s'", tyran_symbol_table_lookup(self->symbol_table, &layer->type_name));
+			tyran_object* spawned_combine = spawn(self, combine);
+			association->layer_objects[layer_index] = spawned_combine;
 			search_components_for_update_functions(self, association, spawned_combine);
 		}
 	}
@@ -495,29 +573,38 @@ static void spawn_layer_objects_waiting_for_resource_id(nimbus_object_listener* 
 
 static void check_if_layer_resource(nimbus_object_listener* self, tyran_object* o, nimbus_resource_id resource_id)
 {
+	TYRAN_LOG("Checking if layer resource:%p id:%d", o, resource_id);
 	for (int i=0; i<self->type_to_layers_count; ++i) {
 		nimbus_type_to_layers* layer = &self->type_to_layers[i];
 		for (int j=0; j<layer->infos_count; ++j) {
 			nimbus_type_to_layers_info* info = &layer->infos[j];
 			if (info->resource_id == resource_id) {
-				TYRAN_LOG("Newly loaded resource layer:%d", resource_id);
+				TYRAN_LOG("Newly loaded resource id:%d at layer:%d, index:%d", resource_id, i, j);
 				info->combine = o;
-				spawn_layer_objects_waiting_for_resource_id(self, layer, j);
+				spawn_layer_objects_waiting_for_resource_id(self, layer, info->combine, i);
 			}
 		}
 	}
 }
 
 
+static void on_object_updated(nimbus_object_listener* self, tyran_object* o, nimbus_resource_id resource_id)
+{
+	if (self->waiting_for_state_resource_id == resource_id) {
+		TYRAN_LOG("********* State %d is loaded!", resource_id);
+		nimbus_resource_updated_send(&self->update.event_write_stream, resource_id, self->state_type_id, &o, sizeof(o));
+	}
+	TYRAN_LOG("Object updated:%p resource_id:%d", o, resource_id);
+	check_if_layer_resource(self, o, resource_id);
+}
+
+
 static void on_state_updated(nimbus_object_listener* self, tyran_object* o, nimbus_resource_id resource_id)
 {
+	TYRAN_LOG("STATE loaded %d", resource_id);
 	scan_combine(self, o);
 }
 
-static void on_object_updated(nimbus_object_listener* self, tyran_object* o, nimbus_resource_id resource_id)
-{
-	check_if_layer_resource(self, o, resource_id);
-}
 
 
 static void _update(void* _self)
@@ -536,35 +623,47 @@ static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* s
 	nimbus_resource_updated updated;
 
 	nimbus_event_stream_read_type(stream, updated);
-	if (updated.resource_type_id == self->state_type_id) {
+	if (self->wire_object_type_id == updated.resource_type_id || self->script_object_type_id == updated.resource_type_id) {
+		on_script_source_updated(self, stream, updated.resource_id, updated.resource_type_id, updated.payload_size);
+	} else if (self->object_type_id == updated.resource_type_id) {
+		tyran_object* o;
+		nimbus_event_stream_read_octets(stream, (u8t*)&o, sizeof(o));
+		on_object_updated(self, o, updated.resource_id);
+	} else if (self->module_resource_type_id == updated.resource_type_id) {
+		on_module_resource_updated(self, stream, updated.resource_id, updated.payload_size);
+	} else if (updated.resource_type_id == self->state_type_id) {
 		tyran_object* o;
 		nimbus_event_stream_read_octets(stream, (u8t*)&o, sizeof(tyran_object*));
 		on_state_updated(self, o, updated.resource_id);
-	} else if (updated.resource_type_id == self->object_type_id) {
-		tyran_object* o;
-		nimbus_event_stream_read_octets(stream, (u8t*)&o, sizeof(tyran_object*));
-		on_object_updated(self, o, updated.resource_id);
 	}
 }
 
-void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* memory, tyran_runtime* runtime, nimbus_event_definition* event_definitions, int event_definition_count)
+
+void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* memory, struct tyran_mocha_api* mocha, struct tyran_object* context, nimbus_event_definition* event_definitions, int event_definition_count)
 {
 	self->object_collection_for_types_count = 0;
-	self->runtime = runtime;
-	self->symbol_table = runtime->symbol_table;
+	self->runtime = mocha->default_runtime;
+	self->mocha = mocha;
+	self->symbol_table = self->runtime->symbol_table;
 	const int max_event_octets = 16 * 1024;
 	nimbus_update_init_ex(&self->update, memory, _update, self, max_event_octets, "script object listener");
 	nimbus_event_listener_init(&self->update.event_listener, self);
 	nimbus_event_listener_listen(&self->update.event_listener, NIMBUS_EVENT_RESOURCE_UPDATED, _on_resource_updated);
-	self->state_type_id = nimbus_resource_type_id_from_string("state");
+	nimbus_event_listener_listen(&self->update.event_listener, NIMBUS_EVENT_RESOURCE_LOAD_STATE, _on_resource_load_state);
+
+	nimbus_dependency_resolver_init(&self->dependency_resolver, memory, self->symbol_table, &self->update.event_write_stream);
+
+	self->script_object_type_id = nimbus_resource_type_id_from_string("oes");
+	self->wire_object_type_id = nimbus_resource_type_id_from_string("oec");
 	self->object_type_id = nimbus_resource_type_id_from_string("object");
+	self->state_type_id = nimbus_resource_type_id_from_string("state");
+	self->module_resource_type_id = nimbus_resource_type_id_from_string("module_resource");
 
-	tyran_symbol_table_add(runtime->symbol_table, &self->type_symbol, "type");
-
+	tyran_symbol_table_add(self->symbol_table, &self->type_symbol, "type");
 	tyran_symbol_table_add(self->symbol_table, &self->frame_symbol, "Frame");
 	tyran_symbol_table_add(self->symbol_table, &self->on_update_symbol, "onUpdate");
 
-	nimbus_object_to_event_init(&self->object_to_event, memory, runtime->symbol_table);
+	nimbus_object_to_event_init(&self->object_to_event, memory, self->symbol_table);
 
 	self->associations_max_count = 512;
 	self->associations = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_layer_association, self->associations_max_count);
@@ -577,13 +676,20 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 	self->layers_count = 0;
 	self->layers = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_object_layer, self->max_layers_count);
 
+	self->track_infos_max_count = 32;
+	self->track_infos = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_track_info, self->track_infos_max_count);
+	self->track_infos_count = 0;
+
+	self->context = context;
+	self->script_buffer_size = 16 * 1024;
+	self->script_buffer = TYRAN_MEMORY_ALLOC(memory, self->script_buffer_size, "Script buffer");
+	self->waiting_for_state_resource_id = 0;
+
+
 	nimbus_object_layers_add_layer(self, "render", memory);
 
 	setup_collections_for_event_definitions(self, memory, event_definitions, event_definition_count);
 
-	self->track_infos_max_count = 32;
-	self->track_infos = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_track_info, self->track_infos_max_count);
-	self->track_infos_count = 0;
 
 	/*
 		self->infos = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_object_listener_info, self->info_max_count);

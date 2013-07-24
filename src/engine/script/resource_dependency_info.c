@@ -3,13 +3,17 @@
 
 void nimbus_resource_dependency_info_init(nimbus_resource_dependency_info* self, nimbus_resource_id resource_id, struct tyran_object* target)
 {
+	TYRAN_LOG("dependency info init:%p", self);
 	self->target = target;
+	TYRAN_ASSERT(self->target != 0, "Bad target");
 	self->resource_id = resource_id;
 	self->resource_dependencies_count = 0;
 }
 
 void nimbus_resource_dependency_info_free(nimbus_resource_dependency_info* self)
 {
+	TYRAN_LOG("dependency info free:%p", self);
+	TYRAN_ASSERT(self->target != 0, "Bad target");
 	self->target = 0;
 	self->resource_id = 0;
 	self->resource_dependencies_count = 0;

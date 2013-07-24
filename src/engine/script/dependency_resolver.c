@@ -185,6 +185,7 @@ static void check_if_someone_wants(nimbus_dependency_resolver* self, nimbus_reso
 {
 	for (int i=0; i<self->dependency_info_count; ) {
 		nimbus_resource_dependency_info* dependency_info = &self->dependency_infos[i];
+		TYRAN_ASSERT(dependency_info->target != 0, "Target gone bad");
 
 		for (int j=0; j<dependency_info->resource_dependencies_count; ) {
 			nimbus_resource_dependency* dependency = &dependency_info->resource_dependencies[j];
@@ -201,7 +202,7 @@ static void check_if_someone_wants(nimbus_dependency_resolver* self, nimbus_reso
 		}
 
 		if (check_if_resolved(self, dependency_info)) {
-			i = i;
+			i = 0;
 		} else {
 			++i;
 		}
@@ -214,7 +215,7 @@ static void delete_dependency_info(nimbus_dependency_resolver* self, nimbus_reso
 		if (&self->dependency_infos[i] == info) {
 			int index = i;
 			nimbus_resource_dependency_info_free(info);
-			tyran_memmove_type(nimbus_resource_dependency, &self->dependency_infos[index], &self->dependency_infos[index + 1], self->dependency_info_count - index - 1);
+			tyran_memmove_type(nimbus_resource_dependency_info, &self->dependency_infos[index], &self->dependency_infos[index + 1], self->dependency_info_count - index - 1);
 			self->dependency_info_count--;
 			return;
 		}
@@ -229,10 +230,9 @@ static void resource_resolved(nimbus_dependency_resolver* self, nimbus_resource_
 	nimbus_resource_id resource_id = info->resource_id;
 	tyran_object* target = info->target;
 	delete_dependency_info(self, info);
-	if (target) {
-		send_resource_update(self->event_write_stream, resource_id, self->object_type_id, target);
-		check_if_someone_wants(self, resource_id, target);
-	}
+	TYRAN_ASSERT(target != 0, "Target is bad");
+	send_resource_update(self->event_write_stream, resource_id, self->object_type_id, target);
+	check_if_someone_wants(self, resource_id, target);
 }
 
 static tyran_boolean check_if_resolved(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info)

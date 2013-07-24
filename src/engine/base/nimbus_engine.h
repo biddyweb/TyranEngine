@@ -8,7 +8,6 @@
 
 #include "../network/event_connection.h"
 #include <tyranscript/tyran_mocha_api.h>
-#include "../script/object_loader.h"
 #include "../script/object_listeners.h"
 #include <tyran_engine/module/modules.h>
 

@@ -37,11 +37,9 @@ static void duplicate_component_objects(nimbus_object_spawner* self, tyran_objec
 				tyran_object* duplicate_component_object = tyran_object_new(self->runtime);
 				tyran_value duplicate_component_object_value;
 				tyran_value_set_object(duplicate_component_object_value, duplicate_component_object);
-				TYRAN_LOG("Duplicate %p prototype: %p", duplicate_component_object, tyran_value_object(value));
 				tyran_object_set_prototype(duplicate_component_object, tyran_value_object(value));
 				tyran_object_insert(destination_component, &symbol, &duplicate_component_object_value);
 				const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
-				TYRAN_LOG("Duplicate Component Object: '%s'", debug_key_string);
 			}
 		}
 	}
@@ -76,8 +74,6 @@ static void duplicate_components(nimbus_object_spawner* self, tyran_object* dest
 		if (tyran_value_is_object(value)) {
 			if (!tyran_value_is_function(value)) {
 				duplicate_component(self, destination_combine, symbol, tyran_value_object(value));
-				const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
-				TYRAN_LOG("Component: '%s'", debug_key_string);
 			}
 		}
 	}
@@ -110,8 +106,6 @@ static void rewire_internal_references_on_component(nimbus_object_spawner* self,
 				tyran_object* reference = tyran_value_object(reference_value);
 				tyran_object* converted_reference = lookup_reference(self, reference);
 				if (converted_reference) {
-					const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
-					TYRAN_LOG("Found internal reference: '%s'", debug_key_string);
 					tyran_value converted_reference_value;
 					tyran_value_set_object(converted_reference_value, converted_reference);
 					tyran_object_insert(destination_component, &symbol, &converted_reference_value);
@@ -133,8 +127,6 @@ static void rewire_internal_references_on_combine(nimbus_object_spawner* self, t
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		if (tyran_value_is_object(value)) {
 			if (!tyran_value_is_function(value)) {
-				const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
-				TYRAN_LOG("Rewire Component: '%s'", debug_key_string);
 				tyran_object* source_component = tyran_value_object(value);
 				tyran_value destination_component_value;
 				tyran_object_lookup(&destination_component_value, destination_combine, &symbol);
@@ -153,8 +145,6 @@ tyran_object* nimbus_object_spawner_spawn(nimbus_object_spawner* self)
 	rewire_internal_references_on_combine(self, destination_combine, self->object_to_spawn);
 	tyran_value destination_combine_value;
 	tyran_value_set_object(destination_combine_value, destination_combine);
-
-	tyran_print_value("Spawned Object", &destination_combine_value, 1, self->symbol_table);
 
 	return destination_combine;
 }

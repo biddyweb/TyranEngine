@@ -78,6 +78,9 @@ void tyran_object_insert(struct tyran_object* object, const tyran_symbol* symbol
 {
 	int found = tyran_object_find_property(object, symbol);
 	if (found == -1) {
+		const int max_property_count = 64;
+
+		TYRAN_ASSERT(object->property_count < max_property_count, "Too many properties!");
 		found = object->property_count;
 		object->property_count++;
 		tyran_value_copy(object->properties[found].value, *value);

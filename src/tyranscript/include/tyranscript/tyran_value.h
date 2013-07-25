@@ -127,6 +127,7 @@ typedef struct tyran_value {
 #define tyran_value_is_symbol(pv) ((pv)->type == TYRAN_VALUE_TYPE_SYMBOL)
 #define tyran_value_is_function(pv) ((pv)->type == TYRAN_VALUE_TYPE_OBJECT && (pv)->data.object->type == TYRAN_OBJECT_TYPE_FUNCTION)
 #define tyran_value_is_object(pv) ((pv)->type == TYRAN_VALUE_TYPE_OBJECT)
+#define tyran_value_is_object_generic(pv) (tyran_value_is_object(pv) && (pv)->data.object->type == TYRAN_OBJECT_TYPE_OBJECT)
 #define tyran_value_is_variable(pv) ((pv)->type == TYRAN_VALUE_TYPE_VARIABLE)
 
 

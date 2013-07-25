@@ -44,7 +44,7 @@ typedef struct tyran_object {
 
 	int retain_count;
 
-	tyran_object_property properties[32];
+	tyran_object_property properties[64];
 	int property_count;
 
 	const struct tyran_runtime* created_in_runtime;

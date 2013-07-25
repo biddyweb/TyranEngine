@@ -15,6 +15,7 @@
 #include <tyranscript/tyran_object.h>
 #include <tyranscript/tyran_constants.h>
 #include <tyranscript/tyran_number_operator.h>
+#include <tyranscript/tyran_object_operator.h>
 
 #include <tyranscript/debug/tyran_print_runtime_state.h>
 
@@ -155,7 +156,12 @@ void tyran_runtime_execute(tyran_runtime* runtime, struct tyran_value* return_va
 
 				TYRAN_REGISTER_A_B_RCX_RCY;
 				if (tyran_value_is_object(&rcx)) {
-					TYRAN_RUNTIME_INVOKE_BINARY_OPERATOR(&r[a], rcx, &rcy, 1, comparison_index);
+					if (tyran_value_is_object_generic(&rcx)) {
+						test = tyran_object_operator_comparison(comparison_index, &rcx, &rcy);
+						tyran_value_replace_boolean(r[a], test);
+					} else {
+						TYRAN_RUNTIME_INVOKE_BINARY_OPERATOR(&r[a], rcx, &rcy, 1, comparison_index);
+					}
 				} else {
 					test = tyran_number_operator_comparison(comparison_index, rcx.data.number, rcy.data.number);
 					tyran_value_replace_boolean(r[a], test);

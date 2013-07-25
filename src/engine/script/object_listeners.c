@@ -17,10 +17,12 @@
 #include "object_spawner.h"
 #include "track_info.h"
 #include "../event/resource_load_state.h"
+#include <tyran_engine/script/event_to_object.h>
 
 #include <tyran_engine/event/resource_load.h>
 #include <tyran_engine/event/resource_load.h>
 #include <tyran_engine/event/module_resource_updated.h>
+#include <tyran_engine/script/event_to_object.h>
 
 
 static tyran_object* evaluate(nimbus_object_listener* self, const char* data)
@@ -94,6 +96,7 @@ static void _on_resource_load_state(void* _self, struct nimbus_event_read_stream
 	self->waiting_for_state_resource_id = load_state.resource_id;
 }
 
+
 void nimbus_object_collection_init(nimbus_object_collection* self, struct tyran_memory* memory)
 {
 	self->count = 0;
@@ -140,7 +143,7 @@ static nimbus_object_listener_info* info_from_symbol(nimbus_object_listener* sel
 }
 
 
-static void call_event(nimbus_object_listener* self, tyran_symbol symbol)
+static void call_event(nimbus_object_listener* self, tyran_symbol symbol, struct tyran_value* arguments, int arguments_count)
 {
 	nimbus_object_listener_info* info = find_info_from_symbol(self, symbol);
 	if (!info) {
@@ -164,7 +167,7 @@ static void call_event(nimbus_object_listener* self, tyran_symbol symbol)
 		tyran_print_opcodes(func_info->function->data.opcodes, 0, func_info->function->constants);
 #endif
 		tyran_runtime_clear(self->runtime);
-		tyran_runtime_push_call_ex(self->runtime, func_info->function, &func_info->function_context);
+		tyran_runtime_push_call_ex_arguments(self->runtime, func_info->function, &func_info->function_context, arguments, arguments_count);
 		tyran_runtime_execute(self->runtime, &return_value, 0);
 	}
 }
@@ -270,6 +273,25 @@ static tyran_object* fetch_resource(nimbus_object_listener* self, nimbus_resourc
 	return o;
 }
 
+static void _on_all(void* _self, struct nimbus_event_read_stream* stream)
+{
+	nimbus_object_listener* self = _self;
+	nimbus_event_type_id event_type_id = stream->event_type_id;
+	tyran_value arguments[8];
+
+	nimbus_event_to_arguments converter;
+
+	nimbus_event_to_arguments_init(&converter, self->symbol_table, self->runtime);
+
+	for (int i=0; i < self->event_definitions_count; ++i) {
+		nimbus_event_definition* definition = &self->event_definitions[i];
+		if (definition->is_module_to_script && definition->event_type_id == event_type_id) {
+			int argument_count = nimbus_event_to_arguments_convert(&converter, arguments, 8, stream, definition);
+			call_event(self, definition->type_symbol, arguments, argument_count);
+			return;
+		}
+	}
+}
 
 
 static nimbus_layer_association* find_layer_association(nimbus_object_listener* self, tyran_object* source_object)
@@ -597,7 +619,7 @@ static void _update(void* _self)
 {
 	nimbus_object_listener* self = _self;
 
-	call_event(self, self->frame_symbol);
+	call_event(self, self->frame_symbol, 0, 0);
 	update_layer_associations(self);
 	serialize_all(self);
 }
@@ -627,6 +649,9 @@ static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* s
 
 void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* memory, struct tyran_mocha_api* mocha, struct tyran_object* context, nimbus_event_definition* event_definitions, int event_definition_count)
 {
+	self->event_definitions = event_definitions;
+	self->event_definitions_count = event_definition_count;
+
 	self->object_collection_for_types_count = 0;
 	self->runtime = mocha->default_runtime;
 	self->mocha = mocha;
@@ -636,6 +661,7 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 	nimbus_event_listener_init(&self->update.event_listener, self);
 	nimbus_event_listener_listen(&self->update.event_listener, NIMBUS_EVENT_RESOURCE_UPDATED, _on_resource_updated);
 	nimbus_event_listener_listen(&self->update.event_listener, NIMBUS_EVENT_RESOURCE_LOAD_STATE, _on_resource_load_state);
+	nimbus_event_listener_listen_to_all(&self->update.event_listener, _on_all);
 
 	nimbus_dependency_resolver_init(&self->dependency_resolver, memory, self->symbol_table, &self->update.event_write_stream);
 
@@ -675,6 +701,7 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 	nimbus_object_layers_add_layer(self, "render", memory);
 
 	setup_collections_for_event_definitions(self, memory, event_definitions, event_definition_count);
+
 
 
 	/*

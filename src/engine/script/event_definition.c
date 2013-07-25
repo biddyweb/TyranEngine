@@ -8,6 +8,7 @@ void nimbus_event_definition_init(nimbus_event_definition* self, struct tyran_sy
 	self->name = name;
 	self->event_type_id = event_type_id;
 	self->has_index = TYRAN_TRUE;
+	self->is_module_to_script = TYRAN_FALSE;
 	tyran_symbol_table_add(self->symbol_table, &self->type_symbol, name);
 }
 

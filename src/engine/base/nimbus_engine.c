@@ -4,6 +4,7 @@
 #include "../resource/resource_handler.h"
 
 #include <tyran_engine/event/resource_load.h>
+#include <tyran_engine/event/touch_changed.h>
 #include "../event/resource_load_state.h"
 
 #include <tyran_core/event/event_stream.h>
@@ -109,6 +110,15 @@ static void boot_resource(nimbus_engine* self)
 	fire_load_resource(self, boot_id);
 }
 
+void nimbus_engine_send_event(nimbus_engine* self, u8t event_id, void* data, int octet_count)
+{
+	nimbus_event_write_stream* stream = &self->update_object.event_write_stream;
+	nimbus_event_stream_write_event_header(stream, event_id);
+	nimbus_event_stream_write_align(stream);
+	nimbus_event_stream_write_octets(stream, data, octet_count);
+	nimbus_event_stream_write_event_end(stream);
+}
+
 void nimbus_engine_add_update_object(nimbus_engine* self, nimbus_update* o)
 {
 	int index = self->update_objects_count++;
@@ -141,6 +151,16 @@ static void create_modules(nimbus_engine* self, tyran_memory* memory)
 	}
 }
 
+
+static void add_internal_modules(nimbus_modules* modules)
+{
+	nimbus_event_definition* touch = nimbus_modules_add_event(modules, "touch", NIMBUS_EVENT_TOUCH_CHANGED);
+	nimbus_event_definition_add_property(touch, "position", NIMBUS_EVENT_DEFINITION_VECTOR2);
+	nimbus_event_definition_add_property(touch, "phase", NIMBUS_EVENT_DEFINITION_INTEGER);
+	touch->is_module_to_script = TYRAN_TRUE;
+	touch->has_index = TYRAN_FALSE;
+}
+
 nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue* task_queue)
 {
 	nimbus_engine* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_engine);
@@ -170,6 +190,7 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 
 	nimbus_modules_init(&self->modules, memory, self->mocha_api.default_runtime->symbol_table);
 	nimbus_register_modules(&self->modules);
+	add_internal_modules(&self->modules);
 
 	nimbus_object_listener_init(&self->object_listener, memory, &self->mocha_api, tyran_value_object(global), self->modules.event_definitions, self->modules.event_definitions_count);
 	nimbus_engine_add_update_object(self, &self->object_listener.update);

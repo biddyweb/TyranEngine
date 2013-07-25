@@ -33,5 +33,6 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 tyran_boolean nimbus_engine_should_render(nimbus_engine* engine);
 int nimbus_engine_update(nimbus_engine* engine, struct nimbus_task_queue* queue);
 void nimbus_engine_free(nimbus_engine* self);
+void nimbus_engine_send_event(nimbus_engine* self, u8t event_id, void* data, int octet_count);
 
 #endif

@@ -59,3 +59,8 @@ void nimbus_event_listener_listen(nimbus_event_listener* self, nimbus_event_type
 	self->functions[self->function_count].id = id;
 	self->function_count++;
 }
+
+void nimbus_event_listener_listen_to_all(nimbus_event_listener* self, nimbus_event_read reader)
+{
+	self->listen_to_all = reader;
+}

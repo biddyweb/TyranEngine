@@ -8,6 +8,7 @@
 #include <tyranscript/tyran_value.h>
 #include "object_to_event.h"
 #include "dependency_resolver.h"
+#include "modules.h"
 
 struct tyran_memory;
 
@@ -104,6 +105,8 @@ typedef struct nimbus_object_listener {
 	nimbus_resource_type_id wire_object_type_id;
 	nimbus_resource_type_id script_object_type_id;
 	nimbus_resource_id waiting_for_state_resource_id;
+	nimbus_event_definition* event_definitions;
+	int event_definitions_count;
 
 } nimbus_object_listener;
 

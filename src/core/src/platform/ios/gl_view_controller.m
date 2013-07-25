@@ -1,5 +1,5 @@
 #import "gl_view_controller.h"
-
+#include <tyran_engine/event/touch_changed.h>
 
 @interface ViewController () {
 }
@@ -69,6 +69,60 @@
 {
     [EAGLContext setCurrentContext:self.context];
 }
+
+-(void)sendTouchEvent:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	nimbus_touch_changed changed;
+	
+	for (UITouch* touch in touches) {
+		switch (touch.phase) {
+			case UITouchPhaseBegan:
+				changed.phase = nimbus_touch_phase_began;
+				break;
+			case UITouchPhaseMoved:
+				changed.phase = nimbus_touch_phase_moved;
+				break;
+			case UITouchPhaseStationary:
+				continue;
+				break;
+			case UITouchPhaseEnded:
+				changed.phase = nimbus_touch_phase_ended;
+				break;
+			case UITouchPhaseCancelled:
+				changed.phase = nimbus_touch_phase_cancelled;
+				break;
+		}
+		CGPoint touch_position = [touch locationInView:self.view];
+		changed.position.x = touch_position.x;
+		changed.position.y = touch_position.y;
+		nimbus_boot_send_event(self->boot, NIMBUS_EVENT_TOUCH_CHANGED, &changed, sizeof(changed));
+	}
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	NSLog(@"touches began");
+	[self sendTouchEvent: touches withEvent: event];
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	NSLog(@"touches moved");
+	[self sendTouchEvent: touches withEvent: event];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	NSLog(@"touches ended");
+	[self sendTouchEvent: touches withEvent: event];
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+{
+	NSLog(@"touches cancelled");
+	[self sendTouchEvent: touches withEvent: event];
+}
+
 
 #pragma mark - GLKView and GLKViewController delegate methods
 

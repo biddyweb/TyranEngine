@@ -9,5 +9,6 @@ typedef struct nimbus_quaternion {
 } nimbus_quaternion;
 
 void nimbus_quaternion_from_euler(nimbus_quaternion* q, float roll, float pitch, float yaw);
+void nimbus_quaternion_to_euler(nimbus_quaternion* q, float* roll, float* pitch, float* yaw);
 
 #endif

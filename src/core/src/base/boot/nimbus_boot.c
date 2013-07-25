@@ -87,6 +87,11 @@ tyran_boolean nimbus_boot_should_render(nimbus_boot* self)
 	return did_draw_something;
 }
 
+void nimbus_boot_send_event(nimbus_boot* self, u8t event_id, void* data, int octet_count)
+{
+	nimbus_engine_send_event(self->engine, event_id, data, octet_count);
+}
+
 int nimbus_boot_update(nimbus_boot* self)
 {
 	int err = nimbus_engine_update(self->engine, self->task_queue);

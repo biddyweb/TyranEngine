@@ -1,6 +1,21 @@
 #import "gl_view_controller.h"
 #include <tyran_engine/event/touch_changed.h>
 
+@implementation NimbusTouch
+
+@synthesize phase;
+@synthesize position;
+
+-(id) initWithPhase:(UITouchPhase)_phase andPosition:(CGPoint)_position {
+	self = [super init];
+	self->phase = _phase;
+	self->position = _position;
+	return self;
+}
+
+@end
+
+
 @interface ViewController () {
 }
 @property (strong, nonatomic) EAGLContext *context;
@@ -15,112 +30,122 @@
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
+	[super viewDidLoad];
+
+	self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+
+	if (!self.context) {
+		NSLog(@"Failed to create ES context");
+	}
     
-    self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+	GLKView *view = (GLKView *)self.view;
+	view.context = self.context;
+	view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
+	self->touchLock = [[NSLock alloc]init];
+	self->touchSet = [[NSMutableSet alloc] init];
 
-    if (!self.context) {
-        NSLog(@"Failed to create ES context");
-    }
-    
-    GLKView *view = (GLKView *)self.view;
-    view.context = self.context;
-    view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
+	self->boot = nimbus_boot_new();
 
-    self->boot = nimbus_boot_new();
-
-    [self setupGL];
+	[self setupGL];
 }
 
 - (void)dealloc
 {    
-    [self tearDownGL];
+	[self tearDownGL];
     
-    if ([EAGLContext currentContext] == self.context) {
-        [EAGLContext setCurrentContext:nil];
-    }
-    [super dealloc];
+	if ([EAGLContext currentContext] == self.context) {
+		[EAGLContext setCurrentContext:nil];
+	}
+
+	[super dealloc];
 }
 
 - (void)didReceiveMemoryWarning
 {
-    [super didReceiveMemoryWarning];
+	[super didReceiveMemoryWarning];
 
-    if ([self isViewLoaded] && ([[self view] window] == nil)) {
-        self.view = nil;
+	if ([self isViewLoaded] && ([[self view] window] == nil)) {
+	        self.view = nil;
         
-        [self tearDownGL];
+        	[self tearDownGL];
         
-        if ([EAGLContext currentContext] == self.context) {
-            [EAGLContext setCurrentContext:nil];
-        }
-        self.context = nil;
-    }
+	        if ([EAGLContext currentContext] == self.context) {
+			[EAGLContext setCurrentContext:nil];
+        	}
+	        self.context = nil;
+    	}
 
-    // Dispose of any resources that can be recreated.
+	// Dispose of any resources that can be recreated.
 }
 
 - (void)setupGL
 {
-    [EAGLContext setCurrentContext:self.context];
+	[EAGLContext setCurrentContext:self.context];
 }
 
 - (void)tearDownGL
 {
-    [EAGLContext setCurrentContext:self.context];
+	[EAGLContext setCurrentContext:self.context];
 }
 
--(void)sendTouchEvent:(NSSet *)touches withEvent:(UIEvent *)event
+-(void)storeTouchEvent:(NSSet *)touches
+{
+	for (UITouch* touch in touches) {
+		NimbusTouch* copy = [[NimbusTouch alloc] initWithPhase:touch.phase andPosition:[touch locationInView:self.view]];
+
+		[self->touchLock lock];
+		[self->touchSet addObject:copy];
+		[self->touchLock unlock];
+	}
+}
+
+-(void)sendAllTouchEvents:(NSSet *)touches
 {
 	nimbus_touch_changed changed;
-	
-	for (UITouch* touch in touches) {
+	nimbus_event_type_id type_id;
+
+	for (NimbusTouch* touch in touches) {
 		switch (touch.phase) {
 			case UITouchPhaseBegan:
-				changed.phase = nimbus_touch_phase_began;
+				type_id = NIMBUS_EVENT_TOUCH_BEGAN_ID;
 				break;
 			case UITouchPhaseMoved:
-				changed.phase = nimbus_touch_phase_moved;
+				type_id = NIMBUS_EVENT_TOUCH_MOVED_ID;
 				break;
 			case UITouchPhaseStationary:
-				continue;
+				type_id = NIMBUS_EVENT_TOUCH_STATIONARY_ID;
 				break;
 			case UITouchPhaseEnded:
-				changed.phase = nimbus_touch_phase_ended;
+				type_id = NIMBUS_EVENT_TOUCH_ENDED_ID;
 				break;
 			case UITouchPhaseCancelled:
-				changed.phase = nimbus_touch_phase_cancelled;
+				continue;
 				break;
 		}
-		CGPoint touch_position = [touch locationInView:self.view];
-		changed.position.x = touch_position.x;
-		changed.position.y = touch_position.y;
-		nimbus_boot_send_event(self->boot, NIMBUS_EVENT_TOUCH_CHANGED, &changed, sizeof(changed));
+		changed.position.x = touch.position.x;
+		changed.position.y = touch.position.y;
+		nimbus_boot_send_event(self->boot, type_id, &changed, sizeof(changed));
 	}
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	NSLog(@"touches began");
-	[self sendTouchEvent: touches withEvent: event];
+	[self storeTouchEvent: touches];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	NSLog(@"touches moved");
-	[self sendTouchEvent: touches withEvent: event];
+	[self storeTouchEvent: touches];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	NSLog(@"touches ended");
-	[self sendTouchEvent: touches withEvent: event];
+	[self storeTouchEvent: touches];
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
-	NSLog(@"touches cancelled");
-	[self sendTouchEvent: touches withEvent: event];
+	[self storeTouchEvent: touches];
 }
 
 
@@ -130,9 +155,17 @@
 {
 }
 
+-(void) sendAndClearTouches {
+	[self->touchLock lock];
+	[self sendAllTouchEvents:self->touchSet];
+	self->touchSet = [[NSMutableSet alloc] init];
+	[self->touchLock unlock];
+}
+
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
 	if (nimbus_boot_ready_for_next_frame(self->boot)) {
+		[self sendAndClearTouches];
 		nimbus_boot_update(self->boot);
 	} else {
 		glClearColor(1.0f, 0.1f, 0.1f, 0);

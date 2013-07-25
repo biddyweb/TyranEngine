@@ -3,9 +3,29 @@
 
 #include "../../base/boot/nimbus_boot.h"
 
+@interface NimbusTouch :
+NSObject {
+	CGPoint position;
+	UITouchPhase phase;
+
+
+}
+
+-(id) initWithPhase:
+(UITouchPhase)phase andPosition:
+(CGPoint)position;
+
+@property(nonatomic) CGPoint position;
+@property(nonatomic) UITouchPhase phase;
+
+@end
+
+
 @interface ViewController :
 GLKViewController {
 	nimbus_boot* boot;
+	NSLock* touchLock;
+	NSMutableSet* touchSet;
 }
 
 -(void)touchesBegan:

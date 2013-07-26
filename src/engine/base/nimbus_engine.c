@@ -72,6 +72,15 @@ TYRAN_RUNTIME_CALL_FUNC(script_random)
 	return 0;
 }
 
+TYRAN_RUNTIME_CALL_FUNC(script_spawn)
+{
+	nimbus_engine* _self = runtime->program_specific_context;
+
+	tyran_object* spawned_object = nimbus_object_listener_spawn(&_self->object_listener, tyran_value_object(arguments));
+	tyran_value_set_object(*return_value, spawned_object);
+	return 0;
+}
+
 void schedule_update_tasks(nimbus_engine* self, nimbus_task_queue* queue)
 {
 	for (int i=1; i<self->update_objects_count; ++i) {
@@ -193,6 +202,7 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	tyran_mocha_api_add_function(&self->mocha_api, global, "loadState", load_state);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "log", log_output);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "random", script_random);
+	tyran_mocha_api_add_function(&self->mocha_api, global, "spawn", script_spawn);
 
 	self->resource_handler = nimbus_resource_handler_new(memory);
 	nimbus_event_listener_init(&self->event_listener, self);

@@ -7,6 +7,8 @@
 #include <tyranscript/debug/parser/tyran_print_parser_tree.h>
 #include <tyranscript/debug/tyran_print_opcodes.h>
 
+// #define TYRAN_GENERATOR_DEBUG
+
 tyran_reg_or_constant_index tyran_generator_traverse(tyran_memory* memory, tyran_code_state* code, tyran_parser_node* tree, tyran_label_id true_label, tyran_label_id false_label, tyran_label_id loop_start, tyran_label_id loop_end, tyran_reg_index self_index, tyran_reg_index comparison_index, tyran_boolean invert_logic);
 
 

@@ -5,13 +5,17 @@
 #include <tyranscript/tyran_property_iterator.h>
 #include <tyranscript/tyran_symbol_table.h>
 
-void nimbus_object_spawner_init(nimbus_object_spawner* self, tyran_runtime* runtime, tyran_object* object_to_spawn)
+#include "event_definition.h"
+
+void nimbus_object_spawner_init(nimbus_object_spawner* self, tyran_runtime* runtime, nimbus_event_definition* defintions, int definitions_count, tyran_object* object_to_spawn)
 {
 	self->runtime = runtime;
 	self->object_to_spawn = object_to_spawn;
 	self->symbol_table = self->runtime->symbol_table;
 	self->associations_max_count = 64;
 	self->associations_count = 0;
+	self->definitions_count = definitions_count;
+	self->defintions = defintions;
 }
 
 static void associate_components(nimbus_object_spawner* self, tyran_object* destination_component, tyran_object* source_component)
@@ -20,6 +24,18 @@ static void associate_components(nimbus_object_spawner* self, tyran_object* dest
 	nimbus_object_spawner_association* association = &self->associations[self->associations_count++];
 	association->destination_component = destination_component;
 	association->source_component = source_component;
+}
+
+static nimbus_event_definition* find_event_definition(nimbus_object_spawner* self, tyran_symbol type_symbol)
+{
+	for (int i=0; i<self->definitions_count; ++i) {
+		nimbus_event_definition* definition = &self->defintions[i];
+		if (tyran_symbol_equal(&type_symbol, &definition->type_symbol)) {
+			return definition;
+		}
+	}
+
+	return 0;
 }
 
 static void duplicate_component_objects(nimbus_object_spawner* self, tyran_object* destination_component, tyran_object* source_component)
@@ -46,6 +62,20 @@ static void duplicate_component_objects(nimbus_object_spawner* self, tyran_objec
 	tyran_property_iterator_free(&it);
 }
 
+static tyran_boolean should_duplicate_component(nimbus_object_spawner* self, tyran_object* o)
+{
+	tyran_value component_type_symbol_value;
+	tyran_object_lookup(&component_type_symbol_value, o, &self->type_symbol);
+	if (tyran_value_is_symbol(&component_type_symbol_value)) {
+		nimbus_event_definition* definition = find_event_definition(self, tyran_value_symbol(&component_type_symbol_value));
+		if (definition) {
+			return definition->should_instantiate;
+		}
+	}
+
+	return TYRAN_TRUE;
+}
+
 static void duplicate_component(nimbus_object_spawner* self, tyran_object* destination_combine, tyran_symbol symbol, tyran_object* source_component)
 {
 	tyran_object* destination_component = tyran_object_new(self->runtime);
@@ -70,8 +100,8 @@ static void duplicate_components(nimbus_object_spawner* self, tyran_object* dest
 	tyran_property_iterator_init_shallow(&it, source_combine);
 
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
-		if (tyran_value_is_object(value)) {
-			if (!tyran_value_is_function(value)) {
+		if (tyran_value_is_object_generic(value)) {
+			if (should_duplicate_component(self, tyran_value_object(value))) {
 				duplicate_component(self, destination_combine, symbol, tyran_value_object(value));
 			}
 		}
@@ -129,8 +159,10 @@ static void rewire_internal_references_on_combine(nimbus_object_spawner* self, t
 				tyran_object* source_component = tyran_value_object(value);
 				tyran_value destination_component_value;
 				tyran_object_lookup(&destination_component_value, destination_combine, &symbol);
-				tyran_object* destination_component = tyran_value_object(&destination_component_value);
-				rewire_internal_references_on_component(self, destination_component, source_component);
+				if (tyran_value_is_object_generic(&destination_component_value)) {
+					tyran_object* destination_component = tyran_value_object(&destination_component_value);
+					rewire_internal_references_on_component(self, destination_component, source_component);
+				}
 			}
 		}
 	}
@@ -140,6 +172,7 @@ static void rewire_internal_references_on_combine(nimbus_object_spawner* self, t
 tyran_object* nimbus_object_spawner_spawn(nimbus_object_spawner* self)
 {
 	tyran_object* destination_combine = tyran_object_new(self->runtime);
+	tyran_object_set_prototype(destination_combine, self->object_to_spawn);
 	duplicate_components(self, destination_combine, self->object_to_spawn);
 	rewire_internal_references_on_combine(self, destination_combine, self->object_to_spawn);
 	tyran_value destination_combine_value;

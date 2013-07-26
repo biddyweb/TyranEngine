@@ -537,9 +537,15 @@ static void scan_combine(nimbus_object_listener* self, tyran_object* combine)
 static tyran_object* spawn(nimbus_object_listener* self, tyran_object* combine)
 {
 	nimbus_object_spawner spawner;
-	nimbus_object_spawner_init(&spawner, self->runtime, combine);
+	nimbus_object_spawner_init(&spawner, self->runtime, self->event_definitions, self->event_definitions_count, combine);
 	tyran_object* spawned_combine = nimbus_object_spawner_spawn(&spawner);
 	scan_combine(self, spawned_combine);
+
+#if 0
+	tyran_value o_value;
+	tyran_value_set_object(o_value, spawned_combine);
+	tyran_print_value("Spawned!", &o_value, 1, self->symbol_table);
+#endif
 
 	return spawned_combine;
 }
@@ -610,6 +616,9 @@ static void on_object_updated(nimbus_object_listener* self, tyran_object* o, nim
 static void on_state_updated(nimbus_object_listener* self, tyran_object* o, nimbus_resource_id resource_id)
 {
 	TYRAN_LOG("STATE loaded %d", resource_id);
+	tyran_value o_value;
+	tyran_value_set_object(o_value, o);
+	tyran_print_value("state", &o_value, 1, self->symbol_table);
 	scan_combine(self, o);
 }
 
@@ -646,6 +655,11 @@ static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* s
 	}
 }
 
+tyran_object* nimbus_object_listener_spawn(nimbus_object_listener* self, tyran_object* combine)
+{
+	return spawn(self, combine);
+}
+
 
 void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* memory, struct tyran_mocha_api* mocha, struct tyran_object* context, nimbus_event_definition* event_definitions, int event_definition_count)
 {
@@ -656,6 +670,7 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 	self->runtime = mocha->default_runtime;
 	self->mocha = mocha;
 	self->symbol_table = self->runtime->symbol_table;
+	tyran_symbol_table_add(self->symbol_table, &self->type_symbol, "type");
 	const int max_event_octets = 16 * 1024;
 	nimbus_update_init_ex(&self->update, memory, _update, self, max_event_octets, "script object listener");
 	nimbus_event_listener_init(&self->update.event_listener, self);

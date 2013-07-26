@@ -33,6 +33,7 @@ typedef struct nimbus_event_definition {
 	tyran_symbol type_symbol;
 	struct tyran_symbol_table* symbol_table;
 	tyran_boolean is_module_to_script;
+	tyran_boolean should_instantiate;
 } nimbus_event_definition;
 
 void nimbus_event_definition_init(nimbus_event_definition* self, struct tyran_symbol_table* symbol_table, const char* name, u8t event_type_id);

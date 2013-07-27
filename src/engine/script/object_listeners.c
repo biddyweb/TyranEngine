@@ -50,6 +50,17 @@ static void nimbus_layer_association_init(nimbus_layer_association* self, struct
 	nimbus_object_collection_init(&self->update_objects, memory);
 }
 
+static void nimbus_layer_association_delete(nimbus_layer_association* self)
+{
+	for (int i=0; i<32; ++i) {
+		tyran_object* layer_object = self->layer_objects[i];
+		if (layer_object) {
+			self->layer_objects[i] = 0;
+			tyran_object_release(layer_object);
+		}
+	}
+}
+
 static nimbus_resource_id resource_id_for_layer(const char* layer_name, tyran_symbol_table* symbol_table, tyran_symbol symbol)
 {
 	const char* type_name_string = tyran_symbol_table_lookup(symbol_table, &symbol);
@@ -273,6 +284,7 @@ static void call_event(nimbus_object_listener* self, tyran_symbol symbol, struct
 		tyran_runtime_clear(self->runtime);
 		tyran_runtime_push_call_ex_arguments(self->runtime, func_info->function, &func_info->function_context, arguments, arguments_count);
 		tyran_runtime_execute(self->runtime, &return_value, 0);
+		tyran_value_release(return_value);
 	}
 }
 
@@ -582,6 +594,7 @@ static void update_layer_association(nimbus_object_listener* self, nimbus_layer_
 		tyran_value_set_object(this_value, object);
 		tyran_runtime_push_call_ex_arguments(self->runtime, on_update_function, &this_value, &argument_value, 1);
 		tyran_runtime_execute(self->runtime, &return_value, 0);
+		tyran_value_release(return_value);
 		//}
 	}
 }
@@ -617,12 +630,38 @@ static void serialize_all(nimbus_object_listener* self)
 	}
 }
 
+void nimbus_object_listener_on_delete(nimbus_object_listener* self, tyran_object* object_to_be_deleted)
+{
+	nimbus_object_info* info = tyran_object_program_specific(object_to_be_deleted);
+
+	if (info->is_spawned_combine) {
+		tyran_property_iterator it;
+
+		tyran_property_iterator_init(&it, object_to_be_deleted);
+
+		tyran_symbol symbol;
+		tyran_value* value;
+
+		while (tyran_property_iterator_next(&it, &symbol, &value)) {
+			if (tyran_value_is_object(value)) {
+				nimbus_layer_association* association = find_layer_association(self, tyran_value_object(value));
+				if (association) {
+					nimbus_layer_association_delete(association);
+				}
+			}
+		}
+
+		tyran_property_iterator_free(&it);
+	}
+}
 
 static tyran_object* spawn(nimbus_object_listener* self, tyran_object* combine)
 {
 	nimbus_object_spawner spawner;
 	nimbus_object_spawner_init(&spawner, self->runtime, self->event_definitions, self->event_definitions_count, combine);
 	tyran_object* spawned_combine = nimbus_object_spawner_spawn(&spawner);
+	nimbus_object_info* info = nimbus_decorate_object(spawned_combine, self->memory);
+	info->is_spawned_combine = TYRAN_TRUE;
 	scan_combine(self, spawned_combine);
 
 #if 0
@@ -710,7 +749,8 @@ static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* s
 
 tyran_object* nimbus_object_listener_spawn(nimbus_object_listener* self, tyran_object* combine)
 {
-	return spawn(self, combine);
+	tyran_object* spawned_object = spawn(self, combine);
+	return spawned_object;
 }
 
 

@@ -77,7 +77,9 @@ TYRAN_RUNTIME_CALL_FUNC(script_spawn)
 	nimbus_engine* _self = runtime->program_specific_context;
 
 	tyran_object* spawned_object = nimbus_object_listener_spawn(&_self->object_listener, tyran_value_object(arguments));
-	tyran_value_set_object(*return_value, spawned_object);
+	tyran_value_replace_object(*return_value, spawned_object);
+	tyran_object_release(spawned_object);
+	TYRAN_ASSERT(tyran_object_program_specific(spawned_object) != 0, "Spawned must have program specific");
 	return 0;
 }
 
@@ -185,6 +187,13 @@ static void add_internal_modules(nimbus_modules* modules)
 
 }
 
+static void delete_callback(const tyran_runtime* runtime, struct tyran_object* object_to_be_deleted)
+{
+	nimbus_engine* _self = runtime->program_specific_context;
+	nimbus_object_listener_on_delete(&_self->object_listener, object_to_be_deleted);
+}
+
+
 nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue* task_queue)
 {
 	nimbus_engine* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_engine);
@@ -194,6 +203,8 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 
 	tyran_mocha_api_new(&self->mocha_api, 1024);
 	self->mocha_api.default_runtime->program_specific_context = self;
+	self->mocha_api.default_runtime->delete_callback = delete_callback;
+
 	nimbus_event_distributor_init(&self->event_distributor, memory);
 
 

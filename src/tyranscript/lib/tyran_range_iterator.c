@@ -21,3 +21,8 @@ int* tyran_range_iterator_next(tyran_range_iterator* iterator)
 
 	return &iterator->current;
 }
+
+void tyran_range_iterator_free(tyran_range_iterator* self)
+{
+	tyran_free(self);
+}

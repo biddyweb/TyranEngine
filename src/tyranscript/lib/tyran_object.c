@@ -8,6 +8,10 @@
 #include <tyranscript/tyran_red_black_tree.h>
 #include <tyranscript/tyran_number.h>
 #include <tyranscript/tyran_string.h>
+#include <tyranscript/tyran_range.h>
+#include <tyranscript/tyran_range_iterator.h>
+#include <tyranscript/tyran_array.h>
+#include <tyranscript/tyran_symbol_table.h>
 
 void tyran_object_retain(struct tyran_object* o)
 {
@@ -35,14 +39,23 @@ void tyran_object_free(struct tyran_object* object)
 {
 	const tyran_runtime* runtime = object->created_in_runtime;
 	// TYRAN_LOG("Object free:%p, runtime:%p", (void*)object, (void*)runtime);
-	if (runtime->delete_callback) {
+	if (object->program_specific && runtime->delete_callback) {
 		runtime->delete_callback(runtime, object);
 	}
 
 	switch (object->type) {
-		case TYRAN_OBJECT_TYPE_ARRAY_ITERATOR:
-			// tyran_object_iterator_free(object->data.iterator);
+
+		case TYRAN_OBJECT_TYPE_RANGE:
+			tyran_range_free(object->data.range);
 			break;
+		case TYRAN_OBJECT_TYPE_RANGE_ITERATOR:
+			tyran_range_iterator_free(object->data.range_iterator);
+			break;
+		case TYRAN_OBJECT_TYPE_ARRAY_ITERATOR:
+			//tyran_object_iterator_free(object->data.iterator);
+			break;
+		case TYRAN_OBJECT_TYPE_ARRAY:
+			tyran_array_free(object->data.array);
 		case TYRAN_OBJECT_TYPE_FUNCTION:
 			tyran_function_object_free(object->data.function);
 			break;
@@ -51,6 +64,17 @@ void tyran_object_free(struct tyran_object* object)
 			break;
 		default:
 			break;
+	}
+
+	tyran_object_release(object->prototype);
+	for (int i=0; i<object->property_count; ++i) {
+		if (tyran_value_is_object(&object->properties[i].value)) {
+#if 0
+			const char* debug_string = tyran_symbol_table_lookup(runtime->symbol_table, &object->properties[i].symbol);
+			TYRAN_LOG("Member:'%s' retain:%d", debug_string, object->properties[i].value.data.object->retain_count);
+#endif
+		}
+		tyran_value_release(object->properties[i].value);
 	}
 
 	tyran_memset_type(object, 0);

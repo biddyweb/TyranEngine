@@ -125,6 +125,8 @@ void tyran_runtime_execute(tyran_runtime* runtime, struct tyran_value* return_va
 					tyran_value_copy(temp[0], rcx);
 					tyran_value_copy(temp[1], rcy);
 					TYRAN_RUNTIME_INVOKE_BINARY_OPERATOR(0, r[a], temp, 2, operator_index);
+					tyran_value_release(temp[1]);
+					tyran_value_release(temp[2]);
 				}
 			}
 			break;

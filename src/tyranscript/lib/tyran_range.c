@@ -8,3 +8,8 @@ tyran_range* tyran_range_new(tyran_memory* memory, int start, int end)
 	range->end = end;
 	return range;
 }
+
+void tyran_range_free(tyran_range* self)
+{
+	tyran_free(self);
+}

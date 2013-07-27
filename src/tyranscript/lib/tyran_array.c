@@ -54,6 +54,12 @@ tyran_array* tyran_array_new(struct tyran_memory* memory)
 	return array;
 }
 
+void tyran_array_free(tyran_array* self)
+{
+	tyran_red_black_tree_destroy(self->tree);
+	self->tree = 0;
+}
+
 void tyran_array_copy(tyran_memory_pool* array_node_pool, tyran_array* target, tyran_red_black_tree* source, int offset)
 {
 	tyran_red_black_tree_iterator* iterator = tyran_red_black_tree_iterator_new(source);
@@ -88,6 +94,9 @@ tyran_array* tyran_array_add(struct tyran_memory* memory, tyran_memory_pool* arr
 void tyran_array_free_node(tyran_array_node* node)
 {
 	tyran_value_release(node->key.key_value);
+	if (tyran_value_is_object(&node->value)) {
+		//TYRAN_ASSERT(node->value.data.object->retain_count == 1, "wrong release count");
+	}
 	tyran_value_release(node->value);
 	TYRAN_MALLOC_FREE(node);
 }

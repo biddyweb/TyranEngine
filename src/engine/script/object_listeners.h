@@ -113,4 +113,7 @@ typedef struct nimbus_object_listener {
 
 void nimbus_object_listener_init(nimbus_object_listener* self, struct tyran_memory* memory, struct tyran_mocha_api* mocha, struct tyran_object* context, struct nimbus_event_definition* event_definitions, int event_definition_count);
 struct tyran_object* nimbus_object_listener_spawn(nimbus_object_listener* self, struct tyran_object* combine);
+
+void nimbus_object_listener_on_delete(nimbus_object_listener* self, struct tyran_object* object);
+
 #endif

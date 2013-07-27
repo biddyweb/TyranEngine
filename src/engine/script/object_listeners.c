@@ -25,6 +25,122 @@
 #include <tyran_engine/script/event_to_object.h>
 
 
+
+void nimbus_object_collection_init(nimbus_object_collection* self, struct tyran_memory* memory)
+{
+	self->count = 0;
+	self->max_count = 1024;
+	self->entries = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, tyran_object*, self->max_count);
+}
+
+void nimbus_object_collection_add(nimbus_object_collection* self, tyran_object* o)
+{
+	self->entries[self->count++] = o;
+}
+
+
+static void nimbus_layer_association_init(nimbus_layer_association* self, struct tyran_memory* memory, nimbus_type_to_layers* type_to_layers, tyran_object* source_object)
+{
+	for (int i=0; i<32; ++i) {
+		self->layer_objects[i] = 0;
+	}
+
+	self->source_object = source_object;
+	self->type_to_layers = type_to_layers;
+	nimbus_object_collection_init(&self->update_objects, memory);
+}
+
+static nimbus_resource_id resource_id_for_layer(const char* layer_name, tyran_symbol_table* symbol_table, tyran_symbol symbol)
+{
+	const char* type_name_string = tyran_symbol_table_lookup(symbol_table, &symbol);
+
+	const int temp_buf_size = 128;
+	char temp[temp_buf_size];
+	tyran_strncpy(temp, temp_buf_size, layer_name, tyran_strlen(layer_name));
+	tyran_strncat(temp, "/", temp_buf_size);
+	tyran_strncat(temp, type_name_string, temp_buf_size);
+
+	TYRAN_LOG("Layer-specific name:'%s'", temp);
+	nimbus_resource_id layer_specific_resource_id = nimbus_resource_id_from_string(temp);
+
+	return layer_specific_resource_id;
+}
+
+static tyran_object* find_resource(nimbus_object_listener* self, nimbus_resource_id layer_specific_resource_id)
+{
+	return 0;
+}
+
+static tyran_object* fetch_resource(nimbus_object_listener* self, nimbus_resource_id layer_specific_resource_id)
+{
+	tyran_object* o = find_resource(self, layer_specific_resource_id);
+	if (!o) {
+		nimbus_resource_load_send(&self->update.event_write_stream, layer_specific_resource_id);
+	}
+
+	return o;
+}
+
+void nimbus_type_to_layers_init(nimbus_type_to_layers* self, tyran_symbol type_name)
+{
+	self->infos_count = 0;
+	self->infos_max_count = 32;
+	self->type_name = type_name;
+}
+
+void nimbus_type_to_layers_add(nimbus_type_to_layers* self, nimbus_resource_id layer_specific_resource_id)
+{
+	TYRAN_ASSERT(self->infos_count < self->infos_max_count, "Overwrite layers add");
+
+	nimbus_type_to_layers_info* info = &self->infos[self->infos_count++];
+	info->resource_id = layer_specific_resource_id;
+	info->combine = 0;
+}
+
+
+
+
+static nimbus_type_to_layers* add_type_to_layers(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name)
+{
+	nimbus_type_to_layers* type_to_layer = &self->type_to_layers[self->type_to_layers_count++];
+	nimbus_type_to_layers_init(type_to_layer, type_name);
+	for (int i=0; i<self->layers_count; ++i) {
+		nimbus_object_layer* layer = &self->layers[i];
+		nimbus_resource_id layer_specific_resource_id = resource_id_for_layer(layer->name, self->symbol_table, type_name);
+		nimbus_type_to_layers_add(type_to_layer, layer_specific_resource_id);
+		nimbus_resource_load_send(&self->update.event_write_stream, layer_specific_resource_id);
+	}
+
+	return type_to_layer;
+}
+
+
+static nimbus_type_to_layers* find_type_to_layers(nimbus_object_listener* self, tyran_symbol type_name)
+{
+	for (int i=0; i<self->type_to_layers_count; ++i) {
+		nimbus_type_to_layers* type_to_layer = &self->type_to_layers[i];
+		if (tyran_symbol_equal(&type_to_layer->type_name, &type_name)) {
+			return type_to_layer;
+		}
+	}
+
+	return 0;
+}
+
+
+
+static nimbus_type_to_layers* get_type_to_layers(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name)
+{
+	nimbus_type_to_layers* type_to_layers = find_type_to_layers(self, type_name);
+	if (!type_to_layers) {
+		type_to_layers = add_type_to_layers(self, o, type_name);
+	}
+
+	return type_to_layers;
+}
+
+
+
 static tyran_object* evaluate(nimbus_object_listener* self, const char* data)
 {
 	tyran_value new_object = tyran_mocha_api_create_object(self->mocha);
@@ -96,18 +212,6 @@ static void _on_resource_load_state(void* _self, struct nimbus_event_read_stream
 	self->waiting_for_state_resource_id = load_state.resource_id;
 }
 
-
-void nimbus_object_collection_init(nimbus_object_collection* self, struct tyran_memory* memory)
-{
-	self->count = 0;
-	self->max_count = 1024;
-	self->entries = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, tyran_object*, self->max_count);
-}
-
-void nimbus_object_collection_add(nimbus_object_collection* self, tyran_object* o)
-{
-	self->entries[self->count++] = o;
-}
 
 
 static void info_add_function(nimbus_object_listener_info* self, tyran_value* function_context, const tyran_function* function)
@@ -242,36 +346,6 @@ static void scan_for_listening_functions_on_object(nimbus_object_listener* self,
 	tyran_property_iterator_free(&it);
 }
 
-static nimbus_resource_id resource_id_for_layer(const char* layer_name, tyran_symbol_table* symbol_table, tyran_symbol symbol)
-{
-	const char* type_name_string = tyran_symbol_table_lookup(symbol_table, &symbol);
-
-	const int temp_buf_size = 128;
-	char temp[temp_buf_size];
-	tyran_strncpy(temp, temp_buf_size, layer_name, tyran_strlen(layer_name));
-	tyran_strncat(temp, "/", temp_buf_size);
-	tyran_strncat(temp, type_name_string, temp_buf_size);
-
-	TYRAN_LOG("Layer-specific name:'%s'", temp);
-	nimbus_resource_id layer_specific_resource_id = nimbus_resource_id_from_string(temp);
-
-	return layer_specific_resource_id;
-}
-
-static tyran_object* find_resource(nimbus_object_listener* self, nimbus_resource_id layer_specific_resource_id)
-{
-	return 0;
-}
-
-static tyran_object* fetch_resource(nimbus_object_listener* self, nimbus_resource_id layer_specific_resource_id)
-{
-	tyran_object* o = find_resource(self, layer_specific_resource_id);
-	if (!o) {
-		nimbus_resource_load_send(&self->update.event_write_stream, layer_specific_resource_id);
-	}
-
-	return o;
-}
 
 static void _on_all(void* _self, struct nimbus_event_read_stream* stream)
 {
@@ -293,7 +367,24 @@ static void _on_all(void* _self, struct nimbus_event_read_stream* stream)
 	}
 }
 
+static nimbus_track_info* add_track_info(nimbus_object_listener* self, tyran_symbol type_name)
+{
+	nimbus_track_info* info = &self->track_infos[self->track_infos_count++];
+	nimbus_track_info_init(info, self->memory, type_name);
+	return info;
+}
 
+static nimbus_track_info* track_info_from_type(nimbus_object_listener* self, tyran_symbol type_name)
+{
+	for (int i=0; i<self->track_infos_count; ++i) {
+		nimbus_track_info* info = &self->track_infos[i];
+		if (tyran_symbol_equal(&info->type_symbol, &type_name)) {
+			return info;
+		}
+	}
+
+	return 0;
+}
 static nimbus_layer_association* find_layer_association(nimbus_object_listener* self, tyran_object* source_object)
 {
 	for (int i=0; i<self->associations_count; ++i) {
@@ -306,15 +397,67 @@ static nimbus_layer_association* find_layer_association(nimbus_object_listener* 
 }
 
 
-static void nimbus_layer_association_init(nimbus_layer_association* self, struct tyran_memory* memory, nimbus_type_to_layers* type_to_layers, tyran_object* source_object)
+
+static nimbus_track_info* get_or_create_track_info(nimbus_object_listener* self, tyran_symbol type_name)
 {
-	for (int i=0; i<32; ++i) {
-		self->layer_objects[i] = 0;
+	nimbus_track_info* track_info = track_info_from_type(self, type_name);
+	if (!track_info) {
+		track_info = add_track_info(self, type_name);
 	}
 
-	self->source_object = source_object;
-	self->type_to_layers = type_to_layers;
-	nimbus_object_collection_init(&self->update_objects, memory);
+	return track_info;
+}
+
+
+
+static tyran_object* spawn(nimbus_object_listener* self, tyran_object* combine);
+
+
+
+
+static void search_components_for_update_functions(nimbus_object_listener* self, nimbus_layer_association* association, tyran_object* combine)
+{
+	tyran_property_iterator it;
+
+	tyran_property_iterator_init_shallow(&it, combine);
+
+	tyran_symbol symbol;
+	tyran_value* value;
+
+	while (tyran_property_iterator_next(&it, &symbol, &value)) {
+		if (tyran_value_is_object(value) && !tyran_value_is_function(value)) {
+			tyran_object* object = tyran_value_object(value);
+			tyran_value update_func_value;
+			tyran_object_lookup_prototype(&update_func_value, object, &self->on_update_symbol);
+			if (tyran_value_is_function(&update_func_value)) {
+				nimbus_object_collection_add(&association->update_objects, object);
+			}
+		}
+	}
+
+	tyran_property_iterator_free(&it);
+
+}
+
+
+
+static void spawn_layer_object(nimbus_object_listener* self, nimbus_layer_association* association, int layer_index, tyran_object* combine)
+{
+	TYRAN_ASSERT(association->layer_objects[layer_index] == 0, "Something bad happened when spawning");
+	tyran_object* spawned_combine = spawn(self, combine);
+	association->layer_objects[layer_index] = spawned_combine;
+	search_components_for_update_functions(self, association, spawned_combine);
+}
+
+
+static void spawn_available_layer_objects(nimbus_object_listener* self, nimbus_layer_association* association, nimbus_type_to_layers* type_to_layers)
+{
+	for (int i=0; i<type_to_layers->infos_count; ++i) {
+		nimbus_type_to_layers_info* info = &type_to_layers->infos[i];
+		if (info->combine) {
+			spawn_layer_object(self, association, i, info->combine);
+		}
+	}
 }
 
 static nimbus_layer_association* get_layer_association(nimbus_object_listener* self, nimbus_type_to_layers* type_to_layers, tyran_object* source_object)
@@ -328,6 +471,94 @@ static nimbus_layer_association* get_layer_association(nimbus_object_listener* s
 
 	return association;
 }
+
+static void add_spawned_object(nimbus_object_listener* self, nimbus_type_to_layers* type, tyran_object* spawned_object)
+{
+	nimbus_layer_association* association = get_layer_association(self, type, spawned_object);
+	spawn_available_layer_objects(self, association, type);
+}
+
+
+static nimbus_object_collection* object_collection_for_type(nimbus_object_listener* self, tyran_symbol type_name)
+{
+	for (int i=0; i < self->object_collection_for_types_count; ++i) {
+		nimbus_object_collection_for_type* collection = &self->object_collection_for_types[i];
+		if (tyran_symbol_equal(&collection->event_definition->type_symbol, &type_name)) {
+			return &collection->collection;
+		}
+	}
+
+	return 0;
+}
+
+static void handle_type_object(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name, const char* type_name_string)
+{
+	if (tyran_object_program_specific(o)) {
+		return;
+	}
+
+
+	nimbus_object_info* info = nimbus_decorate_object(o, self->memory);
+	if (!is_event_type(self, type_name)) {
+		nimbus_type_to_layers* type_to_layers = get_type_to_layers(self, o, type_name);
+		TYRAN_ASSERT(type_to_layers != 0, "Couldn't get layer for type name: '%s'", type_name_string);
+		add_spawned_object(self, type_to_layers, o);
+	} else {
+		nimbus_track_info* track_info = get_or_create_track_info(self, type_name);
+		info->track_index = nimbus_track_info_get_free_index(track_info);
+	}
+	nimbus_object_collection* collection = object_collection_for_type(self, type_name);
+	if (collection) {
+		nimbus_object_collection_add(collection, o);
+	}
+}
+
+
+static void check_for_type_on_component(nimbus_object_listener* self, tyran_object* component)
+{
+	tyran_value found_value;
+	tyran_object_lookup_prototype(&found_value, component, &self->type_symbol);
+	if (tyran_value_is_symbol(&found_value)) {
+		tyran_symbol type_value = tyran_value_symbol(&found_value);
+		const char* type_value_string = tyran_symbol_table_lookup(self->symbol_table, &type_value);
+		handle_type_object(self, component, type_value, type_value_string);
+	}
+}
+
+
+static void scan_component(nimbus_object_listener* self, tyran_object* component, tyran_object* combine)
+{
+	scan_for_listening_functions_on_object(self, component, combine);
+	check_for_type_on_component(self, component);
+}
+
+static void scan_combine(nimbus_object_listener* self, tyran_object* combine)
+{
+	tyran_property_iterator it;
+
+	tyran_property_iterator_init(&it, combine);
+
+	tyran_symbol symbol;
+	tyran_value* value;
+
+	while (tyran_property_iterator_next(&it, &symbol, &value)) {
+		if (tyran_value_is_object_generic(value)) {
+			scan_component(self, tyran_value_object(value), combine);
+		}
+	}
+
+	tyran_property_iterator_free(&it);
+}
+
+static void on_state_updated(nimbus_object_listener* self, tyran_object* o, nimbus_resource_id resource_id)
+{
+	TYRAN_LOG("STATE loaded %d", resource_id);
+	tyran_value o_value;
+	tyran_value_set_object(o_value, o);
+	tyran_print_value("state", &o_value, 1, self->symbol_table);
+	scan_combine(self, o);
+}
+
 
 static void update_layer_association(nimbus_object_listener* self, nimbus_layer_association* association)
 {
@@ -364,75 +595,10 @@ static void update_layer_associations(nimbus_object_listener* self)
 	}
 }
 
-void nimbus_type_to_layers_init(nimbus_type_to_layers* self, tyran_symbol type_name)
-{
-	self->infos_count = 0;
-	self->infos_max_count = 32;
-	self->type_name = type_name;
-}
 
-void nimbus_type_to_layers_add(nimbus_type_to_layers* self, nimbus_resource_id layer_specific_resource_id)
-{
-	TYRAN_ASSERT(self->infos_count < self->infos_max_count, "Overwrite layers add");
 
-	nimbus_type_to_layers_info* info = &self->infos[self->infos_count++];
-	info->resource_id = layer_specific_resource_id;
-	info->combine = 0;
-}
 
-static void add_spawned_object(nimbus_object_listener* self, nimbus_type_to_layers* type, tyran_object* spawned_object)
-{
-	get_layer_association(self, type, spawned_object);
 
-}
-
-static nimbus_type_to_layers* add_type_to_layers(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name)
-{
-	nimbus_type_to_layers* type_to_layer = &self->type_to_layers[self->type_to_layers_count++];
-	nimbus_type_to_layers_init(type_to_layer, type_name);
-	for (int i=0; i<self->layers_count; ++i) {
-		nimbus_object_layer* layer = &self->layers[i];
-		nimbus_resource_id layer_specific_resource_id = resource_id_for_layer(layer->name, self->symbol_table, type_name);
-		nimbus_type_to_layers_add(type_to_layer, layer_specific_resource_id);
-		nimbus_resource_load_send(&self->update.event_write_stream, layer_specific_resource_id);
-	}
-
-	return type_to_layer;
-}
-
-static nimbus_type_to_layers* find_type_to_layers(nimbus_object_listener* self, tyran_symbol type_name)
-{
-	for (int i=0; i<self->type_to_layers_count; ++i) {
-		nimbus_type_to_layers* type_to_layer = &self->type_to_layers[i];
-		if (tyran_symbol_equal(&type_to_layer->type_name, &type_name)) {
-			return type_to_layer;
-		}
-	}
-
-	return 0;
-}
-
-static nimbus_type_to_layers* get_type_to_layers(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name)
-{
-	nimbus_type_to_layers* type_to_layers = find_type_to_layers(self, type_name);
-	if (!type_to_layers) {
-		type_to_layers = add_type_to_layers(self, o, type_name);
-	}
-
-	return type_to_layers;
-}
-
-static nimbus_object_collection* object_collection_for_type(nimbus_object_listener* self, tyran_symbol type_name)
-{
-	for (int i=0; i < self->object_collection_for_types_count; ++i) {
-		nimbus_object_collection_for_type* collection = &self->object_collection_for_types[i];
-		if (tyran_symbol_equal(&collection->event_definition->type_symbol, &type_name)) {
-			return &collection->collection;
-		}
-	}
-
-	return 0;
-}
 
 static void serialize_object_collection(nimbus_object_listener* self, nimbus_object_collection* collection, struct nimbus_event_definition* e)
 {
@@ -451,91 +617,6 @@ static void serialize_all(nimbus_object_listener* self)
 	}
 }
 
-static nimbus_track_info* add_track_info(nimbus_object_listener* self, tyran_symbol type_name)
-{
-	nimbus_track_info* info = &self->track_infos[self->track_infos_count++];
-	nimbus_track_info_init(info, self->memory, type_name);
-	return info;
-}
-
-static nimbus_track_info* track_info_from_type(nimbus_object_listener* self, tyran_symbol type_name)
-{
-	for (int i=0; i<self->track_infos_count; ++i) {
-		nimbus_track_info* info = &self->track_infos[i];
-		if (tyran_symbol_equal(&info->type_symbol, &type_name)) {
-			return info;
-		}
-	}
-
-	return 0;
-}
-
-static nimbus_track_info* get_or_create_track_info(nimbus_object_listener* self, tyran_symbol type_name)
-{
-	nimbus_track_info* track_info = track_info_from_type(self, type_name);
-	if (!track_info) {
-		track_info = add_track_info(self, type_name);
-	}
-
-	return track_info;
-}
-
-static void handle_type_object(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name, const char* type_name_string)
-{
-	if (tyran_object_program_specific(o)) {
-		return;
-	}
-	
-	
-	nimbus_object_info* info = nimbus_decorate_object(o, self->memory);
-	if (!is_event_type(self, type_name)) {
-		nimbus_type_to_layers* type_to_layers = get_type_to_layers(self, o, type_name);
-		add_spawned_object(self, type_to_layers, o);
-	} else {
-		nimbus_track_info* track_info = get_or_create_track_info(self, type_name);
-		info->track_index = nimbus_track_info_get_free_index(track_info);
-	}
-	nimbus_object_collection* collection = object_collection_for_type(self, type_name);
-	if (collection) {
-		nimbus_object_collection_add(collection, o);
-	}
-}
-
-static void check_for_type_on_component(nimbus_object_listener* self, tyran_object* component)
-{
-	tyran_value found_value;
-	tyran_object_lookup_prototype(&found_value, component, &self->type_symbol);
-	if (tyran_value_is_symbol(&found_value)) {
-		tyran_symbol type_value = tyran_value_symbol(&found_value);
-		const char* type_value_string = tyran_symbol_table_lookup(self->symbol_table, &type_value);
-		handle_type_object(self, component, type_value, type_value_string);
-	}
-}
-
-static void scan_component(nimbus_object_listener* self, tyran_object* component, tyran_object* combine)
-{
-	scan_for_listening_functions_on_object(self, component, combine);
-	check_for_type_on_component(self, component);
-}
-
-
-static void scan_combine(nimbus_object_listener* self, tyran_object* combine)
-{
-	tyran_property_iterator it;
-
-	tyran_property_iterator_init(&it, combine);
-
-	tyran_symbol symbol;
-	tyran_value* value;
-
-	while (tyran_property_iterator_next(&it, &symbol, &value)) {
-		if (tyran_value_is_object_generic(value)) {
-			scan_component(self, tyran_value_object(value), combine);
-		}
-	}
-
-	tyran_property_iterator_free(&it);
-}
 
 static tyran_object* spawn(nimbus_object_listener* self, tyran_object* combine)
 {
@@ -553,39 +634,16 @@ static tyran_object* spawn(nimbus_object_listener* self, tyran_object* combine)
 	return spawned_combine;
 }
 
-static void search_components_for_update_functions(nimbus_object_listener* self, nimbus_layer_association* association, tyran_object* combine)
-{
-	tyran_property_iterator it;
 
-	tyran_property_iterator_init_shallow(&it, combine);
 
-	tyran_symbol symbol;
-	tyran_value* value;
 
-	while (tyran_property_iterator_next(&it, &symbol, &value)) {
-		if (tyran_value_is_object(value) && !tyran_value_is_function(value)) {
-			tyran_object* object = tyran_value_object(value);
-			tyran_value update_func_value;
-			tyran_object_lookup_prototype(&update_func_value, object, &self->on_update_symbol);
-			if (tyran_value_is_function(&update_func_value)) {
-				nimbus_object_collection_add(&association->update_objects, object);
-			}
-		}
-	}
-
-	tyran_property_iterator_free(&it);
-
-}
 
 static void spawn_layer_objects_waiting_for_resource_id(nimbus_object_listener* self, nimbus_type_to_layers* layer, tyran_object* combine, int layer_index)
 {
 	for (int i=0; i<self->associations_count; ++i) {
 		nimbus_layer_association* association = &self->associations[i];
 		if (association->type_to_layers == layer) {
-			TYRAN_ASSERT(association->layer_objects[layer_index] == 0, "Something bad happened when spawning");
-			tyran_object* spawned_combine = spawn(self, combine);
-			association->layer_objects[layer_index] = spawned_combine;
-			search_components_for_update_functions(self, association, spawned_combine);
+			spawn_layer_object(self, association, layer_index, combine);
 		}
 	}
 }
@@ -616,14 +674,6 @@ static void on_object_updated(nimbus_object_listener* self, tyran_object* o, nim
 }
 
 
-static void on_state_updated(nimbus_object_listener* self, tyran_object* o, nimbus_resource_id resource_id)
-{
-	TYRAN_LOG("STATE loaded %d", resource_id);
-	tyran_value o_value;
-	tyran_value_set_object(o_value, o);
-	tyran_print_value("state", &o_value, 1, self->symbol_table);
-	scan_combine(self, o);
-}
 
 
 

@@ -49,6 +49,11 @@ void tyran_value_to_c_string(const tyran_symbol_table* symbol_table, const tyran
 			switch (v->data.object->type) {
 				case TYRAN_OBJECT_TYPE_OBJECT:
 					tyran_snprintf(buf, max_length, "object:%p (%d)", (void*) v->data.object, v->data.object->retain_count);
+					if (v->data.object->program_specific) {
+						char temp[64];
+						tyran_snprintf(temp, 64, " program_specific:%p", v->data.object->program_specific);
+						tyran_strncat(buf, temp, max_length);
+					}
 					break;
 				case TYRAN_OBJECT_TYPE_FUNCTION:
 					tyran_snprintf(buf, max_length, "function:%p (%d)", (void*) v->data.object, v->data.object->retain_count);

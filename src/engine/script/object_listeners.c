@@ -482,6 +482,11 @@ static nimbus_track_info* get_or_create_track_info(nimbus_object_listener* self,
 
 static void handle_type_object(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name, const char* type_name_string)
 {
+	if (tyran_object_program_specific(o)) {
+		return;
+	}
+	
+	
 	nimbus_object_info* info = nimbus_decorate_object(o, self->memory);
 	if (!is_event_type(self, type_name)) {
 		nimbus_type_to_layers* type_to_layers = get_type_to_layers(self, o, type_name);
@@ -518,16 +523,14 @@ static void scan_combine(nimbus_object_listener* self, tyran_object* combine)
 {
 	tyran_property_iterator it;
 
-	tyran_property_iterator_init_shallow(&it, combine);
+	tyran_property_iterator_init(&it, combine);
 
 	tyran_symbol symbol;
 	tyran_value* value;
 
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
-		if (tyran_value_is_object(value)) {
-			if (!tyran_value_is_function(value)) {
-				scan_component(self, tyran_value_object(value), combine);
-			}
+		if (tyran_value_is_object_generic(value)) {
+			scan_component(self, tyran_value_object(value), combine);
 		}
 	}
 

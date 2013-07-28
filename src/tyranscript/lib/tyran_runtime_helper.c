@@ -28,6 +28,11 @@ void tyran_runtime_setup_binary_operators(tyran_runtime* rt)
 
 void tyran_runtime_clear(tyran_runtime* rt)
 {
+	for (int j=0; j<rt->stack_pointer; ++j) {
+		tyran_runtime_stack* stack = &rt->stack[j];
+		tyran_value_release(stack->_this);
+	}
+
 	int i;
 	tyran_value_clear(rt->registers, rt->register_depth);
 	rt->stack_pointer = 0;

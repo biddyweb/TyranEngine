@@ -17,12 +17,18 @@ extern tyran_value g_tyran_nil;
 
 void tyran_object_retain(struct tyran_object* o)
 {
+	if (o->debug_flag) {
+		//TYRAN_LOG("RETAIN");
+	}
 	TYRAN_ASSERT(o->retain_count >= 0, "Retain count is bad:%d", o->retain_count);
 	o->retain_count++;
 }
 
 void tyran_object_release(struct tyran_object* o)
 {
+	if (o->debug_flag) {
+		// TYRAN_LOG("RELEASE");
+	}
 	TYRAN_ASSERT(o->retain_count > 0, "Retain count is bad:%d", o->retain_count);
 	o->retain_count--;
 	if (o->retain_count == 0) {

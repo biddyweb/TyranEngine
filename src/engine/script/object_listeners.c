@@ -172,6 +172,9 @@ static tyran_object* evaluate(nimbus_object_listener* self, const char* data)
 	tyran_value temp_value;
 	tyran_value_set_nil(temp_value);
 	tyran_mocha_api_eval(self->mocha, &new_object, &temp_value, data);
+	tyran_runtime_clear(self->runtime);
+
+
 	return tyran_value_mutable_object(&new_object);
 }
 
@@ -298,6 +301,7 @@ static void call_event(nimbus_object_listener* self, tyran_symbol symbol, struct
 		tyran_value context_value;
 		tyran_value_set_object(context_value, func_info->function_context);
 		tyran_runtime_push_call_ex_arguments(self->runtime, func_info->function, &context_value, arguments, arguments_count);
+		tyran_value_release(context_value);
 		tyran_runtime_execute(self->runtime, &return_value, 0);
 		tyran_value_release(return_value);
 	}
@@ -571,6 +575,8 @@ static void scan_component(nimbus_object_listener* self, tyran_object* component
 	check_for_type_on_component(self, component);
 }
 
+
+
 static void scan_combine(nimbus_object_listener* self, tyran_object* combine)
 {
 	tyran_property_iterator it;
@@ -579,6 +585,8 @@ static void scan_combine(nimbus_object_listener* self, tyran_object* combine)
 
 	tyran_symbol symbol;
 	const tyran_value* value;
+
+
 
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		if (tyran_value_is_object_generic(value)) {
@@ -622,6 +630,7 @@ static void update_layer_association(nimbus_object_listener* self, nimbus_layer_
 		tyran_runtime_push_call_ex_arguments(self->runtime, on_update_function, &this_value, &argument_value, 1);
 		tyran_runtime_execute(self->runtime, &return_value, 0);
 		tyran_value_release(return_value);
+		tyran_runtime_clear(self->runtime);
 		//}
 	}
 }
@@ -708,13 +717,14 @@ static tyran_object* spawn(nimbus_object_listener* self, const tyran_object* com
 	tyran_object* spawned_combine = nimbus_object_spawner_spawn(&spawner);
 	nimbus_object_info* info = nimbus_decorate_object(spawned_combine, self->memory);
 	info->is_spawned_combine = TYRAN_TRUE;
-	scan_combine(self, spawned_combine);
-
-#if 0
+#if 1
 	tyran_value o_value;
 	tyran_value_set_object(o_value, spawned_combine);
 	tyran_print_value("Spawned!", &o_value, 1, self->symbol_table);
+	tyran_value_release(o_value);
 #endif
+	scan_combine(self, spawned_combine);
+
 
 	return spawned_combine;
 }

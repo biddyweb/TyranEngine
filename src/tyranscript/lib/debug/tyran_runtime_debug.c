@@ -24,14 +24,14 @@ void check_referencing(tyran_symbol_table* symbol_table, const tyran_object* o)
 void tyran_runtime_debug_who_is_referencing(struct tyran_runtime* runtime, const struct tyran_object* o)
 {
 	tyran_memory_pool_iterator it;
-	
+
 	tyran_memory_pool_iterator_init(&it, runtime->object_pool);
-	
+
 	void* object;
 	while (tyran_memory_pool_iterator_next(&it, &object)) {
 		const tyran_object* o = (tyran_object*) object;
 		check_referencing(runtime->symbol_table, o);
 	}
-	
+
 	tyran_memory_pool_iterator_free(&it);
 }

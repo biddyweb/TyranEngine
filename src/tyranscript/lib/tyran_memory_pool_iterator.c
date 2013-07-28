@@ -18,9 +18,9 @@ tyran_boolean tyran_memory_pool_iterator_next(tyran_memory_pool_iterator* self, 
 	if (!entry->allocated) {
 		return tyran_memory_pool_iterator_next(self, object);
 	}
-	
+
 	*object = (void*) (raw + self->pool->struct_size);
-	
+
 	return TYRAN_TRUE;
 }
 

@@ -2,9 +2,9 @@
 #include <tyranscript/tyran_symbol_table.h>
 #include <tyranscript/tyran_object.h>
 
-#define FETCH_OBJECT(symbol) tyran_object* value_object; { tyran_value __value; tyran_object_lookup_prototype(&__value, o, symbol); value_object = tyran_value_object(&__value); }
+#define FETCH_OBJECT(symbol) const tyran_object* value_object; { const tyran_value* __value; tyran_object_lookup_prototype(&__value, o, symbol); value_object = tyran_value_object(__value); }
 
-#define FETCH_OBJECT_NUMBER(destination, source_symbol) { tyran_value __value; tyran_object_lookup_prototype(&__value, value_object, &source_symbol); destination = tyran_value_number(&__value); }
+#define FETCH_OBJECT_NUMBER(destination, source_symbol) { const tyran_value* __value; tyran_object_lookup_prototype(&__value, value_object, &source_symbol); destination = tyran_value_number(__value); }
 
 void nimbus_property_reader_init(nimbus_property_reader* self,  tyran_symbol_table* symbol_table)
 {
@@ -17,9 +17,9 @@ void nimbus_property_reader_init(nimbus_property_reader* self,  tyran_symbol_tab
 
 void nimbus_property_reader_float(nimbus_property_reader* self, float* v, tyran_object* o, tyran_symbol* s)
 {
-	tyran_value value;
+	const tyran_value* value;
 	tyran_object_lookup_prototype(&value, o, s);
-	*v = tyran_value_number(&value);
+	*v = tyran_value_number(value);
 }
 
 void nimbus_property_reader_vector3(nimbus_property_reader* self, nimbus_vector3* v, tyran_object* o, tyran_symbol* s)

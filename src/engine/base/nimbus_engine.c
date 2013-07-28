@@ -228,7 +228,7 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	nimbus_register_modules(&self->modules);
 	add_internal_modules(&self->modules);
 
-	nimbus_object_listener_init(&self->object_listener, memory, &self->mocha_api, tyran_value_object(global), self->modules.event_definitions, self->modules.event_definitions_count);
+	nimbus_object_listener_init(&self->object_listener, memory, &self->mocha_api, tyran_value_mutable_object(global), self->modules.event_definitions, self->modules.event_definitions_count);
 	nimbus_engine_add_update_object(self, &self->object_listener.update);
 
 

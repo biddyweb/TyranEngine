@@ -20,9 +20,9 @@ void nimbus_property_writer_init(nimbus_property_writer* self, struct tyran_runt
 
 void nimbus_property_writer_float(nimbus_property_writer* self, float* v, tyran_object* o, tyran_symbol* s)
 {
-	tyran_value value;
+	const tyran_value* value;
 	tyran_object_lookup_prototype(&value, o, s);
-	*v = tyran_value_number(&value);
+	*v = tyran_value_number(value);
 }
 
 void nimbus_property_writer_vector3(nimbus_property_writer* self, tyran_value* destination, nimbus_vector3* v)

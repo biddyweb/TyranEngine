@@ -90,10 +90,10 @@ static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* s
 {
 	tyran_property_iterator it;
 
-	tyran_object* o = tyran_value_object(v);
+	const tyran_object* o = tyran_value_object(v);
 	tyran_property_iterator_init(&it, o);
 
-	tyran_value* value;
+	const tyran_value* value;
 	tyran_symbol symbol;
 
 	char value_string[128];
@@ -108,20 +108,20 @@ static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* s
 				nimbus_resource_id resource_id = nimbus_resource_id_from_string(&value_string[1]);
 				tyran_object* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
 				if (resource != 0) {
-					tyran_value_replace_object(*value, resource);
+					tyran_value_replace_object(*(tyran_value*)value, resource);
 				} else {
 					resources_that_are_loading++;
-					add_resource_reference(self, info, value, resource_id);
+					add_resource_reference(self, info, (tyran_value*)value, resource_id);
 				}
 			} else if (value_string[0] == '#') {
 				tyran_symbol symbol;
 
 				tyran_symbol_table_add(self->symbol_table, &symbol, &value_string[1]);
 
-				tyran_value looked_up_value;
+				const tyran_value* looked_up_value;
 				tyran_object_lookup_prototype(&looked_up_value, combine, &symbol);
 
-				tyran_value_replace(*value, looked_up_value);
+				tyran_value_replace(*(tyran_value*)value, *looked_up_value);
 			} else {
 				const char* key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
 				if (tyran_strcmp(key_string, "inherit") == 0) {
@@ -146,13 +146,13 @@ static int request_inherits_and_references(nimbus_dependency_resolver* self, nim
 
 	// tyran_print_value("Checking out the inherits", o, 1);
 
-	tyran_value* value;
+	const tyran_value* value;
 	tyran_symbol symbol;
 
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		if (tyran_value_is_object(value)) {
 			if (!tyran_value_is_function(value)) {
-				check_inherits_and_reference_on_object(self, info, value, combine);
+				check_inherits_and_reference_on_object(self, info, (tyran_value*)value, combine);
 			}
 		}
 	}
@@ -188,7 +188,7 @@ static void check_if_someone_wants(nimbus_dependency_resolver* self, nimbus_reso
 			nimbus_resource_dependency* dependency = &dependency_info->resource_dependencies[j];
 			if (dependency->resource_id == resource_id) {
 				if (dependency->is_inherit) {
-					tyran_object_set_prototype(tyran_value_object(dependency->target), v);
+					tyran_object_set_prototype(tyran_value_mutable_object(dependency->target), v);
 				} else {
 					tyran_value_replace_object(*dependency->target, v);
 				}

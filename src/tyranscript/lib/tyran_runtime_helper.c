@@ -33,9 +33,13 @@ void tyran_runtime_clear(tyran_runtime* rt)
 	rt->stack_pointer = 0;
 }
 
+tyran_value g_tyran_nil;
+
 tyran_runtime* tyran_runtime_new(tyran_memory_pool* runtime_pool, tyran_memory* memory, tyran_memory_pool* string_pool, tyran_memory_pool* object_key_pool, tyran_memory_pool* object_iterator_pool, tyran_memory_pool* function_pool, tyran_memory_pool* function_object_pool, tyran_memory_pool* runtime_stack_pool, tyran_memory_pool* object_pool, tyran_memory_pool* registers_value_pool, tyran_memory_pool* value_pool, tyran_memory_pool* array_node_pool)
 {
 	tyran_runtime* rt = TYRAN_CALLOC_TYPE(runtime_pool, tyran_runtime);
+
+	tyran_value_set_nil(g_tyran_nil);
 
 	rt->stack_depth = 128;
 	rt->stack = TYRAN_MALLOC_NO_POOL_TYPE_COUNT(memory, tyran_runtime_stack, rt->stack_depth);

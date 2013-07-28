@@ -24,37 +24,44 @@ void tyran_value_free(tyran_value* value)
 	tyran_free(value);
 }
 
-tyran_number tyran_value_number(tyran_value* v)
+tyran_number tyran_value_number(const tyran_value* v)
 {
 	TYRAN_ASSERT(tyran_value_is_number(v), "Must be number");
 	return v->data.number;
 }
 
-tyran_boolean tyran_value_boolean(tyran_value* v)
+tyran_boolean tyran_value_boolean(const tyran_value* v)
 {
 	TYRAN_ASSERT(tyran_value_is_boolean(v), "Must be boolean");
 	return v->data.boolean;
 }
 
-tyran_symbol tyran_value_symbol(tyran_value* v)
+tyran_symbol tyran_value_symbol(const tyran_value* v)
 {
 	TYRAN_ASSERT(tyran_value_is_symbol(v), "Must be symbol");
 	return v->data.symbol;
 }
 
-tyran_object* tyran_value_object(tyran_value* v)
+const tyran_object* tyran_value_object(const tyran_value* v)
 {
 	TYRAN_ASSERT(tyran_value_is_object(v), "Must be object");
 	return v->data.object;
 }
 
-const tyran_string* tyran_value_string(tyran_value* v)
+tyran_object* tyran_value_mutable_object(tyran_value* v)
+{
+	TYRAN_ASSERT(tyran_value_is_object(v), "Must be object");
+	return v->data.object;
+}
+
+
+const tyran_string* tyran_value_string(const tyran_value* v)
 {
 	TYRAN_ASSERT(tyran_value_is_object(v), "Must be object");
 	return tyran_object_string(v->data.object);
 }
 
-const struct tyran_function* tyran_value_function(tyran_value* v) {
+const struct tyran_function* tyran_value_function(const tyran_value* v) {
 	TYRAN_ASSERT(tyran_value_is_object(v), "Must be object");
 	return tyran_object_function(v->data.object);
 }

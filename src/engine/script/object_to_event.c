@@ -44,21 +44,21 @@ void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_w
 		NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN();
 	}
 
-	tyran_value value;
+	const tyran_value* value;
 	for (int i = 0; i < e->properties_count; ++i) {
 		nimbus_event_definition_property* p = &e->properties[i];
-		const char* debug_string = tyran_symbol_table_lookup(self->symbol_table, &p->symbol);
+		// const char* debug_string = tyran_symbol_table_lookup(self->symbol_table, &p->symbol);
 		// TYRAN_LOG("convert: '%s'", debug_string);
 		switch (p->type) {
 			case NIMBUS_EVENT_DEFINITION_FLOAT: {
 				tyran_object_lookup_prototype(&value, o, &p->symbol);
-				*((float*)d) = tyran_value_number(&value);
+				*((float*)d) = tyran_value_number(value);
 				d += sizeof(float);
 			}
 			break;
 			case NIMBUS_EVENT_DEFINITION_INTEGER: {
 				tyran_object_lookup_prototype(&value, o, &p->symbol);
-				*((int*)d) = (int) tyran_value_number(&value);
+				*((int*)d) = (int) tyran_value_number(value);
 				d += sizeof(int);
 			}
 			break;
@@ -69,9 +69,9 @@ void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_w
 			case NIMBUS_EVENT_DEFINITION_OBJECT: {
 				int index = -1;
 				tyran_object_lookup_prototype(&value, o, &p->symbol);
-				if (!tyran_value_is_nil(&value)) {
-					tyran_object* value_object = tyran_value_object(&value);
-					nimbus_object_info* info = tyran_object_program_specific(value_object);
+				if (!tyran_value_is_nil(value)) {
+					const tyran_object* value_object = tyran_value_object(value);
+					const nimbus_object_info* info = tyran_object_program_specific(value_object);
 					index = info->track_index;
 				}
 				*(int*)d = index;

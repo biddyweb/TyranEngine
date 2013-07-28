@@ -142,7 +142,7 @@ void tyran_print_value_helper(int tabs, const char* property, const tyran_value*
 
 		if (tyran_object_get_prototype(o)) {
 			tyran_value prototype_value;
-			tyran_value_set_object(prototype_value, tyran_object_get_prototype(o));
+			tyran_value_set_object(prototype_value, (tyran_object*)tyran_object_get_prototype(o));
 			tyran_print_value_helper(tabs + 1, "__proto__", &prototype_value, quote, symbol_table);
 		}
 	}

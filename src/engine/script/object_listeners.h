@@ -14,15 +14,16 @@ struct tyran_memory;
 
 struct nimbus_track_info;
 struct tyran_mocha_api;
+struct tyran_object;
 
 typedef struct nimbus_object_listener_function {
-	tyran_value function_context;
+	struct tyran_object* function_context;
 	const struct tyran_function* function;
 } nimbus_object_listener_function;
 
 typedef struct nimbus_object_listener_info {
 	tyran_symbol symbol;
-	nimbus_object_listener_function functions[64];
+	nimbus_object_listener_function functions[256];
 	int function_count;
 	int max_function_count;
 } nimbus_object_listener_info;
@@ -112,7 +113,7 @@ typedef struct nimbus_object_listener {
 
 
 void nimbus_object_listener_init(nimbus_object_listener* self, struct tyran_memory* memory, struct tyran_mocha_api* mocha, struct tyran_object* context, struct nimbus_event_definition* event_definitions, int event_definition_count);
-struct tyran_object* nimbus_object_listener_spawn(nimbus_object_listener* self, struct tyran_object* combine);
+struct tyran_object* nimbus_object_listener_spawn(nimbus_object_listener* self, const struct tyran_object* combine);
 
 void nimbus_object_listener_on_delete(nimbus_object_listener* self, struct tyran_object* object);
 

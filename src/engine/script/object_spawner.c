@@ -7,7 +7,7 @@
 
 #include "event_definition.h"
 
-void nimbus_object_spawner_init(nimbus_object_spawner* self, tyran_runtime* runtime, nimbus_event_definition* defintions, int definitions_count, tyran_object* object_to_spawn)
+void nimbus_object_spawner_init(nimbus_object_spawner* self, tyran_runtime* runtime, nimbus_event_definition* defintions, int definitions_count, const tyran_object* object_to_spawn)
 {
 	self->runtime = runtime;
 	self->object_to_spawn = object_to_spawn;
@@ -19,7 +19,7 @@ void nimbus_object_spawner_init(nimbus_object_spawner* self, tyran_runtime* runt
 	tyran_symbol_table_add(runtime->symbol_table, &self->type_symbol, "type");
 }
 
-static void associate_components(nimbus_object_spawner* self, tyran_object* destination_component, tyran_object* source_component)
+static void associate_components(nimbus_object_spawner* self, tyran_object* destination_component, const tyran_object* source_component)
 {
 	TYRAN_ASSERT(self->associations_count < self->associations_max_count, "Too many associations");
 	nimbus_object_spawner_association* association = &self->associations[self->associations_count++];
@@ -39,12 +39,12 @@ static nimbus_event_definition* find_event_definition(nimbus_object_spawner* sel
 	return 0;
 }
 
-static tyran_boolean should_duplicate_component(nimbus_object_spawner* self, tyran_object* o)
+static tyran_boolean should_duplicate_component(nimbus_object_spawner* self, const tyran_object* o)
 {
-	tyran_value component_type_symbol_value;
+	const tyran_value* component_type_symbol_value;
 	tyran_object_lookup(&component_type_symbol_value, o, &self->type_symbol);
-	if (tyran_value_is_symbol(&component_type_symbol_value)) {
-		nimbus_event_definition* definition = find_event_definition(self, tyran_value_symbol(&component_type_symbol_value));
+	if (tyran_value_is_symbol(component_type_symbol_value)) {
+		nimbus_event_definition* definition = find_event_definition(self, tyran_value_symbol(component_type_symbol_value));
 		if (definition) {
 			return definition->should_instantiate;
 		}
@@ -54,10 +54,10 @@ static tyran_boolean should_duplicate_component(nimbus_object_spawner* self, tyr
 }
 
 
-static void duplicate_component_objects(nimbus_object_spawner* self, tyran_object* destination_component, tyran_object* source_component)
+static void duplicate_component_objects(nimbus_object_spawner* self, tyran_object* destination_component, const tyran_object* source_component)
 {
 	tyran_property_iterator it;
-	tyran_value* value;
+	const tyran_value* value;
 
 	tyran_symbol symbol;
 
@@ -77,7 +77,7 @@ static void duplicate_component_objects(nimbus_object_spawner* self, tyran_objec
 }
 
 
-static void duplicate_component(nimbus_object_spawner* self, tyran_object* destination_combine, tyran_symbol symbol, tyran_object* source_component)
+static void duplicate_component(nimbus_object_spawner* self, tyran_object* destination_combine, tyran_symbol symbol, const tyran_object* source_component)
 {
 	tyran_object* destination_component = tyran_object_new(self->runtime);
 
@@ -91,10 +91,10 @@ static void duplicate_component(nimbus_object_spawner* self, tyran_object* desti
 	tyran_object_insert(destination_combine, &symbol, &destination_component_value);
 }
 
-static void duplicate_components(nimbus_object_spawner* self, tyran_object* destination_combine, tyran_object* source_combine)
+static void duplicate_components(nimbus_object_spawner* self, tyran_object* destination_combine, const tyran_object* source_combine)
 {
 	tyran_property_iterator it;
-	tyran_value* value;
+	const tyran_value* value;
 
 	tyran_symbol symbol;
 
@@ -113,7 +113,7 @@ static void duplicate_components(nimbus_object_spawner* self, tyran_object* dest
 	tyran_property_iterator_free(&it);
 }
 
-static tyran_object* lookup_reference(nimbus_object_spawner* self, tyran_object* source_reference)
+static tyran_object* lookup_reference(nimbus_object_spawner* self, const tyran_object* source_reference)
 {
 	for (int i=0; i<self->associations_count; ++i) {
 		nimbus_object_spawner_association* association = &self->associations[i];
@@ -125,17 +125,17 @@ static tyran_object* lookup_reference(nimbus_object_spawner* self, tyran_object*
 	return 0;
 }
 
-static void rewire_internal_references_on_component(nimbus_object_spawner* self, tyran_object* destination_component, tyran_object* source_component)
+static void rewire_internal_references_on_component(nimbus_object_spawner* self, tyran_object* destination_component, const tyran_object* source_component)
 {
 	tyran_property_iterator it;
 	tyran_symbol symbol;
-	tyran_value* reference_value;
+	const tyran_value* reference_value;
 
 	tyran_property_iterator_init_shallow(&it, source_component);
 	while (tyran_property_iterator_next(&it, &symbol, &reference_value)) {
 		if (tyran_value_is_object(reference_value)) {
 			if (!tyran_value_is_function(reference_value)) {
-				tyran_object* reference = tyran_value_object(reference_value);
+				const tyran_object* reference = tyran_value_object(reference_value);
 				tyran_object* converted_reference = lookup_reference(self, reference);
 				if (converted_reference) {
 					tyran_value converted_reference_value;
@@ -148,22 +148,22 @@ static void rewire_internal_references_on_component(nimbus_object_spawner* self,
 	tyran_property_iterator_free(&it);
 }
 
-static void rewire_internal_references_on_combine(nimbus_object_spawner* self, tyran_object* destination_combine, tyran_object* source_combine)
+static void rewire_internal_references_on_combine(nimbus_object_spawner* self, tyran_object* destination_combine, const tyran_object* source_combine)
 {
 	tyran_property_iterator it;
 
 	tyran_property_iterator_init_shallow(&it, source_combine);
 
 	tyran_symbol symbol;
-	tyran_value* value;
+	const tyran_value* value;
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		if (tyran_value_is_object(value)) {
 			if (!tyran_value_is_function(value)) {
-				tyran_object* source_component = tyran_value_object(value);
-				tyran_value destination_component_value;
+				const tyran_object* source_component = tyran_value_object(value);
+				const tyran_value* destination_component_value;
 				tyran_object_lookup(&destination_component_value, destination_combine, &symbol);
-				if (tyran_value_is_object_generic(&destination_component_value)) {
-					tyran_object* destination_component = tyran_value_object(&destination_component_value);
+				if (tyran_value_is_object_generic(destination_component_value)) {
+					tyran_object* destination_component = tyran_value_mutable_object((tyran_value*)destination_component_value);
 					rewire_internal_references_on_component(self, destination_component, source_component);
 				}
 			}

@@ -1,7 +1,7 @@
 #include <tyranscript/tyran_property_iterator.h>
 #include <tyranscript/tyran_object.h>
 
-void tyran_property_iterator_init(tyran_property_iterator* self, tyran_object* object)
+void tyran_property_iterator_init(tyran_property_iterator* self, const tyran_object* object)
 {
 	self->property_index = 0;
 	self->object = object;
@@ -10,7 +10,7 @@ void tyran_property_iterator_init(tyran_property_iterator* self, tyran_object* o
 	self->is_shallow = 0;
 }
 
-void tyran_property_iterator_init_shallow(tyran_property_iterator* self, tyran_object* object)
+void tyran_property_iterator_init_shallow(tyran_property_iterator* self, const tyran_object* object)
 {
 	tyran_property_iterator_init(self, object);
 	self->is_shallow = TYRAN_TRUE;
@@ -38,10 +38,10 @@ static void add_symbol(tyran_property_iterator* self, tyran_symbol symbol)
 	self->visited_symbols[self->visited_symbols_count++] = symbol;
 }
 
-tyran_boolean tyran_property_iterator_next(tyran_property_iterator* self, tyran_symbol* symbol, tyran_value** value)
+tyran_boolean tyran_property_iterator_next(tyran_property_iterator* self, tyran_symbol* symbol, const tyran_value** value)
 {
 	if (self->property_index >= self->object->property_count) {
-		tyran_object* parent = self->object->prototype;
+		const tyran_object* parent = self->object->prototype;
 		TYRAN_ASSERT(parent != self->object, "Prototype can not be self!");
 		if (!parent || self->is_shallow) {
 			return TYRAN_FALSE;
@@ -51,7 +51,7 @@ tyran_boolean tyran_property_iterator_next(tyran_property_iterator* self, tyran_
 			return tyran_property_iterator_next(self, symbol, value);
 		}
 	} else {
-		tyran_object_property* property = &self->object->properties[self->property_index++];
+		const tyran_object_property* property = &self->object->properties[self->property_index++];
 		if (have_visited_symbol(self, property->symbol)) {
 			return tyran_property_iterator_next(self, symbol, value);
 		} else {

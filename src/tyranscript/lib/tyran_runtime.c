@@ -20,22 +20,22 @@
 #include <tyranscript/debug/tyran_print_runtime_state.h>
 
 #if defined TYRAN_CONFIGURATION_DEBUG
-// #define TYRAN_RUNTIME_DEBUG
+	// #define TYRAN_RUNTIME_DEBUG
 #endif
 
 #define TYRAN_RUNTIME_INVOKE_BINARY_OPERATOR(DESTINATION, OBJECT, PARAMS, PARAM_COUNT, OPERATOR) \
-	{ tyran_value member; \
+	{ const tyran_value* member; \
 	tyran_object_lookup_prototype(&member, (OBJECT).data.object, &runtime->binary_operator_symbols[OPERATOR]); \
-	TYRAN_ASSERT(!tyran_value_is_nil(&member), "Couldn't find operator:%d %d", OPERATOR, runtime->binary_operator_symbols[OPERATOR].hash); \
-	const tyran_function* function = member.data.object->data.function->static_function; \
-	function->data.callback(runtime, &member, PARAMS, PARAM_COUNT, &OBJECT, DESTINATION, TYRAN_FALSE); }
+	TYRAN_ASSERT(!tyran_value_is_nil(member), "Couldn't find operator:%d %d", OPERATOR, runtime->binary_operator_symbols[OPERATOR].hash); \
+	const tyran_function* function = member->data.object->data.function->static_function; \
+	function->data.callback(runtime, (tyran_value*)member, PARAMS, PARAM_COUNT, &OBJECT, DESTINATION, TYRAN_FALSE); }
 
 #define TYRAN_RUNTIME_INVOKE_UNARY_OPERATOR(DESTINATION, OBJECT, OPERATOR) \
-	{ tyran_value member; \
+	{ const tyran_value* member; \
 	tyran_object_lookup_prototype(&member, (OBJECT).data.object, &runtime->binary_operator_symbols[OPERATOR]); \
-	TYRAN_ASSERT(!tyran_value_is_nil(&member), "Couldn't find operator:%d %d", OPERATOR, runtime->binary_operator_symbols[OPERATOR].hash); \
-	const tyran_function* function = member.data.object->data.function->static_function; \
-	function->data.callback(runtime, &member, 0, 0, &OBJECT, DESTINATION, TYRAN_FALSE); }
+	TYRAN_ASSERT(!tyran_value_is_nil(member), "Couldn't find operator:%d %d", OPERATOR, runtime->binary_operator_symbols[OPERATOR].hash); \
+	const tyran_function* function = member->data.object->data.function->static_function; \
+	function->data.callback(runtime, (tyran_value*)member, 0, 0, &OBJECT, DESTINATION, TYRAN_FALSE); }
 
 void tyran_register_copy(tyran_value* target, tyran_value* source, int count)
 {
@@ -252,9 +252,9 @@ void tyran_runtime_execute(tyran_runtime* runtime, struct tyran_value* return_va
 				break;
 			case TYRAN_OPCODE_GET: {
 				TYRAN_REGISTER_A_RCX_RCY;
-				tyran_value v;
+				const tyran_value* v;
 				tyran_value_object_lookup_prototype(&v, &rcx, &rcy);
-				tyran_value_replace(r[a], v);
+				tyran_value_replace(r[a], *v);
 			}
 			break;
 			case TYRAN_OPCODE_SET:

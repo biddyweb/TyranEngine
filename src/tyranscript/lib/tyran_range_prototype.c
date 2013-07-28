@@ -33,7 +33,7 @@ TYRAN_RUNTIME_CALL_FUNC(tyran_range_prototype_constructor)
 
 TYRAN_RUNTIME_CALL_FUNC(tyran_range_prototype_iter)
 {
-	tyran_object* self_object = tyran_value_object(self);
+	tyran_object* self_object = tyran_value_mutable_object(self);
 	tyran_range* range = tyran_object_range(self_object);
 	if (!range) {
 		return -1;

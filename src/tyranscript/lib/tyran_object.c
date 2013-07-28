@@ -13,6 +13,8 @@
 #include <tyranscript/tyran_array.h>
 #include <tyranscript/tyran_symbol_table.h>
 
+extern tyran_value g_tyran_nil;
+
 void tyran_object_retain(struct tyran_object* o)
 {
 	TYRAN_ASSERT(o->retain_count >= 0, "Retain count is bad:%d", o->retain_count);
@@ -66,7 +68,7 @@ void tyran_object_free(struct tyran_object* object)
 			break;
 	}
 
-	tyran_object_release(object->prototype);
+	tyran_object_release((tyran_object*)object->prototype);
 	for (int i=0; i<object->property_count; ++i) {
 		if (tyran_value_is_object(&object->properties[i].value)) {
 #if 0
@@ -115,13 +117,13 @@ void tyran_object_insert(struct tyran_object* object, const tyran_symbol* symbol
 
 }
 
-void tyran_object_lookup(tyran_value* x, struct tyran_object* object, const struct tyran_symbol* symbol)
+void tyran_object_lookup(const tyran_value** x, const struct tyran_object* object, const struct tyran_symbol* symbol)
 {
 	int found = tyran_object_find_property(object, symbol);
 	if (found == -1) {
-		tyran_value_set_nil(*x);
+		*x = &g_tyran_nil;
 	} else {
-		tyran_value_copy(*x, object->properties[found].value);
+		*x = &object->properties[found].value;
 	}
 }
 
@@ -129,21 +131,21 @@ void tyran_object_delete(struct tyran_object* object, const struct tyran_symbol*
 {
 }
 
-void tyran_object_set_prototype(struct tyran_object* target, struct tyran_object* proto)
+void tyran_object_set_prototype(struct tyran_object* target, const struct tyran_object* proto)
 {
 	if (target->prototype) {
-		TYRAN_OBJECT_RELEASE(target->prototype);
+		TYRAN_OBJECT_RELEASE((tyran_object*)target->prototype);
 	}
 	TYRAN_ASSERT(proto != target, "Can not set prototype to self");
 
-	TYRAN_OBJECT_RETAIN(proto);
+	TYRAN_OBJECT_RETAIN((tyran_object*)proto);
 	target->prototype = proto;
 }
 
-void tyran_object_lookup_prototype(tyran_value* x, struct tyran_object* o, const struct tyran_symbol* symbol)
+void tyran_object_lookup_prototype(const tyran_value** x, const struct tyran_object* o, const struct tyran_symbol* symbol)
 {
 	tyran_object_lookup(x, o, symbol);
-	if (tyran_value_is_nil(x) && o->prototype) {
+	if (tyran_value_is_nil(*x) && o->prototype) {
 		tyran_object_lookup_prototype(x, o->prototype, symbol);
 	}
 }

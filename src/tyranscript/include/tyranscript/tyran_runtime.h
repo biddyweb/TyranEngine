@@ -2,13 +2,13 @@
 #define _TYRAN_RUNTIME_H
 
 #include <tyranscript/tyran_symbol.h>
+#include <tyranscript/tyran_value.h>
 
 struct tyran_opcodes;
 struct tyran_scope_stack;
 struct tyran_runtime;
 struct tyran_runtime_stack;
 struct tyran_constants;
-struct tyran_value;
 struct tyran_object;
 struct tyran_memory_pool;
 struct tyran_symbol_table;
@@ -53,6 +53,7 @@ typedef struct tyran_runtime {
 	struct tyran_memory_pool* runtime_stack_pool;
 
 	struct tyran_symbol_table* symbol_table;
+	const struct tyran_value nil_value;
 
 	tyran_symbol binary_operator_symbols[32];
 

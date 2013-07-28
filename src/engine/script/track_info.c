@@ -11,3 +11,8 @@ int nimbus_track_info_get_free_index(nimbus_track_info* self)
 {
 	return nimbus_bit_array_reserve_free_index(&self->bit_array);
 }
+
+void nimbus_track_info_delete_index(nimbus_track_info* self, int index)
+{
+	nimbus_bit_array_delete_index(&self->bit_array, index);
+}

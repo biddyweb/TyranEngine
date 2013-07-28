@@ -13,5 +13,6 @@ typedef struct nimbus_track_info {
 
 void nimbus_track_info_init(nimbus_track_info* self, struct tyran_memory* memory, tyran_symbol type_symbol);
 int nimbus_track_info_get_free_index(nimbus_track_info* self);
+void nimbus_track_info_delete_index(nimbus_track_info* self, int index);
 
 #endif

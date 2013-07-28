@@ -37,7 +37,7 @@ void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_w
 	u8t* d = self->temp_buf;
 
 	if (e->has_index) {
-		int index = info->track_index; // world->types[info->world_index].tracks[info->track_index].get_object_index(_this);
+		int index = info->instance_index; // world->types[info->world_index].tracks[info->track_index].get_object_index(_this);
 		TYRAN_ASSERT(index != -1,  "Index can not be null. tyran_object has not been assigned an index");
 		*(int*) d = index;
 		d += sizeof(int);
@@ -72,7 +72,7 @@ void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_w
 				if (!tyran_value_is_nil(value)) {
 					const tyran_object* value_object = tyran_value_object(value);
 					const nimbus_object_info* info = tyran_object_program_specific(value_object);
-					index = info->track_index;
+					index = info->instance_index;
 				}
 				*(int*)d = index;
 				d += sizeof(int);

@@ -164,13 +164,13 @@ static tyran_object* evaluate(nimbus_object_listener* self, const char* data)
 }
 
 
-static tyran_object* get_or_create_resource_object(nimbus_object_listener* self, nimbus_resource_id resource_id, int track_index)
+static tyran_object* get_or_create_resource_object(nimbus_object_listener* self, nimbus_resource_id resource_id, int instance_index)
 {
 	tyran_value new_object = tyran_mocha_api_create_object(self->mocha);
 	tyran_object* object = tyran_value_mutable_object(&new_object);
 	nimbus_object_info* info = nimbus_decorate_object(object, self->memory);
 	info->is_module_resource = TYRAN_TRUE;
-	info->track_index = track_index;
+	info->instance_index = instance_index;
 
 	return object;
 }
@@ -200,11 +200,11 @@ static void on_script_source_updated(nimbus_object_listener* self, struct nimbus
 
 static void on_module_resource_updated(nimbus_object_listener* self, struct nimbus_event_read_stream* stream, nimbus_resource_id resource_id, int payload_size)
 {
-	int index;
+	int instance_index;
 
-	nimbus_event_stream_read_octets(stream, (u8t*)&index, sizeof(index));
+	nimbus_event_stream_read_octets(stream, (u8t*)&instance_index, sizeof(instance_index));
 
-	tyran_object* o = get_or_create_resource_object(self, resource_id, index);
+	tyran_object* o = get_or_create_resource_object(self, resource_id, instance_index);
 
 	add_object(self, resource_id, self->module_resource_type_id, o);
 }
@@ -240,7 +240,6 @@ static nimbus_object_listener_info* find_info_from_symbol(nimbus_object_listener
 	for (int i=0; i<self->info_count; ++i) {
 		nimbus_object_listener_info* info = &self->infos[i];
 		if (info->symbol.hash == symbol.hash) {
-			// TYRAN_ASSERT(info->function_count < 30, "Problem?");
 			return info;
 		}
 	}
@@ -316,6 +315,18 @@ static void setup_collection_for_event_definition(nimbus_object_listener* self, 
 	nimbus_object_collection_for_type* collection = &self->object_collection_for_types[self->object_collection_for_types_count++];
 	collection->event_definition = event_definition;
 	nimbus_object_collection_init(&collection->collection, memory);
+}
+
+static nimbus_event_definition* event_definition_for_type_symbol(nimbus_object_listener* self, const tyran_symbol* type_symbol)
+{
+	for (int i=0; i<self->event_definitions_count; ++i) {
+		struct nimbus_event_definition* definition = &self->event_definitions[i];
+		if (tyran_symbol_equal(&definition->type_symbol, type_symbol)) {
+			return definition;
+		}
+	}
+
+	return 0;
 }
 
 static void setup_collections_for_event_definitions(nimbus_object_listener* self, struct tyran_memory* memory, nimbus_event_definition* event_definitions, int event_definition_count)
@@ -520,7 +531,8 @@ static void handle_type_object(nimbus_object_listener* self, tyran_object* o, ty
 		add_spawned_object(self, type_to_layers, o);
 	} else {
 		nimbus_track_info* track_info = get_or_create_track_info(self, type_name);
-		info->track_index = nimbus_track_info_get_free_index(track_info);
+		info->type_symbol = type_name;
+		info->instance_index = nimbus_track_info_get_free_index(track_info);
 	}
 	nimbus_object_collection* collection = object_collection_for_type(self, type_name);
 	if (collection) {
@@ -633,6 +645,13 @@ static void serialize_all(nimbus_object_listener* self)
 	}
 }
 
+static void send_unspawn(nimbus_object_listener* self, nimbus_object_info* component_info)
+{
+	nimbus_track_info* track_info = track_info_from_type(self, component_info->type_symbol);
+	TYRAN_LOG("Send Unspawn Unspawn %d type:%d", component_info->instance_index, component_info->type_symbol.hash);
+	nimbus_track_info_delete_index(track_info, component_info->instance_index);
+}
+
 void nimbus_object_listener_on_delete(nimbus_object_listener* self, tyran_object* object_to_be_deleted)
 {
 	nimbus_object_info* info = tyran_object_program_specific(object_to_be_deleted);
@@ -648,7 +667,11 @@ void nimbus_object_listener_on_delete(nimbus_object_listener* self, tyran_object
 		while (tyran_property_iterator_next(&it, &symbol, &value)) {
 			if (tyran_value_is_object(value)) {
 				const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
-				TYRAN_LOG("Component: '%s' retain:%d", debug_key_string, value->data.object->retain_count);
+				TYRAN_LOG("Component: '%s' retain:%d (%p)", debug_key_string, value->data.object->retain_count, tyran_value_object(value));
+				nimbus_object_info* component_info = tyran_value_program_specific(value);
+				if (component_info && component_info->instance_index != -1) {
+					send_unspawn(self, component_info);
+				}
 				tyran_runtime_debug_who_is_referencing(self->runtime, tyran_value_object(value));
 				nimbus_layer_association* association = find_layer_association(self, tyran_value_object(value));
 				if (association) {

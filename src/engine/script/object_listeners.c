@@ -252,7 +252,7 @@ static nimbus_object_listener_info* info_from_symbol(nimbus_object_listener* sel
 	nimbus_object_listener_info* info = find_info_from_symbol(self, symbol);
 	if (!info) {
 		info = &self->infos[self->info_count++];
-		info->max_function_count = 256s;
+		info->max_function_count = 256;
 		info->symbol = symbol;
 		info->function_count = 0;
 	}

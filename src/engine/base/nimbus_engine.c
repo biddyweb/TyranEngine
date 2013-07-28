@@ -165,22 +165,22 @@ static void create_modules(nimbus_engine* self, tyran_memory* memory)
 
 static void add_internal_modules(nimbus_modules* modules)
 {
-	nimbus_event_definition* touch_began = nimbus_modules_add_event(modules, "touch_began", NIMBUS_EVENT_TOUCH_BEGAN_ID);
+	nimbus_event_definition* touch_began = nimbus_modules_add_event(modules, "touch_began", NIMBUS_EVENT_TOUCH_BEGAN_ID, 0);
 	nimbus_event_definition_add_property(touch_began, "position", NIMBUS_EVENT_DEFINITION_VECTOR2);
 	touch_began->is_module_to_script = TYRAN_TRUE;
 	touch_began->has_index = TYRAN_FALSE;
 
-	nimbus_event_definition* touch_moved = nimbus_modules_add_event(modules, "touch_moved", NIMBUS_EVENT_TOUCH_MOVED_ID);
+	nimbus_event_definition* touch_moved = nimbus_modules_add_event(modules, "touch_moved", NIMBUS_EVENT_TOUCH_MOVED_ID, 0);
 	nimbus_event_definition_add_property(touch_moved, "position", NIMBUS_EVENT_DEFINITION_VECTOR2);
 	touch_moved->is_module_to_script = TYRAN_TRUE;
 	touch_moved->has_index = TYRAN_FALSE;
 
-	nimbus_event_definition* touch_ended = nimbus_modules_add_event(modules, "touch_ended", NIMBUS_EVENT_TOUCH_ENDED_ID);
+	nimbus_event_definition* touch_ended = nimbus_modules_add_event(modules, "touch_ended", NIMBUS_EVENT_TOUCH_ENDED_ID, 0);
 	nimbus_event_definition_add_property(touch_ended, "position", NIMBUS_EVENT_DEFINITION_VECTOR2);
 	touch_ended->is_module_to_script = TYRAN_TRUE;
 	touch_ended->has_index = TYRAN_FALSE;
 
-	nimbus_event_definition* touch_stationary = nimbus_modules_add_event(modules, "touch_stationary", NIMBUS_EVENT_TOUCH_STATIONARY_ID);
+	nimbus_event_definition* touch_stationary = nimbus_modules_add_event(modules, "touch_stationary", NIMBUS_EVENT_TOUCH_STATIONARY_ID, 0);
 	nimbus_event_definition_add_property(touch_stationary, "position", NIMBUS_EVENT_DEFINITION_VECTOR2);
 	touch_stationary->is_module_to_script = TYRAN_TRUE;
 	touch_stationary->has_index = TYRAN_FALSE;

@@ -34,9 +34,10 @@ typedef struct nimbus_event_definition {
 	struct tyran_symbol_table* symbol_table;
 	tyran_boolean is_module_to_script;
 	tyran_boolean should_instantiate;
+	u8t unspawn_event_type_id;
 } nimbus_event_definition;
 
-void nimbus_event_definition_init(nimbus_event_definition* self, struct tyran_symbol_table* symbol_table, const char* name, u8t event_type_id);
+void nimbus_event_definition_init(nimbus_event_definition* self, struct tyran_symbol_table* symbol_table, const char* name, u8t event_type_id, u8t unspawn_event_type_id);
 void nimbus_event_definition_add_property(nimbus_event_definition* self, const char* name, nimbus_event_definition_type type);
 
 #endif

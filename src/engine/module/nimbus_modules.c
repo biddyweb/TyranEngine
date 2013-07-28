@@ -34,10 +34,10 @@ void nimbus_modules_add_affinity(nimbus_modules* self, const char* name, size_t 
 }
 
 
-nimbus_event_definition* nimbus_modules_add_event(nimbus_modules* self, const char* name, u8t event_type_id)
+nimbus_event_definition* nimbus_modules_add_event(nimbus_modules* self, const char* name, u8t event_type_id, u8t unspawn_event_type_id)
 {
 	nimbus_event_definition* definition = &self->event_definitions[self->event_definitions_count++];
-	nimbus_event_definition_init(definition, self->symbol_table, name, event_type_id);
+	nimbus_event_definition_init(definition, self->symbol_table, name, event_type_id, unspawn_event_type_id);
 
 	return definition;
 }

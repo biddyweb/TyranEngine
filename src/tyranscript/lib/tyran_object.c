@@ -17,18 +17,12 @@ extern tyran_value g_tyran_nil;
 
 void tyran_object_retain(struct tyran_object* o)
 {
-	if (o->debug_flag) {
-		//TYRAN_LOG("RETAIN");
-	}
 	TYRAN_ASSERT(o->retain_count >= 0, "Retain count is bad:%d", o->retain_count);
 	o->retain_count++;
 }
 
 void tyran_object_release(struct tyran_object* o)
 {
-	if (o->debug_flag) {
-		// TYRAN_LOG("RELEASE");
-	}
 	TYRAN_ASSERT(o->retain_count > 0, "Retain count is bad:%d", o->retain_count);
 	o->retain_count--;
 	if (o->retain_count == 0) {
@@ -116,6 +110,9 @@ void tyran_object_insert(struct tyran_object* object, const tyran_symbol* symbol
 		found = object->property_count;
 		object->property_count++;
 		tyran_value_copy(object->properties[found].value, *value);
+		if (tyran_value_is_object(value) && tyran_value_object(value) == object) {
+			TYRAN_ERROR("You can't reference yourself!");
+		}
 		object->properties[found].symbol = *symbol;
 	} else {
 		tyran_value_replace(object->properties[found].value, *value);

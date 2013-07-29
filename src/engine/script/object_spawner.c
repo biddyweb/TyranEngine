@@ -7,6 +7,14 @@
 
 #include "event_definition.h"
 
+static void print_object(nimbus_object_spawner* self, const char* description, tyran_object* object)
+{
+	tyran_value object_value;
+	tyran_value_set_object(object_value, object);
+	tyran_print_value(description, &object_value, 1, self->symbol_table);
+	tyran_value_release(object_value);
+}
+
 void nimbus_object_spawner_init(nimbus_object_spawner* self, tyran_runtime* runtime, nimbus_event_definition* defintions, int definitions_count, const tyran_object* object_to_spawn)
 {
 	self->runtime = runtime;
@@ -71,39 +79,25 @@ static void duplicate_component_objects(nimbus_object_spawner* self, tyran_objec
 			tyran_object_set_prototype(duplicate_component_object, tyran_value_object(value));
 			tyran_object_insert(destination_component, &symbol, &duplicate_component_object_value);
 			tyran_value_release(duplicate_component_object_value);
-		} else {
-			const char* debug_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
-			TYRAN_LOG("NOT Duplicating Component OBJECT: '%s'", debug_string);
-
 		}
 	}
 
 	tyran_property_iterator_free(&it);
 }
 
-static void debug_sprite(nimbus_object_spawner* self, tyran_symbol* found_symbol, tyran_object* new_object)
-{
-	tyran_symbol sprite_symbol;
-	tyran_symbol_table_add(self->symbol_table, &sprite_symbol, "platformSprite");
-	if (tyran_symbol_equal(found_symbol, &sprite_symbol)) {
-		TYRAN_ASSERT(new_object->retain_count == 0, "BAD RETAIN");
-		new_object->debug_flag = 1;
-	}
-
-}
-
 static void duplicate_component(nimbus_object_spawner* self, tyran_object* destination_combine, tyran_symbol symbol, const tyran_object* source_component)
 {
 	tyran_object* destination_component = tyran_object_new(self->runtime);
-	debug_sprite(self, &symbol, destination_component);
-	tyran_object_set_prototype(destination_component, source_component);
-	associate_components(self, destination_component, source_component);
-	duplicate_component_objects(self, destination_component, source_component);
-
 	tyran_value destination_component_value;
 	tyran_value_set_object(destination_component_value, destination_component);
+
+	tyran_object_set_prototype(destination_component, source_component);
+
 	tyran_object_insert(destination_combine, &symbol, &destination_component_value);
 	tyran_value_release(destination_component_value);
+
+	associate_components(self, destination_component, source_component);
+	duplicate_component_objects(self, destination_component, source_component);
 }
 
 static void duplicate_components(nimbus_object_spawner* self, tyran_object* destination_combine, const tyran_object* source_combine)
@@ -118,12 +112,7 @@ static void duplicate_components(nimbus_object_spawner* self, tyran_object* dest
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		if (tyran_value_is_object(value)) {
 			if (should_duplicate_component(self, tyran_value_object(value))) {
-				const char* debug_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
-				TYRAN_LOG("Duplicating Component: '%s'", debug_string);
 				duplicate_component(self, destination_combine, symbol, tyran_value_object(value));
-			} else {
-				const char* debug_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
-				TYRAN_LOG("NOT Duplicating Component: '%s'", debug_string);
 			}
 		}
 	}
@@ -194,10 +183,10 @@ static void rewire_internal_references_on_combine(nimbus_object_spawner* self, t
 tyran_object* nimbus_object_spawner_spawn(nimbus_object_spawner* self)
 {
 	tyran_object* destination_combine = tyran_object_new(self->runtime);
+	tyran_object_retain(destination_combine);
 	tyran_object_set_prototype(destination_combine, self->object_to_spawn);
-
+	//print_object(self, "destination_combine", destination_combine);
 	duplicate_components(self, destination_combine, self->object_to_spawn);
 	rewire_internal_references_on_combine(self, destination_combine, self->object_to_spawn);
-	tyran_object_retain(destination_combine);
 	return destination_combine;
 }

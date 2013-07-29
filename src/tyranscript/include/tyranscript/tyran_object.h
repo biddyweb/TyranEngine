@@ -49,8 +49,6 @@ typedef struct tyran_object {
 
 	const struct tyran_runtime* created_in_runtime;
 	void* program_specific;
-
-	int debug_flag;
 } tyran_object;
 
 /* Create and destroy */

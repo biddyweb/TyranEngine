@@ -1,30 +1,30 @@
 #include "object_listeners.h"
+
 #include <tyranscript/tyran_mocha_api.h>
 #include <tyranscript/tyran_object.h>
 #include <tyranscript/tyran_symbol_table.h>
 #include <tyranscript/tyran_runtime.h>
 #include <tyranscript/tyran_function.h>
 #include <tyranscript/tyran_property_iterator.h>
-
 #include <tyranscript/debug/tyran_print_opcodes.h>
+#include <tyranscript/tyran_symbol_table.h>
+#include <tyranscript/debug/tyran_runtime_debug.h>
 
 #include <tyran_engine/event/resource_updated.h>
+#include <tyran_engine/event/resource_load.h>
+#include <tyran_engine/event/resource_load.h>
+#include <tyran_engine/event/module_resource_updated.h>
+#include <tyran_engine/script/event_to_object.h>
+#include <tyran_engine/event/unspawn_event.h>
+#include <tyran_engine/script/event_to_object.h>
 
-#include <tyranscript/tyran_symbol_table.h>
 #include "object_info.h"
 #include "object_decorator.h"
 #include "event_definition.h"
 #include "object_spawner.h"
 #include "track_info.h"
 #include "../event/resource_load_state.h"
-#include <tyran_engine/script/event_to_object.h>
 
-#include <tyran_engine/event/resource_load.h>
-#include <tyran_engine/event/resource_load.h>
-#include <tyran_engine/event/module_resource_updated.h>
-#include <tyran_engine/script/event_to_object.h>
-#include <tyran_engine/event/unspawn_event.h>
-#include <tyranscript/debug/tyran_runtime_debug.h>
 
 void nimbus_object_collection_init(nimbus_object_collection* self, struct tyran_memory* memory)
 {
@@ -43,12 +43,11 @@ void nimbus_object_collection_remove(nimbus_object_collection* self, tyran_objec
 	for (int i=0; i<self->count; ++i) {
 		if (self->entries[i] == o) {
 			self->count--;
-			tyran_memmove_type(tyran_object*, self->entries[i], self->entries[i+1], self->count - i);
+			tyran_memmove_type(tyran_object*, &self->entries[i], &self->entries[i+1], self->count - i);
 			return;
 		}
 	}
 }
-
 
 static void nimbus_layer_association_init(nimbus_layer_association* self, struct tyran_memory* memory, nimbus_type_to_layers* type_to_layers, tyran_object* source_object)
 {
@@ -61,13 +60,26 @@ static void nimbus_layer_association_init(nimbus_layer_association* self, struct
 	nimbus_object_collection_init(&self->update_objects, memory);
 }
 
-static void nimbus_layer_association_delete(nimbus_layer_association* self)
+static void nimbus_layer_association_init_free(nimbus_layer_association* self)
 {
 	for (int i=0; i<32; ++i) {
 		tyran_object* layer_object = self->layer_objects[i];
 		if (layer_object) {
 			self->layer_objects[i] = 0;
 			tyran_object_release(layer_object);
+		}
+	}
+}
+
+static void nimbus_layer_association_delete(nimbus_object_listener* self, nimbus_layer_association* association)
+{
+	nimbus_layer_association_init_free(association);
+	for (int i=0; i<self->associations_count; ++i) {
+		nimbus_layer_association* find_association = &self->associations[i];
+		if (find_association == association) {
+			self->associations_count--;
+			tyran_memmove_type(nimbus_layer_association, &self->associations[i], &self->associations[i+1], self->associations_count - i);
+			return;
 		}
 	}
 }
@@ -119,9 +131,6 @@ void nimbus_type_to_layers_add(nimbus_type_to_layers* self, nimbus_resource_id l
 	info->combine = 0;
 }
 
-
-
-
 static nimbus_type_to_layers* add_type_to_layers(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name)
 {
 	nimbus_type_to_layers* type_to_layer = &self->type_to_layers[self->type_to_layers_count++];
@@ -136,7 +145,6 @@ static nimbus_type_to_layers* add_type_to_layers(nimbus_object_listener* self, t
 	return type_to_layer;
 }
 
-
 static nimbus_type_to_layers* find_type_to_layers(nimbus_object_listener* self, tyran_symbol type_name)
 {
 	for (int i=0; i<self->type_to_layers_count; ++i) {
@@ -149,8 +157,6 @@ static nimbus_type_to_layers* find_type_to_layers(nimbus_object_listener* self, 
 	return 0;
 }
 
-
-
 static nimbus_type_to_layers* get_type_to_layers(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name)
 {
 	nimbus_type_to_layers* type_to_layers = find_type_to_layers(self, type_name);
@@ -160,8 +166,6 @@ static nimbus_type_to_layers* get_type_to_layers(nimbus_object_listener* self, t
 
 	return type_to_layers;
 }
-
-
 
 static tyran_object* evaluate(nimbus_object_listener* self, const char* data)
 {
@@ -177,7 +181,6 @@ static tyran_object* evaluate(nimbus_object_listener* self, const char* data)
 
 	return tyran_value_mutable_object(&new_object);
 }
-
 
 static tyran_object* get_or_create_resource_object(nimbus_object_listener* self, nimbus_resource_id resource_id, int instance_index)
 {
@@ -195,8 +198,6 @@ static void add_object(nimbus_object_listener* self, nimbus_resource_id resource
 	nimbus_dependency_resolver_object_loaded(&self->dependency_resolver, o, resource_id, resource_type_id);
 }
 
-
-
 static void on_script_source_updated(nimbus_object_listener* self, struct nimbus_event_read_stream* stream, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id, int payload_size)
 {
 	TYRAN_ASSERT(payload_size <= self->script_buffer_size, "Buffer too small for script. payload:%d max:%d", payload_size, self->script_buffer_size);
@@ -211,8 +212,6 @@ static void on_script_source_updated(nimbus_object_listener* self, struct nimbus
 	add_object(self, resource_id, resource_type_id, o);
 }
 
-
-
 static void on_module_resource_updated(nimbus_object_listener* self, struct nimbus_event_read_stream* stream, nimbus_resource_id resource_id, int payload_size)
 {
 	int instance_index;
@@ -223,7 +222,6 @@ static void on_module_resource_updated(nimbus_object_listener* self, struct nimb
 
 	add_object(self, resource_id, self->module_resource_type_id, o);
 }
-
 
 static void _on_resource_load_state(void* _self, struct nimbus_event_read_stream* stream)
 {
@@ -237,18 +235,34 @@ static void _on_resource_load_state(void* _self, struct nimbus_event_read_stream
 	self->waiting_for_state_resource_id = load_state.resource_id;
 }
 
-
-
 static void info_add_function(nimbus_object_listener_info* self, tyran_object* function_context, const tyran_function* function)
 {
 	TYRAN_ASSERT(self->function_count < self->max_function_count, "end of functions");
 	nimbus_object_listener_function* func_info = &self->functions[self->function_count++];
 	func_info->function_context = function_context;
-	tyran_object_retain(func_info->function_context);
 	func_info->function = function;
 }
 
+static void info_delete_listeners_with_context(nimbus_object_listener_info* self, tyran_object* function_context)
+{
+	for (int i=0; i<self->function_count; ) {
+		nimbus_object_listener_function* func_info = &self->functions[i];
+		if (func_info->function_context == function_context) {
+			self->function_count--;
+			tyran_memmove_type(nimbus_object_listener_function, &self->functions[i], &self->functions[i+1], self->function_count - i);
+		} else {
+			++i;
+		}
+	}
+}
 
+static void delete_listeners_with_context(nimbus_object_listener* self, tyran_object* function_context)
+{
+	for (int i=0; i<self->info_count; ++i) {
+		nimbus_object_listener_info* info = &self->infos[i];
+		info_delete_listeners_with_context(info, function_context);
+	}
+}
 
 static nimbus_object_listener_info* find_info_from_symbol(nimbus_object_listener* self, tyran_symbol symbol)
 {
@@ -273,7 +287,6 @@ static nimbus_object_listener_info* info_from_symbol(nimbus_object_listener* sel
 	return info;
 }
 
-
 static void call_event(nimbus_object_listener* self, tyran_symbol symbol, struct tyran_value* arguments, int arguments_count)
 {
 	nimbus_object_listener_info* info = find_info_from_symbol(self, symbol);
@@ -281,12 +294,10 @@ static void call_event(nimbus_object_listener* self, tyran_symbol symbol, struct
 		return;
 	}
 
-
 	if (info->function_count == 0) {
 		TYRAN_LOG("No function count for that symbol");
 		return;
 	}
-
 
 	tyran_value return_value;
 	for (int i=0; i<info->function_count; ++i) {
@@ -304,10 +315,9 @@ static void call_event(nimbus_object_listener* self, tyran_symbol symbol, struct
 		tyran_value_release(context_value);
 		tyran_runtime_execute(self->runtime, &return_value, 0);
 		tyran_value_release(return_value);
+		tyran_runtime_clear(self->runtime);
 	}
 }
-
-
 
 static void nimbus_object_layers_add_layer(nimbus_object_listener* self, const char* name, struct tyran_memory* memory)
 {
@@ -353,17 +363,14 @@ static void setup_collections_for_event_definitions(nimbus_object_listener* self
 	}
 }
 
-
 static void add_listening_function(nimbus_object_listener* self, tyran_object* function_context, const tyran_value* function, const char* event_name)
 {
 	tyran_symbol symbol;
 
 	tyran_symbol_table_add(self->symbol_table, &symbol, event_name);
 	nimbus_object_listener_info* info = info_from_symbol(self, symbol);
-	TYRAN_LOG("Event_name: '%s'", event_name);
 	info_add_function(info, function_context, tyran_value_function(function));
 }
-
 
 static void scan_for_listening_functions_on_object(nimbus_object_listener* self, tyran_object* o, tyran_object* combine)
 {
@@ -387,7 +394,6 @@ static void scan_for_listening_functions_on_object(nimbus_object_listener* self,
 
 	tyran_property_iterator_free(&it);
 }
-
 
 static void _on_all(void* _self, struct nimbus_event_read_stream* stream)
 {
@@ -427,6 +433,7 @@ static nimbus_track_info* track_info_from_type(nimbus_object_listener* self, tyr
 
 	return 0;
 }
+
 static nimbus_layer_association* find_layer_association(nimbus_object_listener* self, const tyran_object* source_object)
 {
 	for (int i=0; i<self->associations_count; ++i) {
@@ -438,8 +445,6 @@ static nimbus_layer_association* find_layer_association(nimbus_object_listener* 
 	return 0;
 }
 
-
-
 static nimbus_track_info* get_or_create_track_info(nimbus_object_listener* self, tyran_symbol type_name)
 {
 	nimbus_track_info* track_info = track_info_from_type(self, type_name);
@@ -450,12 +455,7 @@ static nimbus_track_info* get_or_create_track_info(nimbus_object_listener* self,
 	return track_info;
 }
 
-
-
 static tyran_object* spawn(nimbus_object_listener* self, const tyran_object* combine);
-
-
-
 
 static void search_components_for_update_functions(nimbus_object_listener* self, nimbus_layer_association* association, tyran_object* combine)
 {
@@ -481,8 +481,6 @@ static void search_components_for_update_functions(nimbus_object_listener* self,
 
 }
 
-
-
 static void spawn_layer_object(nimbus_object_listener* self, nimbus_layer_association* association, int layer_index, tyran_object* combine)
 {
 	TYRAN_ASSERT(association->layer_objects[layer_index] == 0, "Something bad happened when spawning");
@@ -490,7 +488,6 @@ static void spawn_layer_object(nimbus_object_listener* self, nimbus_layer_associ
 	association->layer_objects[layer_index] = spawned_combine;
 	search_components_for_update_functions(self, association, spawned_combine);
 }
-
 
 static void spawn_available_layer_objects(nimbus_object_listener* self, nimbus_layer_association* association, nimbus_type_to_layers* type_to_layers)
 {
@@ -520,7 +517,6 @@ static void add_spawned_object(nimbus_object_listener* self, nimbus_type_to_laye
 	spawn_available_layer_objects(self, association, type);
 }
 
-
 static nimbus_object_collection* object_collection_for_type(nimbus_object_listener* self, tyran_symbol type_name)
 {
 	for (int i=0; i < self->object_collection_for_types_count; ++i) {
@@ -539,7 +535,6 @@ static void handle_type_object(nimbus_object_listener* self, tyran_object* o, ty
 		return;
 	}
 
-
 	nimbus_object_info* info = nimbus_decorate_object(o, self->memory);
 	if (!is_event_type(self, type_name)) {
 		nimbus_type_to_layers* type_to_layers = get_type_to_layers(self, o, type_name);
@@ -552,10 +547,10 @@ static void handle_type_object(nimbus_object_listener* self, tyran_object* o, ty
 	}
 	nimbus_object_collection* collection = object_collection_for_type(self, type_name);
 	if (collection) {
+		TYRAN_ASSERT(o->program_specific != 0, "Must have program specific!!");
 		nimbus_object_collection_add(collection, o);
 	}
 }
-
 
 static void check_for_type_on_component(nimbus_object_listener* self, tyran_object* component)
 {
@@ -568,14 +563,11 @@ static void check_for_type_on_component(nimbus_object_listener* self, tyran_obje
 	}
 }
 
-
 static void scan_component(nimbus_object_listener* self, tyran_object* component, tyran_object* combine)
 {
 	scan_for_listening_functions_on_object(self, component, combine);
 	check_for_type_on_component(self, component);
 }
-
-
 
 static void scan_combine(nimbus_object_listener* self, tyran_object* combine)
 {
@@ -585,8 +577,6 @@ static void scan_combine(nimbus_object_listener* self, tyran_object* combine)
 
 	tyran_symbol symbol;
 	const tyran_value* value;
-
-
 
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		if (tyran_value_is_object_generic(value)) {
@@ -606,7 +596,6 @@ static void on_state_updated(nimbus_object_listener* self, tyran_object* o, nimb
 	scan_combine(self, o);
 }
 
-
 static void update_layer_association(nimbus_object_listener* self, nimbus_layer_association* association)
 {
 	tyran_value argument_value;
@@ -624,17 +613,18 @@ static void update_layer_association(nimbus_object_listener* self, nimbus_layer_
 
 		tyran_object_lookup_prototype(&function_value, object, &self->on_update_symbol);
 		//if (!tyran_value_is_nil(&function_value)) {
+
 		const tyran_function* on_update_function = tyran_value_function(function_value);
 		tyran_value this_value;
 		tyran_value_set_object(this_value, object);
 		tyran_runtime_push_call_ex_arguments(self->runtime, on_update_function, &this_value, &argument_value, 1);
+		tyran_value_release(this_value);
 		tyran_runtime_execute(self->runtime, &return_value, 0);
 		tyran_value_release(return_value);
 		tyran_runtime_clear(self->runtime);
 		//}
 	}
 }
-
 
 static void update_layer_associations(nimbus_object_listener* self)
 {
@@ -643,11 +633,6 @@ static void update_layer_associations(nimbus_object_listener* self)
 		update_layer_association(self, association);
 	}
 }
-
-
-
-
-
 
 static void serialize_object_collection(nimbus_object_listener* self, nimbus_object_collection* collection, struct nimbus_event_definition* e)
 {
@@ -677,7 +662,13 @@ static void send_unspawn(nimbus_object_listener* self, nimbus_object_info* compo
 
 void nimbus_object_listener_on_delete(nimbus_object_listener* self, tyran_object* object_to_be_deleted)
 {
+	delete_listeners_with_context(self, object_to_be_deleted);
+
 	nimbus_object_info* info = tyran_object_program_specific(object_to_be_deleted);
+	if (info->event_definition) {
+		nimbus_object_collection* collection = object_collection_for_type(self, info->event_definition->type_symbol);
+		nimbus_object_collection_remove(collection, object_to_be_deleted);
+	}
 	if (info && info->instance_index != -1) {
 		send_unspawn(self, info);
 	}
@@ -686,7 +677,6 @@ void nimbus_object_listener_on_delete(nimbus_object_listener* self, tyran_object
 		nimbus_object_collection_remove(collection, object_to_be_deleted);
 	}
 	if (info->is_spawned_combine) {
-
 		tyran_property_iterator it;
 
 		tyran_property_iterator_init_shallow(&it, object_to_be_deleted);
@@ -696,12 +686,9 @@ void nimbus_object_listener_on_delete(nimbus_object_listener* self, tyran_object
 
 		while (tyran_property_iterator_next(&it, &symbol, &value)) {
 			if (tyran_value_is_object(value)) {
-				const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
-				TYRAN_LOG("Component: '%s' retain:%d (%p)", debug_key_string, value->data.object->retain_count, tyran_value_object(value));
-				// tyran_runtime_debug_who_is_referencing(self->runtime, tyran_value_object(value));
 				nimbus_layer_association* association = find_layer_association(self, tyran_value_object(value));
 				if (association) {
-					nimbus_layer_association_delete(association);
+					nimbus_layer_association_delete(self, association);
 				}
 			}
 		}
@@ -717,7 +704,7 @@ static tyran_object* spawn(nimbus_object_listener* self, const tyran_object* com
 	tyran_object* spawned_combine = nimbus_object_spawner_spawn(&spawner);
 	nimbus_object_info* info = nimbus_decorate_object(spawned_combine, self->memory);
 	info->is_spawned_combine = TYRAN_TRUE;
-#if 1
+#if 0
 	tyran_value o_value;
 	tyran_value_set_object(o_value, spawned_combine);
 	tyran_print_value("Spawned!", &o_value, 1, self->symbol_table);
@@ -729,10 +716,6 @@ static tyran_object* spawn(nimbus_object_listener* self, const tyran_object* com
 	return spawned_combine;
 }
 
-
-
-
-
 static void spawn_layer_objects_waiting_for_resource_id(nimbus_object_listener* self, nimbus_type_to_layers* layer, tyran_object* combine, int layer_index)
 {
 	for (int i=0; i<self->associations_count; ++i) {
@@ -742,7 +725,6 @@ static void spawn_layer_objects_waiting_for_resource_id(nimbus_object_listener* 
 		}
 	}
 }
-
 
 static void check_if_layer_resource(nimbus_object_listener* self, tyran_object* o, nimbus_resource_id resource_id)
 {
@@ -758,7 +740,6 @@ static void check_if_layer_resource(nimbus_object_listener* self, tyran_object* 
 	}
 }
 
-
 static void on_object_updated(nimbus_object_listener* self, tyran_object* o, nimbus_resource_id resource_id)
 {
 	if (self->waiting_for_state_resource_id == resource_id) {
@@ -767,10 +748,6 @@ static void on_object_updated(nimbus_object_listener* self, tyran_object* o, nim
 	}
 	check_if_layer_resource(self, o, resource_id);
 }
-
-
-
-
 
 static void _update(void* _self)
 {
@@ -808,7 +785,6 @@ tyran_object* nimbus_object_listener_spawn(nimbus_object_listener* self, const t
 	tyran_object* spawned_object = spawn(self, combine);
 	return spawned_object;
 }
-
 
 void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* memory, struct tyran_mocha_api* mocha, struct tyran_object* context, nimbus_event_definition* event_definitions, int event_definition_count)
 {
@@ -861,20 +837,6 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 	self->script_buffer = TYRAN_MEMORY_ALLOC(memory, self->script_buffer_size, "Script buffer");
 	self->waiting_for_state_resource_id = 0;
 
-
 	nimbus_object_layers_add_layer(self, "render", memory);
-
 	setup_collections_for_event_definitions(self, memory, event_definitions, event_definition_count);
-
-
-
-	/*
-		self->infos = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_object_listener_info, self->info_max_count);
-		for (int i=0; i<self->info_max_count; ++i) {
-			nimbus_object_listener_info* info = &self->infos[i];
-			info->max_function_count = 64;
-			info->functions = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_object_listener_function, info->max_function_count);
-		}
-	*/
 }
-

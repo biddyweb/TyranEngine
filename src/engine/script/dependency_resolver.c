@@ -188,7 +188,8 @@ static void check_if_someone_wants(nimbus_dependency_resolver* self, nimbus_reso
 			nimbus_resource_dependency* dependency = &dependency_info->resource_dependencies[j];
 			if (dependency->resource_id == resource_id) {
 				if (dependency->is_inherit) {
-					tyran_object_set_prototype(tyran_value_mutable_object(dependency->target), v);
+					tyran_object* object_to_manipulate = tyran_value_mutable_object(dependency->target);
+					tyran_object_set_prototype(object_to_manipulate, v);
 				} else {
 					tyran_value_replace_object(*dependency->target, v);
 				}

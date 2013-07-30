@@ -2,7 +2,8 @@
 
 void tyran_memory_pool_initialize_entries(tyran_memory_pool* pool)
 {
-	u8t* m = pool->memory + 1;
+	const int alignment = 4;
+	u8t* m = pool->memory + alignment;
 	int total_size = pool->struct_size + sizeof(tyran_memory_pool_entry);
 	tyran_memory_pool_entry* previous = 0;
 	for (size_t i=0; i<pool->max_count; ++i) {
@@ -47,6 +48,7 @@ void* tyran_memory_pool_alloc(tyran_memory_pool* pool)
 	u8t* m = (u8t*) e;
 	u8t* p = m + sizeof(tyran_memory_pool_entry);
 	e->allocated = TYRAN_TRUE;
+	TYRAN_ASSERT(((tyran_pointer_to_number)p) % 4 == 0, "alignment error");
 	// TYRAN_LOG("Allocating from memory pool '%s' (%zu) -> %p (count:%zu)", pool->type_string, pool->struct_size, m, pool->count);
 	return p;
 }

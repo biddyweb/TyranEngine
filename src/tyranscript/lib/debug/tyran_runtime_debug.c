@@ -14,9 +14,8 @@ void check_referencing(tyran_symbol_table* symbol_table, const tyran_object* o)
 	tyran_symbol symbol;
 
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
-		const char* member_name = tyran_symbol_table_lookup(symbol_table, &symbol);
 		if (tyran_value_is_object_generic(value) && tyran_value_object(value) == o) {
-			TYRAN_LOG("referenced by object member '%s'", member_name);
+			TYRAN_LOG("referenced by object member '%s'",  tyran_symbol_table_lookup(symbol_table, &symbol));
 		}
 	}
 }

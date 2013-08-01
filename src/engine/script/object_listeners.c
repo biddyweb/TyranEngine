@@ -94,8 +94,8 @@ static nimbus_resource_id resource_id_for_layer(const char* layer_name, tyran_sy
 	tyran_strncat(temp, "/", temp_buf_size);
 	tyran_strncat(temp, type_name_string, temp_buf_size);
 
-	TYRAN_LOG("Layer-specific name:'%s'", temp);
 	nimbus_resource_id layer_specific_resource_id = nimbus_resource_id_from_string(temp);
+	TYRAN_LOG("Layer-specific name:'%s' -> %d", temp, layer_specific_resource_id);
 
 	return layer_specific_resource_id;
 }
@@ -219,6 +219,7 @@ static void on_module_resource_updated(nimbus_object_listener* self, struct nimb
 	nimbus_event_stream_read_octets(stream, (u8t*)&instance_index, sizeof(instance_index));
 
 	tyran_object* o = get_or_create_resource_object(self, resource_id, instance_index);
+	TYRAN_LOG("Found resource object: %d at index %d", resource_id, instance_index);
 
 	add_object(self, resource_id, self->module_resource_type_id, o);
 }
@@ -734,7 +735,7 @@ static void check_if_layer_resource(nimbus_object_listener* self, tyran_object* 
 			nimbus_type_to_layers_info* info = &layer->infos[j];
 			if (info->resource_id == resource_id) {
 				info->combine = o;
-				spawn_layer_objects_waiting_for_resource_id(self, layer, info->combine, i);
+				spawn_layer_objects_waiting_for_resource_id(self, layer, info->combine, j);
 			}
 		}
 	}
@@ -838,5 +839,6 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 	self->waiting_for_state_resource_id = 0;
 
 	nimbus_object_layers_add_layer(self, "render", memory);
+	nimbus_object_layers_add_layer(self, "audio", memory);
 	setup_collections_for_event_definitions(self, memory, event_definitions, event_definition_count);
 }

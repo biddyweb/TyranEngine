@@ -52,6 +52,11 @@ int nimbus_event_to_arguments_convert(nimbus_event_to_arguments* self, tyran_val
 				d += sizeof(float);
 			}
 			break;
+			case NIMBUS_EVENT_DEFINITION_BOOLEAN: {
+				tyran_value_set_boolean(*destination, *((tyran_boolean*)d));
+				d += sizeof(tyran_boolean);
+			}
+			break;
 			case NIMBUS_EVENT_DEFINITION_INTEGER: {
 				tyran_value_set_number(*destination, *((int*)d));
 				d += sizeof(int);

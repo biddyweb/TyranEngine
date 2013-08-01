@@ -19,6 +19,8 @@ void nimbus_update_init_ex(nimbus_update* self, struct tyran_memory* memory, nim
 	nimbus_event_write_stream_init(&self->event_write_stream, memory, max_size);
 	self->name = name;
 	nimbus_task_init(&self->task, nimbus_update_update, self, name);
+	nimbus_event_stream_read_init(&self->event_read_stream, 0, 0);
+	nimbus_event_listener_init(&self->event_listener, update_self);
 }
 
 void nimbus_update_init(nimbus_update* self, struct tyran_memory* memory, nimbus_update_function func, void* update_self, const char* name)

@@ -52,7 +52,7 @@ static void debug_log_all_tasks(nimbus_task_queue* self, int group)
 	for (int i=0; i<self->task_count; ++i) {
 		nimbus_task* task = self->tasks[task_index];
 		if (task->group == group) {
-			TYRAN_LOG("Remaining task:'%s'", task->name);
+			TYRAN_LOG("Remaining task:'%s' group:%d affinity:%d", task->name, task->group, task->affinity);
 		}
 		task_index ++;
 		task_index %= self->task_max_count;
@@ -71,6 +71,31 @@ tyran_boolean nimbus_task_queue_has_pending_tasks_from_group(nimbus_task_queue* 
 	return (tasks_left != 0);
 }
 
+nimbus_task* nimbus_task_queue_fetch_next_task_from_affinity(nimbus_task_queue* self, int requested_affinity)
+{
+	nimbus_task* task;
+
+	nimbus_mutex_lock(&self->mutex);
+	if (self->task_count == 0) {
+		task = 0;
+	} else {
+		task = self->tasks[self->task_read_index];
+
+		if (requested_affinity != task->affinity) {
+			task = 0;
+		} else {
+			self->tasks[self->task_read_index] = 0;
+			self->task_read_index++;
+			self->task_read_index %= self->task_max_count;
+			self->task_count--;
+		}
+	}
+	nimbus_mutex_unlock(&self->mutex);
+
+	return task;
+}
+
+
 nimbus_task* nimbus_task_queue_fetch_next_task(nimbus_task_queue* self, int requested_affinity)
 {
 	nimbus_task* task;
@@ -82,8 +107,10 @@ nimbus_task* nimbus_task_queue_fetch_next_task(nimbus_task_queue* self, int requ
 		task = self->tasks[self->task_read_index];
 
 		if (task->affinity != -1 && requested_affinity != task->affinity) {
+//			TYRAN_LOG("Ignoring task:'%s' group:%d affinity:%d", task->name, task->group, task->affinity);
 			task = 0;
 		} else {
+//			TYRAN_LOG("Starting task:'%s' group:%d affinity:%d", task->name, task->group, task->affinity);
 			self->tasks[self->task_read_index] = 0;
 			self->task_read_index++;
 			self->task_read_index %= self->task_max_count;

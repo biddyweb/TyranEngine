@@ -20,7 +20,7 @@ void nimbus_boot_task_queue(nimbus_boot* self)
 
 void nimbus_boot_task_threads(nimbus_boot* self)
 {
-	self->task_thread_count = 2;
+	self->task_thread_count = 3;
 	TYRAN_LOG("Tyran Engine v0.1 boot. Starting %d thread(s).", self->task_thread_count);
 	for (int i=1; i<self->task_thread_count; ++i) {
 		nimbus_task_thread_init(&self->task_threads[i], self->task_queue, i);
@@ -64,7 +64,7 @@ void nimbus_boot_manually_update_affinity_zero_tasks(nimbus_boot* self)
 {
 	const int affinity = 0;
 	for (;;) {
-		nimbus_task* task = nimbus_task_queue_fetch_next_task(self->task_queue, affinity);
+		nimbus_task* task = nimbus_task_queue_fetch_next_task_from_affinity(self->task_queue, affinity);
 		if (task == 0) {
 			break;
 		} else {

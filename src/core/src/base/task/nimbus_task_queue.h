@@ -24,5 +24,5 @@ void nimbus_task_queue_add_task(nimbus_task_queue* task_queue, struct nimbus_tas
 tyran_boolean nimbus_task_queue_has_pending_tasks_from_group(nimbus_task_queue* task_queue, int group);
 struct nimbus_task* nimbus_task_queue_fetch_next_task(nimbus_task_queue* task_queue, int requested_affinity);
 void nimbus_task_queue_task_completed(nimbus_task_queue* task_queue, struct nimbus_task* task);
-
+struct nimbus_task* nimbus_task_queue_fetch_next_task_from_affinity(nimbus_task_queue* self, int requested_affinity);
 #endif

@@ -51,6 +51,7 @@ void nimbus_event_listener_init(nimbus_event_listener* self, void* other_self)
 {
 	self->other_self = other_self;
 	self->function_count = 0;
+	self->listen_to_all = 0;
 }
 
 void nimbus_event_listener_listen(nimbus_event_listener* self, nimbus_event_type_id id, nimbus_event_read reader)

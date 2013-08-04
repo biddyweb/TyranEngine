@@ -27,6 +27,7 @@ char* tyran_str_dup(tyran_memory* pool, const char* str);
 #define tyran_sscanf sscanf_s
 #define tyran_snprintf sprintf_s
 #define tyran_strncpy(dest, dest_size, source, source_size) strncpy_s(dest, dest_size, source, source_size)
+#define tyran_strcpy(dest, dest_size, source) strcpy_s(dest, dest_size, source)
 #define tyran_fopen fopen_s
 #define tyran_fread fread
 #define tyran_fclose fclose
@@ -36,6 +37,7 @@ char* tyran_str_dup(tyran_memory* pool, const char* str);
 #define tyran_sscanf sscanf
 #define tyran_snprintf snprintf
 #define tyran_strncpy(dest, dest_size, source, source_size) strncpy(dest, source, dest_size)
+#define tyran_strcpy(dest, dest_size, source) strcpy(dest, source)
 #define tyran_strncat strncat
 #define tyran_strlen strlen
 #define tyran_fopen(F, N, M) *F = fopen(N, M)
@@ -50,6 +52,7 @@ char* tyran_str_dup(tyran_memory* pool, const char* str);
 #define tyran_fprintf fprintf
 #define tyran_fflush fflush
 #define tyran_strdup(pool, str) tyran_str_dup(pool, str)
+#define tyran_str_equal(a,b) (tyran_strcmp(a,b) == 0)
 
 #define tyran_fmod fmod
 #define tyran_pow pow

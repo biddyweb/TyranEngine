@@ -182,7 +182,7 @@ static tyran_object* evaluate(nimbus_object_listener* self, const char* data)
 	return tyran_value_mutable_object(&new_object);
 }
 
-static tyran_object* get_or_create_resource_object(nimbus_object_listener* self, nimbus_resource_id resource_id, int instance_index)
+static tyran_object* get_or_create_module_resource_object(nimbus_object_listener* self, nimbus_resource_id resource_id, int instance_index)
 {
 	tyran_value new_object = tyran_mocha_api_create_object(self->mocha);
 	tyran_object* object = tyran_value_mutable_object(&new_object);
@@ -218,8 +218,8 @@ static void on_module_resource_updated(nimbus_object_listener* self, struct nimb
 
 	nimbus_event_stream_read_octets(stream, (u8t*)&instance_index, sizeof(instance_index));
 
-	tyran_object* o = get_or_create_resource_object(self, resource_id, instance_index);
-	TYRAN_LOG("Found resource object: %d at index %d", resource_id, instance_index);
+	tyran_object* o = get_or_create_module_resource_object(self, resource_id, instance_index);
+	// TYRAN_LOG("Found resource object: %d at index %d", resource_id, instance_index);
 
 	add_object(self, resource_id, self->module_resource_type_id, o);
 }
@@ -655,7 +655,7 @@ static void serialize_all(nimbus_object_listener* self)
 static void send_unspawn(nimbus_object_listener* self, nimbus_object_info* component_info)
 {
 	nimbus_track_info* track_info = track_info_from_type(self, component_info->event_definition->type_symbol);
-	TYRAN_LOG("Send Unspawn %d name:%s", component_info->instance_index, component_info->event_definition->name);
+	// TYRAN_LOG("Send Unspawn %d name:%s", component_info->instance_index, component_info->event_definition->name);
 	nimbus_track_info_delete_index(track_info, component_info->instance_index);
 
 	nimbus_event_unspawn_send(&self->update.event_write_stream, component_info->event_definition->unspawn_event_type_id, component_info->instance_index);

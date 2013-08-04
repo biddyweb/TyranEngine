@@ -6,6 +6,8 @@
 #include <tyranscript/tyran_symbol_table.h>
 
 #include "event_definition.h"
+#include "object_info.h"
+
 
 static void print_object(nimbus_object_spawner* self, const char* description, tyran_object* object)
 {
@@ -72,13 +74,17 @@ static void duplicate_component_objects(nimbus_object_spawner* self, tyran_objec
 	tyran_property_iterator_init_shallow(&it, source_component);
 
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
-		if (tyran_value_is_object(value)  && should_duplicate_component(self, tyran_value_object(value))) {
-			tyran_object* duplicate_component_object = tyran_object_new(self->runtime);
-			tyran_value duplicate_component_object_value;
-			tyran_value_set_object(duplicate_component_object_value, duplicate_component_object);
-			tyran_object_set_prototype(duplicate_component_object, tyran_value_object(value));
-			tyran_object_insert(destination_component, &symbol, &duplicate_component_object_value);
-			tyran_value_release(duplicate_component_object_value);
+		if (tyran_value_is_object(value)) {
+			nimbus_object_info* info = (nimbus_object_info*) tyran_value_program_specific(value);
+			tyran_boolean is_module_resource = info && info->is_module_resource;
+			if (!is_module_resource && should_duplicate_component(self, tyran_value_object(value))) {
+				tyran_object* duplicate_component_object = tyran_object_new(self->runtime);
+				tyran_value duplicate_component_object_value;
+				tyran_value_set_object(duplicate_component_object_value, duplicate_component_object);
+				tyran_object_set_prototype(duplicate_component_object, tyran_value_object(value));
+				tyran_object_insert(destination_component, &symbol, &duplicate_component_object_value);
+				tyran_value_release(duplicate_component_object_value);
+			}
 		}
 	}
 

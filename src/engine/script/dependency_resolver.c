@@ -106,8 +106,10 @@ static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* s
 			tyran_string_to_c_str(value_string, 128, tyran_object_string(value->data.object));
 			if (value_string[0] == '@') {
 				nimbus_resource_id resource_id = nimbus_resource_id_from_string(&value_string[1]);
+				TYRAN_LOG("Reference '%s' -> %d", value_string, resource_id);
 				tyran_object* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
 				if (resource != 0) {
+					TYRAN_LOG("Found it in cache, setting it");
 					tyran_value_replace_object(*(tyran_value*)value, resource);
 				} else {
 					resources_that_are_loading++;
@@ -127,6 +129,7 @@ static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* s
 				if (tyran_strcmp(key_string, "inherit") == 0) {
 					nimbus_resource_id resource_id = nimbus_resource_id_from_string(value_string);
 					tyran_object* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
+					TYRAN_LOG("Inherit '%s' -> %d", value_string, resource_id);
 					if (!resource) {
 						resources_that_are_loading++;
 						inherit_resource(self, info, v, resource_id);

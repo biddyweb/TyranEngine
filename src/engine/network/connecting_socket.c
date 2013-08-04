@@ -8,9 +8,9 @@
 #include <netdb.h>
 #include <netinet/tcp.h>
 #include <unistd.h>
+#include <sys/types.h>
 #endif
 
-#include <sys/types.h>
 #include <tyranscript/tyran_clib.h>
 
 int nimbus_connecting_socket_connect(nimbus_connecting_socket* self, const char* hostname, int port)
@@ -64,7 +64,7 @@ void nimbus_connecting_socket_write(nimbus_connecting_socket* self, const u8t* d
 
 int nimbus_connecting_socket_read(nimbus_connecting_socket* self, u8t* data, int max_length)
 {
-	int octets_read = recv(self->socket_handle, data, max_length, 0);
+	int octets_read = recv(self->socket_handle, (char*) data, max_length, 0);
 
 	return octets_read;
 }

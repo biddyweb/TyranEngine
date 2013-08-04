@@ -1,4 +1,4 @@
-#include "resource_load.h"
+#include <tyran_engine/event/resource_load.h>
 #include <tyran_core/event/event_stream.h>
 
 const u8t NIMBUS_EVENT_RESOURCE_LOAD = 1;

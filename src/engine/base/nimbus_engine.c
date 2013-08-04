@@ -11,7 +11,7 @@
 #include <tyran_core/event/event_listener.h>
 #include "../resource/resource_handler.h"
 
-#include "../module/nimbus_module.h"
+#include <tyran_engine/module/nimbus_module.h>
 
 static void fire_load_state(nimbus_engine* self, nimbus_resource_id id)
 {

@@ -22,7 +22,7 @@ char* tyran_str_dup(tyran_memory* pool, const char* str);
 
 
 #if defined WIN32
-#pragma warning( disable : 4100 )
+// #pragma warning( disable : 4100 )
 
 #define tyran_sscanf sscanf_s
 #define tyran_snprintf sprintf_s

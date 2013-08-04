@@ -4,7 +4,7 @@
 struct tyran_value;
 struct tyran_memory;
 
-#include "id.h"
+#include <tyran_engine/resource/id.h>
 
 typedef struct nimbus_resource_cache_entry {
 	nimbus_resource_id resource_id;

@@ -8,7 +8,7 @@
 #include <tyranscript/tyran_value.h>
 #include "object_to_event.h"
 #include "dependency_resolver.h"
-#include "modules.h"
+#include <tyran_engine/module/modules.h>
 
 struct tyran_memory;
 

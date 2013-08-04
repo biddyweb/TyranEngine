@@ -31,6 +31,7 @@ class Builder
 
 		p "o:#{o_files.inspect}"
 		@c_compiler = 'clang'
+		@c_compiler = 'gcc.exe'
 
 		CLEAN.include o_files
 	end
@@ -55,7 +56,7 @@ class Builder
 		c_flags = '-g -O0'
 		# c_flags = '-O3'
 
-		sh "#{@c_compiler} -c #{source} #{c_flags} -Wall -pedantic -Werror #{parameter_string('I', @includes)} -std=c99 -o #{target}"
+		sh "#{@c_compiler} -c #{source} #{c_flags} -Wall -pedantic -Werror #{parameter_string('I', @includes)} -std=c99 -o #{target} -D TORNADO_OS_WINDOWS"
 	end
 end
 

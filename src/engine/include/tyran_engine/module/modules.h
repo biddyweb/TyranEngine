@@ -2,7 +2,7 @@
 #define nimbus_modules_h
 
 #include <tyran_core/update/update.h>
-#include "nimbus_module.h"
+#include <tyran_engine/module/nimbus_module.h>
 #include <tyran_engine/event_definition/event_definition.h>
 
 struct nimbus_event_write_stream;

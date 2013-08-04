@@ -1,4 +1,4 @@
-#include "resource_updated.h"
+#include <tyran_engine/event/resource_updated.h>
 #include <tyran_core/event/event_stream.h>
 #include <tyranscript/tyran_log.h>
 

@@ -1,4 +1,4 @@
-#include "nimbus_module.h"
+#include <tyran_engine/module/nimbus_module.h>
 #include <tyranscript/tyran_memory.h>
 
 void* nimbus_module_create(nimbus_module* self, struct tyran_memory* memory)

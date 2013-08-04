@@ -1,7 +1,7 @@
 #ifndef nimbus_object_to_event_h
 #define nimbus_object_to_event_h
 
-#include "property_reader.h"
+#include <tyran_engine/script/property_reader.h>
 
 struct nimbus_event_write_stream;
 struct nimbus_event_definition;

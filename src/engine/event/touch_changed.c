@@ -1,4 +1,4 @@
-#include "touch_changed.h"
+#include <tyran_engine/event/touch_changed.h>
 
 const u8t NIMBUS_EVENT_TOUCH_BEGAN_ID = 3;
 const u8t NIMBUS_EVENT_TOUCH_MOVED_ID = 4;

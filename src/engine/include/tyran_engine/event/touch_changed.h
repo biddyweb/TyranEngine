@@ -2,7 +2,7 @@
 #define nimbus_touch_changed_h
 
 #include <tyran_engine/type/vector2.h>
-#include "event_stream.h"
+#include <tyran_core/event/event_stream.h>
 
 extern const nimbus_event_type_id NIMBUS_EVENT_TOUCH_BEGAN_ID;
 extern const nimbus_event_type_id NIMBUS_EVENT_TOUCH_MOVED_ID;

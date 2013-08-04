@@ -1,3 +1,4 @@
+#if defined TYRAN_PLATFORM_IOS
 #define _POSIX_C_SOURCE 199309
 #include <time.h>
 #include "../../base/thread/nimbus_thread_sleep.h"
@@ -13,3 +14,6 @@ void nimbus_thread_sleep(tyran_number seconds)
 
 	nanosleep(&rm, &rm);
 }
+#else
+int a;
+#endif

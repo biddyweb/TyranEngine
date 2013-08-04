@@ -310,6 +310,17 @@ NODE tyran_parser_literal_string(tyran_memory* memory, const char* string)
 	return (tyran_parser_node*)node;
 }
 
+NODE tyran_parser_symbol(tyran_memory* memory, const char* string)
+{
+	tyran_parser_node_symbol* node = TYRAN_MALLOC_NO_POOL_TYPE_COUNT(memory, tyran_parser_node_symbol, 1);
+	node->node.type = TYRAN_PARSER_NODE_TYPE_SYMBOL;
+	node->string = tyran_strdup(memory, string);
+	node->length = strlen(node->string);
+	return (tyran_parser_node*)node;
+}
+
+
+
 NODE tyran_parser_literal_identifier(tyran_memory* memory, const char* string)
 {
 	tyran_parser_node_identifier* node = TYRAN_MALLOC_NO_POOL_TYPE_COUNT(memory, tyran_parser_node_identifier, 1);
@@ -328,7 +339,7 @@ NODE tyran_parser_call_super(NODE a)
 int tyran_parser_node_is_constant(NODE node)
 {
 	enum tyran_parser_type type = node->type;
-	return (type == TYRAN_PARSER_NODE_TYPE_NUMBER  || type ==  TYRAN_PARSER_NODE_TYPE_BOOLEAN || type == TYRAN_PARSER_NODE_TYPE_NIL ||  type == TYRAN_PARSER_NODE_TYPE_STRING);
+	return (type == TYRAN_PARSER_NODE_TYPE_NUMBER  || type ==  TYRAN_PARSER_NODE_TYPE_BOOLEAN || type == TYRAN_PARSER_NODE_TYPE_NIL ||  type == TYRAN_PARSER_NODE_TYPE_STRING || type == TYRAN_PARSER_NODE_TYPE_SYMBOL);
 }
 
 int tyran_parser_node_is_literal(NODE node)

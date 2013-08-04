@@ -9,5 +9,6 @@ typedef struct tyran_range {
 struct tyran_memory;
 
 tyran_range* tyran_range_new(struct tyran_memory* memory, int start, int end);
+void tyran_range_free(tyran_range* self);
 
 #endif

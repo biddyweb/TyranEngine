@@ -68,7 +68,7 @@ tyran_reg_index tyran_variable_scopes_define_temporary_variable(tyran_variable_s
 void tyran_variable_scope_add_identifier(tyran_memory* memory, tyran_variable_scope* scope, const char* variable_name, tyran_reg_index register_index)
 {
 	TYRAN_ASSERT(scope->variable_count < scope->allocated_variable_count, "Out of memory adding an identifier");
-	TYRAN_LOG("Defining variable '%s' to register %d", variable_name, register_index);
+	// TYRAN_LOG("Defining variable '%s' to register %d", variable_name, register_index);
 	tyran_variable_info* info = &scope->variables[scope->variable_count++];
 	info->name = tyran_strdup(memory, variable_name);
 	info->register_index = register_index;
@@ -99,7 +99,6 @@ void tyran_variable_scope_undefine_variable(tyran_variable_scope* scope, tyran_r
 	if (scope->highest_register_used == index) {
 		scope->highest_register_used--;
 	}
-	TYRAN_LOG("Undefining register %d, highest is now %d", index, scope->highest_register_used);
 	scope->registers[index] = 0;
 }
 
@@ -150,6 +149,7 @@ tyran_reg_index tyran_variable_scope_define_identifier(tyran_memory* memory, tyr
 {
 	tyran_reg_index current_index = tyran_variable_scope_get_identifier(top_scope, variable_name);
 	if (current_index == TYRAN_OPCODE_REGISTER_ILLEGAL) {
+		// TYRAN_LOG("Defining variable '%s' in scope:%p", variable_name, top_scope);
 		current_index = tyran_variable_scope_find_and_reserve_variable(top_scope, 2);
 		tyran_variable_scope_add_identifier(memory, top_scope, variable_name, current_index);
 	}

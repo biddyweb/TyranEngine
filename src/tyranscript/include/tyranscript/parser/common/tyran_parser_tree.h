@@ -28,6 +28,7 @@ enum tyran_parser_type {
 	TYRAN_PARSER_NODE_TYPE_CONTINUE,
 	TYRAN_PARSER_NODE_TYPE_STRING,
 	TYRAN_PARSER_NODE_TYPE_IDENTIFIER,
+	TYRAN_PARSER_NODE_TYPE_SYMBOL,
 	TYRAN_PARSER_NODE_TYPE_ASSIGNMENT,
 	TYRAN_PARSER_NODE_TYPE_COMPOUND_ASSIGNMENT,
 	TYRAN_PARSER_NODE_TYPE_OPERAND_BINARY,
@@ -136,6 +137,12 @@ typedef struct tyran_parser_node_string {
 	const char* string;
 	int length;
 } tyran_parser_node_string;
+
+typedef struct tyran_parser_node_symbol {
+	tyran_parser_node node;
+	const char* string;
+	int length;
+} tyran_parser_node_symbol;
 
 typedef struct tyran_parser_node_identifier {
 	tyran_parser_node node;
@@ -323,6 +330,7 @@ NODE tyran_parser_continue(tyran_memory* memory);
 NODE tyran_parser_literal_number(tyran_memory* memory, float* a);
 NODE tyran_parser_literal_string(tyran_memory* memory, const char* string);
 NODE tyran_parser_literal_identifier(tyran_memory* memory, const char* string);
+NODE tyran_parser_symbol(tyran_memory* memory, const char* string);
 NODE tyran_parser_call_super(NODE a);
 NODE tyran_parser_member_assign(tyran_memory* memory, NODE target, NODE expression);
 

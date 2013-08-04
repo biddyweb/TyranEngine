@@ -13,9 +13,10 @@ typedef struct nimbus_task {
 	struct nimbus_task_queue* task_queue;
 	int group;
 	int affinity;
+	const char* name;
 } nimbus_task;
 
-void nimbus_task_init(nimbus_task* self, nimbus_task_function work, void* task_self);
+void nimbus_task_init(nimbus_task* self, nimbus_task_function work, void* task_self, const char* name);
 void nimbus_task_call(nimbus_task* self, struct nimbus_task_queue* task_queue);
 
 #endif

@@ -19,10 +19,12 @@ void tyran_memory_free(void* p);
 
 #define TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, type, count) (type*) TYRAN_MEMORY_CALLOC(memory, count * sizeof(type), #type);
 #define TYRAN_MEMORY_CALLOC_TYPE(memory, type) (type*) TYRAN_MEMORY_CALLOC(memory, sizeof(type), #type);
+#define TYRAN_MEMORY_ALLOC_TYPE(memory, type) (type*) TYRAN_MEMORY_ALLOC(memory, sizeof(type), #type);
+
 
 #define TYRAN_MALLOC_NO_POOL_TYPE_COUNT TYRAN_MEMORY_CALLOC_TYPE_COUNT
 #define TYRAN_MALLOC_NO_POOL_TYPE TYRAN_MEMORY_CALLOC_TYPE
 
-#define TYRAN_MEMORY_FREE(p) tyran_memory_free(p);
+#define TYRAN_MEMORY_FREE(p) tyran_memory_free(p); (p) = 0;
 
 #endif

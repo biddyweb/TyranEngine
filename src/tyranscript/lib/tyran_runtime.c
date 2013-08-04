@@ -15,26 +15,27 @@
 #include <tyranscript/tyran_object.h>
 #include <tyranscript/tyran_constants.h>
 #include <tyranscript/tyran_number_operator.h>
+#include <tyranscript/tyran_object_operator.h>
 
 #include <tyranscript/debug/tyran_print_runtime_state.h>
 
 #if defined TYRAN_CONFIGURATION_DEBUG
-#define TYRAN_RUNTIME_DEBUG
+// #define TYRAN_RUNTIME_DEBUG
 #endif
 
 #define TYRAN_RUNTIME_INVOKE_BINARY_OPERATOR(DESTINATION, OBJECT, PARAMS, PARAM_COUNT, OPERATOR) \
-	{ tyran_value member; \
+	{ const tyran_value* member; \
 	tyran_object_lookup_prototype(&member, (OBJECT).data.object, &runtime->binary_operator_symbols[OPERATOR]); \
-	TYRAN_ASSERT(!tyran_value_is_nil(&member), "Couldn't find operator:%d %d", OPERATOR, runtime->binary_operator_symbols[OPERATOR].hash); \
-	const tyran_function* function = member.data.object->data.function->static_function; \
-	function->data.callback(runtime, &member, PARAMS, PARAM_COUNT, &OBJECT, DESTINATION, TYRAN_FALSE); }
+	TYRAN_ASSERT(!tyran_value_is_nil(member), "Couldn't find operator:%d %d", OPERATOR, runtime->binary_operator_symbols[OPERATOR].hash); \
+	const tyran_function* function = member->data.object->data.function->static_function; \
+	function->data.callback(runtime, (tyran_value*)member, PARAMS, PARAM_COUNT, &OBJECT, DESTINATION, TYRAN_FALSE); }
 
 #define TYRAN_RUNTIME_INVOKE_UNARY_OPERATOR(DESTINATION, OBJECT, OPERATOR) \
-	{ tyran_value member; \
+	{ const tyran_value* member; \
 	tyran_object_lookup_prototype(&member, (OBJECT).data.object, &runtime->binary_operator_symbols[OPERATOR]); \
-	TYRAN_ASSERT(!tyran_value_is_nil(&member), "Couldn't find operator:%d %d", OPERATOR, runtime->binary_operator_symbols[OPERATOR].hash); \
-	const tyran_function* function = member.data.object->data.function->static_function; \
-	function->data.callback(runtime, &member, 0, 0, &OBJECT, DESTINATION, TYRAN_FALSE); }
+	TYRAN_ASSERT(!tyran_value_is_nil(member), "Couldn't find operator:%d %d", OPERATOR, runtime->binary_operator_symbols[OPERATOR].hash); \
+	const tyran_function* function = member->data.object->data.function->static_function; \
+	function->data.callback(runtime, (tyran_value*)member, 0, 0, &OBJECT, DESTINATION, TYRAN_FALSE); }
 
 void tyran_register_copy(tyran_value* target, tyran_value* source, int count)
 {
@@ -124,6 +125,8 @@ void tyran_runtime_execute(tyran_runtime* runtime, struct tyran_value* return_va
 					tyran_value_copy(temp[0], rcx);
 					tyran_value_copy(temp[1], rcy);
 					TYRAN_RUNTIME_INVOKE_BINARY_OPERATOR(0, r[a], temp, 2, operator_index);
+					tyran_value_release(temp[1]);
+					tyran_value_release(temp[2]);
 				}
 			}
 			break;
@@ -155,12 +158,16 @@ void tyran_runtime_execute(tyran_runtime* runtime, struct tyran_value* return_va
 
 				TYRAN_REGISTER_A_B_RCX_RCY;
 				if (tyran_value_is_object(&rcx)) {
-					TYRAN_RUNTIME_INVOKE_BINARY_OPERATOR(&r[a], rcx, &rcy, 1, comparison_index);
+					if (tyran_value_is_object_generic(&rcx)) {
+						test = tyran_object_operator_comparison(comparison_index, &rcx, &rcy);
+						tyran_value_replace_boolean(r[a], test);
+					} else {
+						TYRAN_RUNTIME_INVOKE_BINARY_OPERATOR(&r[a], rcx, &rcy, 1, comparison_index);
+					}
 				} else {
 					test = tyran_number_operator_comparison(comparison_index, rcx.data.number, rcy.data.number);
 					tyran_value_replace_boolean(r[a], test);
 				}
-				TYRAN_LOG("b:%d", b);
 				test = r[a].data.boolean;
 				if (b) {
 					test = !test;
@@ -245,9 +252,9 @@ void tyran_runtime_execute(tyran_runtime* runtime, struct tyran_value* return_va
 				break;
 			case TYRAN_OPCODE_GET: {
 				TYRAN_REGISTER_A_RCX_RCY;
-				tyran_value v;
+				const tyran_value* v;
 				tyran_value_object_lookup_prototype(&v, &rcx, &rcy);
-				tyran_value_replace(r[a], v);
+				tyran_value_replace(r[a], *v);
 			}
 			break;
 			case TYRAN_OPCODE_SET:

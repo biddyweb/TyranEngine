@@ -23,7 +23,6 @@ void nimbus_boot_task_threads(nimbus_boot* self)
 	self->task_thread_count = 3;
 	TYRAN_LOG("Tyran Engine v0.1 boot. Starting %d thread(s).", self->task_thread_count);
 	for (int i=1; i<self->task_thread_count; ++i) {
-		TYRAN_LOG("Init task thread");
 		nimbus_task_thread_init(&self->task_threads[i], self->task_queue, i);
 	}
 	TYRAN_LOG("Tasks booted.");
@@ -36,7 +35,6 @@ void nimbus_boot_engine(nimbus_boot* self)
 
 nimbus_boot* nimbus_boot_new()
 {
-	TYRAN_LOG("Boot new");
 	tyran_memory memory;
 
 	const int max_size = 64000;
@@ -66,7 +64,7 @@ void nimbus_boot_manually_update_affinity_zero_tasks(nimbus_boot* self)
 {
 	const int affinity = 0;
 	for (;;) {
-		nimbus_task* task = nimbus_task_queue_fetch_next_task(self->task_queue, affinity);
+		nimbus_task* task = nimbus_task_queue_fetch_next_task_from_affinity(self->task_queue, affinity);
 		if (task == 0) {
 			break;
 		} else {
@@ -80,8 +78,7 @@ void nimbus_boot_manually_update_affinity_zero_tasks(nimbus_boot* self)
 tyran_boolean nimbus_boot_ready_for_next_frame(nimbus_boot* self)
 {
 	tyran_boolean pending_tasks = nimbus_task_queue_has_pending_tasks_from_group(self->task_queue, 1);
-	TYRAN_LOG("Pending tasks:%d", pending_tasks);
-	return !pending_tasks;
+	return pending_tasks == 0;
 }
 
 tyran_boolean nimbus_boot_should_render(nimbus_boot* self)
@@ -90,11 +87,16 @@ tyran_boolean nimbus_boot_should_render(nimbus_boot* self)
 	return did_draw_something;
 }
 
+void nimbus_boot_send_event(nimbus_boot* self, u8t event_id, void* data, int octet_count)
+{
+	nimbus_engine_send_event(self->engine, event_id, data, octet_count);
+}
+
 int nimbus_boot_update(nimbus_boot* self)
 {
 	int err = nimbus_engine_update(self->engine, self->task_queue);
-	// nimbus_boot_manually_update_affinity_zero_tasks(self);
-	
+	nimbus_boot_manually_update_affinity_zero_tasks(self);
+
 	return err;
 }
 

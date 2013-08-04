@@ -8,6 +8,12 @@
 #include <tyranscript/tyran_red_black_tree.h>
 #include <tyranscript/tyran_number.h>
 #include <tyranscript/tyran_string.h>
+#include <tyranscript/tyran_range.h>
+#include <tyranscript/tyran_range_iterator.h>
+#include <tyranscript/tyran_array.h>
+#include <tyranscript/tyran_symbol_table.h>
+
+extern tyran_value g_tyran_nil;
 
 void tyran_object_retain(struct tyran_object* o)
 {
@@ -34,15 +40,24 @@ tyran_object* tyran_object_new(const struct tyran_runtime* runtime)
 void tyran_object_free(struct tyran_object* object)
 {
 	const tyran_runtime* runtime = object->created_in_runtime;
-	TYRAN_LOG("Object free:%p, runtime:%p", (void*)object, (void*)runtime);
-	if (runtime->delete_callback) {
+	// TYRAN_LOG("Object free:%p, runtime:%p", (void*)object, (void*)runtime);
+	if (object->program_specific && runtime->delete_callback) {
 		runtime->delete_callback(runtime, object);
 	}
 
 	switch (object->type) {
-		case TYRAN_OBJECT_TYPE_ARRAY_ITERATOR:
-			// tyran_object_iterator_free(object->data.iterator);
+
+		case TYRAN_OBJECT_TYPE_RANGE:
+			tyran_range_free(object->data.range);
 			break;
+		case TYRAN_OBJECT_TYPE_RANGE_ITERATOR:
+			tyran_range_iterator_free(object->data.range_iterator);
+			break;
+		case TYRAN_OBJECT_TYPE_ARRAY_ITERATOR:
+			//tyran_object_iterator_free(object->data.iterator);
+			break;
+		case TYRAN_OBJECT_TYPE_ARRAY:
+			tyran_array_free(object->data.array);
 		case TYRAN_OBJECT_TYPE_FUNCTION:
 			tyran_function_object_free(object->data.function);
 			break;
@@ -51,6 +66,17 @@ void tyran_object_free(struct tyran_object* object)
 			break;
 		default:
 			break;
+	}
+
+	tyran_object_release((tyran_object*)object->prototype);
+	for (int i=0; i<object->property_count; ++i) {
+		if (tyran_value_is_object(&object->properties[i].value)) {
+#if 0
+			const char* debug_string = tyran_symbol_table_lookup(runtime->symbol_table, &object->properties[i].symbol);
+			TYRAN_LOG("Member:'%s' retain:%d", debug_string, object->properties[i].value.data.object->retain_count);
+#endif
+		}
+		tyran_value_release(object->properties[i].value);
 	}
 
 	tyran_memset_type(object, 0);
@@ -78,9 +104,15 @@ void tyran_object_insert(struct tyran_object* object, const tyran_symbol* symbol
 {
 	int found = tyran_object_find_property(object, symbol);
 	if (found == -1) {
+		const int max_property_count = 64;
+
+		TYRAN_ASSERT(object->property_count < max_property_count, "Too many properties!");
 		found = object->property_count;
 		object->property_count++;
 		tyran_value_copy(object->properties[found].value, *value);
+		if (tyran_value_is_object(value) && tyran_value_object(value) == object) {
+			TYRAN_ERROR("You can't reference yourself!");
+		}
 		object->properties[found].symbol = *symbol;
 	} else {
 		tyran_value_replace(object->properties[found].value, *value);
@@ -88,13 +120,13 @@ void tyran_object_insert(struct tyran_object* object, const tyran_symbol* symbol
 
 }
 
-void tyran_object_lookup(tyran_value* x, struct tyran_object* object, const struct tyran_symbol* symbol)
+void tyran_object_lookup(const tyran_value** x, const struct tyran_object* object, const struct tyran_symbol* symbol)
 {
 	int found = tyran_object_find_property(object, symbol);
 	if (found == -1) {
-		tyran_value_set_nil(*x);
+		*x = &g_tyran_nil;
 	} else {
-		tyran_value_copy(*x, object->properties[found].value);
+		*x = &object->properties[found].value;
 	}
 }
 
@@ -102,19 +134,21 @@ void tyran_object_delete(struct tyran_object* object, const struct tyran_symbol*
 {
 }
 
-void tyran_object_set_prototype(struct tyran_object* target, struct tyran_object* proto)
+void tyran_object_set_prototype(struct tyran_object* target, const struct tyran_object* proto)
 {
 	if (target->prototype) {
-		TYRAN_OBJECT_RELEASE(target->prototype);
+		TYRAN_OBJECT_RELEASE((tyran_object*)target->prototype);
 	}
-	TYRAN_OBJECT_RETAIN(proto);
+	TYRAN_ASSERT(proto != target, "Can not set prototype to self");
+
+	TYRAN_OBJECT_RETAIN((tyran_object*)proto);
 	target->prototype = proto;
 }
 
-void tyran_object_lookup_prototype(tyran_value* x, struct tyran_object* o, const struct tyran_symbol* symbol)
+void tyran_object_lookup_prototype(const tyran_value** x, const struct tyran_object* o, const struct tyran_symbol* symbol)
 {
 	tyran_object_lookup(x, o, symbol);
-	if (tyran_value_is_nil(x) && o->prototype) {
+	if (tyran_value_is_nil(*x) && o->prototype) {
 		tyran_object_lookup_prototype(x, o->prototype, symbol);
 	}
 }
@@ -147,3 +181,9 @@ struct tyran_array* tyran_object_array(struct tyran_object* o) {
 	TYRAN_ASSERT(o->type == TYRAN_OBJECT_TYPE_ARRAY, "must be array");
 	return o->data.array;
 }
+
+const struct tyran_function* tyran_object_function(struct tyran_object* o) {
+	TYRAN_ASSERT(o->type == TYRAN_OBJECT_TYPE_FUNCTION, "must be array");
+	return o->data.function->static_function;
+}
+

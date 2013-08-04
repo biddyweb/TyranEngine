@@ -5,6 +5,7 @@
 
 typedef unsigned char u8t;
 typedef unsigned short u16t;
+typedef short s16t;
 typedef unsigned int u32t;
 
 typedef float tyran_number;

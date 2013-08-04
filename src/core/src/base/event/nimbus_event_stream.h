@@ -21,7 +21,7 @@ typedef struct nimbus_event_write_stream {
 
 typedef struct nimbus_event_read_stream {
 	const u8t* pointer;
-    const u8t* end_pointer;
+	const u8t* end_pointer;
 	nimbus_event_type_id event_type_id;
 } nimbus_event_read_stream;
 
@@ -36,6 +36,7 @@ void nimbus_event_stream_write_event_end(nimbus_event_write_stream* self);
 
 void nimbus_event_stream_read_init(nimbus_event_read_stream* self, const u8t* pointer, int length);
 void nimbus_event_stream_read_octets(nimbus_event_read_stream* stream, u8t* data, int len);
+void nimbus_event_stream_read_pointer(nimbus_event_read_stream* stream, const u8t** data, int len);
 void nimbus_event_stream_read_align(nimbus_event_read_stream* self);
 void nimbus_event_stream_read_skip(nimbus_event_read_stream* self, int length);
 

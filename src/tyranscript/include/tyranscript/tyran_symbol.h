@@ -7,4 +7,6 @@ typedef struct tyran_symbol {
 	u32t hash;
 } tyran_symbol;
 
+#define tyran_symbol_equal(a, b) ((a)->hash == (b)->hash)
+
 #endif

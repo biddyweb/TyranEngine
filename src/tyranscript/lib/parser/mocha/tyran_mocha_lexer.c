@@ -144,10 +144,13 @@ tyran_mocha_token_id tyran_mocha_lexer_keyword(const char* identifier)
 tyran_mocha_token tyran_mocha_lexer_next_token(tyran_lexer_position_info* lexer_position_info, tyran_lexer* lexer)
 {
 	tyran_mocha_token token;
+	token.token_data = 0;
 
 	if (lexer->next_is_member) {
 		lexer->next_is_member = TYRAN_FALSE;
 		token.token_id = TYRAN_MOCHA_TOKEN_MEMBER;
+		token.token_data = 0;
+
 		return token;
 	}
 
@@ -195,6 +198,21 @@ tyran_mocha_token tyran_mocha_lexer_next_token(tyran_lexer_position_info* lexer_
 		token.token_id = TYRAN_MOCHA_TOKEN_SELF;
 		token.token_data = 0;
 		lexer->next_is_member = TYRAN_TRUE;
+	} else if (c==':') {
+		char next = tyran_lexer_pop_character(lexer);
+		if (tyran_lexer_is_alpha(next)) {
+			int len = 100;
+			char identifier[100];
+			tyran_boolean ended_with_whitespace;
+			tyran_lexer_parse_identifier(lexer, next, identifier, &len, &ended_with_whitespace);
+			token.token_id = TYRAN_MOCHA_TOKEN_SYMBOL;
+			token.token_data = tyran_strdup(lexer->memory, identifier);
+			lexer->last_was_whitespace = ended_with_whitespace;
+		} else {
+			tyran_lexer_push_character(next, lexer);
+			tyran_mocha_token_id found = tyran_mocha_lexer_operand(lexer, c);
+			token.token_id = found;
+		}
 	} else if (tyran_lexer_is_alpha(c) || c == '_' || c == '$') {
 		int len = 100;
 		char identifier[100];
@@ -256,6 +274,7 @@ tyran_mocha_lexer* tyran_mocha_lexer_lex(tyran_memory_pool* mocha_lexer_pool, ty
 
 	tyran_lexer* lexer = tyran_lexer_new(lexer_pool, memory, buf);
 	tyran_mocha_token start_token;
+	start_token.token_data = 0;
 	start_token.token_id = TYRAN_MOCHA_TOKEN_LINE_START;
 
 	temp_buffer[count++] = start_token;

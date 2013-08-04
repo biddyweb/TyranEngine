@@ -81,6 +81,7 @@ typedef struct tyran_value {
 
 #define tyran_value_set_nil(v) { \
 	(v).type = TYRAN_VALUE_TYPE_NIL; \
+    (v).data.data = 0;  \
 }
 
 
@@ -119,21 +120,24 @@ typedef struct tyran_value {
 #define tyran_value_is_same_type(a, b) ((a)->type == (b)->type)
 #define tyran_value_is_same(a, b) (tyran_value_is_same_type(a, b) && ((a)->data.data == (b)->data.data))
 #define tyran_value_is_nil(pv) ((pv)->type == TYRAN_VALUE_TYPE_NIL)
-#define tyran_value_is_null(pv) ((pv)->type == TYRAN_VALUE_TYPE_NIL)
 #define tyran_value_is_integer(n) (tyran_number_is_normal(n) && (double)((int)(n)) == (n))
 #define tyran_value_is_number(pv) ((pv)->type == TYRAN_VALUE_TYPE_NUMBER)
 #define tyran_value_is_string(pv) (tyran_value_is_object(pv) && (pv)->data.object->type == TYRAN_OBJECT_TYPE_STRING)
 #define tyran_value_is_boolean(pv) ((pv)->type == TYRAN_VALUE_TYPE_BOOLEAN)
+#define tyran_value_is_symbol(pv) ((pv)->type == TYRAN_VALUE_TYPE_SYMBOL)
 #define tyran_value_is_function(pv) ((pv)->type == TYRAN_VALUE_TYPE_OBJECT && (pv)->data.object->type == TYRAN_OBJECT_TYPE_FUNCTION)
 #define tyran_value_is_object(pv) ((pv)->type == TYRAN_VALUE_TYPE_OBJECT)
+#define tyran_value_is_object_generic(pv) (tyran_value_is_object(pv) && (pv)->data.object->type == TYRAN_OBJECT_TYPE_OBJECT)
 #define tyran_value_is_variable(pv) ((pv)->type == TYRAN_VALUE_TYPE_VARIABLE)
 
 
-tyran_number tyran_value_number(tyran_value* v);
-tyran_boolean tyran_value_boolean(tyran_value* v);
-const struct tyran_string* tyran_value_string(tyran_value* v);
-
-struct tyran_object* tyran_value_object(tyran_value* v);
+tyran_number tyran_value_number(const tyran_value* v);
+tyran_boolean tyran_value_boolean(const tyran_value* v);
+tyran_symbol tyran_value_symbol(const tyran_value* v);
+const struct tyran_string* tyran_value_string(const tyran_value* v);
+const struct tyran_function* tyran_value_function(const tyran_value* v);
+const struct tyran_object* tyran_value_object(const tyran_value* v);
+struct tyran_object* tyran_value_mutable_object(struct tyran_value* v);
 
 tyran_value* tyran_value_new(tyran_memory_pool* pool);
 tyran_value* tyran_value_duplicate(const tyran_value* v);

@@ -1,6 +1,6 @@
 #include "nimbus_task_queue.h"
 #include <tyranscript/tyran_memory.h>
-#include "nimbus_task.h"
+#include <tyran_core/task/task.h>
 #include "../mutex/nimbus_mutex.h"
 #include <tyranscript/tyran_log.h>
 
@@ -46,27 +46,42 @@ void nimbus_task_queue_add_task(nimbus_task_queue* self, nimbus_task* task)
 	nimbus_mutex_unlock(&self->mutex);
 }
 
+static void debug_log_all_tasks(nimbus_task_queue* self, int group)
+{
+	int task_index = self->task_read_index;
+	for (int i=0; i<self->task_count; ++i) {
+		nimbus_task* task = self->tasks[task_index];
+		if (task->group == group) {
+			TYRAN_LOG("Remaining task:'%s' group:%d affinity:%d", task->name, task->group, task->affinity);
+		}
+		task_index ++;
+		task_index %= self->task_max_count;
+	}
+}
+
 tyran_boolean nimbus_task_queue_has_pending_tasks_from_group(nimbus_task_queue* self, int group)
 {
 	nimbus_mutex_lock(&self->mutex);
 	int tasks_left = self->group_counter[group];
+	if (tasks_left > 0) {
+		debug_log_all_tasks(self, group);
+	}
 	nimbus_mutex_unlock(&self->mutex);
 
 	return (tasks_left != 0);
 }
 
-nimbus_task* nimbus_task_queue_fetch_next_task(nimbus_task_queue* self, int requested_affinity)
+nimbus_task* nimbus_task_queue_fetch_next_task_from_affinity(nimbus_task_queue* self, int requested_affinity)
 {
 	nimbus_task* task;
 
+	nimbus_mutex_lock(&self->mutex);
 	if (self->task_count == 0) {
 		task = 0;
 	} else {
-		nimbus_mutex_lock(&self->mutex);
 		task = self->tasks[self->task_read_index];
 
-		if (task->affinity != -1 && requested_affinity != task->affinity) {
-			TYRAN_LOG("Couldn't execute task");
+		if (requested_affinity != task->affinity) {
 			task = 0;
 		} else {
 			self->tasks[self->task_read_index] = 0;
@@ -74,8 +89,35 @@ nimbus_task* nimbus_task_queue_fetch_next_task(nimbus_task_queue* self, int requ
 			self->task_read_index %= self->task_max_count;
 			self->task_count--;
 		}
-		nimbus_mutex_unlock(&self->mutex);
 	}
+	nimbus_mutex_unlock(&self->mutex);
+
+	return task;
+}
+
+
+nimbus_task* nimbus_task_queue_fetch_next_task(nimbus_task_queue* self, int requested_affinity)
+{
+	nimbus_task* task;
+
+	nimbus_mutex_lock(&self->mutex);
+	if (self->task_count == 0) {
+		task = 0;
+	} else {
+		task = self->tasks[self->task_read_index];
+
+		if (task->affinity != -1 && requested_affinity != task->affinity) {
+//			TYRAN_LOG("Ignoring task:'%s' group:%d affinity:%d", task->name, task->group, task->affinity);
+			task = 0;
+		} else {
+//			TYRAN_LOG("Starting task:'%s' group:%d affinity:%d", task->name, task->group, task->affinity);
+			self->tasks[self->task_read_index] = 0;
+			self->task_read_index++;
+			self->task_read_index %= self->task_max_count;
+			self->task_count--;
+		}
+	}
+	nimbus_mutex_unlock(&self->mutex);
 
 	return task;
 }

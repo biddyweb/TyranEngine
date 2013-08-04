@@ -2,6 +2,7 @@
 #define tyran_memory_pool_h
 
 struct tyran_memory_pool;
+struct tyran_memory;
 
 typedef struct tyran_memory_pool_entry {
 	const char* file;

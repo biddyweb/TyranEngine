@@ -11,5 +11,6 @@ typedef struct tyran_range_iterator {
 
 tyran_range_iterator* tyran_range_iterator_new(struct tyran_memory* memory, int start, int end);
 int* tyran_range_iterator_next(tyran_range_iterator* iterator);
+void tyran_range_iterator_free(tyran_range_iterator* self);
 
 #endif

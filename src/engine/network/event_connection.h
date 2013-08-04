@@ -3,13 +3,15 @@
 
 #include "connecting_socket.h"
 #include "ring_buffer.h"
-#include "../../core/src/base/event/nimbus_event_listener.h"
+#include <tyran_core/event/event_listener.h>
 
 #include "../stream/out_stream.h"
 #include "../stream/in_stream.h"
 
-#include "../resource/resource_id.h"
-#include "../../core/src/base/update/nimbus_update.h"
+#include <tyran_engine/resource/id.h>
+#include <tyran_engine/resource/type_id.h>
+#include <tyran_core/update/update.h>
+#include "../../core/src/base/mutex/nimbus_mutex.h"
 
 
 struct tyran_memory;
@@ -22,13 +24,16 @@ typedef struct nimbus_event_connection {
 	int in_buffer_size;
 
 //	nimbus_event_write_stream out_event_stream;
-	
+
 	nimbus_update update_object;
-	
+
 	nimbus_task receive_task;
-	
+
 	nimbus_connecting_socket socket;
 	nimbus_resource_id resource_id;
+	nimbus_resource_type_id resource_type_id;
+
+	nimbus_mutex ring_buffer_mutex;
 
 	u32t expected_payload_size;
 	int waiting_for_header;

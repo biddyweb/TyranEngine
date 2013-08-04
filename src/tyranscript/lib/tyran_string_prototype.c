@@ -30,7 +30,6 @@ TYRAN_RUNTIME_CALL_FUNC(tyran_string_prototype_add)
 {
 	const tyran_string* self_string = tyran_value_object_string(self);
 	const tyran_string* add_string = tyran_value_object_string(arguments);
-	TYRAN_LOG("String add!");
 	const tyran_string* s = tyran_string_strcat(runtime->string_pool, runtime->memory, self_string, add_string);
 	tyran_value copy_value;
 	tyran_string_object_new(&copy_value, runtime, s);

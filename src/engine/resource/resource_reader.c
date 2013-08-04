@@ -1,9 +1,9 @@
 #include <tyranscript/tyran_memory.h>
-#include "../../core/src/base/event/nimbus_event_listener.h"
+#include <tyran_core/event/event_listener.h>
 #include "resource_reader.h"
 #include "resource_handler.h"
-#include "../../core/src/base/update/nimbus_update.h"
-#include "../../core/src/base/event/nimbus_event_stream.h"
+#include <tyran_core/update/update.h>
+#include <tyran_core/event/event_stream.h>
 
 #include <stdio.h>
 

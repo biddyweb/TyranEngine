@@ -41,6 +41,26 @@ void nimbus_ring_buffer_write_pointer_advance(nimbus_ring_buffer* self, int size
 	self->size += size;
 }
 
+void nimbus_ring_buffer_write(nimbus_ring_buffer* self, const u8t* data, int length)
+{
+	u8t* temp_buffer;
+	int temp_buffer_size;
+
+	nimbus_ring_buffer_write_pointer(self, &temp_buffer, &temp_buffer_size);
+	int burst = temp_buffer_size < length ? temp_buffer_size : length;
+	tyran_memcpy_octets(temp_buffer, data, burst);
+	nimbus_ring_buffer_write_pointer_advance(self, burst);
+	length -= burst;
+
+	nimbus_ring_buffer_write_pointer(self, &temp_buffer, &temp_buffer_size);
+	int second_burst = temp_buffer_size < length ? temp_buffer_size : length;
+	tyran_memcpy_octets(temp_buffer, data + burst, second_burst);
+	nimbus_ring_buffer_write_pointer_advance(self, second_burst);
+	length -= second_burst;
+
+	TYRAN_ASSERT(length == 0, "Ring buffer full");
+}
+
 /*
 static void write_advance(nimbus_ring_buffer* self, const u8t* data_pointer, int size)
 {
@@ -67,14 +87,11 @@ void nimbus_ring_buffer_read_pointer(nimbus_ring_buffer* self, u8t** data, int* 
 	int available;
 	if (self->size == 0) {
 		available = 0;
-	}
-	else if (self->read_index < self->write_index) {
+	} else if (self->read_index < self->write_index) {
 		available = self->write_index - self->read_index;
 	} else {
 		available = self->max_size - self->read_index;
 	}
-
-	TYRAN_LOG("read ri:%d, wi:%d, len:%d", self->read_index, self->write_index, available);
 
 	*data = self->buffer + self->read_index;
 	*length = available;

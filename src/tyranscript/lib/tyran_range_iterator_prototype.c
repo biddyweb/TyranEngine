@@ -23,7 +23,7 @@ TYRAN_RUNTIME_CALL_FUNC(tyran_range_iterator_prototype_constructor)
 
 TYRAN_RUNTIME_CALL_FUNC(tyran_range_iterator_prototype_next)
 {
-	tyran_object* object = tyran_value_object(self);
+	tyran_object* object = tyran_value_mutable_object(self);
 	tyran_range_iterator* iterator = tyran_object_range_iterator(object);
 
 	int* next = tyran_range_iterator_next(iterator);

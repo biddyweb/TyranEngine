@@ -1,42 +1,49 @@
 #include <tyranscript/tyran_string.h>
 #include <tyranscript/tyran_config.h>
 
-const tyran_string* tyran_string_new(tyran_memory_pool* string_pool, tyran_memory* memory, int len)
+static tyran_string* create_string(tyran_memory_pool* string_pool)
 {
-	tyran_string* str = TYRAN_MALLOC_TYPE(string_pool, tyran_string);
-	str->buf = TYRAN_MALLOC_NO_POOL_TYPE_COUNT(memory, tyran_string_char, len);
-	str->len = len;
+	tyran_string* duplicate = TYRAN_MALLOC_TYPE(string_pool, tyran_string);
+	return duplicate;
+}
 
-	return str;
+static void tyran_string_reserve(tyran_string* self, tyran_memory* memory, int char_count)
+{
+	self->buf = TYRAN_MALLOC_NO_POOL_TYPE_COUNT(memory, tyran_string_char, char_count);
+	self->len = char_count;
+}
+
+void tyran_string_init(tyran_string* self, tyran_memory* memory, const tyran_string_char* chars, int char_count)
+{
+	tyran_string_reserve(self, memory, char_count);
+	tyran_memcpy_type(tyran_string_char, self->buf, chars, char_count);
 }
 
 void tyran_string_free(const tyran_string* str)
 {
 	tyran_free(str->buf);
-	TYRAN_MALLOC_FREE((void*)str);
 }
 
-
-const tyran_string* tyran_string_strdup(tyran_memory_pool* string_pool, tyran_memory* memory,  const tyran_string* str)
+const tyran_string* tyran_string_strdup(tyran_memory_pool* string_pool, tyran_memory* memory, const tyran_string* str)
 {
 	int len = str->len;
-	const tyran_string* duplicate = tyran_string_new(string_pool, memory, len);
-	tyran_memcpy_type(tyran_string_char, duplicate->buf, str->buf, len);
+	tyran_string* duplicate = create_string(string_pool);
+	tyran_string_init(duplicate, memory, str->buf, len);
 	return duplicate;
 }
 
 const tyran_string* tyran_string_strdup_str(tyran_memory_pool* string_pool, tyran_memory* memory, const char* str)
 {
 	int len = tyran_strlen(str);
-	int i;
 
-	const tyran_string* rr = tyran_string_new(string_pool, memory, len);
+	tyran_string* duplicate = create_string(string_pool);
+	tyran_string_reserve(duplicate, memory, len);
 
-	for (i = 0; i < len; ++i) {
-		rr->buf[i] = str[i];
+	for (int i = 0; i < len; ++i) {
+		duplicate->buf[i] = str[i];
 	}
 
-	return rr;
+	return duplicate;
 }
 
 const tyran_string* tyran_string_substr(tyran_memory_pool* string_pool, tyran_memory* memory, const tyran_string* str, int start, int len)
@@ -51,9 +58,10 @@ const tyran_string* tyran_string_substr(tyran_memory_pool* string_pool, tyran_me
 
 	int characters_to_copy = source_string_length - start;
 	characters_to_copy = characters_to_copy < len ? characters_to_copy : len;
-	const tyran_string* rr = tyran_string_new(string_pool, memory, characters_to_copy);
 
-	tyran_memcpy_type(tyran_string_char, rr->buf, str->buf + start, characters_to_copy);
+
+	tyran_string* rr = create_string(string_pool);
+	tyran_string_init(rr, memory, str->buf + start, characters_to_copy);
 
 	return rr;
 }
@@ -61,10 +69,11 @@ const tyran_string* tyran_string_substr(tyran_memory_pool* string_pool, tyran_me
 const tyran_string* tyran_string_strcpy(tyran_memory_pool* string_pool, tyran_memory* memory, const tyran_string* from)
 {
 	int len = from->len;
-	const tyran_string* to = tyran_string_new(string_pool, memory, len);
-	tyran_memcpy_type(tyran_string_char, to->buf, from->buf, len);
 
-	return to;
+	tyran_string* rr = create_string(string_pool);
+	tyran_string_init(rr, memory, from->buf, len);
+
+	return rr;
 }
 
 void tyran_string_to_c_str(char* buf, int tyran_string_max_length, const tyran_string* str)
@@ -81,7 +90,8 @@ void tyran_string_to_c_str(char* buf, int tyran_string_max_length, const tyran_s
 const tyran_string* tyran_string_from_c_str(tyran_memory_pool* string_pool, tyran_memory* memory, const char* str)
 {
 	int len = tyran_strlen(str);
-	const tyran_string* target = tyran_string_new(string_pool, memory, len);
+	tyran_string* target = create_string(string_pool);
+	tyran_string_reserve(target, memory, len);
 	tyran_string_length_type i;
 
 	for (i = 0; i < len; ++i) {
@@ -90,16 +100,6 @@ const tyran_string* tyran_string_from_c_str(tyran_memory_pool* string_pool, tyra
 
 	return target;
 }
-
-const tyran_string* tyran_string_from_characters(tyran_memory_pool* string_pool, tyran_memory* memory, const tyran_string_char* str, int len)
-{
-	const tyran_string* target = tyran_string_new(string_pool, memory, len);
-
-	tyran_memcpy_type(tyran_string_char, target->buf, str, len);
-
-	return target;
-}
-
 
 int tyran_string_strcmp(const tyran_string* str1, const tyran_string* str2)
 {
@@ -124,8 +124,8 @@ int tyran_string_strcmp(const tyran_string* str1, const tyran_string* str2)
 const tyran_string* tyran_string_strcat(tyran_memory_pool* string_pool, tyran_memory* memory, const tyran_string* str1, const tyran_string* str2)
 {
 	int len = str1->len + str2->len;
-	const tyran_string* rr = tyran_string_new(string_pool, memory, len);
-
+	tyran_string* rr = create_string(string_pool);
+	tyran_string_reserve(rr, memory, len);
 	tyran_memcpy_type(tyran_string_char, rr->buf, str1->buf, str1->len);
 	tyran_memcpy_type(tyran_string_char, rr->buf + str1->len, str2->buf, str2->len);
 	return rr;

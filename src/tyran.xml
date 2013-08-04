@@ -47,5 +47,8 @@
 		<source directory="core/src/platform/posix" />
 		<library filename="pthread" />
 	</platform>
+	<platform name="windows">
+		<define name="TORNADO_OS_WINDOWS" />
+	</platform>
 
 </target>

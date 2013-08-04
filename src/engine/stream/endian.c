@@ -4,7 +4,10 @@
 #import <netinet/in.h>
 #elif defined TORNADO_OS_LINUX
 #include <netinet/in.h>
-
+#elif defined TORNADO_OS_WINDOWS
+#include <Winsock2.h>
+#else
+#error "No platform"
 #endif
 
 u16t nimbus_endian_u16_to_network(u16t data)

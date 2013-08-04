@@ -59,7 +59,7 @@ void nimbus_connecting_socket_init(nimbus_connecting_socket* self, const char* h
 
 void nimbus_connecting_socket_write(nimbus_connecting_socket* self, const u8t* data, int length)
 {
-	send(self->socket_handle, data, length, 0);
+	send(self->socket_handle, (const char*)data, length, 0);
 }
 
 int nimbus_connecting_socket_read(nimbus_connecting_socket* self, u8t* data, int max_length)

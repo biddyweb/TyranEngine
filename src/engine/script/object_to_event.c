@@ -6,6 +6,7 @@
 #include <tyranscript/tyran_object.h>
 #include "event_definition.h"
 #include "object_info.h"
+#include <tyranscript/tyran_string.h>
 
 #include "property_reader.h"
 
@@ -69,7 +70,14 @@ void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_w
 			}
 			break;
 			case NIMBUS_EVENT_DEFINITION_STRING: {
-				TYRAN_ERROR("To be implemented...");
+				tyran_object_lookup_prototype(&value, o, &p->symbol);
+				const tyran_string* str = tyran_value_string(value);
+				*((int*)d) = (int) str->len;
+				d += sizeof(int);
+				NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN();
+				int octet_length = sizeof(tyran_string_char) * str->len;
+				tyran_memcpy_octets(d, str->buf, octet_length);
+				d += octet_length;
 			}
 			break;
 			case NIMBUS_EVENT_DEFINITION_OBJECT: {

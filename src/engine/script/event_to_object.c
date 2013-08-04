@@ -4,6 +4,8 @@
 #include <tyran_core/event/event_stream.h>
 
 #include <tyranscript/tyran_object.h>
+#include <tyranscript/tyran_string.h>
+#include <tyranscript/tyran_string_object.h>
 #include "event_definition.h"
 #include "object_info.h"
 
@@ -63,7 +65,14 @@ int nimbus_event_to_arguments_convert(nimbus_event_to_arguments* self, tyran_val
 			}
 			break;
 			case NIMBUS_EVENT_DEFINITION_STRING: {
-				TYRAN_ERROR("To be implemented...");
+				int char_count = (int*) d;
+				d += sizeof(int);
+				NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN();
+
+				tyran_string* string = TYRAN_CALLOC_TYPE(self->runtime->string_pool, tyran_string);
+				tyran_string_init(string, self->runtime->memory, (tyran_string_char*) d, char_count);
+
+				tyran_string_object_new(destination, self->runtime, string);
 			}
 			break;
 			case NIMBUS_EVENT_DEFINITION_OBJECT: {

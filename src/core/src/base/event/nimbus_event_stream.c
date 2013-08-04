@@ -1,5 +1,6 @@
 #include <tyran_core/event/event_stream.h>
 #include <tyranscript/tyran_clib.h>
+#include <tyranscript/tyran_string.h>
 
 void nimbus_event_write_stream_clear(nimbus_event_write_stream* self)
 {
@@ -43,6 +44,12 @@ void nimbus_event_stream_write_align(nimbus_event_write_stream* self)
 	}
 }
 
+void nimbus_event_stream_write_string(nimbus_event_write_stream* self, const tyran_string* string)
+{
+	nimbus_event_stream_write_type(self, string->len);
+	nimbus_event_stream_write_octets(self, string->buf, sizeof(tyran_string_char) * string->len);
+}
+
 void nimbus_event_stream_write_event_end(nimbus_event_write_stream* self)
 {
 	int octet_size = self->pointer - ((u8t*)self->last_header) - sizeof(nimbus_event_stream_header);
@@ -73,6 +80,15 @@ void nimbus_event_stream_read_skip(nimbus_event_read_stream* self, int length)
 {
 	TYRAN_ASSERT(self->pointer + length <= self->end_pointer, "Read skipped too far");
 	self->pointer += length;
+}
+
+void nimbus_event_stream_read_string(nimbus_event_read_stream* self, struct tyran_memory* memory, tyran_string* string)
+{
+	int length;
+	nimbus_event_stream_read_type(self, length);
+	const u8t* data;
+	nimbus_event_stream_read_pointer(self, &data, length * sizeof(tyran_string_char));
+	tyran_string_init(string, memory, (tyran_string_char*)data, length / sizeof(tyran_string_char));
 }
 
 void nimbus_event_stream_read_align(nimbus_event_read_stream* self)

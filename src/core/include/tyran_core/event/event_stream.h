@@ -4,6 +4,7 @@
 #include <tyranscript/tyran_types.h>
 
 struct tyran_memory;
+struct tyran_string;
 
 typedef u8t nimbus_event_type_id;
 
@@ -33,12 +34,14 @@ int nimbus_event_write_stream_length(nimbus_event_write_stream* self);
 void nimbus_event_stream_write_octets(nimbus_event_write_stream* stream, const void* data, int len);
 void nimbus_event_stream_write_align(nimbus_event_write_stream* self);
 void nimbus_event_stream_write_event_end(nimbus_event_write_stream* self);
+void nimbus_event_stream_write_string(nimbus_event_write_stream* self, const struct tyran_string* string);
 
 void nimbus_event_stream_read_init(nimbus_event_read_stream* self, const u8t* pointer, int length);
 void nimbus_event_stream_read_octets(nimbus_event_read_stream* stream, u8t* data, int len);
 void nimbus_event_stream_read_pointer(nimbus_event_read_stream* stream, const u8t** data, int len);
 void nimbus_event_stream_read_align(nimbus_event_read_stream* self);
 void nimbus_event_stream_read_skip(nimbus_event_read_stream* self, int length);
+void nimbus_event_stream_read_string(nimbus_event_read_stream* self, struct tyran_memory* memory, struct tyran_string* string);
 
 #define nimbus_event_stream_write_type(stream, variable) { nimbus_event_stream_write_align(stream); nimbus_event_stream_write_octets(stream, (const u8t*)(&variable), sizeof(variable)); }
 #define nimbus_event_stream_write_event_header(stream, ID) {  nimbus_event_stream_header header; header.event_type_id = ID; header.event_octet_size = 0; nimbus_event_stream_write_type(stream, header); (stream)->last_header = (nimbus_event_stream_header*)((stream)->pointer - sizeof(header)); }

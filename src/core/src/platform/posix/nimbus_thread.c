@@ -1,3 +1,4 @@
+#if defined TORNADO_OS_IOS
 #include "nimbus_thread.h"
 
 #include <tyranscript/tyran_log.h>
@@ -42,3 +43,6 @@ tyran_boolean nimbus_thread_is_done(nimbus_thread* self)
 {
 	return self->_is_done;
 }
+#else
+int a;
+#endif

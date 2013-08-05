@@ -1,3 +1,5 @@
+#if defined TORNADO_OS_IOS
+
 #ifndef nimbus_thread_h
 #define nimbus_thread_h
 
@@ -18,4 +20,9 @@ typedef struct nimbus_thread {
 void nimbus_thread_init(nimbus_thread* self, nimbus_thread_func func, void* other_self);
 tyran_boolean nimbus_thread_is_done(nimbus_thread* self);
 
+#endif
+
+
+#else
+int a;
 #endif

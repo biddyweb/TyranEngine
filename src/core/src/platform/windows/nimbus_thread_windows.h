@@ -1,5 +1,5 @@
-#ifndef nimbus_thread_h
-#define nimbus_thread_h
+#ifndef nimbus_thread_windows_h
+#define nimbus_thread_windows_h
 
 #include <tyran_core/platform/windows/tyran_windows.h>
 #include <tyranscript/tyran_types.h>

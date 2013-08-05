@@ -1,3 +1,4 @@
+#if defined TORNADO_OS_IOS
 #include "nimbus_mutex.h"
 #include <pthread.h>
 
@@ -20,3 +21,6 @@ void nimbus_mutex_unlock(nimbus_mutex* mutex)
 {
 	pthread_mutex_unlock(&mutex->mutex);
 }
+#else
+int a;
+#endif

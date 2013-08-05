@@ -12,6 +12,7 @@
 #include "../resource/resource_handler.h"
 
 #include <tyran_engine/module/nimbus_module.h>
+#include <tyran_engine/module/register_modules.h>
 
 static void fire_load_state(nimbus_engine* self, nimbus_resource_id id)
 {
@@ -155,7 +156,7 @@ void start_event_connection(nimbus_engine* self, tyran_memory* memory, const cha
 	nimbus_task_queue_add_task(task_queue, &self->event_connection.receive_task);
 }
 
-void nimbus_register_modules(nimbus_modules* modules);
+
 
 static void create_modules(nimbus_engine* self, tyran_memory* memory)
 {

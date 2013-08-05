@@ -1,4 +1,4 @@
-#include "nimbus_thread.h"
+#include "nimbus_thread_windows.h"
 #include <tyranscript/tyran_log.h>
 
 static DWORD WINAPI thread_main_routine(LPVOID data)

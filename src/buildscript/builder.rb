@@ -48,7 +48,8 @@ class Builder
 
 	def link object_files, application
 		puts "* Link #{application}"
-		sh "#{@c_compiler} #{object_files.join(' ')} -lm -o #{application}"
+		@libraries = ['m', 'ws2_32']
+		sh "#{@c_compiler} #{object_files.join(' ')} #{parameter_string('l', @libraries)} -o #{application}"
 	end
 
 	def compile source, target

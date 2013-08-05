@@ -1,4 +1,4 @@
-#include "property_writer.h"
+#include <tyran_engine/script/property_writer.h>
 #include <tyran_engine/script/property_reader.h>
 #include <tyranscript/tyran_symbol_table.h>
 #include <tyranscript/tyran_object.h>

@@ -1,4 +1,4 @@
-#include "event_to_object.h"
+#include <tyran_engine/script/event_to_object.h>
 
 #include <tyranscript/tyran_symbol_table.h>
 #include <tyran_core/event/event_stream.h>
@@ -6,16 +6,17 @@
 #include <tyranscript/tyran_object.h>
 #include <tyranscript/tyran_string.h>
 #include <tyranscript/tyran_string_object.h>
-#include "event_definition.h"
+#include <tyran_engine/event_definition/event_definition.h>
 #include "object_info.h"
 
-#include "property_writer.h"
+#include <tyran_engine/script/property_writer.h>
 
 #include <tyran_engine/type/size2.h>
 #include <tyran_engine/type/size2i.h>
 #include <tyran_engine/type/vector2.h>
 
 #include <tyranscript/tyran_runtime.h>
+#include <stdint.h>
 
 #define NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN() { const int alignment = 4; d += (alignment - ((intptr_t)(d-buf) % alignment)) % alignment; }
 
@@ -65,7 +66,7 @@ int nimbus_event_to_arguments_convert(nimbus_event_to_arguments* self, tyran_val
 			}
 			break;
 			case NIMBUS_EVENT_DEFINITION_STRING: {
-				int char_count = (int*) d;
+				int char_count = *(int*) d;
 				d += sizeof(int);
 				NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN();
 

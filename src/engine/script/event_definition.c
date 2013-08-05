@@ -1,4 +1,4 @@
-#include "event_definition.h"
+#include <tyran_engine/event_definition/event_definition.h>
 #include <tyranscript/tyran_symbol_table.h>
 
 void nimbus_event_definition_init(nimbus_event_definition* self, struct tyran_symbol_table* symbol_table, const char* name, u8t event_type_id, u8t unspawn_event_type_id)

@@ -19,8 +19,8 @@
 #include <tyran_engine/script/event_to_object.h>
 
 #include "object_info.h"
-#include "object_decorator.h"
-#include "event_definition.h"
+#include <tyran_engine/script/object_decorator.h>
+#include <tyran_engine/event_definition/event_definition.h>
 #include "object_spawner.h"
 #include "track_info.h"
 #include "../event/resource_load_state.h"
@@ -100,6 +100,7 @@ static nimbus_resource_id resource_id_for_layer(const char* layer_name, tyran_sy
 	return layer_specific_resource_id;
 }
 
+/*
 static tyran_object* find_resource(nimbus_object_listener* self, nimbus_resource_id layer_specific_resource_id)
 {
 	return 0;
@@ -114,7 +115,7 @@ static tyran_object* fetch_resource(nimbus_object_listener* self, nimbus_resourc
 
 	return o;
 }
-
+*/
 void nimbus_type_to_layers_init(nimbus_type_to_layers* self, tyran_symbol type_name)
 {
 	self->infos_count = 0;

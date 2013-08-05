@@ -4,15 +4,17 @@
 #include <tyran_core/event/event_stream.h>
 
 #include <tyranscript/tyran_object.h>
-#include "event_definition.h"
+#include <tyran_engine/event_definition/event_definition.h>
 #include "object_info.h"
 #include <tyranscript/tyran_string.h>
 
-#include "property_reader.h"
+#include <tyran_engine/script/property_reader.h>
 
 #include <tyran_engine/type/size2.h>
 #include <tyran_engine/type/size2i.h>
 #include <tyran_engine/type/vector2.h>
+
+#include <stdint.h>
 
 #define NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN() { const int alignment = 4; d += (alignment - ((intptr_t)(d-buf) % alignment)) % alignment; }
 

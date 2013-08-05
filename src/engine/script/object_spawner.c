@@ -5,10 +5,10 @@
 #include <tyranscript/tyran_property_iterator.h>
 #include <tyranscript/tyran_symbol_table.h>
 
-#include "event_definition.h"
+#include <tyran_engine/event_definition/event_definition.h>
 #include "object_info.h"
 
-
+/*
 static void print_object(nimbus_object_spawner* self, const char* description, tyran_object* object)
 {
 	tyran_value object_value;
@@ -16,6 +16,7 @@ static void print_object(nimbus_object_spawner* self, const char* description, t
 	tyran_print_value(description, &object_value, 1, self->symbol_table);
 	tyran_value_release(object_value);
 }
+*/
 
 void nimbus_object_spawner_init(nimbus_object_spawner* self, tyran_runtime* runtime, nimbus_event_definition* defintions, int definitions_count, const tyran_object* object_to_spawn)
 {

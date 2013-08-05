@@ -8,4 +8,6 @@ typedef struct nimbus_vector2 {
 	tyran_number y;
 } nimbus_vector2;
 
+nimbus_vector2 nimbus_vector2_make(tyran_number a, tyran_number b); 
+
 #endif

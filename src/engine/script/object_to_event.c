@@ -16,7 +16,7 @@
 
 #include <stdint.h>
 
-#define NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN() { const int alignment = 4; d += (alignment - ((intptr_t)(d-buf) % alignment)) % alignment; }
+#define NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN() { const int alignment = 4; d += (alignment - ((intptr_t)(d) % alignment)) % alignment; }
 
 void nimbus_object_to_event_init(nimbus_object_to_event* self, struct tyran_memory* memory, tyran_symbol_table* symbol_table)
 {
@@ -74,9 +74,8 @@ void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_w
 			case NIMBUS_EVENT_DEFINITION_STRING: {
 				tyran_object_lookup_prototype(&value, o, &p->symbol);
 				const tyran_string* str = tyran_value_string(value);
-				*((int*)d) = (int) str->len;
-				d += sizeof(int);
-				NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN();
+				*((tyran_string_length_type*)d) = str->len;
+				d += sizeof(tyran_string_length_type);
 				int octet_length = sizeof(tyran_string_char) * str->len;
 				tyran_memcpy_octets(d, str->buf, octet_length);
 				d += octet_length;

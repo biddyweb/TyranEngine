@@ -1,4 +1,4 @@
-#if defined TYRAN_PLATFORM_IOS
+#if defined TORNADO_OS_IOS
 #define _POSIX_C_SOURCE 199309
 #include <time.h>
 #include "../../base/thread/nimbus_thread_sleep.h"

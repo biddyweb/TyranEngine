@@ -171,7 +171,7 @@ struct tyran_red_black_tree_iterator* tyran_object_array_iterator(struct tyran_o
 }
 
 const struct tyran_string* tyran_object_string(struct tyran_object* o) {
-	TYRAN_ASSERT(o->type == TYRAN_OBJECT_TYPE_STRING, "must be array iterator");
+	TYRAN_ASSERT(o->type == TYRAN_OBJECT_TYPE_STRING, "must be string");
 	return o->data.str;
 }
 

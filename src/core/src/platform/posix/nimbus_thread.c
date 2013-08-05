@@ -25,7 +25,7 @@ void nimbus_thread_init(nimbus_thread* self, nimbus_thread_func func, void* othe
 	int return_code = pthread_attr_init(&self->attr);
 	if (return_code) {
 		return;
-	} 
+	}
 	TYRAN_ASSERT(return_code == 0, "pthread_attr_init() failed");
 	return_code = pthread_attr_setdetachstate(&self->attr, PTHREAD_CREATE_DETACHED);
 	TYRAN_ASSERT(return_code == 0, "setdetachstate() failed");

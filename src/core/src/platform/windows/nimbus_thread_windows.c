@@ -19,7 +19,7 @@ static void start(nimbus_thread* self)
 	self->handle = CreateThread(0, stack_size, thread_main_routine, thread_parameter, creation_flags, &thread_id);
 	TYRAN_ASSERT(self->handle, "Couldn't create a thread");
 	SetThreadPriority(self->handle, THREAD_PRIORITY_ABOVE_NORMAL);
-	TYRAN_LOG("Thread started!");	
+	TYRAN_LOG("Thread started!");
 }
 
 void nimbus_thread_init(nimbus_thread* self, nimbus_thread_func func, void* other_self)

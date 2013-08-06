@@ -39,7 +39,6 @@ int nimbus_event_to_arguments_convert(nimbus_event_to_arguments* self, tyran_val
 	nimbus_property_writer* writer = &self->writer;
 
 	const u8t* d = stream->pointer;
-	const u8t* buf = d;
 	if (e->has_index) {
 		// ignored for now
 		d += sizeof(int);

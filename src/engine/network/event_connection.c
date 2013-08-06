@@ -123,7 +123,7 @@ static void fire_resource_updated(nimbus_event_write_stream* out_event_stream, n
 	u8t* temp_buffer;
 	int temp_buffer_size;
 
-	TYRAN_LOG("Received resource id:%d type:%d", resource_id, resource_type_id);
+	TYRAN_LOG("EventConnection: Fire resource id:%s type:%d", nimbus_resource_id_debug_name(resource_id), resource_type_id);
 
 	nimbus_resource_updated resource_updated;
 	resource_updated.resource_id = resource_id;

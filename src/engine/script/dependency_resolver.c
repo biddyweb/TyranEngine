@@ -226,6 +226,7 @@ static void delete_dependency_info(nimbus_dependency_resolver* self, nimbus_reso
 
 static void resource_resolved(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info)
 {
+	TYRAN_LOG("Resolved '%s'", nimbus_resource_id_debug_name(info->resource_id));
 	loading_done(self, info->resource_id);
 	nimbus_resource_cache_add(&self->resource_cache, info->resource_id, info->target);
 	nimbus_resource_id resource_id = info->resource_id;
@@ -241,6 +242,12 @@ static tyran_boolean check_if_resolved(nimbus_dependency_resolver* self, nimbus_
 	if (nimbus_resource_dependency_info_is_satisfied(info)) {
 		resource_resolved(self, info);
 		return TYRAN_TRUE;
+	} else {
+		TYRAN_LOG("'%s' not ready. Waiting for...", nimbus_resource_id_debug_name(info->resource_id));
+		for (int i=0; i<info->resource_dependencies_count; ++i) {
+			nimbus_resource_dependency* dependency = &info->resource_dependencies[i];
+			TYRAN_LOG(" '%s'", nimbus_resource_id_debug_name(dependency->resource_id));
+		}
 	}
 
 	return TYRAN_FALSE;

@@ -145,6 +145,7 @@ static void fire_resource_updated(nimbus_event_write_stream* out_event_stream, n
 	expected_payload_size -= read_count;
 	nimbus_event_stream_write_octets(out_event_stream, temp_buffer, read_count);
 
+	TYRAN_ASSERT(expected_payload_size == 0, "Couldn't write everything from buffer");
 	nimbus_event_stream_write_event_end(out_event_stream);
 }
 

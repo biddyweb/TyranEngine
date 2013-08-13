@@ -89,17 +89,7 @@ void schedule_update_tasks(nimbus_engine* self, nimbus_task_queue* queue)
 	for (int i=1; i<self->update_objects_count; ++i) {
 		nimbus_task* task = &self->update_objects[i]->task;
 		// TYRAN_LOG("adding task:%d (%s)", i, self->update_objects[i]->name);
-		if (task->affinity != 0) {
-			nimbus_task_queue_add_task(queue, task);
-		}
-	}
-
-	for (int i=1; i<self->update_objects_count; ++i) {
-		nimbus_task* task = &self->update_objects[i]->task;
-		// TYRAN_LOG("adding task:%d (%s)", i, self->update_objects[i]->name);
-		if (task->affinity == 0) {
-			nimbus_task_queue_add_task(queue, task);
-		}
+		nimbus_task_queue_add_task(queue, task);
 	}
 }
 

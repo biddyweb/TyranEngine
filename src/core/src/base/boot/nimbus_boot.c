@@ -94,9 +94,12 @@ void nimbus_boot_send_event(nimbus_boot* self, u8t event_id, void* data, int oct
 
 int nimbus_boot_update(nimbus_boot* self)
 {
-	int err = nimbus_engine_update(self->engine, self->task_queue);
+	int err = -1;
 	nimbus_boot_manually_update_affinity_zero_tasks(self);
-
+	if (nimbus_boot_ready_for_next_frame(self)) {
+		err = nimbus_engine_update(self->engine, self->task_queue);
+	}
+	
 	return err;
 }
 

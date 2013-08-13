@@ -164,9 +164,9 @@
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
-	if (nimbus_boot_ready_for_next_frame(self->boot)) {
+	int err = nimbus_boot_update(self->boot);
+	if (err != -1) {
 		[self sendAndClearTouches];
-		nimbus_boot_update(self->boot);
 	} else {
 		glClearColor(1.0f, 0.1f, 0.1f, 0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

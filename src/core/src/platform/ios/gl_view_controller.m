@@ -41,6 +41,7 @@
 	GLKView *view = (GLKView *)self.view;
 	view.context = self.context;
 	view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
+	self.preferredFramesPerSecond = 60;
 	self->touchLock = [[NSLock alloc]init];
 	self->touchSet = [[NSMutableSet alloc] init];
 

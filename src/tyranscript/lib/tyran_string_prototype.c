@@ -29,8 +29,21 @@ TYRAN_RUNTIME_CALL_FUNC(tyran_string_prototype_char_at)
 TYRAN_RUNTIME_CALL_FUNC(tyran_string_prototype_add)
 {
 	const tyran_string* self_string = tyran_value_object_string(self);
-	const tyran_string* add_string = tyran_value_object_string(arguments);
+	const tyran_string* add_string;
+	const tyran_string* temp_string = 0;
+	if (tyran_value_is_string(arguments)) {
+		add_string = tyran_value_object_string(arguments);
+	} else {
+		const int temp_buf_size = 512;
+		char temp_buf[temp_buf_size];
+		tyran_value_to_c_string(runtime->symbol_table, arguments, temp_buf, temp_buf_size, 0);
+		temp_string = tyran_string_from_c_str(runtime->string_pool, runtime->memory, temp_buf);
+		add_string = temp_string;
+	}
 	const tyran_string* s = tyran_string_strcat(runtime->string_pool, runtime->memory, self_string, add_string);
+	if (temp_string) {
+		tyran_string_free(temp_string);
+	}
 	tyran_value copy_value;
 	tyran_string_object_new(&copy_value, runtime, s);
 	tyran_value_move(*return_value, copy_value);

@@ -19,10 +19,10 @@ void tyran_string_init(tyran_string* self, tyran_memory* memory, const tyran_str
 	tyran_memcpy_type(tyran_string_char, self->buf, chars, char_count);
 }
 
-void tyran_string_free(tyran_string* str)
+void tyran_string_free(const tyran_string* str)
 {
 	tyran_free(str->buf);
-	tyran_memory_pool_free(str);
+	tyran_memory_pool_free((tyran_string*)str);
 }
 
 const tyran_string* tyran_string_strdup(tyran_memory_pool* string_pool, tyran_memory* memory, const tyran_string* str)

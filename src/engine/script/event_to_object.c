@@ -64,6 +64,11 @@ int nimbus_event_to_arguments_convert(nimbus_event_to_arguments* self, tyran_val
 				d += sizeof(int);
 			}
 			break;
+			case NIMBUS_EVENT_DEFINITION_SYMBOL: {
+				tyran_value_set_symbol(*destination, *((tyran_symbol*)d));
+				d += sizeof(tyran_symbol);
+			}
+			break;
 			case NIMBUS_EVENT_DEFINITION_STRING: {
 				int char_count = *(int*) d;
 				d += sizeof(int);

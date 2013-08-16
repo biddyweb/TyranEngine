@@ -22,13 +22,13 @@ typedef struct nimbus_property_reader {
 } nimbus_property_reader;
 
 void nimbus_property_reader_init(nimbus_property_reader* self, struct tyran_symbol_table* symbol_table);
-void nimbus_property_reader_float(nimbus_property_reader* self, float* v, struct tyran_object* o, tyran_symbol* s);
+void nimbus_property_reader_float(nimbus_property_reader* self, float* v, const struct tyran_object* o, const tyran_symbol* s);
 
-void nimbus_property_reader_vector3(nimbus_property_reader* self, nimbus_vector3* v, struct tyran_object* o, tyran_symbol* s);
-void nimbus_property_reader_vector2(nimbus_property_reader* self, nimbus_vector2* v, struct tyran_object* o, tyran_symbol* s);
-void nimbus_property_reader_rect2(nimbus_property_reader* self, nimbus_rect* v, struct tyran_object* o, tyran_symbol* s);
-void nimbus_property_reader_size2(nimbus_property_reader* self, nimbus_size2* v, struct tyran_object* o, tyran_symbol* s);
-void nimbus_property_reader_size2i(nimbus_property_reader* self, nimbus_size2i* v, struct tyran_object* o, tyran_symbol* s);
-void nimbus_property_reader_quaternion(nimbus_property_reader* self, nimbus_quaternion* v, struct tyran_object* o, tyran_symbol* s);
+void nimbus_property_reader_vector3(nimbus_property_reader* self, nimbus_vector3* v, const struct tyran_object* o, const tyran_symbol* s);
+void nimbus_property_reader_vector2(nimbus_property_reader* self, nimbus_vector2* v, const struct tyran_object* o, const tyran_symbol* s);
+void nimbus_property_reader_rect2(nimbus_property_reader* self, nimbus_rect* v, const struct tyran_object* o, const tyran_symbol* s);
+void nimbus_property_reader_size2(nimbus_property_reader* self, nimbus_size2* v, const struct tyran_object* o, const tyran_symbol* s);
+void nimbus_property_reader_size2i(nimbus_property_reader* self, nimbus_size2i* v, const struct tyran_object* o, const tyran_symbol* s);
+void nimbus_property_reader_quaternion(nimbus_property_reader* self, nimbus_quaternion* v, const struct tyran_object* o, const tyran_symbol* s);
 
 #endif

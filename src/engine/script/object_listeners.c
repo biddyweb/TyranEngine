@@ -25,6 +25,8 @@
 #include "track_info.h"
 #include "../event/resource_load_state.h"
 
+#include "../base/nimbus_engine.h"
+
 
 void nimbus_object_collection_init(nimbus_object_collection* self, struct tyran_memory* memory)
 {
@@ -100,22 +102,6 @@ static nimbus_resource_id resource_id_for_layer(const char* layer_name, tyran_sy
 	return layer_specific_resource_id;
 }
 
-/*
-static tyran_object* find_resource(nimbus_object_listener* self, nimbus_resource_id layer_specific_resource_id)
-{
-	return 0;
-}
-
-static tyran_object* fetch_resource(nimbus_object_listener* self, nimbus_resource_id layer_specific_resource_id)
-{
-	tyran_object* o = find_resource(self, layer_specific_resource_id);
-	if (!o) {
-		nimbus_resource_load_send(&self->update.event_write_stream, layer_specific_resource_id);
-	}
-
-	return o;
-}
-*/
 void nimbus_type_to_layers_init(nimbus_type_to_layer_combines* self, tyran_symbol type_name)
 {
 	self->infos_count = 0;
@@ -787,6 +773,50 @@ tyran_object* nimbus_object_listener_spawn(nimbus_object_listener* self, const t
 	return spawned_object;
 }
 
+TYRAN_RUNTIME_CALL_FUNC(on_call_event)
+{
+	nimbus_object_info* info = (nimbus_object_info*) tyran_value_program_specific(func);
+	nimbus_engine* engine = runtime->program_specific_context;
+	nimbus_object_listener* listener = &engine->object_listener;
+	
+	const nimbus_event_definition* event_definition = info->event_definition;
+	TYRAN_LOG("on_call_event '%s'", event_definition->name);
+	
+	tyran_object* data_object = tyran_object_new(runtime);
+	for (int i=0; i < event_definition->properties_count; ++i) {
+		const nimbus_event_definition_property* property = &event_definition->properties[i];
+		tyran_object_insert(data_object, &property->symbol, &arguments[i]);
+	}
+
+	nimbus_object_to_event_convert(&listener->object_to_event, &listener->update.event_write_stream, data_object, event_definition);
+
+	return 0;
+}
+
+static void add_function_for_event_definition(nimbus_object_listener* self, const nimbus_event_definition* definition, tyran_object* events_object)
+{
+	TYRAN_LOG("Adding event func for '%s'", definition->name);
+	tyran_value* function_object_value = tyran_function_object_new_callback(self->runtime, on_call_event);
+	nimbus_object_info* info = nimbus_decorate_object(tyran_value_mutable_object(function_object_value), self->memory);
+	info->event_definition = definition;
+	tyran_object_insert(events_object, &definition->type_symbol, function_object_value);
+}
+
+static void setup_functions_for_event_definitions(nimbus_object_listener* self, struct tyran_memory* memory, const nimbus_event_definition* event_definitions, int event_definition_count)
+{
+	tyran_value events_object_value = tyran_mocha_api_create_object(self->mocha);
+	
+	tyran_value_object_insert_c_string_key(self->runtime, self->runtime->global, "events", &events_object_value);
+	
+	for (int i=0; i<event_definition_count; ++i) {
+		const nimbus_event_definition* definition = &event_definitions[i];
+		if (!definition->has_index) {
+			add_function_for_event_definition(self, definition, tyran_value_mutable_object(&events_object_value));
+		}
+	}
+}
+
+
 void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* memory, struct tyran_mocha_api* mocha, struct tyran_object* context, nimbus_event_definition* event_definitions, int event_definition_count)
 {
 	self->event_definitions = event_definitions;
@@ -841,4 +871,5 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 	nimbus_object_layers_add_layer(self, "render", memory);
 	nimbus_object_layers_add_layer(self, "audio", memory);
 	setup_collections_for_event_definitions(self, memory, event_definitions, event_definition_count);
+	setup_functions_for_event_definitions(self, memory, event_definitions, event_definition_count);
 }

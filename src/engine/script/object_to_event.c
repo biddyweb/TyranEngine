@@ -31,7 +31,7 @@ void nimbus_object_to_event_free(nimbus_object_to_event* self)
 	tyran_free(self->temp_buf);
 }
 
-void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_write_stream* stream, struct tyran_object* o, nimbus_event_definition* e)
+void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_write_stream* stream, const struct tyran_object* o, const nimbus_event_definition* e)
 {
 	nimbus_object_info* info = (nimbus_object_info*) tyran_object_program_specific(o);
 	nimbus_property_reader* reader = &self->property_reader;
@@ -49,7 +49,7 @@ void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_w
 
 	const tyran_value* value;
 	for (int i = 0; i < e->properties_count; ++i) {
-		nimbus_event_definition_property* p = &e->properties[i];
+		const nimbus_event_definition_property* p = &e->properties[i];
 		// const char* debug_string = tyran_symbol_table_lookup(self->symbol_table, &p->symbol);
 		// TYRAN_LOG("convert: '%s'", debug_string);
 		switch (p->type) {
@@ -69,6 +69,12 @@ void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_w
 				tyran_object_lookup_prototype(&value, o, &p->symbol);
 				*((int*)d) = (int) tyran_value_number(value);
 				d += sizeof(int);
+			}
+			break;
+			case NIMBUS_EVENT_DEFINITION_SYMBOL: {
+				tyran_object_lookup_prototype(&value, o, &p->symbol);
+				*((tyran_symbol*)d) = tyran_value_symbol(value);
+				d += sizeof(tyran_symbol);
 			}
 			break;
 			case NIMBUS_EVENT_DEFINITION_STRING: {

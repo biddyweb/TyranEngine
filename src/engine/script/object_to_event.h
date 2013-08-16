@@ -16,6 +16,6 @@ typedef struct nimbus_object_to_event {
 
 void nimbus_object_to_event_init(nimbus_object_to_event* self, struct tyran_memory* memory, struct tyran_symbol_table* symbol_table);
 void nimbus_object_to_event_free(nimbus_object_to_event* self);
-void nimbus_object_to_event_convert(nimbus_object_to_event* self, struct nimbus_event_write_stream* stream, struct tyran_object* o, struct nimbus_event_definition* e);
+void nimbus_object_to_event_convert(nimbus_object_to_event* self, struct nimbus_event_write_stream* stream, const struct tyran_object* o, const struct nimbus_event_definition* e);
 
 #endif

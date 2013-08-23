@@ -30,6 +30,7 @@ typedef struct nimbus_event_definition {
 	nimbus_event_definition_property properties[16];
 	int properties_count;
 	tyran_boolean has_index;
+	tyran_boolean has_combine_instance_id;
 	u8t event_type_id;
 	const char* name;
 	tyran_symbol type_symbol;

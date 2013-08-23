@@ -23,7 +23,9 @@
 #include <tyran_engine/event_definition/event_definition.h>
 #include "object_spawner.h"
 #include "track_info.h"
+
 #include "../event/resource_load_state.h"
+#include <tyran_engine/event/execute_function.h>
 
 #include "../base/nimbus_engine.h"
 
@@ -211,6 +213,14 @@ static void on_module_resource_updated(nimbus_object_listener* self, struct nimb
 	add_object(self, resource_id, self->module_resource_type_id, o);
 }
 
+static tyran_object* get_combine_instance(nimbus_object_listener* self, nimbus_combine_instance_id instance_id)
+{
+	return self->combine_instances[instance_id];
+}
+
+
+
+
 static void _on_resource_load_state(void* _self, struct nimbus_event_read_stream* stream)
 {
 	nimbus_object_listener* self = _self;
@@ -223,12 +233,13 @@ static void _on_resource_load_state(void* _self, struct nimbus_event_read_stream
 	self->waiting_for_state_resource_id = load_state.resource_id;
 }
 
-static void info_add_function(nimbus_object_listener_info* self, tyran_object* function_context, const tyran_function* function)
+static void info_add_function(nimbus_object_listener_info* self, nimbus_combine_instance_id combine_instance_id, tyran_object* function_context, const tyran_function* function)
 {
 	TYRAN_ASSERT(self->function_count < self->max_function_count, "end of functions");
 	nimbus_object_listener_function* func_info = &self->functions[self->function_count++];
 	func_info->function_context = function_context;
 	func_info->function = function;
+	func_info->combine_instance_id = combine_instance_id;
 }
 
 static void info_delete_listeners_with_context(nimbus_object_listener_info* self, tyran_object* function_context)
@@ -275,7 +286,7 @@ static nimbus_object_listener_info* info_from_symbol(nimbus_object_listener* sel
 	return info;
 }
 
-static void call_event(nimbus_object_listener* self, tyran_symbol symbol, struct tyran_value* arguments, int arguments_count)
+static void call_event(nimbus_object_listener* self, nimbus_combine_instance_id combine_instance_id, tyran_symbol symbol, struct tyran_value* arguments, int arguments_count)
 {
 	nimbus_object_listener_info* info = find_info_from_symbol(self, symbol);
 	if (!info) {
@@ -290,6 +301,9 @@ static void call_event(nimbus_object_listener* self, tyran_symbol symbol, struct
 	tyran_value return_value;
 	for (int i=0; i<info->function_count; ++i) {
 		nimbus_object_listener_function* func_info = &info->functions[i];
+		if (combine_instance_id != NIMBUS_COMBINE_INSTANCE_ID_NONE && func_info->combine_instance_id != combine_instance_id) {
+			continue;
+		}
 
 #if defined OBJECT_LISTENERS_DEBUG
 		TYRAN_LOG("UPDATE function:%p, function_context:%p", func_info->function, &func_info->function_context);
@@ -305,6 +319,20 @@ static void call_event(nimbus_object_listener* self, tyran_symbol symbol, struct
 		tyran_value_release(return_value);
 		tyran_runtime_clear(self->runtime);
 	}
+}
+
+static void execute_function(nimbus_object_listener* self, nimbus_combine_instance_id instance_id, tyran_symbol function_symbol)
+{
+	call_event(self, instance_id, function_symbol, 0, 0);
+}
+
+static void _on_execute_function(void* _self, struct nimbus_event_read_stream* stream)
+{
+	nimbus_object_listener* self = _self;
+
+	nimbus_event_execute_function* event;
+	nimbus_event_stream_read_type_pointer(stream, event, nimbus_event_execute_function);
+	execute_function(self, event->instance_id, event->function_symbol);
 }
 
 static void nimbus_object_layers_add_layer(nimbus_object_listener* self, const char* name, struct tyran_memory* memory)
@@ -351,16 +379,17 @@ static void setup_collections_for_event_definitions(nimbus_object_listener* self
 	}
 }
 
-static void add_listening_function(nimbus_object_listener* self, tyran_object* function_context, const tyran_value* function, const char* event_name)
+static void add_listening_function(nimbus_object_listener* self, nimbus_combine_instance_id combine_instance_id, tyran_object* function_context, const tyran_value* function, const char* event_name)
 {
 	tyran_symbol symbol;
 
 	tyran_symbol_table_add(self->symbol_table, &symbol, event_name);
 	nimbus_object_listener_info* info = info_from_symbol(self, symbol);
-	info_add_function(info, function_context, tyran_value_function(function));
+	TYRAN_LOG("Found listening function '%s' on combine %d", event_name, combine_instance_id);
+	info_add_function(info, combine_instance_id, function_context, tyran_value_function(function));
 }
 
-static void scan_for_listening_functions_on_object(nimbus_object_listener* self, tyran_object* o, tyran_object* combine)
+static void scan_for_listening_functions_on_object(nimbus_object_listener* self, tyran_object* o, tyran_object* combine, nimbus_combine_instance_id combine_instance_id)
 {
 	tyran_property_iterator it;
 
@@ -374,7 +403,7 @@ static void scan_for_listening_functions_on_object(nimbus_object_listener* self,
 		if (tyran_value_is_object(value)) {
 			if (tyran_value_is_function(value)) {
 				if (debug_key_string[0] == 'o' && debug_key_string[1] == 'n') {
-					add_listening_function(self, o, value, &debug_key_string[2]);
+					add_listening_function(self, combine_instance_id, o, value, &debug_key_string[2]);
 				}
 			}
 		}
@@ -397,7 +426,7 @@ static void _on_all(void* _self, struct nimbus_event_read_stream* stream)
 		nimbus_event_definition* definition = &self->event_definitions[i];
 		if (definition->is_module_to_script && definition->event_type_id == event_type_id) {
 			int argument_count = nimbus_event_to_arguments_convert(&converter, arguments, 8, stream, definition);
-			call_event(self, definition->type_symbol, arguments, argument_count);
+			call_event(self, NIMBUS_COMBINE_INSTANCE_ID_NONE, definition->type_symbol, arguments, argument_count);
 			return;
 		}
 	}
@@ -518,13 +547,14 @@ static nimbus_object_collection* object_collection_for_type(nimbus_object_listen
 	return 0;
 }
 
-static void handle_type_object(nimbus_object_listener* self, tyran_object* o, tyran_symbol type_name, const char* type_name_string)
+static void handle_type_object(nimbus_object_listener* self, tyran_object* o, nimbus_combine_instance_id combine_instance_id, tyran_symbol type_name, const char* type_name_string)
 {
 	if (tyran_object_program_specific(o)) {
 		return;
 	}
 
 	nimbus_object_info* info = nimbus_decorate_object(o, self->memory);
+	info->combine_instance_id = combine_instance_id;
 	if (!is_event_type(self, type_name)) {
 		nimbus_type_to_layer_combines* type_to_layers = get_type_to_layers(self, o, type_name);
 		TYRAN_ASSERT(type_to_layers != 0, "Couldn't get layer for type name: '%s'", type_name_string);
@@ -541,24 +571,25 @@ static void handle_type_object(nimbus_object_listener* self, tyran_object* o, ty
 	}
 }
 
-static void check_for_type_on_component(nimbus_object_listener* self, tyran_object* component)
+static void check_for_type_on_component(nimbus_object_listener* self, tyran_object* component, nimbus_combine_instance_id combine_instance_id)
 {
 	const tyran_value* found_value;
 	tyran_object_lookup_prototype(&found_value, component, &self->type_symbol);
 	if (tyran_value_is_symbol(found_value)) {
 		tyran_symbol type_value = tyran_value_symbol(found_value);
 		const char* type_value_string = tyran_symbol_table_lookup(self->symbol_table, &type_value);
-		handle_type_object(self, component, type_value, type_value_string);
+		handle_type_object(self, component, combine_instance_id, type_value, type_value_string);
 	}
 }
 
-static void scan_component(nimbus_object_listener* self, tyran_object* component, tyran_object* combine)
+static void scan_component(nimbus_object_listener* self, tyran_object* component, tyran_object* combine, nimbus_combine_instance_id combine_instance_id)
 {
-	scan_for_listening_functions_on_object(self, component, combine);
-	check_for_type_on_component(self, component);
+	scan_for_listening_functions_on_object(self, component, combine, combine_instance_id);
+	nimbus_object_info* combine_info = (nimbus_object_info*) tyran_object_program_specific(combine);
+	check_for_type_on_component(self, component, combine_info->combine_instance_id);
 }
 
-static void scan_combine(nimbus_object_listener* self, tyran_object* combine)
+static void scan_combine(nimbus_object_listener* self, tyran_object* combine, nimbus_combine_instance_id combine_instance_id)
 {
 	tyran_property_iterator it;
 
@@ -569,17 +600,35 @@ static void scan_combine(nimbus_object_listener* self, tyran_object* combine)
 
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		if (tyran_value_is_object_generic(value)) {
-			scan_component(self, tyran_value_mutable_object((tyran_value*)value), combine);
+			scan_component(self, tyran_value_mutable_object((tyran_value*)value), combine, combine_instance_id);
 		}
 	}
 
 	tyran_property_iterator_free(&it);
 }
 
+static nimbus_combine_instance_id generate_combine_instance_id(nimbus_object_listener* self)
+{
+	nimbus_combine_instance_id id = nimbus_bit_array_reserve_free_index(&self->combine_instance_id_array);
+
+	return id;
+}
+
+static nimbus_combine_instance_id assign_combine_instance_id(nimbus_object_listener* self, tyran_object* spawned_combine)
+{
+	nimbus_combine_instance_id id = generate_combine_instance_id(self);
+	self->combine_instances[id] = spawned_combine;
+	return id;
+}
+
+
 static void on_state_updated(nimbus_object_listener* self, tyran_object* o, nimbus_resource_id resource_id)
 {
+	nimbus_combine_instance_id combine_instance_id = assign_combine_instance_id(self, o);
+	nimbus_object_info* info = nimbus_decorate_object(o, self->memory);
+	info->combine_instance_id = combine_instance_id;
 	TYRAN_LOG("STATE loaded %d", resource_id);
-	scan_combine(self, o);
+	scan_combine(self, o, combine_instance_id);
 }
 
 static void update_layer_association(nimbus_object_listener* self, nimbus_layer_association* association)
@@ -663,6 +712,9 @@ void nimbus_object_listener_on_delete(nimbus_object_listener* self, tyran_object
 		nimbus_object_collection_remove(collection, object_to_be_deleted);
 	}
 	if (info->is_spawned_combine) {
+		nimbus_bit_array_delete_index(&self->combine_instance_id_array, info->combine_instance_id);
+		self->combine_instances[info->combine_instance_id] = 0;
+
 		tyran_property_iterator it;
 
 		tyran_property_iterator_init_shallow(&it, object_to_be_deleted);
@@ -683,20 +735,31 @@ void nimbus_object_listener_on_delete(nimbus_object_listener* self, tyran_object
 	}
 }
 
+void unspawn(nimbus_object_listener* self, tyran_object* combine)
+{
+	nimbus_object_info* info = (nimbus_object_info*) tyran_object_program_specific(combine);
+
+	nimbus_combine_instance_id combine_instance_id = info->combine_instance_id;
+	self->combine_instances[combine_instance_id] = 0;
+	TYRAN_OBJECT_RELEASE(combine);
+}
+
 static tyran_object* spawn(nimbus_object_listener* self, const tyran_object* combine)
 {
 	nimbus_object_spawner spawner;
 	nimbus_object_spawner_init(&spawner, self->runtime, self->event_definitions, self->event_definitions_count, combine);
 	tyran_object* spawned_combine = nimbus_object_spawner_spawn(&spawner);
+	nimbus_combine_instance_id combine_instance_id = assign_combine_instance_id(self, spawned_combine);
 	nimbus_object_info* info = nimbus_decorate_object(spawned_combine, self->memory);
 	info->is_spawned_combine = TYRAN_TRUE;
+	info->combine_instance_id = combine_instance_id;
 #if 0
 	tyran_value o_value;
 	tyran_value_set_object(o_value, spawned_combine);
 	tyran_print_value("Spawned!", &o_value, 1, self->symbol_table);
 	tyran_value_release(o_value);
 #endif
-	scan_combine(self, spawned_combine);
+	scan_combine(self, spawned_combine, combine_instance_id);
 
 
 	return spawned_combine;
@@ -740,7 +803,7 @@ static void _update(void* _self)
 {
 	nimbus_object_listener* self = _self;
 
-	call_event(self, self->frame_symbol, 0, 0);
+	call_event(self, NIMBUS_COMBINE_INSTANCE_ID_NONE, self->frame_symbol, 0, 0);
 	update_layer_associations(self);
 	serialize_all(self);
 }
@@ -767,6 +830,8 @@ static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* s
 	}
 }
 
+
+
 tyran_object* nimbus_object_listener_spawn(nimbus_object_listener* self, const tyran_object* combine)
 {
 	tyran_object* spawned_object = spawn(self, combine);
@@ -778,10 +843,10 @@ TYRAN_RUNTIME_CALL_FUNC(on_call_event)
 	nimbus_object_info* info = (nimbus_object_info*) tyran_value_program_specific(func);
 	nimbus_engine* engine = runtime->program_specific_context;
 	nimbus_object_listener* listener = &engine->object_listener;
-	
+
 	const nimbus_event_definition* event_definition = info->event_definition;
 	TYRAN_LOG("on_call_event '%s'", event_definition->name);
-	
+
 	tyran_object* data_object = tyran_object_new(runtime);
 	for (int i=0; i < event_definition->properties_count; ++i) {
 		const nimbus_event_definition_property* property = &event_definition->properties[i];
@@ -805,9 +870,9 @@ static void add_function_for_event_definition(nimbus_object_listener* self, cons
 static void setup_functions_for_event_definitions(nimbus_object_listener* self, struct tyran_memory* memory, const nimbus_event_definition* event_definitions, int event_definition_count)
 {
 	tyran_value events_object_value = tyran_mocha_api_create_object(self->mocha);
-	
+
 	tyran_value_object_insert_c_string_key(self->runtime, self->runtime->global, "events", &events_object_value);
-	
+
 	for (int i=0; i<event_definition_count; ++i) {
 		const nimbus_event_definition* definition = &event_definitions[i];
 		if (!definition->has_index) {
@@ -832,6 +897,7 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 	nimbus_event_listener_init(&self->update.event_listener, self);
 	nimbus_event_listener_listen(&self->update.event_listener, NIMBUS_EVENT_RESOURCE_UPDATED, _on_resource_updated);
 	nimbus_event_listener_listen(&self->update.event_listener, NIMBUS_EVENT_RESOURCE_LOAD_STATE, _on_resource_load_state);
+	nimbus_event_listener_listen(&self->update.event_listener, NIMBUS_EVENT_EXECUTE_FUNCTION, _on_execute_function);
 	nimbus_event_listener_listen_to_all(&self->update.event_listener, _on_all);
 
 	nimbus_dependency_resolver_init(&self->dependency_resolver, memory, self->symbol_table, &self->update.event_write_stream);
@@ -867,6 +933,10 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 	self->script_buffer_size = 16 * 1024;
 	self->script_buffer = TYRAN_MEMORY_ALLOC(memory, self->script_buffer_size, "Script buffer");
 	self->waiting_for_state_resource_id = 0;
+
+	self->combine_instances = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, tyran_object*, 1024);
+
+	nimbus_bit_array_init(&self->combine_instance_id_array, memory, 1024);
 
 	nimbus_object_layers_add_layer(self, "render", memory);
 	nimbus_object_layers_add_layer(self, "audio", memory);

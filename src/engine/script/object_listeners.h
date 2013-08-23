@@ -1,14 +1,18 @@
 #ifndef sinkblobs_object_listeners_h
 #define sinkblobs_object_listeners_h
 
+#include "object_to_event.h"
+#include "dependency_resolver.h"
+#include "bit_array.h"
+
+#include <tyranscript/tyran_symbol.h>
+#include <tyranscript/tyran_value.h>
+
 #include <tyran_core/update/update.h>
 #include <tyran_engine/resource/type_id.h>
 #include <tyran_engine/resource/id.h>
-#include <tyranscript/tyran_symbol.h>
-#include <tyranscript/tyran_value.h>
-#include "object_to_event.h"
-#include "dependency_resolver.h"
 #include <tyran_engine/module/modules.h>
+#include <tyran_engine/combine/combine_instance.h>
 
 struct tyran_memory;
 
@@ -19,6 +23,7 @@ struct tyran_object;
 typedef struct nimbus_object_listener_function {
 	struct tyran_object* function_context;
 	const struct tyran_function* function;
+	nimbus_combine_instance_id combine_instance_id;
 } nimbus_object_listener_function;
 
 typedef struct nimbus_object_listener_info {
@@ -109,11 +114,16 @@ typedef struct nimbus_object_listener {
 	nimbus_event_definition* event_definitions;
 	int event_definitions_count;
 
+	nimbus_bit_array combine_instance_id_array;
+	struct tyran_object** combine_instances;
+
 } nimbus_object_listener;
 
 
 void nimbus_object_listener_init(nimbus_object_listener* self, struct tyran_memory* memory, struct tyran_mocha_api* mocha, struct tyran_object* context, struct nimbus_event_definition* event_definitions, int event_definition_count);
+
 struct tyran_object* nimbus_object_listener_spawn(nimbus_object_listener* self, const struct tyran_object* combine);
+void nimbus_object_listener_unspawn(nimbus_object_listener* self, struct tyran_object* combine);
 
 void nimbus_object_listener_on_delete(nimbus_object_listener* self, struct tyran_object* object);
 

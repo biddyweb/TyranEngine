@@ -45,6 +45,12 @@ int nimbus_event_to_arguments_convert(nimbus_event_to_arguments* self, tyran_val
 		NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN();
 	}
 
+	if (e->has_combine_instance_id) {
+		// ignored for now
+		d += sizeof(u32t);
+		NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN();
+	}
+
 	for (int i = 0; i < e->properties_count; ++i) {
 		nimbus_event_definition_property* p = &e->properties[i];
 		tyran_value* destination = &arguments[i];

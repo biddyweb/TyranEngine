@@ -40,10 +40,16 @@ void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_w
 	u8t* d = self->temp_buf;
 
 	if (e->has_index) {
-		int index = info->instance_index; // world->types[info->world_index].tracks[info->track_index].get_object_index(_this);
+		int index = info->instance_index;
 		TYRAN_ASSERT(index != -1,  "Index can not be null. tyran_object has not been assigned an index");
 		*(int*) d = index;
 		d += sizeof(int);
+		NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN();
+	}
+
+	if (e->has_combine_instance_id) {
+		*(u32t*) d = info->combine_instance_id;
+		d += sizeof(u32t);
 		NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN();
 	}
 

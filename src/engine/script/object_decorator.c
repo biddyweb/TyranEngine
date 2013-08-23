@@ -6,7 +6,7 @@
 nimbus_object_info* nimbus_decorate_object(struct tyran_object* o, struct tyran_memory* memory)
 {
 	nimbus_object_info* info = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_object_info);
-	info->instance_id = 0; // self->instance_id++;
+	info->combine_instance_id = -1;
 	info->instance_index = -1;
 	info->event_definition = 0;
 	info->is_module_resource = TYRAN_FALSE;

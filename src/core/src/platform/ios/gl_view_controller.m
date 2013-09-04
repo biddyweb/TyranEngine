@@ -123,8 +123,8 @@
 				continue;
 				break;
 		}
-		changed.position.x = touch.position.x;
-		changed.position.y = touch.position.y;
+		changed.position.x = touch.position.x - self.view.frame.size.width / 2;
+		changed.position.y = self.view.frame.size.height / 2 - touch.position.y;
 		nimbus_boot_send_event(self->boot, type_id, &changed, sizeof(changed));
 	}
 }

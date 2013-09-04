@@ -33,7 +33,9 @@ char* tyran_str_dup(tyran_memory* pool, const char* str);
 #define tyran_fclose fclose
 #define tyran_strncat strncat_s
 #define tyran_strlen strlen
+
 #else
+
 #define tyran_sscanf sscanf
 #define tyran_snprintf snprintf
 #define tyran_strncpy(dest, dest_size, source, source_size) strncpy(dest, source, dest_size)
@@ -44,11 +46,13 @@ char* tyran_str_dup(tyran_memory* pool, const char* str);
 #define tyran_fread fread
 #define tyran_fclose fclose
 #define tyran_strncat strncat
+
 #endif
 
 #define tyran_strcmp strcmp
 #define tyran_strlen strlen
 #define tyran_strncmp strncmp
+#define tyran_strstr strstr
 #define tyran_fprintf fprintf
 #define tyran_fflush fflush
 #define tyran_strdup(pool, str) tyran_str_dup(pool, str)

@@ -385,7 +385,7 @@ static void add_listening_function(nimbus_object_listener* self, nimbus_combine_
 
 	tyran_symbol_table_add(self->symbol_table, &symbol, event_name);
 	nimbus_object_listener_info* info = info_from_symbol(self, symbol);
-	TYRAN_LOG("Found listening function '%s' on combine %d", event_name, combine_instance_id);
+	// TYRAN_LOG("Found listening function '%s' on combine %d", event_name, combine_instance_id);
 	info_add_function(info, combine_instance_id, function_context, tyran_value_function(function));
 }
 
@@ -500,7 +500,7 @@ static void search_components_for_update_functions(nimbus_object_listener* self,
 
 static void spawn_layer_object(nimbus_object_listener* self, nimbus_layer_association* association, int layer_index, tyran_object* combine, nimbus_resource_id combine_resource_id)
 {
-	TYRAN_LOG("Spawn layer object for layer %d -> '%s'", layer_index, nimbus_resource_id_debug_name(combine_resource_id));
+	//TYRAN_LOG("Spawn layer object for layer %d -> '%s'", layer_index, nimbus_resource_id_debug_name(combine_resource_id));
 	TYRAN_ASSERT(association->layer_objects[layer_index] == 0, "Something bad happened when spawning");
 	tyran_object* spawned_combine = spawn(self, combine);
 	association->layer_objects[layer_index] = spawned_combine;

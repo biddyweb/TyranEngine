@@ -1,11 +1,1 @@
-language: c
-compiler: clang
-
-before_script:
-  - "gem install rake"
-  - "gem install colored"
-  - "cd ./src/"
-  - "mkdir build"
-
-script:
-  - "rake"
+language: objective-c

@@ -1,4 +1,4 @@
-#include "execute_function.h"
+#include <tyran_engine/event/execute_function.h>
 #include <tyran_core/event/event_stream.h>
 
 const u8t NIMBUS_EVENT_EXECUTE_FUNCTION = 15;

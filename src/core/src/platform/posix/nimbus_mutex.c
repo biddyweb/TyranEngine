@@ -1,5 +1,7 @@
-#if defined TORNADO_OS_IOS
+#if defined TORNADO_OS_IOS || defined TORNADO_OS_NACL
+
 #include "nimbus_mutex.h"
+
 #include <pthread.h>
 
 void nimbus_mutex_init(nimbus_mutex* mutex)

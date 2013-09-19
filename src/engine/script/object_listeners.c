@@ -213,13 +213,6 @@ static void on_module_resource_updated(nimbus_object_listener* self, struct nimb
 	add_object(self, resource_id, self->module_resource_type_id, o);
 }
 
-static tyran_object* get_combine_instance(nimbus_object_listener* self, nimbus_combine_instance_id instance_id)
-{
-	return self->combine_instances[instance_id];
-}
-
-
-
 
 static void _on_resource_load_state(void* _self, struct nimbus_event_read_stream* stream)
 {

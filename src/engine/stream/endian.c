@@ -1,7 +1,7 @@
 #include "endian.h"
 
-#if defined TORNADO_OS_MAC_OS_X || defined TORNADO_OS_IOS
-#import <netinet/in.h>
+#if defined TORNADO_OS_MAC_OS_X || defined TORNADO_OS_IOS || defined TORNADO_OS_NACL
+#include <netinet/in.h>
 #elif defined TORNADO_OS_LINUX
 #include <netinet/in.h>
 #elif defined TORNADO_OS_WINDOWS

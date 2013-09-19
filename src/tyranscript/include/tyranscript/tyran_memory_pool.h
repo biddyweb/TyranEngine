@@ -15,8 +15,8 @@ typedef struct tyran_memory_pool_entry {
 typedef struct tyran_memory_pool {
 	u8t* memory;
 	size_t struct_size;
-	size_t count;
-	size_t max_count;
+	int count;
+	int max_count;
 	u8t* next;
 	const char* type_string;
 	tyran_memory_pool_entry* first_free;

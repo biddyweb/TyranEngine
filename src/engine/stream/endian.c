@@ -1,6 +1,7 @@
+#if !defined TORNADO_OS_NACL
 #include "endian.h"
 
-#if defined TORNADO_OS_MAC_OS_X || defined TORNADO_OS_IOS || defined TORNADO_OS_NACL
+#if defined TORNADO_OS_MAC_OS_X || defined TORNADO_OS_IOS
 #include <netinet/in.h>
 #elif defined TORNADO_OS_LINUX
 #include <netinet/in.h>
@@ -29,3 +30,6 @@ u32t nimbus_endian_u32_from_network(u32t data)
 {
 	return ntohl(data);
 }
+#else
+int _dummy_2;
+#endif

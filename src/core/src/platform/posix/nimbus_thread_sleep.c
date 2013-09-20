@@ -14,6 +14,7 @@ void nimbus_thread_sleep(tyran_number seconds)
 
 	nanosleep(&rm, &rm);
 }
+
 #else
-int a;
+int temp;
 #endif

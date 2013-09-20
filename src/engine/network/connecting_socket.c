@@ -1,14 +1,17 @@
+#if !defined TORNADO_OS_NACL
+
 #include "connecting_socket.h"
 
 #if defined TORNADO_OS_WINDOWS
 #include <Winsock2.h>
 #include <Ws2tcpip.h>
-#else
+#elif defined TORNADO_OS_IOS
 #include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/tcp.h>
 #include <unistd.h>
 #include <sys/types.h>
+#else
 #endif
 
 #include <tyranscript/tyran_clib.h>
@@ -78,3 +81,6 @@ void nimbus_connecting_socket_close(nimbus_connecting_socket* self)
 #endif
 	self->socket_handle = 0;
 }
+#else
+int _hello;
+#endif

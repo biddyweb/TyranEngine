@@ -2,7 +2,7 @@
 #define _TYRAN_CONFIG_H
 
 #include <stdlib.h>
-#include <memory.h>
+// #include <memory.h>
 #include <stdio.h>
 
 #include <string.h>

@@ -22,7 +22,5 @@ tyran_boolean nimbus_thread_is_done(nimbus_thread* self);
 
 #endif
 
-
 #else
-int a;
 #endif

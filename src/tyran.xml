@@ -57,8 +57,10 @@
 	<platform name="nacl">
 		<define name="TORNADO_OS_NACL" />
 		<source directory="core/src/platform/posix" exclude="[main.c]" />
-		<compiler program="i686-nacl-gcc" />
+<!--		<compiler program="i686-nacl-gcc" /> -->
+		<compiler program="pnacl-clang" />
 		<library filename="m" />
+		<library filename="pthread" />
 	</platform>
 
 </target>

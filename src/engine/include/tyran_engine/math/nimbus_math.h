@@ -15,6 +15,6 @@
 
 #define nimbus_math_atan2(f, g) atan2(f, g)
 #define nimbus_math_asin(f) asin(f)
-
+#define nimbus_math_tan(f) tanf(f)
 
 #endif

@@ -31,6 +31,7 @@ int nimbus_in_stream_read_u8(nimbus_in_stream* self, u8t* data)
 	return 0;
 }
 
+/*
 int nimbus_in_stream_read_u16(nimbus_in_stream* self, u16t* data)
 {
 	nimbus_in_stream_read_octets(self, data, 2);
@@ -47,6 +48,7 @@ int nimbus_in_stream_read_u32(nimbus_in_stream* self, u32t* data)
 	return 0;
 }
 
+
 int nimbus_in_stream_read_string(nimbus_in_stream* self, char* data, int max_length)
 {
 	u16t len;
@@ -58,3 +60,4 @@ int nimbus_in_stream_read_string(nimbus_in_stream* self, char* data, int max_len
 
 	return 0;
 }
+*/

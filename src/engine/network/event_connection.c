@@ -1,3 +1,4 @@
+/*
 #include "event_connection.h"
 
 #include <tyranscript/tyran_types.h>
@@ -231,3 +232,5 @@ void nimbus_event_connection_init(nimbus_event_connection* self, tyran_memory* m
 	nimbus_event_listener_listen(&self->update_object.event_listener, NIMBUS_EVENT_RESOURCE_LOAD, _on_resource_request);
 	nimbus_mutex_init(&self->ring_buffer_mutex);
 }
+*/
+int x;

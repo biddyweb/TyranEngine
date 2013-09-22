@@ -31,6 +31,7 @@ void nimbus_out_stream_write_u8(nimbus_out_stream* self, u8t data)
 {
 	nimbus_out_stream_write_octets(self, &data, 1);
 }
+/*
 
 void nimbus_out_stream_write_u16(nimbus_out_stream* self, u16t data)
 {
@@ -50,6 +51,7 @@ void nimbus_out_stream_write_string(nimbus_out_stream* self, const char* str)
 	nimbus_out_stream_write_u16(self, len);
 	nimbus_out_stream_write_octets(self, str, len);
 }
+*/
 
 void nimbus_out_stream_info(nimbus_out_stream* self, const u8t** buffer, int* length)
 {

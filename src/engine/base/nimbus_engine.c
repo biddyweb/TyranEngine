@@ -14,6 +14,8 @@
 #include <tyran_engine/module/nimbus_module.h>
 #include <tyran_engine/module/register_modules.h>
 
+#include <tyran_engine/math/nimbus_math.h>
+
 static void fire_load_state(nimbus_engine* self, nimbus_resource_id id)
 {
 	nimbus_resource_load_state_send(&self->update_object.event_write_stream, id);
@@ -70,6 +72,14 @@ TYRAN_RUNTIME_CALL_FUNC(script_random)
 {
 	float random_value = (rand() % 512) / 511.0f;
 	tyran_value_set_number(*return_value, random_value);
+	return 0;
+}
+
+
+TYRAN_RUNTIME_CALL_FUNC(script_abs)
+{
+	float value = nimbus_math_fabs(tyran_value_number(arguments));
+	tyran_value_set_number(*return_value, value);
 	return 0;
 }
 
@@ -138,15 +148,14 @@ void nimbus_engine_add_update_object(nimbus_engine* self, nimbus_update* o)
 	self->update_objects[index] = o;
 }
 
-
+/*
 void start_event_connection(nimbus_engine* self, tyran_memory* memory, const char* host, int port, struct nimbus_task_queue* task_queue)
 {
 	nimbus_event_connection_init(&self->event_connection, memory, host, port);
 	nimbus_engine_add_update_object(self, &self->event_connection.update_object);
 	nimbus_task_queue_add_task(task_queue, &self->event_connection.receive_task);
 }
-
-
+*/
 
 static void create_modules(nimbus_engine* self, tyran_memory* memory)
 {
@@ -214,6 +223,7 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	tyran_mocha_api_add_function(&self->mocha_api, global, "loadState", load_state);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "log", log_output);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "random", script_random);
+	tyran_mocha_api_add_function(&self->mocha_api, global, "abs", script_abs);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "spawn", script_spawn);
 
 	self->resource_handler = nimbus_resource_handler_new(memory);
@@ -235,7 +245,7 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 
 	create_modules(self, memory);
 
-	start_event_connection(self, memory, "198.74.60.114", 32000, task_queue);
+	// start_event_connection(self, memory, "198.74.60.114", 32000, task_queue);
 
 	boot_resource(self);
 

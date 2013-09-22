@@ -99,7 +99,7 @@ int nimbus_boot_update(nimbus_boot* self)
 	if (nimbus_boot_ready_for_next_frame(self)) {
 		err = nimbus_engine_update(self->engine, self->task_queue);
 	}
-	
+
 	return err;
 }
 

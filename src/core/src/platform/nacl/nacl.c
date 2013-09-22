@@ -19,26 +19,26 @@ PP_EXPORT int32_t PPP_InitializeModule(PP_Module a_module_id, PPB_GetInterface g
 
 PP_EXPORT void PPP_ShutdownModule()
 {
-	
+
 }
 
 static void handle_input_event(PP_InputEvent_Type type)
 {
 	switch (type) {
 		case PP_INPUTEVENT_TYPE_MOUSEDOWN:
-		break;
+			break;
 		case PP_INPUTEVENT_TYPE_MOUSEUP:
-		break;
+			break;
 		case PP_INPUTEVENT_TYPE_MOUSEMOVE:
-		break;
+			break;
 		case PP_INPUTEVENT_TYPE_WHEEL:
-		break;
+			break;
 		case PP_INPUTEVENT_TYPE_KEYDOWN:
-		break;
+			break;
 		case PP_INPUTEVENT_TYPE_KEYUP:
-		break;
+			break;
 		default:
-		break;
+			break;
 	}
 
 }
@@ -46,11 +46,11 @@ static void handle_input_event(PP_InputEvent_Type type)
 static PP_Bool InputEvent_HandleInputEvent(PP_Instance instance, PP_Resource input_event)
 {
 	PP_InputEvent_Type type = g_nacl.input_event->GetType(input_event);
-	
+
 	// uint32_t modifiers = g_nacl.input_event->GetModifiers(input_event);
 
 	handle_input_event(type);
-	
+
 	return PP_TRUE;
 }
 
@@ -61,12 +61,12 @@ static PP_Bool Instance_DidCreate(PP_Instance instance, uint32_t argc, const cha
 	g_nacl.input_event->RequestInputEvents(instance, PP_INPUTEVENT_CLASS_MOUSE);
 	struct PP_Var log_string = g_nacl.var->VarFromUtf8("Hello, world", 12);
 	g_nacl.console->Log(instance, PP_LOGLEVEL_LOG, log_string);
-/*
-PP_LOGLEVEL_TIP 	
-PP_LOGLEVEL_LOG 	
-PP_LOGLEVEL_WARNING 	
-PP_LOGLEVEL_ERROR 
-*/
+	/*
+	PP_LOGLEVEL_TIP
+	PP_LOGLEVEL_LOG
+	PP_LOGLEVEL_WARNING
+	PP_LOGLEVEL_ERROR
+	*/
 
 
 	return PP_TRUE;
@@ -93,7 +93,7 @@ PP_EXPORT const void* PPP_GetInterface(const char* interface_name)
 {
 	if (strcmp(interface_name, PPP_INSTANCE_INTERFACE) == 0) {
 		static PPP_Instance instance_interface = {
-			&Instance_DidCreate, 
+			&Instance_DidCreate,
 			&Instance_DidDestroy,
 			&Instance_DidChangeView,
 			&Instance_DidChangeFocus,
@@ -103,7 +103,7 @@ PP_EXPORT const void* PPP_GetInterface(const char* interface_name)
 		return &instance_interface;
 	} else if (strcmp(interface_name, PPP_INPUT_EVENT_INTERFACE) == 0) {
 		static PPP_InputEvent instance_interface = {
-			&InputEvent_HandleInputEvent 
+			&InputEvent_HandleInputEvent
 		};
 
 		return &instance_interface;

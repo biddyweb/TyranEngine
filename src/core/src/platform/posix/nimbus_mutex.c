@@ -24,5 +24,5 @@ void nimbus_mutex_unlock(nimbus_mutex* mutex)
 	pthread_mutex_unlock(&mutex->mutex);
 }
 #else
-int a;
+;
 #endif

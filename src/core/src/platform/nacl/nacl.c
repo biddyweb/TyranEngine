@@ -4,8 +4,15 @@
 #include <ppapi/c/pp_errors.h>
 #include <string.h>
 #include <ppapi/c/ppp_input_event.h>
+#include <tyranscript/tyran_log.h>
 
 nimbus_nacl g_nacl;
+
+static void nacl_log(enum tyran_log_type type, const char* string)
+{
+	struct PP_Var log_string = g_nacl.var->VarFromUtf8(string, tyran_strlen(string));
+	g_nacl.console->Log(g_nacl.module_instance, PP_LOGLEVEL_LOG, log_string);
+}
 
 PP_EXPORT int32_t PPP_InitializeModule(PP_Module a_module_id, PPB_GetInterface get_browser)
 {
@@ -26,18 +33,25 @@ static void handle_input_event(PP_InputEvent_Type type)
 {
 	switch (type) {
 		case PP_INPUTEVENT_TYPE_MOUSEDOWN:
+			TYRAN_LOG("MouseDown!");
 			break;
 		case PP_INPUTEVENT_TYPE_MOUSEUP:
+			TYRAN_LOG("MouseUp!");
 			break;
 		case PP_INPUTEVENT_TYPE_MOUSEMOVE:
+			TYRAN_LOG("MouseMove!");
 			break;
 		case PP_INPUTEVENT_TYPE_WHEEL:
+			TYRAN_LOG("MouseWheel");
 			break;
 		case PP_INPUTEVENT_TYPE_KEYDOWN:
+			TYRAN_LOG("KeyDown");
 			break;
 		case PP_INPUTEVENT_TYPE_KEYUP:
+			TYRAN_LOG("KeyUp");
 			break;
 		default:
+			TYRAN_LOG("Unknown?");
 			break;
 	}
 
@@ -45,6 +59,7 @@ static void handle_input_event(PP_InputEvent_Type type)
 
 static PP_Bool InputEvent_HandleInputEvent(PP_Instance instance, PP_Resource input_event)
 {
+	TYRAN_LOG("HandleInputEvent");
 	PP_InputEvent_Type type = g_nacl.input_event->GetType(input_event);
 
 	// uint32_t modifiers = g_nacl.input_event->GetModifiers(input_event);
@@ -58,9 +73,12 @@ static PP_Bool InputEvent_HandleInputEvent(PP_Instance instance, PP_Resource inp
 static PP_Bool Instance_DidCreate(PP_Instance instance, uint32_t argc, const char* argn[], const char* argv[])
 {
 	g_nacl.module_instance = instance;
+	g_log.log = nacl_log;
+
+	TYRAN_LOG("Instance_DidCreate");
+
 	g_nacl.input_event->RequestInputEvents(instance, PP_INPUTEVENT_CLASS_MOUSE);
-	struct PP_Var log_string = g_nacl.var->VarFromUtf8("Hello, world", 12);
-	g_nacl.console->Log(instance, PP_LOGLEVEL_LOG, log_string);
+	g_nacl.input_event->RequestFilteringInputEvents(instance, PP_INPUTEVENT_CLASS_WHEEL | PP_INPUTEVENT_CLASS_KEYBOARD);
 	/*
 	PP_LOGLEVEL_TIP
 	PP_LOGLEVEL_LOG
@@ -74,18 +92,22 @@ static PP_Bool Instance_DidCreate(PP_Instance instance, uint32_t argc, const cha
 
 static void Instance_DidDestroy(PP_Instance instance)
 {
+	TYRAN_LOG("Instance_DidDestroy");
 }
 
 static void Instance_DidChangeView(PP_Instance instance, PP_Resource view)
 {
+	TYRAN_LOG("Instance_DidChangeView");
 }
 
 static void Instance_DidChangeFocus(PP_Instance instance, PP_Bool has_focus)
 {
+	TYRAN_LOG("Instance_DidChangeFocus:%d", has_focus);
 }
 
 static PP_Bool Instance_HandleDocumentLoad(PP_Instance instance, PP_Resource url_loader)
 {
+	TYRAN_LOG("Instance_HandleDocumentLoad");
 	return PP_TRUE;
 }
 

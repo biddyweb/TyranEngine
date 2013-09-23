@@ -5,6 +5,7 @@
 #include <string.h>
 #include <ppapi/c/ppp_input_event.h>
 #include <tyranscript/tyran_log.h>
+#include "../../base/boot/nimbus_boot.h"
 
 nimbus_nacl g_nacl;
 
@@ -79,6 +80,11 @@ static PP_Bool Instance_DidCreate(PP_Instance instance, uint32_t argc, const cha
 
 	g_nacl.input_event->RequestInputEvents(instance, PP_INPUTEVENT_CLASS_MOUSE);
 	g_nacl.input_event->RequestFilteringInputEvents(instance, PP_INPUTEVENT_CLASS_WHEEL | PP_INPUTEVENT_CLASS_KEYBOARD);
+
+
+	nimbus_boot* boot = nimbus_boot_new();
+
+	TYRAN_ASSERT(boot, "must start");
 	/*
 	PP_LOGLEVEL_TIP
 	PP_LOGLEVEL_LOG

@@ -1,6 +1,7 @@
 #include <tyran_core/platform/nacl/nacl.h>
 #include <ppapi/c/ppp_instance.h>
 #include <ppapi/c/ppp.h>
+#include <ppapi/c/ppb_instance.h>
 #include <ppapi/c/pp_errors.h>
 #include <string.h>
 #include <ppapi/c/ppp_input_event.h>
@@ -8,6 +9,14 @@
 #include "../../base/boot/nimbus_boot.h"
 
 nimbus_nacl g_nacl;
+
+typedef struct nimbus_nacl_render {
+	PPB_Graphics3D* graphics_3d;
+	PPB_Instance* instance;
+	nimbus_boot* boot;
+} nimbus_nacl_render;
+
+nimbus_nacl_render g_nacl_render;
 
 static void nacl_log(enum tyran_log_type type, const char* string)
 {
@@ -71,6 +80,56 @@ static PP_Bool InputEvent_HandleInputEvent(PP_Instance instance, PP_Resource inp
 }
 
 
+static void initialize_3d(nimbus_nacl_render* self)
+{
+	int width = 1024;
+	int height = 768;
+
+	TYRAN_LOG("Graphics3D");
+
+	self->graphics_3d = (PPB_Graphics3D*)(g_nacl.get_browser(PPB_GRAPHICS_3D_INTERFACE));
+	TYRAN_ASSERT(self->graphics_3d, "Couldn't fetch browser direct3d");
+
+	int32_t attributes[] = {
+		PP_GRAPHICS3DATTRIB_ALPHA_SIZE, 8,
+		PP_GRAPHICS3DATTRIB_WIDTH, width,
+		PP_GRAPHICS3DATTRIB_HEIGHT, height,
+		PP_GRAPHICS3DATTRIB_NONE
+	};
+
+	TYRAN_LOG("Graphics3D::Create");
+	g_nacl.graphics_3d_context = self->graphics_3d->Create(g_nacl.module_instance, 0, attributes);
+	TYRAN_LOG("Graphics3D::BindGraphics");
+	TYRAN_LOG("Instance");
+	self->instance = (PPB_Instance*)(g_nacl.get_browser(PPB_INSTANCE_INTERFACE));
+	TYRAN_LOG("Instance2");
+	self->instance->BindGraphics(g_nacl.module_instance, g_nacl.graphics_3d_context);
+	TYRAN_LOG("DONE");
+}
+
+
+static void draw(nimbus_nacl_render* self);
+
+static void draw_callback(void* _self, int32_t result)
+{
+	nimbus_nacl_render* self = _self;
+
+	TYRAN_LOG("CALLBACK!");
+	nimbus_boot_update(self->boot);
+	draw(self);
+}
+
+static void draw(nimbus_nacl_render* self)
+{
+	struct PP_CompletionCallback callback;
+	callback.user_data = self;
+	callback.func = draw_callback;
+	callback.flags = 0;
+
+	self->graphics_3d->SwapBuffers(g_nacl.graphics_3d_context, callback);
+}
+
+
 static PP_Bool Instance_DidCreate(PP_Instance instance, uint32_t argc, const char* argn[], const char* argv[])
 {
 	g_nacl.module_instance = instance;
@@ -81,10 +140,11 @@ static PP_Bool Instance_DidCreate(PP_Instance instance, uint32_t argc, const cha
 	g_nacl.input_event->RequestInputEvents(instance, PP_INPUTEVENT_CLASS_MOUSE);
 	g_nacl.input_event->RequestFilteringInputEvents(instance, PP_INPUTEVENT_CLASS_WHEEL | PP_INPUTEVENT_CLASS_KEYBOARD);
 
+	initialize_3d(&g_nacl_render);
 
-	nimbus_boot* boot = nimbus_boot_new();
+	g_nacl_render.boot = nimbus_boot_new();
 
-	TYRAN_ASSERT(boot, "must start");
+	draw(&g_nacl_render);
 	/*
 	PP_LOGLEVEL_TIP
 	PP_LOGLEVEL_LOG

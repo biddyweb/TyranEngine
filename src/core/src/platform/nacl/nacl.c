@@ -114,7 +114,6 @@ static void draw_callback(void* _self, int32_t result)
 {
 	nimbus_nacl_render* self = _self;
 
-	TYRAN_LOG("CALLBACK!");
 	nimbus_boot_update(self->boot);
 	draw(self);
 }

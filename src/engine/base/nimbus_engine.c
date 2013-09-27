@@ -16,6 +16,10 @@
 
 #include <tyran_engine/math/nimbus_math.h>
 
+#if defined TORNADO_OS_NACL
+#include "../../core/src/platform/nacl/nacl_loader.h"
+#endif
+
 static void fire_load_state(nimbus_engine* self, nimbus_resource_id id)
 {
 	nimbus_resource_load_state_send(&self->update_object.event_write_stream, id);
@@ -196,6 +200,11 @@ static void add_internal_modules(nimbus_modules* modules)
 	touch_stationary->is_module_to_script = TYRAN_TRUE;
 	touch_stationary->has_index = TYRAN_FALSE;
 
+
+#if defined TORNADO_OS_NACL
+	nimbus_modules_add_affinity(modules, "nacl_loader", sizeof(nimbus_nacl_loader), nimbus_nacl_loader_init, offsetof(nimbus_nacl_loader, update_object), 0);
+#endif
+
 }
 
 static void delete_callback(const tyran_runtime* runtime, struct tyran_object* object_to_be_deleted)
@@ -242,6 +251,7 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 
 	nimbus_object_listener_init(&self->object_listener, memory, &self->mocha_api, tyran_value_mutable_object(global), self->modules.event_definitions, self->modules.event_definitions_count);
 	nimbus_engine_add_update_object(self, &self->object_listener.update);
+
 
 
 	create_modules(self, memory);

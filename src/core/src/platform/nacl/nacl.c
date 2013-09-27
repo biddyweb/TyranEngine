@@ -22,6 +22,7 @@ static void nacl_log(enum tyran_log_type type, const char* string)
 {
 	struct PP_Var log_string = g_nacl.var->VarFromUtf8(string, tyran_strlen(string));
 	g_nacl.console->Log(g_nacl.module_instance, PP_LOGLEVEL_LOG, log_string);
+	g_nacl.var->Release(log_string);
 }
 
 PP_EXPORT int32_t PPP_InitializeModule(PP_Module a_module_id, PPB_GetInterface get_browser)

@@ -61,7 +61,7 @@ static void print_value(tyran_runtime* runtime, tyran_value* v)
 	const int buf_len = 512;
 	char buf[buf_len];
 	tyran_value_to_c_string(runtime->symbol_table, v, buf, buf_len, 0);
-	puts(buf);
+	TYRAN_OUTPUT(buf);
 }
 
 TYRAN_RUNTIME_CALL_FUNC(log_output)

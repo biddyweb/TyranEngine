@@ -38,7 +38,7 @@ tyran_fprintf(stderr, __VA_ARGS__); tyran_fprintf(stderr, "\n"); tyran_fflush(st
 
 #endif
 
-#define TYRAN_OUTPUT(...) { tyran_fprintf(stdout, __VA_ARGS__); tyran_fprintf(stdout, "\n"); tyran_fflush(stdout); }
+#define TYRAN_OUTPUT(str) { g_log.log(TYRAN_LOG_TYPE_LOG, str); } // { tyran_fprintf(stdout, __VA_ARGS__); tyran_fprintf(stdout, "\n"); tyran_fflush(stdout); }
 #define TYRAN_OUTPUT_NO_LF(...) { tyran_fprintf(stdout, __VA_ARGS__); tyran_fflush(stdout); }
 
 #endif

@@ -3,6 +3,10 @@
 #include <tyranscript/tyran_clib.h>
 #include <tyran_core/platform/nacl/nacl.h>
 #include <tyran_engine/event/resource_load.h>
+#include <tyran_engine/resource/type_id.h>
+#include <tyran_engine/event/resource_updated.h>
+
+#include <ppapi/c/pp_errors.h>
 
 typedef struct resource_progress {
 	PP_Resource url_loader_instance;
@@ -32,11 +36,49 @@ static PP_Resource create_request_info_instance(nimbus_nacl_loader* self, nimbus
 	return request;
 }
 
+static void send_resource_update(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id, const u8t* payload, int payload_size)
+{
+	TYRAN_LOG("Send Resource Update");
+	nimbus_resource_updated resource_updated;
+	resource_updated.resource_id = resource_id;
+	resource_updated.resource_type_id = resource_type_id;
+	resource_updated.payload_size = payload_size;
+
+	nimbus_event_stream_write_event_header(out_event_stream, NIMBUS_EVENT_RESOURCE_UPDATED);
+	nimbus_event_stream_write_type(out_event_stream, resource_updated);
+	nimbus_event_stream_write_octets(out_event_stream, payload, payload_size);
+	nimbus_event_stream_write_event_end(out_event_stream);
+	TYRAN_LOG("SenTTT Resource Update");
+
+}
+
+static void on_resource_data(void* user_data, int32_t octets_read)
+{
+	TYRAN_LOG("on_resource_data octets:%d", octets_read);
+	resource_progress* progress = user_data;
+	nimbus_resource_type_id resource_type_id = nimbus_resource_type_id_from_string("oes");
+	nimbus_nacl_loader* self = progress->loader;
+	send_resource_update(&self->update_object.event_write_stream, progress->resource_id, resource_type_id, self->in_buffer, octets_read);
+}
+
 static void on_resource_opened(void* user_data, int32_t result)
 {
-	resource_progress* self = user_data;
+	resource_progress* progress = user_data;
+	nimbus_nacl_loader* self = progress->loader;
 
-	TYRAN_LOG("We opened resource:%d", self->resource_id);
+	TYRAN_LOG("We opened resource:%d", progress->resource_id);
+
+	struct PP_CompletionCallback callback;
+	callback.func = on_resource_data;
+	callback.user_data = progress;
+	callback.flags = 0;
+
+	int32_t octets_read = self->url_loader->ReadResponseBody(progress->url_loader_instance, self->in_buffer, self->in_buffer_size, callback);
+	if (octets_read >= 0) {
+		on_resource_data(progress, octets_read);
+	} else if (octets_read != PP_OK_COMPLETIONPENDING) {
+		TYRAN_ERROR("ResponseBody Error:%d", octets_read);
+	}
 }
 
 static void request_open(nimbus_nacl_loader* self, nimbus_resource_id resource_id, PP_Resource url_loader_instance, PP_Resource request_info_instance)
@@ -47,6 +89,7 @@ static void request_open(nimbus_nacl_loader* self, nimbus_resource_id resource_i
 	progress->request_info_instance = request_info_instance;
 	progress->url_loader_instance = url_loader_instance;
 	progress->resource_id = resource_id;
+	progress->loader = self;
 	callback.func = on_resource_opened;
 	callback.user_data = progress;
 	callback.flags = 0;
@@ -96,8 +139,8 @@ void nimbus_nacl_loader_init(void* _self, tyran_memory* memory)
 	nimbus_update_init_ex(&self->update_object, memory, _on_update, self, largest_resource_file, "nacl_loader");
 	nimbus_event_listener_listen(&self->update_object.event_listener, NIMBUS_EVENT_RESOURCE_LOAD, _on_resource_request);
 
-	//self->in_buffer_size = 8 * 1024;
-	//self->in_buffer = TYRAN_MEMORY_ALLOC(memory, self->in_buffer_size, "event connection buffer");
+	self->in_buffer_size = 8 * 1024;
+	self->in_buffer = TYRAN_MEMORY_ALLOC(memory, self->in_buffer_size, "nacl_loader_buffer");
 	// Ring buffer must be big enough to hold the largest resource file.
 	//nimbus_ring_buffer_init(&self->buffer, memory, largest_resource_file);
 	//nimbus_mutex_init(&self->ring_buffer_mutex);

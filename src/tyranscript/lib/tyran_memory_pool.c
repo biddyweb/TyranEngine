@@ -2,8 +2,7 @@
 
 void tyran_memory_pool_initialize_entries(tyran_memory_pool* pool)
 {
-	const int alignment = 4;
-	u8t* m = pool->memory + alignment;
+	u8t* m = pool->memory;
 	int total_size = pool->struct_size + sizeof(tyran_memory_pool_entry);
 	tyran_memory_pool_entry* previous = 0;
 	for (int i=0; i<pool->max_count; ++i) {
@@ -26,9 +25,9 @@ void tyran_memory_pool_initialize_entries(tyran_memory_pool* pool)
 
 tyran_memory_pool* tyran_memory_pool_construct(tyran_memory* memory, size_t struct_size, size_t count, const char* type)
 {
-	// TYRAN_LOG("Allocating pool of type '%s' (%zu x %zu)", type, struct_size, count);
+	TYRAN_LOG("Allocating pool of type '%s' (%zu x %zu)", type, struct_size, count);
 	tyran_memory_pool* pool = TYRAN_MEMORY_ALLOC(memory, sizeof(tyran_memory_pool), "Memory pool");
-	pool->memory = TYRAN_MEMORY_ALLOC(memory, (sizeof(tyran_memory_pool_entry) + struct_size) * count + 1, "Memory pool entries");
+	pool->memory = TYRAN_MEMORY_ALLOC(memory, (sizeof(tyran_memory_pool_entry) + struct_size) * count, "Memory pool entries");
 	pool->struct_size = struct_size;
 	pool->type_string = type;
 	pool->max_count = count;
@@ -48,7 +47,7 @@ void* tyran_memory_pool_alloc(tyran_memory_pool* pool)
 	u8t* m = (u8t*) e;
 	u8t* p = m + sizeof(tyran_memory_pool_entry);
 	e->allocated = TYRAN_TRUE;
-	TYRAN_ASSERT(((tyran_pointer_to_number)p) % 4 == 0, "alignment error");
+	// TYRAN_ASSERT(((tyran_pointer_to_number)p) % alignment == 0, "alignment error");
 	// TYRAN_LOG("Allocating from memory pool '%s' (%zu) -> %p (count:%zu)", pool->type_string, pool->struct_size, m, pool->count);
 	return p;
 }
@@ -66,7 +65,7 @@ void* tyran_memory_pool_calloc(tyran_memory_pool* pool)
 {
 	void* p = tyran_memory_pool_alloc(pool);
 	TYRAN_ASSERT(p, "not null");
-	tyran_mem_clear(p, pool->struct_size, 1);
+	tyran_mem_clear(p, pool->struct_size);
 	return p;
 }
 

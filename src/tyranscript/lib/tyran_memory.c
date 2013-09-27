@@ -8,7 +8,7 @@ void tyran_memory_construct(tyran_memory* memory, u8t* start, size_t size)
 void* tyran_memory_calloc(tyran_memory* memory, size_t size)
 {
 	void* p = tyran_malloc(size);
-	tyran_mem_clear(p, size, 1);
+	tyran_mem_clear(p, size);
 	return p;
 }
 

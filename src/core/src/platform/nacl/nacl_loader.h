@@ -16,9 +16,8 @@ typedef struct nimbus_nacl_loader {
 	PPB_URLRequestInfo* url_request_info;
 	PPB_URLLoader* url_loader;
 	struct tyran_memory_pool* resource_progress_pool;
-
-	int in_buffer_size;
-	u8t* in_buffer;
+	struct tyran_memory* memory;
+	
 } nimbus_nacl_loader;
 
 void nimbus_nacl_loader_init(void* self, struct tyran_memory* memory);

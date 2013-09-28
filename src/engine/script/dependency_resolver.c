@@ -13,12 +13,12 @@
 #include <tyranscript/tyran_property_iterator.h>
 
 
-static void load_resource(nimbus_dependency_resolver* self, nimbus_resource_id resource_id)
+static void load_resource(nimbus_dependency_resolver* self, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id)
 {
 	TYRAN_ASSERT(self->loading_resources_count < self->loading_resources_max_count, " Too many loading resources");
 	self->loading_resources[self->loading_resources_count] = resource_id;
 	self->loading_resources_count++;
-	nimbus_resource_load_send(self->event_write_stream, resource_id);
+	nimbus_resource_load_send(self->event_write_stream, resource_id, resource_type_id);
 }
 
 static void send_resource_update(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id, nimbus_resource_type_id type_id, tyran_object* object)
@@ -60,12 +60,12 @@ static nimbus_resource_dependency_info* resource_depency_info_new(nimbus_depende
 	return info;
 }
 
-static void load_resource_if_needed(nimbus_dependency_resolver* self, nimbus_resource_id resource_id)
+static void load_resource_if_needed(nimbus_dependency_resolver* self, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id)
 {
 	tyran_object* resource_value = nimbus_resource_cache_find(&self->resource_cache, resource_id);
 	if (!resource_value) {
 		if (!is_loading_in_progress(self, resource_id)) {
-			load_resource(self, resource_id);
+			load_resource(self, resource_id, resource_type_id);
 		} else {
 		}
 	} else {
@@ -75,16 +75,15 @@ static void load_resource_if_needed(nimbus_dependency_resolver* self, nimbus_res
 static void inherit_resource(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* target, nimbus_resource_id resource_id)
 {
 	nimbus_resource_dependency_info_inherit(info, target, resource_id);
-	load_resource_if_needed(self, resource_id);
+	nimbus_resource_type_id resource_type_id = nimbus_resource_type_id_from_string("object");
+	load_resource_if_needed(self, resource_id, resource_type_id);
 }
 
-static void add_resource_reference(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* target, nimbus_resource_id resource_id)
+static void add_resource_reference(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* target, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id)
 {
 	nimbus_resource_dependency_info_add_resource(info, target, resource_id);
-	load_resource_if_needed(self, resource_id);
+	load_resource_if_needed(self, resource_id, resource_type_id);
 }
-
-
 
 static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* v, tyran_object* combine)
 {
@@ -113,7 +112,23 @@ static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* s
 					tyran_value_replace_object(*(tyran_value*)value, resource);
 				} else {
 					resources_that_are_loading++;
-					add_resource_reference(self, info, (tyran_value*)value, resource_id);
+					const char* key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
+					nimbus_resource_type_id resource_type_id;
+
+					const char* resource_type_string = "object";
+
+					if (tyran_str_equal(key_string, "image")) {
+						resource_type_string = "image";
+					} else if (tyran_str_equal(key_string, "fragment")) {
+						resource_type_string = "fragment";
+					} else if (tyran_str_equal(key_string, "vertex")) {
+						resource_type_string = "vertex";
+					} else if (tyran_str_equal(key_string, "skeleton")) {
+						resource_type_string = "skeleton";
+					}
+
+					resource_type_id = nimbus_resource_type_id_from_string(resource_type_string);
+					add_resource_reference(self, info, (tyran_value*)value, resource_id, resource_type_id);
 				}
 			} else if (value_string[0] == '#') {
 				tyran_symbol symbol;

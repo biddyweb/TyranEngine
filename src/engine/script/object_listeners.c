@@ -128,7 +128,8 @@ static nimbus_type_to_layer_combines* add_type_to_layers(nimbus_object_listener*
 		nimbus_object_layer* layer = &self->layers[i];
 		nimbus_resource_id layer_specific_resource_id = resource_id_for_layer(layer->name, self->symbol_table, type_name);
 		nimbus_type_to_layers_add(type_to_layer, layer_specific_resource_id);
-		nimbus_resource_load_send(&self->update.event_write_stream, layer_specific_resource_id);
+		nimbus_resource_type_id resource_type_id = nimbus_resource_type_id_from_string("object");
+		nimbus_resource_load_send(&self->update.event_write_stream, layer_specific_resource_id, resource_type_id);
 	}
 
 	return type_to_layer;
@@ -221,7 +222,7 @@ static void _on_resource_load_state(void* _self, struct nimbus_event_read_stream
 	nimbus_resource_load_state load_state;
 	nimbus_event_stream_read_type(stream, load_state);
 
-	nimbus_resource_load_send(&self->update.event_write_stream, load_state.resource_id);
+	nimbus_resource_load_send(&self->update.event_write_stream, load_state.resource_id, nimbus_resource_type_id_from_string("state") );
 
 	self->waiting_for_state_resource_id = load_state.resource_id;
 }

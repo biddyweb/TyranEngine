@@ -25,9 +25,9 @@ static void fire_load_state(nimbus_engine* self, nimbus_resource_id id)
 	nimbus_resource_load_state_send(&self->update_object.event_write_stream, id);
 }
 
-static void fire_load_resource(nimbus_engine* self, nimbus_resource_id id)
+static void fire_load_resource(nimbus_engine* self, nimbus_resource_id id, nimbus_resource_type_id resource_type_id)
 {
-	nimbus_resource_load_send(&self->update_object.event_write_stream, id);
+	nimbus_resource_load_send(&self->update_object.event_write_stream, id, resource_type_id);
 }
 
 
@@ -133,7 +133,9 @@ static void boot_resource(nimbus_engine* self)
 {
 	nimbus_resource_id boot_id = nimbus_resource_handler_add(self->resource_handler, "boot");
 
-	fire_load_resource(self, boot_id);
+	nimbus_resource_type_id resource_type_id = nimbus_resource_type_id_from_string("script");
+
+	fire_load_resource(self, boot_id, resource_type_id);
 }
 
 void nimbus_engine_send_event(nimbus_engine* self, u8t event_id, void* data, int octet_count)

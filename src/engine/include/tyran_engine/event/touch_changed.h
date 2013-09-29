@@ -8,20 +8,25 @@ extern const nimbus_event_type_id NIMBUS_EVENT_TOUCH_BEGAN_ID;
 extern const nimbus_event_type_id NIMBUS_EVENT_TOUCH_MOVED_ID;
 extern const nimbus_event_type_id NIMBUS_EVENT_TOUCH_ENDED_ID;
 extern const nimbus_event_type_id NIMBUS_EVENT_TOUCH_STATIONARY_ID;
+extern const nimbus_event_type_id NIMBUS_EVENT_TOUCH_ZOOM_ID;
+extern const nimbus_event_type_id NIMBUS_EVENT_TOUCH_HOVER_ID;
 
 struct nimbus_event_write_stream;
 
+/*
 typedef enum nimbus_touch_phase {
 	nimbus_touch_phase_began,
 	nimbus_touch_phase_moved,
 	nimbus_touch_phase_ended,
 	nimbus_touch_phase_cancelled
 } nimbus_touch_phase;
+*/
 
 typedef struct nimbus_touch_changed {
 	nimbus_vector2 position;
-	nimbus_touch_phase phase;
+//	nimbus_touch_phase phase;
 } nimbus_touch_changed;
 
+void nimbus_touch_changed_send(struct nimbus_event_write_stream* stream, u8t event_type_id, nimbus_vector2 position);
 
 #endif

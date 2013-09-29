@@ -75,7 +75,7 @@ static void load_resource_if_needed(nimbus_dependency_resolver* self, nimbus_res
 static void inherit_resource(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* target, nimbus_resource_id resource_id)
 {
 	nimbus_resource_dependency_info_inherit(info, target, resource_id);
-	nimbus_resource_type_id resource_type_id = nimbus_resource_type_id_from_string("object");
+	nimbus_resource_type_id resource_type_id = nimbus_resource_type_id_from_string("script");
 	load_resource_if_needed(self, resource_id, resource_type_id);
 }
 

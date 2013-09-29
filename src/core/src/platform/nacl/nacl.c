@@ -39,43 +39,15 @@ PP_EXPORT void PPP_ShutdownModule()
 {
 
 }
-
-static void handle_input_event(PP_InputEvent_Type type)
-{
-	switch (type) {
-		case PP_INPUTEVENT_TYPE_MOUSEDOWN:
-			TYRAN_LOG("MouseDown!");
-			break;
-		case PP_INPUTEVENT_TYPE_MOUSEUP:
-			TYRAN_LOG("MouseUp!");
-			break;
-		case PP_INPUTEVENT_TYPE_MOUSEMOVE:
-			TYRAN_LOG("MouseMove!");
-			break;
-		case PP_INPUTEVENT_TYPE_WHEEL:
-			TYRAN_LOG("MouseWheel");
-			break;
-		case PP_INPUTEVENT_TYPE_KEYDOWN:
-			TYRAN_LOG("KeyDown");
-			break;
-		case PP_INPUTEVENT_TYPE_KEYUP:
-			TYRAN_LOG("KeyUp");
-			break;
-		default:
-			TYRAN_LOG("Unknown?");
-			break;
-	}
-
-}
-
 static PP_Bool InputEvent_HandleInputEvent(PP_Instance instance, PP_Resource input_event)
 {
 	TYRAN_LOG("HandleInputEvent");
-	PP_InputEvent_Type type = g_nacl.input_event->GetType(input_event);
+	if (g_nacl.input_event_receiver) {
+		return g_nacl.input_event_receiver(instance, input_event);
+	} else {
+		return PP_FALSE;
+	}
 
-	// uint32_t modifiers = g_nacl.input_event->GetModifiers(input_event);
-
-	handle_input_event(type);
 
 	return PP_TRUE;
 }
@@ -134,6 +106,8 @@ static PP_Bool Instance_DidCreate(PP_Instance instance, uint32_t argc, const cha
 {
 	g_nacl.module_instance = instance;
 	g_log.log = nacl_log;
+	g_nacl.input_event_receiver = 0;
+	g_nacl.input_event_receiver_self = 0;
 
 	TYRAN_LOG("Instance_DidCreate");
 

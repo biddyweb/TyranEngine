@@ -18,6 +18,7 @@
 
 #if defined TORNADO_OS_NACL
 #include "../../core/src/platform/nacl/nacl_loader.h"
+#include "../../core/src/platform/nacl/nacl_input.h"
 #endif
 
 static void fire_load_state(nimbus_engine* self, nimbus_resource_id id)
@@ -197,6 +198,11 @@ static void add_internal_modules(nimbus_modules* modules)
 	touch_ended->is_module_to_script = TYRAN_TRUE;
 	touch_ended->has_index = TYRAN_FALSE;
 
+	nimbus_event_definition* touch_zoom = nimbus_modules_add_event(modules, "touch_zoom", NIMBUS_EVENT_TOUCH_ZOOM_ID, 0);
+	nimbus_event_definition_add_property(touch_zoom, "position", NIMBUS_EVENT_DEFINITION_VECTOR2);
+	touch_zoom->is_module_to_script = TYRAN_TRUE;
+	touch_zoom->has_index = TYRAN_FALSE;
+
 	nimbus_event_definition* touch_stationary = nimbus_modules_add_event(modules, "touch_stationary", NIMBUS_EVENT_TOUCH_STATIONARY_ID, 0);
 	nimbus_event_definition_add_property(touch_stationary, "position", NIMBUS_EVENT_DEFINITION_VECTOR2);
 	touch_stationary->is_module_to_script = TYRAN_TRUE;
@@ -205,6 +211,7 @@ static void add_internal_modules(nimbus_modules* modules)
 
 #if defined TORNADO_OS_NACL
 	nimbus_modules_add_affinity(modules, "nacl_loader", sizeof(nimbus_nacl_loader), nimbus_nacl_loader_init, offsetof(nimbus_nacl_loader, update_object), 0);
+	nimbus_modules_add_affinity(modules, "nacl_input", sizeof(nimbus_nacl_input), nimbus_nacl_input_init, offsetof(nimbus_nacl_input, update), 0);
 #endif
 
 }

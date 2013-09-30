@@ -14,10 +14,6 @@ typedef struct tyran_log {
 
 extern tyran_log g_log;
 
-/*
-tyran_fprintf(stderr, __VA_ARGS__); tyran_fprintf(stderr, "\n"); tyran_fflush(stderr);
-*/
-
 #if defined TYRAN_CONFIGURATION_DEBUG
 
 #define TYRAN_LOG(...) { char _temp_str[128]; sprintf(_temp_str, __VA_ARGS__); g_log.log(TYRAN_LOG_TYPE_LOG, _temp_str); }

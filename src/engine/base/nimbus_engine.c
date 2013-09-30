@@ -155,14 +155,16 @@ void nimbus_engine_add_update_object(nimbus_engine* self, nimbus_update* o)
 	self->update_objects[index] = o;
 }
 
-/*
+#if defined TORNADO_OS_IOS
+
 void start_event_connection(nimbus_engine* self, tyran_memory* memory, const char* host, int port, struct nimbus_task_queue* task_queue)
 {
 	nimbus_event_connection_init(&self->event_connection, memory, host, port);
 	nimbus_engine_add_update_object(self, &self->event_connection.update_object);
 	nimbus_task_queue_add_task(task_queue, &self->event_connection.receive_task);
 }
-*/
+
+#endif
 
 static void create_modules(nimbus_engine* self, tyran_memory* memory)
 {
@@ -265,7 +267,11 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 
 	create_modules(self, memory);
 
-	// start_event_connection(self, memory, "198.74.60.114", 32000, task_queue);
+#if defined TORNADO_OS_IOS
+
+	start_event_connection(self, memory, "198.74.60.114", 32000, task_queue);
+
+#endif
 
 	boot_resource(self);
 

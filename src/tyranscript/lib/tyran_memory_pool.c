@@ -39,7 +39,7 @@ tyran_memory_pool* tyran_memory_pool_construct(tyran_memory* memory, size_t stru
 
 void* tyran_memory_pool_alloc(tyran_memory_pool* pool)
 {
-	TYRAN_ASSERT(pool->count < pool->max_count, "Out of memory in pool (%zu)", pool->count);
+	TYRAN_ASSERT(pool->count < pool->max_count, "Out of memory in pool (%d)", pool->count);
 	tyran_memory_pool_entry* e = pool->first_free;
 	TYRAN_ASSERT(e, "first free is null");
 	pool->first_free = e->next_free;

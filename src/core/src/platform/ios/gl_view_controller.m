@@ -1,6 +1,8 @@
 #import "gl_view_controller.h"
 #include <tyran_engine/event/touch_changed.h>
 
+#include <tyran_core/platform/posix/log.h>
+
 @implementation NimbusTouch
 
 @synthesize phase;
@@ -31,6 +33,7 @@
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
+	g_log.log = nimbus_log_posix;
 
 	self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 

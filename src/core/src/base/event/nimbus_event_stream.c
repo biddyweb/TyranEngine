@@ -38,7 +38,7 @@ void write_skip(nimbus_event_write_stream* self, int length)
 
 void nimbus_event_stream_write_align(nimbus_event_write_stream* self)
 {
-	const int alignment = 8;
+	const int alignment = 4;
 	if (((tyran_pointer_to_number)self->pointer % alignment) != 0) {
 		write_skip(self, alignment - ((tyran_pointer_to_number)self->pointer % alignment));
 	}
@@ -93,7 +93,7 @@ void nimbus_event_stream_read_string(nimbus_event_read_stream* self, struct tyra
 
 void nimbus_event_stream_read_align(nimbus_event_read_stream* self)
 {
-	const int alignment = 8;
+	const int alignment = 4;
 	if (((tyran_pointer_to_number)self->pointer % alignment) != 0) {
 		nimbus_event_stream_read_skip(self, alignment - ((tyran_pointer_to_number)self->pointer % alignment) );
 	}

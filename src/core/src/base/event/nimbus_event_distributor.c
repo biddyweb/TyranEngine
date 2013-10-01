@@ -29,7 +29,7 @@ void nimbus_event_distributor_write_events_to_buffer(nimbus_event_distributor* s
 
 		int events_octet_size = nimbus_event_write_stream_length(&o->event_write_stream);
 		if (events_octet_size != 0) {
-			const int alignment = 8;
+			const int alignment = 4;
 			if (((tyran_pointer_to_number)p % alignment) != 0) {
 				int skip = alignment - ((tyran_pointer_to_number)p % alignment);
 				p += skip;

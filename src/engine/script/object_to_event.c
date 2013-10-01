@@ -99,6 +99,7 @@ void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_w
 				if (!tyran_value_is_nil(value)) {
 					const tyran_object* value_object = tyran_value_object(value);
 					const nimbus_object_info* referenced_info = tyran_object_program_specific(value_object);
+					TYRAN_ASSERT(referenced_info, "null referenced_info for '%s' (%p)", tyran_symbol_table_lookup(self->symbol_table, &p->symbol), value_object);
 					index = referenced_info->instance_index;
 				}
 				*(int*)d = index;

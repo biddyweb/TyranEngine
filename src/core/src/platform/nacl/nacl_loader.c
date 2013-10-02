@@ -68,7 +68,7 @@ static PP_Resource create_request_info_instance(nimbus_nacl_loader* self, nimbus
 
 	const int uri_size = 512;
 	char uri[uri_size];
-	tyran_snprintf(uri, uri_size, "%s.%s", resource_name, extension);
+	tyran_snprintf(uri, uri_size, "data/%s.%s", resource_name, extension);
 
 	set_string_property(self->url_request_info, request, PP_URLREQUESTPROPERTY_URL, uri);
 	set_string_property(self->url_request_info, request, PP_URLREQUESTPROPERTY_METHOD, "GET");

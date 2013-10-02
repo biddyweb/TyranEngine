@@ -56,7 +56,7 @@
 	</platform>
 	<platform name="nacl">
 		<define name="TORNADO_OS_NACL" />
-		<source directory="core/src/platform/posix" exclude="[main.c]" />
+		<source directory="core/src/platform/posix" exclude="[main.c, log.c]" />
 		<source directory="core/src/platform/nacl" exclude="[main.c]" />
 		<compiler program="pnacl-clang" />
 

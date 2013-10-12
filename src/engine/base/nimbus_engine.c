@@ -19,6 +19,7 @@
 #if defined TORNADO_OS_NACL
 #include "../../core/src/platform/nacl/nacl_loader.h"
 #include "../../core/src/platform/nacl/nacl_input.h"
+#include "../../core/src/platform/nacl/nacl_connection.h"
 #endif
 
 static void fire_load_state(nimbus_engine* self, nimbus_resource_id id)
@@ -214,6 +215,7 @@ static void add_internal_modules(nimbus_modules* modules)
 #if defined TORNADO_OS_NACL
 	nimbus_modules_add_affinity(modules, "nacl_loader", sizeof(nimbus_nacl_loader), nimbus_nacl_loader_init, offsetof(nimbus_nacl_loader, update_object), 0);
 	nimbus_modules_add_affinity(modules, "nacl_input", sizeof(nimbus_nacl_input), nimbus_nacl_input_init, offsetof(nimbus_nacl_input, update), 0);
+	nimbus_modules_add_affinity(modules, "nacl_connection", sizeof(nimbus_nacl_connection), nimbus_nacl_connection_init, offsetof(nimbus_nacl_connection, update), 0);
 #endif
 
 }
@@ -269,7 +271,7 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 
 #if defined TORNADO_OS_IOS
 
-	start_event_connection(self, memory, "198.74.60.114", 32000, task_queue);
+	start_event_connection(self, memory, "spelmotor.com", 32000, task_queue);
 
 #endif
 

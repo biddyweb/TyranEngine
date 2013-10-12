@@ -16,7 +16,7 @@ extern tyran_log g_log;
 
 #if defined TYRAN_CONFIGURATION_DEBUG
 
-#define TYRAN_LOG(...) { char _temp_str[128]; sprintf(_temp_str, __VA_ARGS__); g_log.log(TYRAN_LOG_TYPE_LOG, _temp_str); }
+#define TYRAN_LOG(...) { char _temp_str[1024]; sprintf(_temp_str, __VA_ARGS__); g_log.log(TYRAN_LOG_TYPE_LOG, _temp_str); }
 #define TYRAN_LOG_NO_LF(...) { TYRAN_LOG(__VA_ARGS__); }
 #define TYRAN_SOFT_ERROR(...) TYRAN_LOG(__VA_ARGS__);
 #define TYRAN_BREAK abort()

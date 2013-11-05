@@ -42,14 +42,14 @@ static void handle_mouse_button(nimbus_nacl_input* self, PP_InputEvent_Type inpu
 			}
 			break;
 		default:
-			TYRAN_LOG("Unknown?");
+			// TYRAN_LOG("Unknown?");
 			break;
 	}
 
 	if (type_id) {
 		nimbus_vector2 vector;
 		vector.x = position.x;
-		vector.y = position.y;
+		vector.y = -position.y;
 		send_touch_changed(self, type_id, vector);
 	}
 }
@@ -61,14 +61,14 @@ static void handle_mouse_input_event(nimbus_nacl_input* self, PP_Resource input_
 
 static void handle_keyboard_input_event(nimbus_nacl_input* self, PP_InputEvent_Type input_event_type, uint32_t keycode)
 {
-/*
-	case PP_INPUTEVENT_TYPE_KEYDOWN:
-		TYRAN_LOG("KeyDown");
-		break;
-	case PP_INPUTEVENT_TYPE_KEYUP:
-		TYRAN_LOG("KeyUp");
-		break;
-*/
+	/*
+		case PP_INPUTEVENT_TYPE_KEYDOWN:
+			TYRAN_LOG("KeyDown");
+			break;
+		case PP_INPUTEVENT_TYPE_KEYUP:
+			TYRAN_LOG("KeyUp");
+			break;
+	*/
 
 }
 
@@ -98,9 +98,9 @@ static PP_Bool _on_input_event(PP_Instance instance, PP_Resource input_event)
 	PP_InputEvent_Type input_event_type = g_nacl.input_event->GetType(input_event);
 	/*
 		uint32_t modifiers = g_nacl.input_event->GetModifiers(input_event);
-		PP_INPUTEVENT_MODIFIER_SHIFTKEY 	
-		PP_INPUTEVENT_MODIFIER_CONTROLKEY 	
-		PP_INPUTEVENT_MODIFIER_ALTKEY 
+		PP_INPUTEVENT_MODIFIER_SHIFTKEY
+		PP_INPUTEVENT_MODIFIER_CONTROLKEY
+		PP_INPUTEVENT_MODIFIER_ALTKEY
 	*/
 
 	return on_input_event(self, input_event, input_event_type);

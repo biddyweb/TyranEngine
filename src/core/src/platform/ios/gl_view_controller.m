@@ -7,11 +7,13 @@
 
 @synthesize phase;
 @synthesize position;
+@synthesize fingerId;
 
--(id) initWithPhase:(UITouchPhase)_phase andPosition:(CGPoint)_position {
+-(id) initWithPhase:(UITouchPhase)_phase andPosition:(CGPoint)_position andFingerId:(NSUInteger) _fingerId {
 	self = [super init];
 	self->phase = _phase;
 	self->position = _position;
+	self->fingerId = _fingerId;
 	return self;
 }
 
@@ -44,7 +46,11 @@
 	GLKView *view = (GLKView *)self.view;
 	view.context = self.context;
 	view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
-	self.preferredFramesPerSecond = 60;
+	self.preferredFramesPerSecond = 30;
+	self->allTouches = [[NSMutableArray alloc] initWithCapacity:10];
+	for (int i=0; i<10; ++i) {
+		[self->allTouches addObject:[NSNull null]];
+	}
 	self->touchLock = [[NSLock alloc]init];
 	self->touchSet = [[NSMutableSet alloc] init];
 
@@ -92,22 +98,38 @@
 	[EAGLContext setCurrentContext:self.context];
 }
 
+-(NSUInteger)getFingerId: (UITouch*) touch
+{
+	NSUInteger index = 0;
+	for (id existingTouch in self->allTouches) {
+		if (existingTouch == touch) {
+			return index;
+		}
+		index++;
+	}
+	return index;
+}
+
 -(void)storeTouchEvent:(NSSet *)touches
 {
+	NSLog(@"Store");
 	for (UITouch* touch in touches) {
-		NimbusTouch* copy = [[NimbusTouch alloc] initWithPhase:touch.phase andPosition:[touch locationInView:self.view]];
+		NSLog(@"touch");
+		NSUInteger fingerIndex = [self getFingerId: touch];
+		NimbusTouch* copy = [[NimbusTouch alloc] initWithPhase:touch.phase andPosition:[touch locationInView:self.view] andFingerId:fingerIndex];
 
 		[self->touchLock lock];
 		[self->touchSet addObject:copy];
 		[self->touchLock unlock];
 	}
+	NSLog(@"--- Store done");
 }
 
 -(void)sendAllTouchEvents:(NSSet *)touches
 {
 	nimbus_touch_changed changed;
 	nimbus_event_type_id type_id;
-
+	
 	for (NimbusTouch* touch in touches) {
 		switch (touch.phase) {
 			case UITouchPhaseBegan:
@@ -128,27 +150,33 @@
 		}
 		changed.position.x = touch.position.x - self.view.frame.size.width / 2;
 		changed.position.y = self.view.frame.size.height / 2 - touch.position.y;
+		changed.finger_id = touch.fingerId;
+		NSLog(@"test:%d", changed.finger_id);
 		nimbus_boot_send_event(self->boot, type_id, &changed, sizeof(changed));
 	}
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+	self->allTouches = [event allTouches];
 	[self storeTouchEvent: touches];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
+	self->allTouches = [event allTouches];
 	[self storeTouchEvent: touches];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
+	self->allTouches = [event allTouches];
 	[self storeTouchEvent: touches];
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
+	self->allTouches = [event allTouches];
 	[self storeTouchEvent: touches];
 }
 

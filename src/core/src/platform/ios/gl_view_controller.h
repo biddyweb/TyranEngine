@@ -7,16 +7,16 @@
 NSObject {
 	CGPoint position;
 	UITouchPhase phase;
-
-
+	NSUInteger fingerId;
 }
 
 -(id) initWithPhase:
 (UITouchPhase)phase andPosition:
-(CGPoint)position;
+(CGPoint)position andFingerId:(NSUInteger)fingerId;
 
 @property(nonatomic) CGPoint position;
 @property(nonatomic) UITouchPhase phase;
+@property(nonatomic) NSUInteger fingerId;
 
 @end
 
@@ -26,6 +26,7 @@ GLKViewController {
 	nimbus_boot* boot;
 	NSLock* touchLock;
 	NSMutableSet* touchSet;
+	NSSet* allTouches;
 }
 
 -(void)touchesBegan:
@@ -40,5 +41,6 @@ GLKViewController {
 -(void)touchesCancelled:
 (NSSet*)touches withEvent:
 (UIEvent*)event;
+-(NSUInteger)getFingerId: (UITouch*) touch;
 
 @end

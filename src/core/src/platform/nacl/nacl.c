@@ -41,7 +41,6 @@ PP_EXPORT void PPP_ShutdownModule()
 }
 static PP_Bool InputEvent_HandleInputEvent(PP_Instance instance, PP_Resource input_event)
 {
-	TYRAN_LOG("HandleInputEvent");
 	if (g_nacl.input_event_receiver) {
 		return g_nacl.input_event_receiver(instance, input_event);
 	} else {

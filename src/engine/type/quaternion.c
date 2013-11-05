@@ -13,23 +13,24 @@ void nimbus_quaternion_normalize(nimbus_quaternion* q)
 	q->w /= scale;
 }
 
-void nimbus_quaternion_from_euler(nimbus_quaternion* q, tyran_number roll, tyran_number pitch, tyran_number yaw)
+void nimbus_quaternion_from_euler(nimbus_quaternion* q, tyran_number x, tyran_number y, tyran_number z)
 {
-	tyran_number p = pitch / 2.0f;
-	tyran_number y = yaw / 2.0f;
-	tyran_number r = roll / 2.0f;
+	tyran_number half_x = x / 2.0f;
+	tyran_number half_y = y / 2.0f;
+	tyran_number half_z = z / 2.0f;
 
-	tyran_number sinp = nimbus_math_sin(p);
-	tyran_number siny = nimbus_math_sin(y);
-	tyran_number sinr = nimbus_math_sin(r);
-	tyran_number cosp = nimbus_math_cos(p);
-	tyran_number cosy = nimbus_math_cos(y);
-	tyran_number cosr = nimbus_math_cos(r);
+	tyran_number sin_x = nimbus_math_sin(half_x);
+	tyran_number sin_y = nimbus_math_sin(half_y);
+	tyran_number sin_z = nimbus_math_sin(half_z);
 
-	q->v.x = sinr * cosp * cosy - cosr * sinp * siny;
-	q->v.y = cosr * sinp * cosy + sinr * cosp * siny;
-	q->v.z = cosr * cosp * siny - sinr * sinp * cosy;
-	q->w = cosr * cosp * cosy + sinr * sinp * siny;
+	tyran_number cos_x = nimbus_math_cos(half_x);
+	tyran_number cos_y = nimbus_math_cos(half_y);
+	tyran_number cos_z = nimbus_math_cos(half_z);
+
+	q->w = cos_x * cos_y * cos_z - sin_x * sin_y * sin_z;
+	q->v.x = sin_x * sin_y * cos_z + cos_x * cos_y * sin_z;
+	q->v.y = sin_x * cos_y * cos_z + cos_x * sin_y * sin_z;
+	q->v.z = cos_x * sin_y * cos_z - sin_x * cos_y * sin_z;
 
 	nimbus_quaternion_normalize(q);
 }

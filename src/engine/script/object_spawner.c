@@ -148,16 +148,16 @@ static void rewire_internal_references_on_component(nimbus_object_spawner* self,
 	tyran_property_iterator_init_shallow(&it, source_component);
 	while (tyran_property_iterator_next(&it, &symbol, &reference_value)) {
 		if (tyran_value_is_object_generic(reference_value)) {
-				const tyran_object* reference = tyran_value_object(reference_value);
-				tyran_object* converted_reference = lookup_reference(self, reference);
-				if (converted_reference) {
-					tyran_value converted_reference_value;
-					tyran_value_set_object(converted_reference_value, converted_reference);
-					tyran_object_insert(destination_component, &symbol, &converted_reference_value);
-					tyran_value_release(converted_reference_value);
-				} else {
-					TYRAN_LOG("No conversion for '%s'", tyran_symbol_table_lookup(self->symbol_table, &symbol))
-				}
+			const tyran_object* reference = tyran_value_object(reference_value);
+			tyran_object* converted_reference = lookup_reference(self, reference);
+			if (converted_reference) {
+				tyran_value converted_reference_value;
+				tyran_value_set_object(converted_reference_value, converted_reference);
+				tyran_object_insert(destination_component, &symbol, &converted_reference_value);
+				tyran_value_release(converted_reference_value);
+			} else {
+				TYRAN_LOG("No conversion for '%s'", tyran_symbol_table_lookup(self->symbol_table, &symbol))
+			}
 		}
 	}
 	tyran_property_iterator_free(&it);
@@ -173,15 +173,15 @@ static void rewire_internal_references_on_combine(nimbus_object_spawner* self, t
 	const tyran_value* value;
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		if (tyran_value_is_object_generic(value)) {
-				const tyran_object* source_component = tyran_value_object(value);
-				const tyran_value* destination_component_value;
-				tyran_object_lookup(&destination_component_value, destination_combine, &symbol);
-				if (tyran_value_is_object_generic(destination_component_value)) {
-					tyran_object* destination_component = tyran_value_mutable_object((tyran_value*)destination_component_value);
-					rewire_internal_references_on_component(self, destination_component, source_component);
-				} else {
-					
-				}
+			const tyran_object* source_component = tyran_value_object(value);
+			const tyran_value* destination_component_value;
+			tyran_object_lookup(&destination_component_value, destination_combine, &symbol);
+			if (tyran_value_is_object_generic(destination_component_value)) {
+				tyran_object* destination_component = tyran_value_mutable_object((tyran_value*)destination_component_value);
+				rewire_internal_references_on_component(self, destination_component, source_component);
+			} else {
+
+			}
 		}
 	}
 	tyran_property_iterator_free(&it);

@@ -421,6 +421,9 @@ static void _on_all(void* _self, struct nimbus_event_read_stream* stream)
 		if (definition->is_module_to_script && definition->event_type_id == event_type_id) {
 			int argument_count = nimbus_event_to_arguments_convert(&converter, arguments, 8, stream, definition);
 			call_event(self, NIMBUS_COMBINE_INSTANCE_ID_NONE, definition->type_symbol, arguments, argument_count);
+			for (int argument_index = 0; argument_index < argument_count; ++argument_index) {
+				tyran_value_release(arguments[argument_index]);
+			}
 			return;
 		}
 	}

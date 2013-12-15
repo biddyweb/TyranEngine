@@ -738,7 +738,7 @@ void unspawn(nimbus_object_listener* self, tyran_object* combine)
 
 	nimbus_combine_instance_id combine_instance_id = info->combine_instance_id;
 	self->combine_instances[combine_instance_id] = 0;
-	TYRAN_OBJECT_RELEASE(combine);
+	tyran_object_release(combine);
 }
 
 static tyran_object* spawn(nimbus_object_listener* self, const tyran_object* combine)

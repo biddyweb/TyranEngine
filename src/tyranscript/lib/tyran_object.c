@@ -40,13 +40,14 @@ tyran_object* tyran_object_new(const struct tyran_runtime* runtime)
 void tyran_object_free(struct tyran_object* object)
 {
 	const tyran_runtime* runtime = object->created_in_runtime;
-	// TYRAN_LOG("Object free:%p, runtime:%p", (void*)object, (void*)runtime);
+#if 0
+	TYRAN_LOG("Object free:%p, runtime:%p specific:%p", (void*)object, (void*)runtime, (void*)object->program_specific);
+#endif
 	if (object->program_specific && runtime->delete_callback) {
 		runtime->delete_callback(runtime, object);
 	}
 
 	switch (object->type) {
-
 		case TYRAN_OBJECT_TYPE_RANGE:
 			tyran_range_free(object->data.range);
 			break;
@@ -68,14 +69,17 @@ void tyran_object_free(struct tyran_object* object)
 			break;
 	}
 
-	tyran_object_release((tyran_object*)object->prototype);
+	if (object->prototype) {
+		tyran_object_release((tyran_object*)object->prototype);
+	}
+
 	for (int i=0; i<object->property_count; ++i) {
-		if (tyran_value_is_object(&object->properties[i].value)) {
 #if 0
+		if (tyran_value_is_object(&object->properties[i].value)) {
 			const char* debug_string = tyran_symbol_table_lookup(runtime->symbol_table, &object->properties[i].symbol);
 			TYRAN_LOG("Member:'%s' retain:%d", debug_string, object->properties[i].value.data.object->retain_count);
-#endif
 		}
+#endif
 		tyran_value_release(object->properties[i].value);
 	}
 
@@ -135,7 +139,7 @@ void tyran_object_delete(struct tyran_object* object, const struct tyran_symbol*
 void tyran_object_set_prototype(struct tyran_object* target, const struct tyran_object* proto)
 {
 	if (target->prototype) {
-		TYRAN_OBJECT_RELEASE((tyran_object*)target->prototype);
+		tyran_object_release((tyran_object*)target->prototype);
 	}
 	TYRAN_ASSERT(proto != target, "Can not set prototype to self");
 

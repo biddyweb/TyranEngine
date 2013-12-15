@@ -38,7 +38,7 @@ typedef struct tyran_value {
 }
 
 #define tyran_value_release(v) { \
-	if ((v).type == TYRAN_VALUE_TYPE_OBJECT) { TYRAN_OBJECT_RELEASE((v).data.object) } \
+	if ((v).type == TYRAN_VALUE_TYPE_OBJECT) { tyran_object_release((v).data.object); } \
 }
 
 #define tyran_value_release_and_clear(v) { \
@@ -78,12 +78,10 @@ typedef struct tyran_value {
 	(v).data.static_function = (f); \
 }
 
-
 #define tyran_value_set_nil(v) { \
 	(v).type = TYRAN_VALUE_TYPE_NIL; \
-    (v).data.data = 0;  \
+	(v).data.data = 0; \
 }
-
 
 #define tyran_value_replace_object(v, o) { \
 	tyran_value_release(v); \

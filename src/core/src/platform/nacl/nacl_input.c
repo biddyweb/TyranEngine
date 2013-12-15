@@ -9,9 +9,9 @@ static void _on_update(void* self)
 {
 }
 
-static void send_touch_changed(nimbus_nacl_input* self, u8t type_id, nimbus_vector2 position)
+static void send_touch_changed(nimbus_nacl_input* self, u8t type_id, u8t button_id, nimbus_vector2 position)
 {
-	nimbus_touch_changed_send(&self->update.event_write_stream, type_id, position);
+	nimbus_touch_changed_send(&self->update.event_write_stream, type_id, button_id, position);
 }
 
 static void handle_wheel_input_event(nimbus_nacl_input* self, PP_InputEvent_Type input_event_type, struct PP_FloatPoint deltaPosition)
@@ -19,12 +19,26 @@ static void handle_wheel_input_event(nimbus_nacl_input* self, PP_InputEvent_Type
 	nimbus_vector2 vector;
 	vector.x = deltaPosition.x;
 	vector.y = deltaPosition.y;
-	send_touch_changed(self, NIMBUS_EVENT_TOUCH_ZOOM_ID, vector);
+	send_touch_changed(self, NIMBUS_EVENT_TOUCH_ZOOM_ID, 0, vector);
 }
 
-static void handle_mouse_button(nimbus_nacl_input* self, PP_InputEvent_Type input_event_type, struct PP_Point position)
+static void handle_mouse_button(nimbus_nacl_input* self, PP_InputEvent_Type input_event_type, PP_InputEvent_MouseButton mouse_button, struct PP_Point position)
 {
 	nimbus_event_type_id type_id = 0;
+	int button_id = 0;
+	switch (mouse_button) {
+		case PP_INPUTEVENT_MOUSEBUTTON_NONE:
+		case PP_INPUTEVENT_MOUSEBUTTON_LEFT:
+			button_id = 1;
+			break;
+		case PP_INPUTEVENT_MOUSEBUTTON_MIDDLE:
+			button_id = 2;
+			break;
+		case PP_INPUTEVENT_MOUSEBUTTON_RIGHT:
+			button_id = 3;
+			break;
+	}
+
 	switch (input_event_type) {
 		case PP_INPUTEVENT_TYPE_MOUSEDOWN:
 			self->is_mouse_down = TYRAN_TRUE;
@@ -50,13 +64,14 @@ static void handle_mouse_button(nimbus_nacl_input* self, PP_InputEvent_Type inpu
 		nimbus_vector2 vector;
 		vector.x = position.x;
 		vector.y = -position.y;
-		send_touch_changed(self, type_id, vector);
+		send_touch_changed(self, type_id, button_id, vector);
 	}
 }
 
 static void handle_mouse_input_event(nimbus_nacl_input* self, PP_Resource input_event, PP_InputEvent_Type input_event_type, struct PP_Point position)
 {
-	handle_mouse_button(self, input_event_type, position);
+	PP_InputEvent_MouseButton mouseButton = self->mouse_interface->GetButton(input_event);
+	handle_mouse_button(self, input_event_type, mouseButton, position);
 }
 
 static void handle_keyboard_input_event(nimbus_nacl_input* self, PP_InputEvent_Type input_event_type, uint32_t keycode)

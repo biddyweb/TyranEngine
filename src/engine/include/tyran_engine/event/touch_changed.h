@@ -19,6 +19,6 @@ typedef struct nimbus_touch_changed {
 	int finger_id;
 } nimbus_touch_changed;
 
-void nimbus_touch_changed_send(struct nimbus_event_write_stream* stream, u8t event_type_id, nimbus_vector2 position);
+void nimbus_touch_changed_send(struct nimbus_event_write_stream* stream, u8t event_type_id, u8t button_id, nimbus_vector2 position);
 
 #endif

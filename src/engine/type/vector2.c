@@ -21,7 +21,22 @@ nimbus_vector2 nimbus_vector2_add(nimbus_vector2 a, nimbus_vector2 b)
 	return nimbus_vector2_make(a.x + b.x, a.y + b.y);
 }
 
+nimbus_vector2 nimbus_vector2_sub(nimbus_vector2 a, nimbus_vector2 b)
+{
+	return nimbus_vector2_make(a.x - b.x, a.y - b.y);
+}
+
 tyran_number nimbus_vector2_length(nimbus_vector2 a)
 {
 	return nimbus_math_sqrt(a.x * a.x + a.y * a.y);
+}
+
+nimbus_vector2 nimbus_vector2_unit(nimbus_vector2 a)
+{
+	tyran_number length = nimbus_vector2_length(a);
+	nimbus_vector2 result;
+	result.x = a.x / length;
+	result.y = a.y / length;
+
+	return result;
 }

@@ -31,6 +31,22 @@ void nimbus_object_to_event_free(nimbus_object_to_event* self)
 	tyran_free(self->temp_buf);
 }
 
+static int get_value_object_instance_index(const nimbus_object_to_event* self, const tyran_symbol* symbol, const tyran_value* value)
+{
+	int instance_index;
+
+	if (!tyran_value_is_nil(value)) {
+		const tyran_object* value_object = tyran_value_object(value);
+		const nimbus_object_info* referenced_info = tyran_object_program_specific(value_object);
+		TYRAN_ASSERT(referenced_info, "null referenced_info for '%s' (%p)", tyran_symbol_table_lookup(self->symbol_table, symbol), value_object);
+		instance_index = referenced_info->instance_index;
+	} else {
+		instance_index = -1;
+	}
+
+	return instance_index;
+}
+
 void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_write_stream* stream, const struct tyran_object* o, const nimbus_event_definition* e)
 {
 	nimbus_object_info* info = (nimbus_object_info*) tyran_object_program_specific(o);
@@ -94,15 +110,8 @@ void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_w
 			}
 			break;
 			case NIMBUS_EVENT_DEFINITION_OBJECT: {
-				int index = -1;
 				tyran_object_lookup_prototype(&value, o, &p->symbol);
-				if (!tyran_value_is_nil(value)) {
-					const tyran_object* value_object = tyran_value_object(value);
-					const nimbus_object_info* referenced_info = tyran_object_program_specific(value_object);
-					TYRAN_ASSERT(referenced_info, "null referenced_info for '%s' (%p)", tyran_symbol_table_lookup(self->symbol_table, &p->symbol), value_object);
-					index = referenced_info->instance_index;
-				}
-				*(int*)d = index;
+				*(int*)d = get_value_object_instance_index(self, &p->symbol, value);
 				d += sizeof(int);
 			}
 			break;

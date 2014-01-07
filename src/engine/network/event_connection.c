@@ -219,7 +219,7 @@ void nimbus_event_connection_init(nimbus_event_connection* self, tyran_memory* m
 	self->in_buffer_size = 8 * 1024;
 	self->in_buffer = TYRAN_MEMORY_ALLOC(memory, self->in_buffer_size, "event connection buffer");
 
-	const int largest_resource_file = 1024 * 1024;
+	const int largest_resource_file = 6 * 1024 * 1024;
 	nimbus_ring_buffer_init(&self->buffer, memory, largest_resource_file);
 
 	nimbus_out_stream_init(&self->out_stream, memory, largest_resource_file + 1024);

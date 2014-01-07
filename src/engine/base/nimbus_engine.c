@@ -70,7 +70,6 @@ TYRAN_RUNTIME_CALL_FUNC(log_output)
 {
 	struct tyran_value* v = &arguments[0];
 	print_value(runtime, v);
-//        tyran_value_set_number(*return_value, 16.0f);
 	return 0;
 }
 

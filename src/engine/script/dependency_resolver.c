@@ -162,8 +162,6 @@ static int request_inherits_and_references(nimbus_dependency_resolver* self, nim
 
 	tyran_property_iterator_init(&it, combine);
 
-	// tyran_print_value("Checking out the inherits", o, 1);
-
 	const tyran_value* value;
 	tyran_symbol symbol;
 

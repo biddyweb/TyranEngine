@@ -16,7 +16,7 @@
 #include <tyran_engine/event/module_resource_updated.h>
 #include <tyran_engine/script/event_to_object.h>
 #include <tyran_engine/event/unspawn_event.h>
-#include <tyran_engine/script/event_to_object.h>
+#include <tyran_engine/script/event_to_arguments.h>
 
 #include "object_info.h"
 #include <tyran_engine/script/object_decorator.h>
@@ -481,7 +481,7 @@ static void search_components_for_update_functions(nimbus_object_listener* self,
 	const tyran_value* value;
 
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
-		if (tyran_value_is_object(value) && !tyran_value_is_function(value)) {
+		if (tyran_value_is_object_generic(value)) {
 			tyran_object* object = tyran_value_mutable_object((tyran_value*)value);
 			const tyran_value* update_func_value;
 			tyran_object_lookup_prototype(&update_func_value, object, &self->on_update_symbol);

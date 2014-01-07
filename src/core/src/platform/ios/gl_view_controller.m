@@ -46,7 +46,7 @@
 	GLKView *view = (GLKView *)self.view;
 	view.context = self.context;
 	view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
-	self.preferredFramesPerSecond = 30;
+	self.preferredFramesPerSecond = 60;
 	self->allTouches = [[NSMutableArray alloc] initWithCapacity:10];
 	for (int i=0; i<10; ++i) {
 		[self->allTouches addObject:[NSNull null]];

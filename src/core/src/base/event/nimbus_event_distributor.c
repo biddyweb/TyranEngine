@@ -7,7 +7,7 @@
 
 void nimbus_event_distributor_init(nimbus_event_distributor* self, tyran_memory* memory)
 {
-	self->event_buffer_size = 8 * 1024 * 1024;
+	self->event_buffer_size = 11 * 8 * 1024 * 1024;
 	self->event_buffer = TYRAN_MEMORY_CALLOC(memory, self->event_buffer_size, "event_buffer");
 }
 

@@ -1,3 +1,4 @@
+#if 0
 #include "nacl_input.h"
 
 #include <tyranscript/tyran_log.h>
@@ -12,8 +13,8 @@ static void compare_states()
 	for (int gamepad_index=0; gamepad_index<self->gamepads.length; ++gamepad_index) {
 		struct PP_GamepadSampleData* new_data = &self->items[gamepad_index];
 		struct PP_GamepadSampleData* old_data = &self->gamepads.items[gamepad_index];
-		// int max_axes = 
-		// for (int axes_index = 0; axes_index < 
+		// int max_axes =
+		// for (int axes_index = 0; axes_index <
 	}
 }
 
@@ -38,3 +39,7 @@ void nimbus_nacl_gamepad_init(void* _self, tyran_memory* memory)
 
 	self->gamepad_interface = (PPB_Gamepad*) g_nacl.get_browser(PPB_GAMEPAD_INTERFACE);
 }
+
+#else
+	int a;
+#endif

@@ -44,6 +44,8 @@ static nimbus_resource_type_id generic_resource_type_to_extension_type(nimbus_re
 		converted = "skeleton";
 	} else if (resource_type_id == nimbus_resource_type_id_from_string("script")) {
 		converted = "oes";
+	} else if (resource_type_id == nimbus_resource_type_id_from_string("wave")) {
+		converted = "ogg";
 	}
 
 	return nimbus_resource_type_id_from_string(converted);
@@ -96,8 +98,8 @@ static resource_progress* create_progress(nimbus_nacl_loader* self, nimbus_resou
 {
 	TYRAN_LOG("Creating progress");
 	resource_progress* progress = TYRAN_CALLOC_TYPE(self->resource_progress_pool, resource_progress);
-	nimbus_octet_buffer_init(&progress->buffer, self->memory, 64 * 1024);
-	nimbus_octet_buffer_init(&progress->in_buffer, self->memory, 128 * 1024);
+	nimbus_octet_buffer_init(&progress->buffer, self->memory, 2 * 1024 * 1024);
+	nimbus_octet_buffer_init(&progress->in_buffer, self->memory, 2 * 1024 * 1024);
 	progress->request_info_instance = request_info_instance;
 	progress->url_loader_instance = url_loader_instance;
 	progress->resource_id = resource_id;

@@ -125,6 +125,8 @@ static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* s
 						resource_type_string = "vertex";
 					} else if (tyran_str_equal(key_string, "skeleton")) {
 						resource_type_string = "skeleton";
+					} else if (tyran_str_equal(key_string, "wave")) {
+						resource_type_string = "wave";
 					}
 
 					resource_type_id = nimbus_resource_type_id_from_string(resource_type_string);

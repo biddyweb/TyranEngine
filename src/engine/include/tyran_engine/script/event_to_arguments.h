@@ -1,5 +1,5 @@
-#ifndef nimbus_event_to_object_h
-#define nimbus_event_to_object_h
+#ifndef nimbus_event_to_arguments_h
+#define nimbus_event_to_arguments_h
 
 #include <tyran_engine/script/property_writer.h>
 #include <tyranscript/tyran_symbol.h>

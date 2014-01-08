@@ -13,6 +13,8 @@
 #include <tyran_engine/resource/id.h>
 #include <tyran_engine/module/modules.h>
 #include <tyran_engine/combine/combine_instance.h>
+#include <tyran_engine/script/event_to_arguments.h>
+#include <tyran_engine/script/event_to_object.h>
 
 struct tyran_memory;
 
@@ -116,6 +118,8 @@ typedef struct nimbus_object_listener {
 
 	nimbus_bit_array combine_instance_id_array;
 	struct tyran_object** combine_instances;
+	nimbus_event_to_arguments arguments_converter;
+	nimbus_event_to_object object_converter;
 
 } nimbus_object_listener;
 

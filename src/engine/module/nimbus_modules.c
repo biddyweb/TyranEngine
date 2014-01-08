@@ -41,3 +41,13 @@ nimbus_event_definition* nimbus_modules_add_event(nimbus_modules* self, const ch
 
 	return definition;
 }
+
+nimbus_event_definition* nimbus_modules_add_event_struct(nimbus_modules* self, const char* name, size_t struct_size, u8t event_type_id)
+{
+	nimbus_event_definition* definition = &self->event_definitions[self->event_definitions_count++];
+	nimbus_event_definition_init(definition, self->symbol_table, "x", event_type_id, 0);
+	tyran_symbol_table_add(self->symbol_table, &definition->struct_symbol, name);
+	definition->struct_size = struct_size;
+
+	return definition;
+}

@@ -13,9 +13,22 @@ void nimbus_event_definition_init(nimbus_event_definition* self, struct tyran_sy
 	tyran_symbol_table_add(self->symbol_table, &self->type_symbol, name);
 }
 
-void nimbus_event_definition_add_property(nimbus_event_definition* self, const char* name, nimbus_event_definition_type type)
+static nimbus_event_definition_property* add_property(nimbus_event_definition* self, const char* name, nimbus_event_definition_type type)
 {
 	nimbus_event_definition_property* property = &self->properties[self->properties_count++];
 	tyran_symbol_table_add(self->symbol_table, &property->symbol, name);
 	property->type = type;
+
+	return property;
+}
+
+void nimbus_event_definition_add_property(nimbus_event_definition* self, const char* name, nimbus_event_definition_type type)
+{
+	add_property(self, name, type);
+}
+
+void nimbus_event_definition_add_property_struct(nimbus_event_definition* self, const char* name, nimbus_event_definition_type type, size_t offset)
+{
+	nimbus_event_definition_property* property = add_property(self, name, type);
+	property->offset_in_struct = offset;
 }

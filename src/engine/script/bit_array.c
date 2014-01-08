@@ -9,6 +9,11 @@ void nimbus_bit_array_init(nimbus_bit_array* self, struct tyran_memory* memory, 
 	self->bits = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, u32t, self->block_count * sizeof(u32t));
 }
 
+void nimbus_bit_array_free(nimbus_bit_array* self)
+{
+	TYRAN_MEMORY_FREE(self->bits);
+}
+
 static int find_free_index(nimbus_bit_array* self)
 {
 	for (int i=0; i<self->block_count; ++i) {

@@ -12,6 +12,7 @@ typedef struct nimbus_bit_array {
 } nimbus_bit_array;
 
 void nimbus_bit_array_init(nimbus_bit_array* self, struct tyran_memory* memory, int bit_count);
+void nimbus_bit_array_free(nimbus_bit_array* self);
 int nimbus_bit_array_reserve_free_index(nimbus_bit_array* self);
 void nimbus_bit_array_delete_index(nimbus_bit_array* self, int index);
 

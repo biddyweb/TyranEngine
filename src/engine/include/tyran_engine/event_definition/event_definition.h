@@ -24,6 +24,7 @@ typedef enum nimbus_event_definition_type {
 typedef struct nimbus_event_definition_property {
 	nimbus_event_definition_type type;
 	tyran_symbol symbol;
+	size_t offset_in_struct;
 } nimbus_event_definition_property;
 
 typedef struct nimbus_event_definition {
@@ -34,13 +35,17 @@ typedef struct nimbus_event_definition {
 	u8t event_type_id;
 	const char* name;
 	tyran_symbol type_symbol;
+	tyran_symbol struct_symbol;
+	size_t struct_size;
 	struct tyran_symbol_table* symbol_table;
 	tyran_boolean is_module_to_script;
+	tyran_boolean is_module_to_script_objects;
 	tyran_boolean should_instantiate;
 	u8t unspawn_event_type_id;
 } nimbus_event_definition;
 
 void nimbus_event_definition_init(nimbus_event_definition* self, struct tyran_symbol_table* symbol_table, const char* name, u8t event_type_id, u8t unspawn_event_type_id);
 void nimbus_event_definition_add_property(nimbus_event_definition* self, const char* name, nimbus_event_definition_type type);
+void nimbus_event_definition_add_property_struct(nimbus_event_definition* self, const char* name, nimbus_event_definition_type type, size_t offset);
 
 #endif

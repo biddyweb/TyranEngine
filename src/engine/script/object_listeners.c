@@ -14,9 +14,7 @@
 #include <tyran_engine/event/resource_load.h>
 #include <tyran_engine/event/resource_load.h>
 #include <tyran_engine/event/module_resource_updated.h>
-#include <tyran_engine/script/event_to_object.h>
 #include <tyran_engine/event/unspawn_event.h>
-#include <tyran_engine/script/event_to_arguments.h>
 
 #include "object_info.h"
 #include <tyran_engine/script/object_decorator.h>
@@ -28,7 +26,6 @@
 #include <tyran_engine/event/execute_function.h>
 
 #include "../base/nimbus_engine.h"
-
 
 void nimbus_object_collection_init(nimbus_object_collection* self, struct tyran_memory* memory)
 {
@@ -406,28 +403,12 @@ static void scan_for_listening_functions_on_object(nimbus_object_listener* self,
 	tyran_property_iterator_free(&it);
 }
 
-static void _on_all(void* _self, struct nimbus_event_read_stream* stream)
-{
-	nimbus_object_listener* self = _self;
-	nimbus_event_type_id event_type_id = stream->event_type_id;
-	tyran_value arguments[8];
+typedef struct all_objects {
+	const u8t* objects;
+	int object_count;
+} all_objects;
 
-	nimbus_event_to_arguments converter;
 
-	nimbus_event_to_arguments_init(&converter, self->symbol_table, self->runtime);
-
-	for (int i=0; i < self->event_definitions_count; ++i) {
-		nimbus_event_definition* definition = &self->event_definitions[i];
-		if (definition->is_module_to_script && definition->event_type_id == event_type_id) {
-			int argument_count = nimbus_event_to_arguments_convert(&converter, arguments, 8, stream, definition);
-			call_event(self, NIMBUS_COMBINE_INSTANCE_ID_NONE, definition->type_symbol, arguments, argument_count);
-			for (int argument_index = 0; argument_index < argument_count; ++argument_index) {
-				tyran_value_release(arguments[argument_index]);
-			}
-			return;
-		}
-	}
-}
 
 static nimbus_track_info* add_track_info(nimbus_object_listener* self, tyran_symbol type_name)
 {
@@ -446,6 +427,43 @@ static nimbus_track_info* track_info_from_type(nimbus_object_listener* self, tyr
 	}
 
 	return 0;
+}
+
+static void _on_all(void* _self, struct nimbus_event_read_stream* stream)
+{
+	nimbus_object_listener* self = _self;
+	nimbus_event_type_id event_type_id = stream->event_type_id;
+	
+	for (int i=0; i < self->event_definitions_count; ++i) {
+		nimbus_event_definition* definition = &self->event_definitions[i];
+		if (definition->event_type_id == event_type_id) {
+			if (definition->is_module_to_script) {
+				tyran_value arguments[8];
+				int argument_count = nimbus_event_to_arguments_convert(&self->arguments_converter, arguments, 8, stream, definition);
+				call_event(self, NIMBUS_COMBINE_INSTANCE_ID_NONE, definition->type_symbol, arguments, argument_count);
+				for (int argument_index = 0; argument_index < argument_count; ++argument_index) {
+					tyran_value_release(arguments[argument_index]);
+				}
+			} else if (definition->is_module_to_script_objects) {
+				nimbus_track_info* track = track_info_from_type(self, definition->struct_symbol);
+				if (!track) {
+					return;
+				}
+				const all_objects* e;
+				nimbus_event_stream_read_type_pointer(stream, e, all_objects);
+				tyran_object** objects = track->objects;
+				for (int instance_index = 0; instance_index < e->object_count; ++instance_index) {
+					const u8t* p = e->objects + instance_index * definition->struct_size;
+					tyran_object* o = objects[instance_index];
+					if (!o) {
+						continue;
+					}
+					nimbus_event_to_object_convert(&self->object_converter, o, p, definition);
+				}
+			}
+			return;
+		}
+	}
 }
 
 static nimbus_layer_association* find_layer_association(nimbus_object_listener* self, const tyran_object* source_object)
@@ -497,7 +515,7 @@ static void search_components_for_update_functions(nimbus_object_listener* self,
 
 static void spawn_layer_object(nimbus_object_listener* self, nimbus_layer_association* association, int layer_index, tyran_object* combine, nimbus_resource_id combine_resource_id)
 {
-	//TYRAN_LOG("Spawn layer object for layer %d -> '%s'", layer_index, nimbus_resource_id_debug_name(combine_resource_id));
+	TYRAN_LOG("Spawn layer object for layer %d -> '%s'", layer_index, nimbus_resource_id_debug_name(combine_resource_id));
 	TYRAN_ASSERT(association->layer_objects[layer_index] == 0, "Something bad happened when spawning");
 	tyran_object* spawned_combine = spawn(self, combine);
 	association->layer_objects[layer_index] = spawned_combine;
@@ -559,7 +577,7 @@ static void handle_type_object(nimbus_object_listener* self, tyran_object* o, ni
 	} else {
 		nimbus_track_info* track_info = get_or_create_track_info(self, type_name);
 		info->event_definition = event_definition_for_type_symbol(self, &type_name);
-		info->instance_index = nimbus_track_info_get_free_index(track_info);
+		info->instance_index = nimbus_track_info_get_free_index(track_info, o);
 	}
 	nimbus_object_collection* collection = object_collection_for_type(self, type_name);
 	if (collection) {
@@ -934,6 +952,9 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 	self->combine_instances = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, tyran_object*, 1024);
 
 	nimbus_bit_array_init(&self->combine_instance_id_array, memory, 1024);
+
+	nimbus_event_to_arguments_init(&self->arguments_converter, self->symbol_table, self->runtime);
+	nimbus_event_to_object_init(&self->object_converter, self->symbol_table, self->runtime);
 
 	nimbus_object_layers_add_layer(self, "render", memory);
 	nimbus_object_layers_add_layer(self, "audio", memory);

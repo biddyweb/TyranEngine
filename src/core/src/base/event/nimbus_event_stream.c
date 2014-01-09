@@ -1,6 +1,7 @@
 #include <tyran_core/event/event_stream.h>
 #include <tyranscript/tyran_clib.h>
 #include <tyranscript/tyran_string.h>
+#include <tyranscript/tyran_symbol_table.h>
 
 void nimbus_event_write_stream_clear(nimbus_event_write_stream* self)
 {
@@ -12,6 +13,7 @@ void nimbus_event_write_stream_init(nimbus_event_write_stream* self, tyran_memor
 	self->buffer = TYRAN_MEMORY_ALLOC(memory, max_length, "event write buffer");
 	nimbus_event_write_stream_clear(self);
 	self->end_pointer = self->buffer + max_length;
+
 }
 
 void nimbus_event_write_stream_free(nimbus_event_write_stream* stream)
@@ -70,10 +72,11 @@ void nimbus_event_stream_read_octets(nimbus_event_read_stream* stream, u8t* data
 	stream->pointer += len;
 }
 
-void nimbus_event_stream_read_init(nimbus_event_read_stream* self, const u8t* pointer, int length)
+void nimbus_event_stream_read_init(nimbus_event_read_stream* self, const struct tyran_symbol_table* table, const u8t* pointer, int length)
 {
 	self->pointer = pointer;
 	self->end_pointer = pointer + length;
+	self->symbol_table = table;	
 }
 
 void nimbus_event_stream_read_skip(nimbus_event_read_stream* self, int length)
@@ -89,6 +92,11 @@ void nimbus_event_stream_read_string(nimbus_event_read_stream* self, struct tyra
 	const u8t* data;
 	nimbus_event_stream_read_pointer(self, &data, character_count * sizeof(tyran_string_char));
 	tyran_string_init(string, memory, (tyran_string_char*)data, character_count);
+}
+
+const char* nimbus_event_stream_read_convert_symbol_string(nimbus_event_read_stream* self, const struct tyran_symbol* symbol)
+{
+	return tyran_symbol_table_lookup(self->symbol_table, symbol);
 }
 
 void nimbus_event_stream_read_align(nimbus_event_read_stream* self)

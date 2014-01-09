@@ -5,10 +5,11 @@
 #include "nimbus_event_distributor.h"
 #include <tyran_core/update/update.h>
 
-void nimbus_event_distributor_init(nimbus_event_distributor* self, tyran_memory* memory)
+void nimbus_event_distributor_init(nimbus_event_distributor* self, const struct tyran_symbol_table* table, tyran_memory* memory)
 {
 	self->event_buffer_size = 11 * 8 * 1024 * 1024;
 	self->event_buffer = TYRAN_MEMORY_CALLOC(memory, self->event_buffer_size, "event_buffer");
+	self->symbol_table = table;
 }
 
 
@@ -16,7 +17,7 @@ void nimbus_event_distributor_set_buffer_for_objects_to_parse(nimbus_event_distr
 {
 	for (int i=0; i<object_count; ++i) {
 		nimbus_update* o = objects[i];
-		nimbus_event_stream_read_init(&o->event_read_stream, self->event_buffer, self->event_buffer_used_octet_size);
+		nimbus_event_stream_read_init(&o->event_read_stream, self->symbol_table, self->event_buffer, self->event_buffer_used_octet_size);
 	}
 }
 

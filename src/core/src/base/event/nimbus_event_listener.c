@@ -29,7 +29,7 @@ void nimbus_event_process(nimbus_event_listener* self, struct nimbus_event_read_
 
 		if (func) {
 			nimbus_event_read_stream stream;
-			nimbus_event_stream_read_init(&stream, read_stream->pointer, header.event_octet_size);
+			nimbus_event_stream_read_init(&stream, read_stream->symbol_table, read_stream->pointer, header.event_octet_size);
 			func->event_reader(other_self, &stream);
 		} else {
 			// TYRAN_LOG("No specific listener");
@@ -37,7 +37,7 @@ void nimbus_event_process(nimbus_event_listener* self, struct nimbus_event_read_
 
 		if (self->listen_to_all) {
 			nimbus_event_read_stream stream;
-			nimbus_event_stream_read_init(&stream, read_stream->pointer, header.event_octet_size);
+			nimbus_event_stream_read_init(&stream, read_stream->symbol_table, read_stream->pointer, header.event_octet_size);
 			stream.event_type_id = header.event_type_id;
 			self->listen_to_all(other_self, &stream);
 		}

@@ -241,7 +241,7 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	self->mocha_api.default_runtime->program_specific_context = self;
 	self->mocha_api.default_runtime->delete_callback = delete_callback;
 
-	nimbus_event_distributor_init(&self->event_distributor, memory);
+	nimbus_event_distributor_init(&self->event_distributor, self->mocha_api.default_runtime->symbol_table, memory);
 
 
 	tyran_value* global = tyran_runtime_context(self->mocha_api.default_runtime);

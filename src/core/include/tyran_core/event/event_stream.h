@@ -5,6 +5,8 @@
 
 struct tyran_memory;
 struct tyran_string;
+struct tyran_symbol_table;
+struct tyran_symbol;
 
 typedef u8t nimbus_event_type_id;
 
@@ -25,6 +27,7 @@ typedef struct nimbus_event_read_stream {
 	const u8t* pointer;
 	const u8t* end_pointer;
 	nimbus_event_type_id event_type_id;
+	const struct tyran_symbol_table* symbol_table;
 } nimbus_event_read_stream;
 
 
@@ -37,12 +40,13 @@ void nimbus_event_stream_write_align(nimbus_event_write_stream* self);
 void nimbus_event_stream_write_event_end(nimbus_event_write_stream* self);
 void nimbus_event_stream_write_string(nimbus_event_write_stream* self, const struct tyran_string* string);
 
-void nimbus_event_stream_read_init(nimbus_event_read_stream* self, const u8t* pointer, int length);
+void nimbus_event_stream_read_init(nimbus_event_read_stream* self, const struct tyran_symbol_table* table, const u8t* pointer, int length);
 void nimbus_event_stream_read_octets(nimbus_event_read_stream* stream, u8t* data, int len);
 void nimbus_event_stream_read_pointer(nimbus_event_read_stream* stream, const u8t** data, int len);
 void nimbus_event_stream_read_align(nimbus_event_read_stream* self);
 void nimbus_event_stream_read_skip(nimbus_event_read_stream* self, int length);
 void nimbus_event_stream_read_string(nimbus_event_read_stream* self, struct tyran_memory* memory, struct tyran_string* string);
+const char* nimbus_event_stream_read_convert_symbol_string(nimbus_event_read_stream* self, const struct tyran_symbol* symbol);
 
 #define nimbus_event_stream_write_type(stream, variable) { nimbus_event_stream_write_align(stream); nimbus_event_stream_write_octets(stream, (const u8t*)(&variable), sizeof(variable)); }
 

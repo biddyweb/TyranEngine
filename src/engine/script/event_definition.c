@@ -27,6 +27,12 @@ void nimbus_event_definition_add_property(nimbus_event_definition* self, const c
 	add_property(self, name, type);
 }
 
+void nimbus_event_definition_add_property_array(nimbus_event_definition* self, const char* name, nimbus_event_definition_type type)
+{
+	nimbus_event_definition_property* property = add_property(self, name, type);
+	property->is_array = TYRAN_TRUE;
+}
+
 void nimbus_event_definition_add_property_struct(nimbus_event_definition* self, const char* name, nimbus_event_definition_type type, size_t offset)
 {
 	nimbus_event_definition_property* property = add_property(self, name, type);

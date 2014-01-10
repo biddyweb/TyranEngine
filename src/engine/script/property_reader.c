@@ -38,6 +38,12 @@ void nimbus_property_reader_vector2(nimbus_property_reader* self, nimbus_vector2
 	FETCH_OBJECT_NUMBER(v->y, self->y_symbol);
 }
 
+void nimbus_property_reader_vector2_ex(nimbus_property_reader* self, nimbus_vector2* v, const tyran_object* value_object)
+{
+	FETCH_OBJECT_NUMBER(v->x, self->x_symbol);
+	FETCH_OBJECT_NUMBER(v->y, self->y_symbol);
+}
+
 void nimbus_property_reader_rect2(nimbus_property_reader* self, nimbus_rect* v, const tyran_object* o, const tyran_symbol* s)
 {
 	FETCH_OBJECT(s);

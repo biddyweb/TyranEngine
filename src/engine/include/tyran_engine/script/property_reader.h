@@ -26,6 +26,7 @@ void nimbus_property_reader_float(nimbus_property_reader* self, float* v, const 
 
 void nimbus_property_reader_vector3(nimbus_property_reader* self, nimbus_vector3* v, const struct tyran_object* o, const tyran_symbol* s);
 void nimbus_property_reader_vector2(nimbus_property_reader* self, nimbus_vector2* v, const struct tyran_object* o, const tyran_symbol* s);
+void nimbus_property_reader_vector2_ex(nimbus_property_reader* self, nimbus_vector2* v, const struct tyran_object* value_object);
 void nimbus_property_reader_rect2(nimbus_property_reader* self, nimbus_rect* v, const struct tyran_object* o, const tyran_symbol* s);
 void nimbus_property_reader_size2(nimbus_property_reader* self, nimbus_size2* v, const struct tyran_object* o, const tyran_symbol* s);
 void nimbus_property_reader_size2i(nimbus_property_reader* self, nimbus_size2i* v, const struct tyran_object* o, const tyran_symbol* s);

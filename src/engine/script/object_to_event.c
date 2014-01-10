@@ -4,6 +4,7 @@
 #include <tyran_core/event/event_stream.h>
 
 #include <tyranscript/tyran_object.h>
+#include <tyranscript/tyran_array.h>
 #include <tyran_engine/event_definition/event_definition.h>
 #include "object_info.h"
 #include <tyranscript/tyran_string.h>
@@ -47,6 +48,36 @@ static int get_value_object_instance_index(const nimbus_object_to_event* self, c
 	return instance_index;
 }
 
+static u8t* serialize_array(nimbus_property_reader* reader, u8t* d, const struct tyran_object* o, const nimbus_event_definition_property* p)
+{
+	const tyran_value* value;
+
+	tyran_object_lookup_prototype(&value, o, &p->symbol);
+	tyran_array* array = tyran_value_array(value);
+	int count = tyran_array_count(array);
+	*((int*)d) = count;
+	d += sizeof(int);
+
+	tyran_value v;
+	tyran_value k;
+	for (int index = 0; index < count; ++index) {
+		tyran_value_set_number(k, (tyran_number) index);
+		tyran_array_lookup(&v, array, &k);
+		const tyran_object* value_object = tyran_value_object(&v);
+		switch (p->type) {
+			case NIMBUS_EVENT_DEFINITION_VECTOR2:
+				nimbus_property_reader_vector2_ex(reader, (nimbus_vector2*) d, value_object);
+				d += sizeof(nimbus_vector2);
+			break;
+			default:
+				TYRAN_ERROR("not handled");
+			break;
+		}
+	}
+	
+	return d;
+}
+
 void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_write_stream* stream, const struct tyran_object* o, const nimbus_event_definition* e)
 {
 	nimbus_object_info* info = (nimbus_object_info*) tyran_object_program_specific(o);
@@ -74,6 +105,10 @@ void nimbus_object_to_event_convert(nimbus_object_to_event* self, nimbus_event_w
 		const nimbus_event_definition_property* p = &e->properties[i];
 		// const char* debug_string = tyran_symbol_table_lookup(self->symbol_table, &p->symbol);
 		// TYRAN_LOG("convert: '%s'", debug_string);
+		if (p->is_array) {
+			d = serialize_array(reader, d, o, p);
+			continue;
+		}
 		switch (p->type) {
 			case NIMBUS_EVENT_DEFINITION_FLOAT: {
 				tyran_object_lookup_prototype(&value, o, &p->symbol);

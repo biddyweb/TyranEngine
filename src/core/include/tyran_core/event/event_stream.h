@@ -47,6 +47,7 @@ void nimbus_event_stream_read_align(nimbus_event_read_stream* self);
 void nimbus_event_stream_read_skip(nimbus_event_read_stream* self, int length);
 void nimbus_event_stream_read_string(nimbus_event_read_stream* self, struct tyran_memory* memory, struct tyran_string* string);
 const char* nimbus_event_stream_read_convert_symbol_string(nimbus_event_read_stream* self, const struct tyran_symbol* symbol);
+int nimbus_event_stream_read_array(nimbus_event_read_stream* self, void* destination, int size_of_entity, int max_array_count);
 
 #define nimbus_event_stream_write_type(stream, variable) { nimbus_event_stream_write_align(stream); nimbus_event_stream_write_octets(stream, (const u8t*)(&variable), sizeof(variable)); }
 

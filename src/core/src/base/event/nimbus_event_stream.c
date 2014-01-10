@@ -76,7 +76,7 @@ void nimbus_event_stream_read_init(nimbus_event_read_stream* self, const struct 
 {
 	self->pointer = pointer;
 	self->end_pointer = pointer + length;
-	self->symbol_table = table;	
+	self->symbol_table = table;
 }
 
 void nimbus_event_stream_read_skip(nimbus_event_read_stream* self, int length)
@@ -97,6 +97,21 @@ void nimbus_event_stream_read_string(nimbus_event_read_stream* self, struct tyra
 const char* nimbus_event_stream_read_convert_symbol_string(nimbus_event_read_stream* self, const struct tyran_symbol* symbol)
 {
 	return tyran_symbol_table_lookup(self->symbol_table, symbol);
+}
+
+int nimbus_event_stream_read_array(nimbus_event_read_stream* self, void* destination, int size_of_entity, int max_array_count)
+{
+	const u8t* d = self->pointer;
+	
+	int count_in_array = *((int*)d);
+	d += sizeof(int);
+	
+	TYRAN_ASSERT(count_in_array <= max_array_count, "Can not read big array:%d", count_in_array);
+
+	tyran_memcpy_octets(destination, d, size_of_entity * count_in_array);
+	nimbus_event_stream_read_skip(self, size_of_entity * count_in_array);
+	
+	return count_in_array;
 }
 
 void nimbus_event_stream_read_align(nimbus_event_read_stream* self)

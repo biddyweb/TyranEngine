@@ -20,6 +20,7 @@ typedef struct tyran_red_black_tree {
 	struct tyran_red_black_tree_node* root;
 	void* (*key)(struct tyran_red_black_tree_node* node);
 	int (*compare)(void* a, void* b);
+	int count;
 } tyran_red_black_tree;
 
 typedef struct tyran_red_black_tree_iterator {
@@ -32,6 +33,7 @@ void* tyran_red_black_tree_insert(tyran_red_black_tree* root, void* node);
 void* tyran_red_black_tree_delete(tyran_red_black_tree* root, void* key);
 void* tyran_red_black_tree_search(tyran_red_black_tree root, void* key);
 void tyran_red_black_tree_destroy(tyran_red_black_tree* root);
+int tyran_red_black_tree_count(tyran_red_black_tree* root);
 
 tyran_red_black_tree_iterator* tyran_red_black_tree_iterator_new(tyran_red_black_tree* root);
 void* tyran_red_black_tree_iterator_next(tyran_red_black_tree_iterator* it);

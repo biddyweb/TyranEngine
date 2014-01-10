@@ -91,6 +91,11 @@ tyran_array* tyran_array_add(struct tyran_memory* memory, tyran_memory_pool* arr
 	return array;
 }
 
+int tyran_array_count(const tyran_array* self)
+{
+	return tyran_red_black_tree_count(self->tree);
+}
+
 void tyran_array_free_node(tyran_array_node* node)
 {
 	tyran_value_release(node->key.key_value);

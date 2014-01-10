@@ -48,6 +48,12 @@ const tyran_object* tyran_value_object(const tyran_value* v)
 	return v->data.object;
 }
 
+struct tyran_array* tyran_value_array(const tyran_value* v)
+{
+	TYRAN_ASSERT(tyran_value_is_array(v), "Must be array");
+	return v->data.object->data.array;
+}
+
 tyran_object* tyran_value_mutable_object(tyran_value* v)
 {
 	TYRAN_ASSERT(tyran_value_is_object(v), "Must be object");

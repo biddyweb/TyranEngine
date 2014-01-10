@@ -23,6 +23,7 @@ tyran_red_black_tree* tyran_red_black_tree_new(void* (*key_function_pointer)(str
 	r->root = 0;
 	r->key = key_function_pointer;
 	r->compare = compare_function_pointer;
+	r->count = 0;
 
 	return r;
 }
@@ -120,8 +121,15 @@ void tyran_red_black_tree_insert_fixup(tyran_red_black_tree* root, tyran_red_bla
 	root->root->color = tyran_red_black_tree_color_black;
 }
 
+int tyran_red_black_tree_count(tyran_red_black_tree* root)
+{
+	return root->count;
+}
+
+
 void* tyran_red_black_tree_insert(tyran_red_black_tree* root, void* node)
 {
+	root->count++;
 	tyran_red_black_tree_node* y = 0, *x = root->root;
 
 	tyran_red_black_tree_node* z = tyran_red_black_tree_node_new(node);
@@ -303,6 +311,7 @@ void* tyran_red_black_tree_delete(tyran_red_black_tree* root, void* key)
 		return 0;
 	}
 
+	root->count--;
 	node_to_return = y->node;
 
 	y_original_color = y->color;

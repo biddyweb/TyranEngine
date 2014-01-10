@@ -126,6 +126,7 @@ typedef struct tyran_value {
 #define tyran_value_is_function(pv) ((pv)->type == TYRAN_VALUE_TYPE_OBJECT && (pv)->data.object->type == TYRAN_OBJECT_TYPE_FUNCTION)
 #define tyran_value_is_object(pv) ((pv)->type == TYRAN_VALUE_TYPE_OBJECT)
 #define tyran_value_is_object_generic(pv) (tyran_value_is_object(pv) && (pv)->data.object->type == TYRAN_OBJECT_TYPE_OBJECT)
+#define tyran_value_is_array(pv) (tyran_value_is_object(pv) && (pv)->data.object->type == TYRAN_OBJECT_TYPE_ARRAY)
 #define tyran_value_is_variable(pv) ((pv)->type == TYRAN_VALUE_TYPE_VARIABLE)
 
 
@@ -135,6 +136,7 @@ tyran_symbol tyran_value_symbol(const tyran_value* v);
 const struct tyran_string* tyran_value_string(const tyran_value* v);
 const struct tyran_function* tyran_value_function(const tyran_value* v);
 const struct tyran_object* tyran_value_object(const tyran_value* v);
+struct tyran_array* tyran_value_array(const tyran_value* v);
 struct tyran_object* tyran_value_mutable_object(struct tyran_value* v);
 
 tyran_value* tyran_value_new(tyran_memory_pool* pool);

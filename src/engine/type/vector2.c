@@ -28,6 +28,16 @@ void nimbus_vector2_scaleadd(nimbus_vector2* result, nimbus_vector2* a, nimbus_v
 	result->y = a->y + b->y * scale;
 }
 
+nimbus_vector2 nimbus_vector2_add_scale(nimbus_vector2 a, nimbus_vector2 b, float scale)
+{
+	nimbus_vector2 result;
+	result.x = a.x + b.x * scale;
+	result.y = a.y + b.y * scale;
+
+	return result;
+}
+
+
 void nimbus_vector2_zero(nimbus_vector2* result)
 {
 	tyran_mem_clear(result, 0);
@@ -67,4 +77,11 @@ tyran_number nimbus_vector2_dot(nimbus_vector2 a, nimbus_vector2 b)
 nimbus_vector2 nimbus_vector2_normal(nimbus_vector2 a, nimbus_vector2 b)
 {
 	return nimbus_vector2_unit(nimbus_vector2_make(a.y - b.y, b.x - a.x));
+}
+
+nimbus_vector2 nimbus_vector2_direction(nimbus_vector2 from, nimbus_vector2 to)
+{
+	nimbus_vector2 result = nimbus_vector2_sub(to, from);
+	result = nimbus_vector2_unit(result);
+	return result;
 }

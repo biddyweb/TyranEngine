@@ -59,6 +59,7 @@ void tyran_object_free(struct tyran_object* object)
 			break;
 		case TYRAN_OBJECT_TYPE_ARRAY:
 			tyran_array_free(object->data.array);
+			break;
 		case TYRAN_OBJECT_TYPE_FUNCTION:
 			tyran_function_object_free(object->data.function);
 			break;

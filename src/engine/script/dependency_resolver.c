@@ -85,81 +85,103 @@ static void add_resource_reference(nimbus_dependency_resolver* self, nimbus_reso
 	load_resource_if_needed(self, resource_id, resource_type_id);
 }
 
-static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* v, tyran_object* combine)
+static void check_resource_reference(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* value, const char* value_string, const tyran_symbol* symbol)
+{
+	nimbus_resource_id resource_id = nimbus_resource_id_from_string(&value_string[1]);
+	TYRAN_LOG("Reference '%s' -> %d", value_string, resource_id);
+	tyran_object* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
+	if (resource != 0) {
+		TYRAN_LOG("Found it in cache, setting it");
+		tyran_value_replace_object(*value, resource);
+	} else {
+		const char* key_string = tyran_symbol_table_lookup(self->symbol_table, symbol);
+		nimbus_resource_type_id resource_type_id;
+
+		const char* resource_type_string = "object";
+
+		if (tyran_str_equal(key_string, "image")) {
+			resource_type_string = "image";
+		} else if (tyran_str_equal(key_string, "fragment")) {
+			resource_type_string = "fragment";
+		} else if (tyran_str_equal(key_string, "vertex")) {
+			resource_type_string = "vertex";
+		} else if (tyran_str_equal(key_string, "skeleton")) {
+			resource_type_string = "skeleton";
+		} else if (tyran_str_equal(key_string, "wave")) {
+			resource_type_string = "wave";
+		}
+
+		resource_type_id = nimbus_resource_type_id_from_string(resource_type_string);
+		add_resource_reference(self, info, value, resource_id, resource_type_id);
+	}
+}
+
+static void check_combine_reference(nimbus_dependency_resolver* self, const tyran_object* combine, tyran_value* value, const char* value_string)
+{
+	tyran_symbol symbol;
+
+	tyran_symbol_table_add(self->symbol_table, &symbol, &value_string[1]);
+
+	const tyran_value* looked_up_value;
+	tyran_object_lookup_prototype(&looked_up_value, combine, &symbol);
+
+	tyran_value_replace(*value, *looked_up_value);
+}
+
+static tyran_boolean check_string_value(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_object* combine, tyran_value* value, const tyran_symbol* symbol)
+{
+	char value_string[128];
+	tyran_string_to_c_str(value_string, 128, tyran_object_string(value->data.object));
+
+	switch (value_string[0]) {
+		case '@':
+			check_resource_reference(self, info, value, value_string, symbol);
+			return TYRAN_TRUE;
+		case '#':
+			check_combine_reference(self, combine, value, value_string);
+			return TYRAN_TRUE;
+	}
+	return TYRAN_FALSE;
+}
+
+static void check_property_name(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* property_value, const tyran_symbol* symbol, const tyran_value* value)
+{
+	const char* key_string = tyran_symbol_table_lookup(self->symbol_table, symbol);
+	if (tyran_strcmp(key_string, "inherit") == 0) {
+		char value_string[128];
+		tyran_string_to_c_str(value_string, 128, tyran_object_string(value->data.object));
+
+		nimbus_resource_id resource_id = nimbus_resource_id_from_string(value_string);
+		tyran_object* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
+		TYRAN_LOG("Inherit '%s' -> %d", value_string, resource_id);
+		if (!resource) {
+			inherit_resource(self, info, property_value, resource_id);
+		}
+	}
+
+}
+
+static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* property_value, tyran_object* combine)
 {
 	tyran_property_iterator it;
 
-	const tyran_object* o = tyran_value_object(v);
+	const tyran_object* o = tyran_value_object(property_value);
+
 	tyran_property_iterator_init(&it, o);
 
 	const tyran_value* value;
 	tyran_symbol symbol;
-
-	char value_string[128];
-
-	int resources_that_are_loading = 0;
-
-
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		if (tyran_value_is_string(value)) {
-			tyran_string_to_c_str(value_string, 128, tyran_object_string(value->data.object));
-			if (value_string[0] == '@') {
-				nimbus_resource_id resource_id = nimbus_resource_id_from_string(&value_string[1]);
-				TYRAN_LOG("Reference '%s' -> %d", value_string, resource_id);
-				tyran_object* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
-				if (resource != 0) {
-					TYRAN_LOG("Found it in cache, setting it");
-					tyran_value_replace_object(*(tyran_value*)value, resource);
-				} else {
-					resources_that_are_loading++;
-					const char* key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
-					nimbus_resource_type_id resource_type_id;
-
-					const char* resource_type_string = "object";
-
-					if (tyran_str_equal(key_string, "image")) {
-						resource_type_string = "image";
-					} else if (tyran_str_equal(key_string, "fragment")) {
-						resource_type_string = "fragment";
-					} else if (tyran_str_equal(key_string, "vertex")) {
-						resource_type_string = "vertex";
-					} else if (tyran_str_equal(key_string, "skeleton")) {
-						resource_type_string = "skeleton";
-					} else if (tyran_str_equal(key_string, "wave")) {
-						resource_type_string = "wave";
-					}
-
-					resource_type_id = nimbus_resource_type_id_from_string(resource_type_string);
-					add_resource_reference(self, info, (tyran_value*)value, resource_id, resource_type_id);
-				}
-			} else if (value_string[0] == '#') {
-				tyran_symbol symbol;
-
-				tyran_symbol_table_add(self->symbol_table, &symbol, &value_string[1]);
-
-				const tyran_value* looked_up_value;
-				tyran_object_lookup_prototype(&looked_up_value, combine, &symbol);
-
-				tyran_value_replace(*(tyran_value*)value, *looked_up_value);
-			} else {
-				const char* key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
-				if (tyran_strcmp(key_string, "inherit") == 0) {
-					nimbus_resource_id resource_id = nimbus_resource_id_from_string(value_string);
-					tyran_object* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
-					TYRAN_LOG("Inherit '%s' -> %d", value_string, resource_id);
-					if (!resource) {
-						resources_that_are_loading++;
-						inherit_resource(self, info, v, resource_id);
-					}
-				}
-			}
+			check_string_value(self, info, combine, (tyran_value*)&value, &symbol);
+		} else {
+			check_property_name(self, info, property_value, &symbol, value);
 		}
 	}
 }
 
 static int request_inherits_and_references(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_object* combine)
 {
-
 	tyran_property_iterator it;
 
 	tyran_property_iterator_init(&it, combine);
@@ -168,10 +190,8 @@ static int request_inherits_and_references(nimbus_dependency_resolver* self, nim
 	tyran_symbol symbol;
 
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
-		if (tyran_value_is_object(value)) {
-			if (!tyran_value_is_function(value)) {
-				check_inherits_and_reference_on_object(self, info, (tyran_value*)value, combine);
-			}
+		if (tyran_value_is_object_generic(value)) {
+			check_inherits_and_reference_on_object(self, info, (tyran_value*)value, combine);
 		}
 	}
 

@@ -173,7 +173,7 @@ static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* s
 	tyran_symbol symbol;
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		if (tyran_value_is_string(value)) {
-			check_string_value(self, info, combine, (tyran_value*)&value, &symbol);
+			check_string_value(self, info, combine, (tyran_value*)value, &symbol);
 		} else {
 			check_property_name(self, info, property_value, &symbol, value);
 		}

@@ -20,6 +20,7 @@
 #include "../../core/src/platform/nacl/nacl_loader.h"
 #include "../../core/src/platform/nacl/nacl_input.h"
 #include "../../core/src/platform/nacl/nacl_connection.h"
+#include "../../core/src/platform/nacl/nacl_gamepad.h"
 #endif
 
 static void fire_load_state(nimbus_engine* self, nimbus_resource_id id)
@@ -214,9 +215,9 @@ static void add_internal_modules(nimbus_modules* modules)
 	touch_stationary->is_module_to_script = TYRAN_TRUE;
 	touch_stationary->has_index = TYRAN_FALSE;
 
-
 #if defined TORNADO_OS_NACL
 	nimbus_modules_add_affinity(modules, "nacl_loader", sizeof(nimbus_nacl_loader), nimbus_nacl_loader_init, offsetof(nimbus_nacl_loader, update_object), 0);
+	nimbus_modules_add_affinity(modules, "nacl_gamepad", sizeof(nimbus_nacl_gamepad), nimbus_nacl_gamepad_init, offsetof(nimbus_nacl_gamepad, update), 0);
 	nimbus_modules_add_affinity(modules, "nacl_input", sizeof(nimbus_nacl_input), nimbus_nacl_input_init, offsetof(nimbus_nacl_input, update), 0);
 	nimbus_modules_add_affinity(modules, "nacl_connection", sizeof(nimbus_nacl_connection), nimbus_nacl_connection_init, offsetof(nimbus_nacl_connection, update), 0);
 #endif

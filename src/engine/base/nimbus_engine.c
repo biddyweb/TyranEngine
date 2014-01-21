@@ -5,6 +5,9 @@
 
 #include <tyran_engine/event/resource_load.h>
 #include <tyran_engine/event/touch_changed.h>
+#include <tyran_engine/event/key_changed.h>
+
+
 #include "../event/resource_load_state.h"
 
 #include <tyran_core/event/event_stream.h>
@@ -214,6 +217,12 @@ static void add_internal_modules(nimbus_modules* modules)
 	nimbus_event_definition_add_property(touch_stationary, "finger_id", NIMBUS_EVENT_DEFINITION_INTEGER);
 	touch_stationary->is_module_to_script = TYRAN_TRUE;
 	touch_stationary->has_index = TYRAN_FALSE;
+
+	nimbus_event_definition* key_changed = nimbus_modules_add_event(modules, "key_changed", NIMBUS_EVENT_KEY_CHANGED_ID, 0);
+	nimbus_event_definition_add_property(key_changed, "virtual_key", NIMBUS_EVENT_DEFINITION_INTEGER);
+	nimbus_event_definition_add_property(key_changed, "key_is_down", NIMBUS_EVENT_DEFINITION_BOOLEAN);
+	key_changed->is_module_to_script = TYRAN_TRUE;
+	key_changed->has_index = TYRAN_FALSE;
 
 #if defined TORNADO_OS_NACL
 	nimbus_modules_add_affinity(modules, "nacl_loader", sizeof(nimbus_nacl_loader), nimbus_nacl_loader_init, offsetof(nimbus_nacl_loader, update_object), 0);

@@ -144,7 +144,7 @@ static tyran_boolean check_string_value(nimbus_dependency_resolver* self, nimbus
 	return TYRAN_FALSE;
 }
 
-static void check_property_name(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* property_value, const tyran_symbol* symbol, const tyran_value* value)
+static tyran_boolean check_property_name(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* property_value, const tyran_symbol* symbol, const tyran_value* value)
 {
 	const char* key_string = tyran_symbol_table_lookup(self->symbol_table, symbol);
 	if (tyran_strcmp(key_string, "inherit") == 0) {
@@ -157,8 +157,10 @@ static void check_property_name(nimbus_dependency_resolver* self, nimbus_resourc
 		if (!resource) {
 			inherit_resource(self, info, property_value, resource_id);
 		}
+		return TYRAN_TRUE;
 	}
-
+	
+	return TYRAN_FALSE;
 }
 
 static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* property_value, tyran_object* combine)
@@ -172,10 +174,10 @@ static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* s
 	const tyran_value* value;
 	tyran_symbol symbol;
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
-		if (tyran_value_is_string(value)) {
-			check_string_value(self, info, combine, (tyran_value*)value, &symbol);
-		} else {
-			check_property_name(self, info, property_value, &symbol, value);
+		if (!check_property_name(self, info, property_value, &symbol, value)) {
+			if (tyran_value_is_string(value)) {
+				check_string_value(self, info, combine, (tyran_value*)value, &symbol);
+			}
 		}
 	}
 }

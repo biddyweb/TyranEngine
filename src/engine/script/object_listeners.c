@@ -391,11 +391,9 @@ static void scan_for_listening_functions_on_object(nimbus_object_listener* self,
 
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
-		if (tyran_value_is_object(value)) {
-			if (tyran_value_is_function(value)) {
-				if (debug_key_string[0] == 'o' && debug_key_string[1] == 'n') {
-					add_listening_function(self, combine_instance_id, o, value, &debug_key_string[2]);
-				}
+		if (tyran_value_is_function(value)) {
+			if (debug_key_string[0] == 'o' && debug_key_string[1] == 'n') {
+				add_listening_function(self, combine_instance_id, o, value, &debug_key_string[2]);
 			}
 		}
 	}

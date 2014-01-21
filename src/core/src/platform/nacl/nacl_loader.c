@@ -235,7 +235,7 @@ void nimbus_nacl_loader_init(void* _self, tyran_memory* memory)
 	self->url_loader = (PPB_URLLoader*) g_nacl.get_browser(PPB_URLLOADER_INTERFACE);
 	self->resource_progress_pool = TYRAN_MEMORY_POOL_CONSTRUCT(memory, resource_progress, 256);
 	self->memory = memory;
-	const int largest_resource_file = 3 * 1024 * 1024;
+	const int largest_resource_file = 5 * 1024 * 1024;
 
 	nimbus_update_init_ex(&self->update_object, memory, _on_update, self, largest_resource_file, "nacl_loader");
 	nimbus_event_listener_listen(&self->update_object.event_listener, NIMBUS_EVENT_RESOURCE_LOAD, _on_resource_request);

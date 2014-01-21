@@ -14,6 +14,11 @@ static void send_touch_changed(nimbus_nacl_input* self, u8t type_id, u8t button_
 	nimbus_touch_changed_send(&self->update.event_write_stream, type_id, button_id, position);
 }
 
+static void send_key_changed(nimbus_nacl_input* self, u32t virtual_key_id, tyran_boolean down)
+{
+	nimbus_key_changed_send(&self->update.event_write_stream, virtual_key_id, down);
+}
+
 static void handle_wheel_input_event(nimbus_nacl_input* self, PP_InputEvent_Type input_event_type, struct PP_FloatPoint deltaPosition)
 {
 	nimbus_vector2 vector;
@@ -76,15 +81,20 @@ static void handle_mouse_input_event(nimbus_nacl_input* self, PP_Resource input_
 
 static void handle_keyboard_input_event(nimbus_nacl_input* self, PP_InputEvent_Type input_event_type, uint32_t keycode)
 {
-	/*
+	tyran_boolean down;
+
+	switch (input_event_type) {
 		case PP_INPUTEVENT_TYPE_KEYDOWN:
 			TYRAN_LOG("KeyDown");
+			down = TYRAN_TRUE;
 			break;
 		case PP_INPUTEVENT_TYPE_KEYUP:
 			TYRAN_LOG("KeyUp");
+			down = TYRAN_FALSE;
 			break;
-	*/
+	}
 
+	send_key_pressed(keycode, down);
 }
 
 

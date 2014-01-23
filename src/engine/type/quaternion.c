@@ -13,7 +13,7 @@ void nimbus_quaternion_normalize(nimbus_quaternion* q)
 	q->w /= scale;
 }
 
-void nimbus_quaternion_from_euler(nimbus_quaternion* q, tyran_number x, tyran_number y, tyran_number z)
+void nimbus_quaternion_from_euler(nimbus_quaternion* q, tyran_number z, tyran_number x, tyran_number y)
 {
 	tyran_number half_x = x / 2.0f;
 	tyran_number half_y = y / 2.0f;

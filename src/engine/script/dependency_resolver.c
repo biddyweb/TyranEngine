@@ -4,6 +4,7 @@
 #include <tyranscript/tyran_value.h>
 #include <tyranscript/tyran_object.h>
 #include <tyranscript/tyran_string.h>
+#include <tyranscript/tyran_array.h>
 #include <tyranscript/tyran_symbol_table.h>
 #include <tyranscript/tyran_value_object.h>
 #include <tyran_core/event/event_stream.h>
@@ -159,7 +160,7 @@ static tyran_boolean check_property_name(nimbus_dependency_resolver* self, nimbu
 		}
 		return TYRAN_TRUE;
 	}
-	
+
 	return TYRAN_FALSE;
 }
 
@@ -177,6 +178,16 @@ static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* s
 		if (!check_property_name(self, info, property_value, &symbol, value)) {
 			if (tyran_value_is_string(value)) {
 				check_string_value(self, info, combine, (tyran_value*)value, &symbol);
+			} else if (tyran_value_is_array(value)) {
+				const tyran_array* array = tyran_value_array(value);
+				for (int index = 0; index < tyran_array_count(array); ++index) {
+					tyran_value lookup;
+					tyran_value_set_number(lookup, index);
+					const tyran_value* array_value = tyran_array_lookup_raw(array, &lookup);
+					if (tyran_value_is_string(array_value)) {
+						check_string_value(self, info, combine, (tyran_value*)array_value, &symbol);
+					}
+				}
 			}
 		}
 	}

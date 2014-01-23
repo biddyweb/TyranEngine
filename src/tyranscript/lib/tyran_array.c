@@ -132,26 +132,33 @@ void tyran_array_insert(tyran_array* array, tyran_memory_pool* array_node_pool, 
 	tyran_array_insert_helper(array, array_node_pool, &object_key, value);
 }
 
-
-void tyran_array_lookup_helper(tyran_value* dest, const tyran_array* array, const tyran_array_key* key, tyran_array_key_flag_type* flag)
+const tyran_value* tyran_array_lookup_raw(const tyran_array* array, const tyran_value* key)
 {
-	tyran_array_node* node = (tyran_array_node*) tyran_red_black_tree_search(*array->tree, (void*)key);
+	tyran_array_key object_key;
+
+	object_key.key_value = *key;
+	object_key.flag = 0;
+
+	tyran_array_node* node = (tyran_array_node*) tyran_red_black_tree_search(*array->tree, (void*)&object_key);
 	if (!node) {
+		return 0;
+	}
+	return &node->value;
+}
+
+void tyran_array_lookup_helper(tyran_value* dest, const tyran_array* array, const tyran_value* key)
+{
+	const tyran_value* v = tyran_array_lookup_raw(array, key);
+	if (!v) {
 		tyran_value_set_nil(*dest);
 		return;
 	}
-	*flag = 0;
-	tyran_value_copy(*dest, node->value);
+	tyran_value_copy(*dest, *v);
 }
 
 void tyran_array_lookup(tyran_value* dest, const tyran_array* array, const tyran_value* key)
 {
-	tyran_array_key object_key;
-	tyran_array_key_flag_type flag;
-
-	object_key.key_value = *key;
-	object_key.flag = 0;
-	tyran_array_lookup_helper(dest, array, &object_key, &flag);
+	tyran_array_lookup_helper(dest, array, key);
 }
 
 void tyran_array_delete_helper(tyran_value* v, tyran_array* array, const tyran_array_key* key, tyran_array_key_flag_type* flag)

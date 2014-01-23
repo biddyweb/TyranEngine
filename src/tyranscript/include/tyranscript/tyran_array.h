@@ -31,6 +31,8 @@ void tyran_array_free(tyran_array* array);
 void tyran_array_insert(tyran_array* array, struct tyran_memory_pool* array_node_pool, const struct tyran_value* key, struct tyran_value* value);
 void tyran_array_delete(struct tyran_value* v, struct tyran_array* array, const struct tyran_value* key);
 void tyran_array_lookup(struct tyran_value* v, const tyran_array* array, const struct tyran_value* key);
+const tyran_value* tyran_array_lookup_raw(const tyran_array* array, const tyran_value* key);
+
 tyran_array* tyran_array_add(struct tyran_memory* memory, tyran_memory_pool* array_node_pool, const tyran_array* a1, const tyran_array* a2);
 int tyran_array_count(const tyran_array* array);
 

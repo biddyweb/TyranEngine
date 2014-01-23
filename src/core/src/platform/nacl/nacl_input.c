@@ -4,6 +4,7 @@
 
 #include <tyran_core/platform/nacl/nacl.h>
 #include <tyran_engine/event/touch_changed.h>
+#include <tyran_engine/event/key_changed.h>
 
 static void _on_update(void* self)
 {
@@ -92,9 +93,11 @@ static void handle_keyboard_input_event(nimbus_nacl_input* self, PP_InputEvent_T
 			TYRAN_LOG("KeyUp");
 			down = TYRAN_FALSE;
 			break;
+		default:
+			return;
 	}
 
-	send_key_pressed(keycode, down);
+	send_key_changed(self, keycode, down);
 }
 
 

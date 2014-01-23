@@ -202,7 +202,7 @@
 	} else {
 		glClearColor(1.0f, 0.1f, 0.1f, 0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		NSLog(@"************* LOST FRAME *************");
+		// NSLog(@"************* LOST FRAME *************");
 	}
 }
 

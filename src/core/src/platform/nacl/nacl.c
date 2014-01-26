@@ -39,6 +39,7 @@ PP_EXPORT void PPP_ShutdownModule()
 {
 
 }
+
 static PP_Bool InputEvent_HandleInputEvent(PP_Instance instance, PP_Resource input_event)
 {
 	if (g_nacl.input_event_receiver) {
@@ -47,20 +48,16 @@ static PP_Bool InputEvent_HandleInputEvent(PP_Instance instance, PP_Resource inp
 		return PP_FALSE;
 	}
 
-
 	return PP_TRUE;
 }
-
 
 static void initialize_3d(nimbus_nacl_render* self)
 {
 	int width = 1024;
 	int height = 768;
 
-	TYRAN_LOG("Graphics3D");
-
 	self->graphics_3d = (PPB_Graphics3D*)(g_nacl.get_browser(PPB_GRAPHICS_3D_INTERFACE));
-	TYRAN_ASSERT(self->graphics_3d, "Couldn't fetch browser direct3d");
+	TYRAN_ASSERT(self->graphics_3d, "Couldn't fetch browser 3D graphics");
 
 	int32_t attributes[] = {
 		PP_GRAPHICS3DATTRIB_ALPHA_SIZE, 8,
@@ -69,16 +66,10 @@ static void initialize_3d(nimbus_nacl_render* self)
 		PP_GRAPHICS3DATTRIB_NONE
 	};
 
-	TYRAN_LOG("Graphics3D::Create");
 	g_nacl.graphics_3d_context = self->graphics_3d->Create(g_nacl.module_instance, 0, attributes);
-	TYRAN_LOG("Graphics3D::BindGraphics");
-	TYRAN_LOG("Instance");
 	self->instance = (PPB_Instance*)(g_nacl.get_browser(PPB_INSTANCE_INTERFACE));
-	TYRAN_LOG("Instance2");
 	self->instance->BindGraphics(g_nacl.module_instance, g_nacl.graphics_3d_context);
-	TYRAN_LOG("DONE");
 }
-
 
 static void draw(nimbus_nacl_render* self);
 
@@ -100,15 +91,12 @@ static void draw(nimbus_nacl_render* self)
 	self->graphics_3d->SwapBuffers(g_nacl.graphics_3d_context, callback);
 }
 
-
 static PP_Bool Instance_DidCreate(PP_Instance instance, uint32_t argc, const char* argn[], const char* argv[])
 {
 	g_nacl.module_instance = instance;
 	g_log.log = nacl_log;
 	g_nacl.input_event_receiver = 0;
 	g_nacl.input_event_receiver_self = 0;
-
-	TYRAN_LOG("Instance_DidCreate");
 
 	g_nacl.input_event->RequestInputEvents(instance, PP_INPUTEVENT_CLASS_MOUSE);
 	g_nacl.input_event->RequestFilteringInputEvents(instance, PP_INPUTEVENT_CLASS_WHEEL | PP_INPUTEVENT_CLASS_KEYBOARD);
@@ -118,13 +106,6 @@ static PP_Bool Instance_DidCreate(PP_Instance instance, uint32_t argc, const cha
 	g_nacl_render.boot = nimbus_boot_new();
 
 	draw(&g_nacl_render);
-	/*
-	PP_LOGLEVEL_TIP
-	PP_LOGLEVEL_LOG
-	PP_LOGLEVEL_WARNING
-	PP_LOGLEVEL_ERROR
-	*/
-
 
 	return PP_TRUE;
 }

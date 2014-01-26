@@ -92,6 +92,14 @@ TYRAN_RUNTIME_CALL_FUNC(script_abs)
 	return 0;
 }
 
+TYRAN_RUNTIME_CALL_FUNC(script_atan2)
+{
+	float value = nimbus_math_atan2(tyran_value_number(&arguments[0]), tyran_value_number(&arguments[1]));
+	tyran_value_set_number(*return_value, value);
+	return 0;
+}
+
+
 TYRAN_RUNTIME_CALL_FUNC(script_spawn)
 {
 	nimbus_engine* _self = runtime->program_specific_context;
@@ -260,6 +268,7 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	tyran_mocha_api_add_function(&self->mocha_api, global, "log", log_output);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "random", script_random);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "abs", script_abs);
+	tyran_mocha_api_add_function(&self->mocha_api, global, "atan2", script_atan2);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "spawn", script_spawn);
 
 	self->resource_handler = nimbus_resource_handler_new(memory);

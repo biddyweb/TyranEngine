@@ -40,7 +40,7 @@ nimbus_vector2 nimbus_vector2_add_scale(nimbus_vector2 a, nimbus_vector2 b, floa
 
 void nimbus_vector2_zero(nimbus_vector2* result)
 {
-	tyran_mem_clear(result, 0);
+	tyran_mem_clear_type_n(result, 1);
 }
 
 nimbus_vector2 nimbus_vector2_sub(nimbus_vector2 a, nimbus_vector2 b)

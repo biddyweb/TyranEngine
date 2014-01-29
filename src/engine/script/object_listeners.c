@@ -631,6 +631,7 @@ static nimbus_combine_instance_id assign_combine_instance_id(nimbus_object_liste
 {
 	nimbus_combine_instance_id id = generate_combine_instance_id(self);
 	self->combine_instances[id] = spawned_combine;
+	TYRAN_OBJECT_RETAIN(spawned_combine);
 	return id;
 }
 

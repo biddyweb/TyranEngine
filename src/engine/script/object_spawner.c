@@ -77,7 +77,7 @@ static void duplicate_component_objects(nimbus_object_spawner* self, tyran_objec
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		if (tyran_value_is_object_generic(value)) {
 			nimbus_object_info* info = (nimbus_object_info*) tyran_value_program_specific(value);
-			tyran_boolean is_module_resource = info && info->is_module_resource;
+			tyran_boolean is_module_resource = info; // && info->is_module_resource;
 			if (!is_module_resource && should_duplicate_component(self, tyran_value_object(value))) {
 				tyran_object* duplicate_component_object = tyran_object_new(self->runtime);
 				tyran_value duplicate_component_object_value;

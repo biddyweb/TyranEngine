@@ -177,6 +177,7 @@ static tyran_object* get_or_create_module_resource_object(nimbus_object_listener
 	info->is_module_resource = TYRAN_TRUE;
 	info->instance_index = instance_index;
 
+
 	return object;
 }
 
@@ -431,7 +432,7 @@ static void _on_all(void* _self, struct nimbus_event_read_stream* stream)
 {
 	nimbus_object_listener* self = _self;
 	nimbus_event_type_id event_type_id = stream->event_type_id;
-	
+
 	for (int i=0; i < self->event_definitions_count; ++i) {
 		nimbus_event_definition* definition = &self->event_definitions[i];
 		if (definition->event_type_id == event_type_id) {
@@ -576,6 +577,7 @@ static void handle_type_object(nimbus_object_listener* self, tyran_object* o, ni
 		nimbus_track_info* track_info = get_or_create_track_info(self, type_name);
 		info->event_definition = event_definition_for_type_symbol(self, &type_name);
 		info->instance_index = nimbus_track_info_get_free_index(track_info, o);
+		info->is_spawned = TYRAN_TRUE;
 	}
 	nimbus_object_collection* collection = object_collection_for_type(self, type_name);
 	if (collection) {

@@ -1,11 +1,13 @@
 #include <tyran_core/platform/nacl/nacl.h>
-#include <ppapi/c/ppp_instance.h>
-#include <ppapi/c/ppp.h>
-#include <ppapi/c/ppb_instance.h>
+
 #include <ppapi/c/pp_errors.h>
-#include <string.h>
+#include <ppapi/c/ppp.h>
+#include <ppapi/c/ppp_instance.h>
 #include <ppapi/c/ppp_input_event.h>
+#include <ppapi/c/ppb_instance.h>
+
 #include <tyranscript/tyran_log.h>
+
 #include "../../base/boot/nimbus_boot.h"
 
 nimbus_nacl g_nacl;

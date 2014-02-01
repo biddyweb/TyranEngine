@@ -96,7 +96,6 @@ static nimbus_resource_id resource_id_for_layer(const char* layer_name, tyran_sy
 	tyran_strncat(temp, type_name_string, temp_buf_size);
 
 	nimbus_resource_id layer_specific_resource_id = nimbus_resource_id_from_string(temp);
-	TYRAN_LOG("Layer-specific name:'%s' -> %d", temp, layer_specific_resource_id);
 
 	return layer_specific_resource_id;
 }
@@ -514,7 +513,6 @@ static void search_components_for_update_functions(nimbus_object_listener* self,
 
 static void spawn_layer_object(nimbus_object_listener* self, nimbus_layer_association* association, int layer_index, tyran_object* combine, nimbus_resource_id combine_resource_id)
 {
-	TYRAN_LOG("Spawn layer object for layer %d -> '%s'", layer_index, nimbus_resource_id_debug_name(combine_resource_id));
 	TYRAN_ASSERT(association->layer_objects[layer_index] == 0, "Something bad happened when spawning");
 	tyran_object* spawned_combine = spawn(self, combine);
 	association->layer_objects[layer_index] = spawned_combine;
@@ -643,7 +641,6 @@ static void on_state_updated(nimbus_object_listener* self, tyran_object* o, nimb
 	nimbus_combine_instance_id combine_instance_id = assign_combine_instance_id(self, o);
 	nimbus_object_info* info = nimbus_decorate_object(o, self->memory);
 	info->combine_instance_id = combine_instance_id;
-	TYRAN_LOG("STATE loaded %d", resource_id);
 	scan_combine(self, o, combine_instance_id);
 }
 
@@ -799,7 +796,6 @@ static void check_if_layer_resource(nimbus_object_listener* self, tyran_object* 
 			nimbus_type_to_layers_info* info = &layer->infos[layer_index];
 			if (info->resource_id == resource_id) {
 				info->combine = o;
-				TYRAN_LOG("Spawn layer object for resource id:%s layer index:%d", nimbus_resource_id_debug_name(resource_id), layer_index);
 				spawn_layer_objects_waiting_for_resource_id(self, layer, info->combine, info->resource_id, layer_index);
 			}
 		}
@@ -809,7 +805,6 @@ static void check_if_layer_resource(nimbus_object_listener* self, tyran_object* 
 static void on_object_updated(nimbus_object_listener* self, tyran_object* o, nimbus_resource_id resource_id)
 {
 	if (self->waiting_for_state_resource_id == resource_id) {
-		TYRAN_LOG("********* State %d is loaded!", resource_id);
 		nimbus_resource_updated_send(&self->update.event_write_stream, resource_id, self->state_type_id, &o, sizeof(o));
 	}
 	check_if_layer_resource(self, o, resource_id);
@@ -876,7 +871,6 @@ TYRAN_RUNTIME_CALL_FUNC(on_call_event)
 
 static void add_function_for_event_definition(nimbus_object_listener* self, const nimbus_event_definition* definition, tyran_object* events_object)
 {
-	TYRAN_LOG("Adding event func for '%s'", definition->name);
 	tyran_value* function_object_value = tyran_function_object_new_callback(self->runtime, on_call_event);
 	nimbus_object_info* info = nimbus_decorate_object(tyran_value_mutable_object(function_object_value), self->memory);
 	info->event_definition = definition;

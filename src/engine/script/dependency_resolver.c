@@ -89,7 +89,6 @@ static void add_resource_reference(nimbus_dependency_resolver* self, nimbus_reso
 static void check_resource_reference(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* value, const char* value_string, const tyran_symbol* symbol)
 {
 	nimbus_resource_id resource_id = nimbus_resource_id_from_string(&value_string[1]);
-	TYRAN_LOG("Reference '%s' -> %d", value_string, resource_id);
 	tyran_object* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
 	if (resource != 0) {
 		TYRAN_LOG("Found it in cache, setting it");
@@ -154,7 +153,6 @@ static tyran_boolean check_property_name(nimbus_dependency_resolver* self, nimbu
 
 		nimbus_resource_id resource_id = nimbus_resource_id_from_string(value_string);
 		tyran_object* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
-		TYRAN_LOG("Inherit '%s' -> %d", value_string, resource_id);
 		if (!resource) {
 			inherit_resource(self, info, property_value, resource_id);
 		}
@@ -274,7 +272,6 @@ static void delete_dependency_info(nimbus_dependency_resolver* self, nimbus_reso
 
 static void resource_resolved(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info)
 {
-	TYRAN_LOG("Resolved '%s'", nimbus_resource_id_debug_name(info->resource_id));
 	loading_done(self, info->resource_id);
 	nimbus_resource_cache_add(&self->resource_cache, info->resource_id, info->target);
 	nimbus_resource_id resource_id = info->resource_id;
@@ -291,11 +288,13 @@ static tyran_boolean check_if_resolved(nimbus_dependency_resolver* self, nimbus_
 		resource_resolved(self, info);
 		return TYRAN_TRUE;
 	} else {
+#if 0
 		TYRAN_LOG("'%s' not ready. Waiting for...", nimbus_resource_id_debug_name(info->resource_id));
 		for (int i=0; i<info->resource_dependencies_count; ++i) {
 			nimbus_resource_dependency* dependency = &info->resource_dependencies[i];
 			TYRAN_LOG(" '%s'", nimbus_resource_id_debug_name(dependency->resource_id));
 		}
+#endif
 	}
 
 	return TYRAN_FALSE;

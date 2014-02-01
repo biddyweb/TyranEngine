@@ -10,7 +10,6 @@ static void _on_update(void* self)
 
 static void on_connected(void* user_data, int32_t octets_read)
 {
-	TYRAN_LOG("On Connected!");
 }
 
 

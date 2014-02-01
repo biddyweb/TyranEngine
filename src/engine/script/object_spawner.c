@@ -156,7 +156,7 @@ static void rewire_internal_references_on_component(nimbus_object_spawner* self,
 				tyran_object_insert(destination_component, &symbol, &converted_reference_value);
 				tyran_value_release(converted_reference_value);
 			} else {
-				TYRAN_LOG("No conversion for '%s'", tyran_symbol_table_lookup(self->symbol_table, &symbol))
+				// TYRAN_LOG("No conversion for '%s'", tyran_symbol_table_lookup(self->symbol_table, &symbol))
 			}
 		}
 	}

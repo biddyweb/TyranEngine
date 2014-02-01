@@ -4,7 +4,6 @@
 
 void nimbus_octet_buffer_init(nimbus_octet_buffer* self, struct tyran_memory* memory, int max_size)
 {
-	TYRAN_LOG("Buffer init:%d", max_size);
 	self->memory = memory;
 	self->octets = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, u8t, max_size);
 	self->max_size = max_size;

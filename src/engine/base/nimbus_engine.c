@@ -186,7 +186,6 @@ static void create_modules(nimbus_engine* self, tyran_memory* memory)
 	nimbus_modules* modules = &self->modules;
 	for (int i=0; i < modules->modules_count; ++i) {
 		nimbus_module* module = &modules->modules[i];
-		TYRAN_LOG("Creating '%s'", module->name);
 		void* instance = nimbus_module_create(module, memory);
 		nimbus_update* instance_update = nimbus_module_get_update(module, instance);
 		nimbus_engine_add_update_object(self, instance_update);

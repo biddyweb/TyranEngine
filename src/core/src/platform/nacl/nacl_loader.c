@@ -24,7 +24,6 @@ typedef struct resource_progress {
 
 static void set_string_property(PPB_URLRequestInfo* interface, PP_Resource request, PP_URLRequestProperty property, const char* string)
 {
-	TYRAN_LOG("set_string_property '%s'", string);
 	struct PP_Var property_var_string = g_nacl.var->VarFromUtf8(string, tyran_strlen(string));
 	interface->SetProperty(request, property, property_var_string);
 	g_nacl.var->Release(property_var_string);
@@ -58,7 +57,6 @@ static void extension_from_resource_type(char* extension, int extension_size, ni
 
 static PP_Resource create_request_info_instance(nimbus_nacl_loader* self, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id)
 {
-	TYRAN_LOG("create_request_info_instance");
 	PP_Resource request = self->url_request_info->Create(g_nacl.module_instance);
 
 	const char* resource_name = nimbus_resource_id_debug_name(resource_id);
@@ -74,14 +72,12 @@ static PP_Resource create_request_info_instance(nimbus_nacl_loader* self, nimbus
 
 	set_string_property(self->url_request_info, request, PP_URLREQUESTPROPERTY_URL, uri);
 	set_string_property(self->url_request_info, request, PP_URLREQUESTPROPERTY_METHOD, "GET");
-	TYRAN_LOG("Created request info '%s'", uri);
 
 	return request;
 }
 
 static void send_resource_update(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id, const u8t* payload, int payload_size)
 {
-	TYRAN_LOG("Send Resource Update. Payload size:%d", payload_size);
 	nimbus_resource_updated resource_updated;
 	resource_updated.resource_id = resource_id;
 	resource_updated.resource_type_id = resource_type_id;
@@ -91,12 +87,10 @@ static void send_resource_update(nimbus_event_write_stream* out_event_stream, ni
 	nimbus_event_stream_write_type(out_event_stream, resource_updated);
 	nimbus_event_stream_write_octets(out_event_stream, payload, payload_size);
 	nimbus_event_stream_write_event_end(out_event_stream);
-	TYRAN_LOG("SenTTT Resource Update");
 }
 
 static resource_progress* create_progress(nimbus_nacl_loader* self, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id, PP_Resource url_loader_instance, PP_Resource request_info_instance)
 {
-	TYRAN_LOG("Creating progress");
 	resource_progress* progress = TYRAN_CALLOC_TYPE(self->resource_progress_pool, resource_progress);
 	nimbus_octet_buffer_init(&progress->buffer, self->memory, 2 * 1024 * 1024);
 	nimbus_octet_buffer_init(&progress->in_buffer, self->memory, 2 * 1024 * 1024);
@@ -111,27 +105,20 @@ static resource_progress* create_progress(nimbus_nacl_loader* self, nimbus_resou
 
 static void free_progress(resource_progress* progress)
 {
-	TYRAN_LOG("Freeing progress");
 	nimbus_octet_buffer_free(&progress->buffer);
-	TYRAN_LOG("Freeing progress2");
 	nimbus_octet_buffer_free(&progress->in_buffer);
-	TYRAN_LOG("Freeing progress3");
 
 	// Free request info
 	// Free url loader instance
 	progress->loader = 0;
-	TYRAN_LOG("Freeing progress4");
 
 	TYRAN_MALLOC_FREE(progress);
-	TYRAN_LOG("Freeing progress5");
 }
 
 
 static void resource_data_complete(nimbus_nacl_loader* self, resource_progress* progress)
 {
-	TYRAN_LOG("data_complete");
 	send_resource_update(&self->update_object.event_write_stream, progress->resource_id, progress->resource_type_id, progress->buffer.octets, progress->buffer.size);
-	TYRAN_LOG("Resource sent");
 	free_progress(progress);
 }
 
@@ -181,14 +168,12 @@ static void on_resource_opened(void* user_data, int32_t result)
 	resource_progress* progress = user_data;
 	nimbus_nacl_loader* self = progress->loader;
 
-	TYRAN_LOG("We opened resource:%d", progress->resource_id);
 	continue_reading(self, progress);
 }
 
 static void request_open(nimbus_nacl_loader* self, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id, PP_Resource url_loader_instance, PP_Resource request_info_instance)
 {
 	struct PP_CompletionCallback callback;
-	TYRAN_LOG("request_open");
 	resource_progress* progress = create_progress(self, resource_id, resource_type_id, url_loader_instance, request_info_instance);
 	callback.func = on_resource_opened;
 	callback.user_data = progress;
@@ -198,7 +183,6 @@ static void request_open(nimbus_nacl_loader* self, nimbus_resource_id resource_i
 
 static PP_Resource create_url_loader_instance(nimbus_nacl_loader* self)
 {
-	TYRAN_LOG("Create url loader instance");
 	PP_Resource url_loader = self->url_loader->Create(g_nacl.module_instance);
 	return url_loader;
 }
@@ -206,7 +190,6 @@ static PP_Resource create_url_loader_instance(nimbus_nacl_loader* self)
 static void on_resource_request(nimbus_nacl_loader* self, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id)
 {
 	nimbus_resource_type_id extension_type_id = generic_resource_type_to_extension_type(resource_type_id);
-	TYRAN_LOG("on_resource_request %d", resource_id);
 	PP_Resource request_info_instance = create_request_info_instance(self, resource_id, extension_type_id);
 	PP_Resource url_loader_instance = create_url_loader_instance(self);
 
@@ -220,7 +203,6 @@ static void _on_resource_request(void* _self, struct nimbus_event_read_stream* s
 	nimbus_resource_load resource_load;
 
 	nimbus_event_stream_read_type(stream, resource_load);
-	TYRAN_LOG("Detected a resource id request: %d", resource_load.resource_id);
 	on_resource_request(self, resource_load.resource_id, resource_load.resource_type_id);
 }
 

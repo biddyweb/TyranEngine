@@ -42,5 +42,6 @@ GLKViewController {
 (NSSet*)touches withEvent:
 (UIEvent*)event;
 -(NSUInteger)getFingerId: (UITouch*) touch;
+- (BOOL)prefersStatusBarHidden;
 
 @end

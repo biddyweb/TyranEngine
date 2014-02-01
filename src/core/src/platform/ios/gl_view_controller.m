@@ -36,7 +36,8 @@
 {
 	[super viewDidLoad];
 	g_log.log = nimbus_log_posix;
-
+	
+	[[UIApplication sharedApplication] setStatusBarHidden:YES];
 	self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 
 	if (!self.context) {
@@ -57,6 +58,10 @@
 	self->boot = nimbus_boot_new();
 
 	[self setupGL];
+}
+
+- (BOOL)prefersStatusBarHidden {
+	return YES;
 }
 
 - (void)dealloc

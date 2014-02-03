@@ -59,6 +59,11 @@ tyran_number nimbus_vector2_length(nimbus_vector2 a)
 	return nimbus_math_sqrt(a.x * a.x + a.y * a.y);
 }
 
+tyran_number nimbus_vector2_square_length(nimbus_vector2 a)
+{
+	return a.x * a.x + a.y * a.y;
+}
+
 nimbus_vector2 nimbus_vector2_unit(nimbus_vector2 a)
 {
 	tyran_number length = nimbus_vector2_length(a);

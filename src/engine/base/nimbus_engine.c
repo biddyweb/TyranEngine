@@ -103,6 +103,14 @@ TYRAN_RUNTIME_CALL_FUNC(script_atan2)
 }
 
 
+TYRAN_RUNTIME_CALL_FUNC(script_sin)
+{
+	float value = nimbus_math_sin(tyran_value_number(&arguments[0]));
+	tyran_value_set_number(*return_value, value);
+	return 0;
+}
+
+
 TYRAN_RUNTIME_CALL_FUNC(script_spawn)
 {
 	nimbus_engine* _self = runtime->program_specific_context;
@@ -271,6 +279,7 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	tyran_mocha_api_add_function(&self->mocha_api, global, "random", script_random);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "abs", script_abs);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "atan2", script_atan2);
+	tyran_mocha_api_add_function(&self->mocha_api, global, "sin", script_sin);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "spawn", script_spawn);
 
 	self->resource_handler = nimbus_resource_handler_new(memory);
@@ -294,9 +303,11 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	create_modules(self, memory);
 
 #if defined TORNADO_OS_IOS
-
+#if 0
 	start_event_connection(self, memory, "spelmotor.com", 32000, task_queue);
-
+#else
+	start_event_connection(self, memory, "127.0.0.1", 32000, task_queue);
+#endif
 #endif
 
 	boot_resource(self);

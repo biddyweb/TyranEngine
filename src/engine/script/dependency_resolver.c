@@ -73,10 +73,9 @@ static void load_resource_if_needed(nimbus_dependency_resolver* self, nimbus_res
 	}
 }
 
-static void inherit_resource(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* target, nimbus_resource_id resource_id)
+static void inherit_resource(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_object* target, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id)
 {
 	nimbus_resource_dependency_info_inherit(info, target, resource_id);
-	nimbus_resource_type_id resource_type_id = nimbus_resource_type_id_from_string("script");
 	load_resource_if_needed(self, resource_id, resource_type_id);
 }
 
@@ -144,18 +143,26 @@ static tyran_boolean check_string_value(nimbus_dependency_resolver* self, nimbus
 	return TYRAN_FALSE;
 }
 
-static tyran_boolean check_property_name(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_value* property_value, const tyran_symbol* symbol, const tyran_value* value)
+static void inherit_string(nimbus_dependency_resolver* self, tyran_object* inherit_target, const tyran_value* property_value, nimbus_resource_dependency_info* info, nimbus_resource_type_id resource_type_id)
+{
+	char value_string[128];
+	tyran_string_to_c_str(value_string, 128, tyran_object_string(property_value->data.object));
+	TYRAN_LOG("Inherit detected '%s'", value_string);
+	nimbus_resource_id resource_id = nimbus_resource_id_from_string(value_string);
+	tyran_object* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
+	if (!resource) {
+		inherit_resource(self, info, inherit_target, resource_id, resource_type_id);
+	} else {
+		tyran_object_set_prototype(inherit_target, resource);
+	}
+}
+
+static tyran_boolean check_property_name(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_object* target_object, const tyran_symbol* symbol, const tyran_value* value)
 {
 	const char* key_string = tyran_symbol_table_lookup(self->symbol_table, symbol);
-	if (tyran_strcmp(key_string, "inherit") == 0) {
-		char value_string[128];
-		tyran_string_to_c_str(value_string, 128, tyran_object_string(value->data.object));
-
-		nimbus_resource_id resource_id = nimbus_resource_id_from_string(value_string);
-		tyran_object* resource = nimbus_resource_cache_find(&self->resource_cache, resource_id);
-		if (!resource) {
-			inherit_resource(self, info, property_value, resource_id);
-		}
+	if (tyran_str_equal(key_string, "inherit")) {
+		nimbus_resource_type_id resource_type_id = nimbus_resource_type_id_from_string("script");
+		inherit_string(self, target_object, value, info, resource_type_id);
 		return TYRAN_TRUE;
 	}
 
@@ -173,7 +180,7 @@ static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* s
 	const tyran_value* value;
 	tyran_symbol symbol;
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
-		if (!check_property_name(self, info, property_value, &symbol, value)) {
+		if (!check_property_name(self, info, (tyran_object*)o, &symbol, value)) {
 			if (tyran_value_is_string(value)) {
 				check_string_value(self, info, combine, (tyran_value*)value, &symbol);
 			} else if (tyran_value_is_array(value)) {
@@ -193,6 +200,16 @@ static void check_inherits_and_reference_on_object(nimbus_dependency_resolver* s
 
 static int request_inherits_and_references(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info, tyran_object* combine)
 {
+	tyran_symbol inherit_symbol;
+	tyran_symbol_table_add(self->symbol_table, &inherit_symbol, "inherit");
+	const tyran_value* inherit_value;
+	tyran_object_lookup(&inherit_value, combine, &inherit_symbol);
+	if (tyran_value_is_string(inherit_value)) {
+		nimbus_resource_type_id resource_type_id = nimbus_resource_type_id_from_string("oec");
+		inherit_string(self, combine, inherit_value, info, resource_type_id);
+	}
+	
+	
 	tyran_property_iterator it;
 
 	tyran_property_iterator_init(&it, combine);
@@ -223,7 +240,7 @@ void nimbus_dependency_resolver_init(nimbus_dependency_resolver* self, struct ty
 	self->object_type_id = nimbus_resource_type_id_from_string("object");
 	self->wire_object_type_id = nimbus_resource_type_id_from_string("oec");
 	nimbus_resource_cache_init(&self->resource_cache, memory);
-}
+}	
 
 static tyran_boolean check_if_resolved(nimbus_dependency_resolver* self, nimbus_resource_dependency_info* info);
 
@@ -237,8 +254,7 @@ static void check_if_someone_wants(nimbus_dependency_resolver* self, nimbus_reso
 			nimbus_resource_dependency* dependency = &dependency_info->resource_dependencies[j];
 			if (dependency->resource_id == resource_id) {
 				if (dependency->is_inherit) {
-					tyran_object* object_to_manipulate = tyran_value_mutable_object(dependency->target);
-					tyran_object_set_prototype(object_to_manipulate, v);
+					tyran_object_set_prototype(dependency->inherit_object, v);
 				} else {
 					tyran_value_replace_object(*dependency->target, v);
 				}

@@ -87,7 +87,9 @@ int nimbus_event_to_arguments_convert(nimbus_event_to_arguments* self, tyran_val
 			}
 			break;
 			case NIMBUS_EVENT_DEFINITION_OBJECT: {
-				TYRAN_ERROR("To be implemented...");
+				tyran_value_set_nil(*destination);
+				d += sizeof(int);
+				TYRAN_SOFT_ERROR("To be implemented...");
 			}
 			break;
 			case NIMBUS_EVENT_DEFINITION_SIZE2: {

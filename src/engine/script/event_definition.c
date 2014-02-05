@@ -27,6 +27,11 @@ void nimbus_event_definition_add_property(nimbus_event_definition* self, const c
 	add_property(self, name, type);
 }
 
+nimbus_event_definition_property* nimbus_event_definition_add_property_ex(nimbus_event_definition* self, const char* name, nimbus_event_definition_type type)
+{
+	return add_property(self, name, type);
+}
+
 void nimbus_event_definition_add_property_array(nimbus_event_definition* self, const char* name, nimbus_event_definition_type type)
 {
 	nimbus_event_definition_property* property = add_property(self, name, type);

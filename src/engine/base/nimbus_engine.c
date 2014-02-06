@@ -62,7 +62,6 @@ TYRAN_RUNTIME_CALL_FUNC(load_state)
 	return 0;
 }
 
-/*
 static void print_value(tyran_runtime* runtime, tyran_value* v)
 {
 	const int buf_len = 512;
@@ -70,13 +69,15 @@ static void print_value(tyran_runtime* runtime, tyran_value* v)
 	tyran_value_to_c_string(runtime->symbol_table, v, buf, buf_len, 0);
 	TYRAN_OUTPUT(buf);
 }
-*/
 
 TYRAN_RUNTIME_CALL_FUNC(log_output)
 {
 	struct tyran_value* v = &arguments[0];
-	// print_value(runtime, v);
-	tyran_print_value("log", v, 1, runtime->symbol_table);
+	if (tyran_value_is_string(v)) {
+		print_value(runtime, v);
+	} else {
+		tyran_print_value("log", v, 1, runtime->symbol_table);
+	}
 	return 0;
 }
 

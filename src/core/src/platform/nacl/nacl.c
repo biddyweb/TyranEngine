@@ -5,7 +5,6 @@
 #include <ppapi/c/ppp_instance.h>
 #include <ppapi/c/ppp_input_event.h>
 #include <ppapi/c/ppb_instance.h>
-
 #include <tyranscript/tyran_log.h>
 
 #include "../../base/boot/nimbus_boot.h"
@@ -68,9 +67,12 @@ static void initialize_3d(nimbus_nacl_render* self)
 		PP_GRAPHICS3DATTRIB_NONE
 	};
 
+	g_nacl.display_size.width = width;
+	g_nacl.display_size.height = height;
 	g_nacl.graphics_3d_context = self->graphics_3d->Create(g_nacl.module_instance, 0, attributes);
 	self->instance = (PPB_Instance*)(g_nacl.get_browser(PPB_INSTANCE_INTERFACE));
 	self->instance->BindGraphics(g_nacl.module_instance, g_nacl.graphics_3d_context);
+	g_nacl.view = (PPB_View*)(g_nacl.get_browser(PPB_VIEW_INTERFACE));
 }
 
 static void draw(nimbus_nacl_render* self);
@@ -119,7 +121,9 @@ static void Instance_DidDestroy(PP_Instance instance)
 
 static void Instance_DidChangeView(PP_Instance instance, PP_Resource view)
 {
-	TYRAN_LOG("Instance_DidChangeView");
+	struct PP_Rect rect;
+	g_nacl.view->GetRect(view, &rect);
+	TYRAN_LOG("Instance_DidChangeView. %d, %d, %d, %d", rect.point.x, rect.point.y, rect.size.width, rect.size.height);
 }
 
 static void Instance_DidChangeFocus(PP_Instance instance, PP_Bool has_focus)

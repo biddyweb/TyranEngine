@@ -69,7 +69,11 @@ static void handle_mouse_button(nimbus_nacl_input* self, PP_InputEvent_Type inpu
 	if (type_id) {
 		nimbus_vector2 vector;
 		vector.x = position.x;
-		vector.y = -position.y;
+		vector.y = g_nacl.display_size.height - position.y;
+		vector.x /= g_nacl.display_size.width;
+		vector.y /= g_nacl.display_size.height;
+		vector.x = vector.x * 2.0f - 1.0f;
+		vector.y = vector.y * 2.0f - 1.0f;
 		send_touch_changed(self, type_id, button_id, vector);
 	}
 }

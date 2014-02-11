@@ -118,10 +118,18 @@ TYRAN_RUNTIME_CALL_FUNC(script_spawn)
 
 	tyran_object* spawned_object = nimbus_object_listener_spawn(&_self->object_listener, tyran_value_object(arguments));
 	tyran_value_replace_object(*return_value, spawned_object);
-	tyran_object_release(spawned_object);
 	TYRAN_ASSERT(tyran_object_program_specific(spawned_object) != 0, "Spawned must have program specific");
 	return 0;
 }
+
+TYRAN_RUNTIME_CALL_FUNC(script_unspawn)
+{
+	nimbus_engine* _self = runtime->program_specific_context;
+	nimbus_combine_instance_id combine_instance_id = (nimbus_combine_instance_id) tyran_value_number(arguments);
+	nimbus_object_listener_unspawn(&_self->object_listener, combine_instance_id);
+	return 0;
+}
+
 
 void schedule_update_tasks(nimbus_engine* self, nimbus_task_queue* queue)
 {
@@ -282,6 +290,7 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	tyran_mocha_api_add_function(&self->mocha_api, global, "atan2", script_atan2);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "sin", script_sin);
 	tyran_mocha_api_add_function(&self->mocha_api, global, "spawn", script_spawn);
+	tyran_mocha_api_add_function(&self->mocha_api, global, "unspawn", script_unspawn);
 
 	self->resource_handler = nimbus_resource_handler_new(memory);
 	nimbus_event_listener_init(&self->event_listener, self);

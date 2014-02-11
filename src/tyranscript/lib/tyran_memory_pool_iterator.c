@@ -13,16 +13,17 @@ tyran_boolean tyran_memory_pool_iterator_next(tyran_memory_pool_iterator* self, 
 	if (self->index == self->pool->max_count) {
 		return TYRAN_FALSE;
 	}
-	const int alignment = 4;
-	const u8t* raw = self->pool->memory + alignment + (sizeof(tyran_memory_pool_entry) + self->pool->struct_size) * self->index++;
-	const tyran_memory_pool_entry* entry = (const tyran_memory_pool_entry*) raw;
-	if (!entry->allocated) {
-		return tyran_memory_pool_iterator_next(self, object);
+
+	for (; self->index < self->pool->max_count;) {
+		const u8t* raw = (const u8t*)self->pool->memory + (sizeof(tyran_memory_pool_entry) + self->pool->struct_size) * self->index++;
+		const tyran_memory_pool_entry* e = (const tyran_memory_pool_entry*) raw;
+		if (e->allocated) {
+			*object = (void*)(raw + sizeof(tyran_memory_pool_entry));
+			return TYRAN_TRUE;
+		}
 	}
 
-	*object = (void*) (raw + sizeof(tyran_memory_pool_entry));
-
-	return TYRAN_TRUE;
+	return TYRAN_FALSE;
 }
 
 void tyran_memory_pool_iterator_free(tyran_memory_pool_iterator* self)

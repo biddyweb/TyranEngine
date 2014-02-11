@@ -13,6 +13,9 @@
 #include <tyranscript/tyran_array.h>
 #include <tyranscript/tyran_symbol_table.h>
 
+#include <tyranscript/debug/tyran_runtime_debug.h>
+
+
 extern tyran_value g_tyran_nil;
 
 void tyran_object_retain(struct tyran_object* o)
@@ -71,11 +74,14 @@ void tyran_object_free(struct tyran_object* object)
 	}
 
 	if (object->prototype) {
-		tyran_object_release((tyran_object*)object->prototype);
+		if (object->prototype->retain_count != 1) {
+			tyran_runtime_debug_who_is_referencing(runtime, object->prototype);
+		}
+		tyran_object_clear_prototype(object);
 	}
 
 	for (int i=0; i<object->property_count; ++i) {
-#if 0
+#if 1
 		if (tyran_value_is_object(&object->properties[i].value)) {
 			const char* debug_string = tyran_symbol_table_lookup(runtime->symbol_table, &object->properties[i].symbol);
 			TYRAN_LOG("Member:'%s' retain:%d", debug_string, object->properties[i].value.data.object->retain_count);
@@ -84,7 +90,7 @@ void tyran_object_free(struct tyran_object* object)
 		tyran_value_release(object->properties[i].value);
 	}
 
-	tyran_memset_type(object, 0);
+	tyran_mem_clear_type_n(object, 1);
 	object->retain_count = -9999;
 	object->created_in_runtime = 0;
 
@@ -140,12 +146,18 @@ void tyran_object_delete(struct tyran_object* object, const struct tyran_symbol*
 void tyran_object_set_prototype(struct tyran_object* target, const struct tyran_object* proto)
 {
 	if (target->prototype) {
-		tyran_object_release((tyran_object*)target->prototype);
+		tyran_object_clear_prototype(target);
 	}
 	TYRAN_ASSERT(proto != target, "Can not set prototype to self");
 
 	TYRAN_OBJECT_RETAIN((tyran_object*)proto);
 	target->prototype = proto;
+}
+
+void tyran_object_clear_prototype(struct tyran_object* target)
+{
+	tyran_object_release((tyran_object*)target->prototype);
+	target->prototype = 0;
 }
 
 void tyran_object_lookup_prototype(const tyran_value** x, const struct tyran_object* o, const struct tyran_symbol* symbol)

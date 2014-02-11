@@ -4,8 +4,9 @@
 #include <tyranscript/tyran_runtime.h>
 #include <tyranscript/tyran_property_iterator.h>
 #include <tyranscript/tyran_symbol_table.h>
+#include <tyranscript/debug/tyran_runtime_debug.h>
 
-void check_referencing(tyran_symbol_table* symbol_table, const tyran_object* o)
+static void check_referencing(tyran_symbol_table* symbol_table, const tyran_object* o)
 {
 	tyran_property_iterator it;
 	tyran_property_iterator_init(&it, o);
@@ -18,9 +19,11 @@ void check_referencing(tyran_symbol_table* symbol_table, const tyran_object* o)
 			TYRAN_LOG("referenced by object member '%s'",  tyran_symbol_table_lookup(symbol_table, &symbol));
 		}
 	}
+	
+	tyran_property_iterator_free(&it);
 }
 
-void tyran_runtime_debug_who_is_referencing(struct tyran_runtime* runtime, const struct tyran_object* o)
+void tyran_runtime_debug_who_is_referencing(const struct tyran_runtime* runtime, const struct tyran_object* o)
 {
 	tyran_memory_pool_iterator it;
 

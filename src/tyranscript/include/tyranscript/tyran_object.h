@@ -58,6 +58,7 @@ void tyran_object_free(tyran_object* object);
 /* Prototype */
 void tyran_object_set_prototype(tyran_object* target, const struct tyran_object* proto);
 #define tyran_object_get_prototype(__target) __target->prototype
+void tyran_object_clear_prototype(tyran_object* target);
 
 /* Length */
 void tyran_object_set_length(tyran_memory_pool* value_pool, tyran_object* object, int len);

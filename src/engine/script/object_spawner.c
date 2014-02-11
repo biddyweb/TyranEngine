@@ -190,7 +190,6 @@ static void rewire_internal_references_on_combine(nimbus_object_spawner* self, t
 tyran_object* nimbus_object_spawner_spawn(nimbus_object_spawner* self)
 {
 	tyran_object* destination_combine = tyran_object_new(self->runtime);
-	tyran_object_retain(destination_combine);
 	tyran_object_set_prototype(destination_combine, self->object_to_spawn);
 	//print_object(self, "destination_combine", destination_combine);
 	duplicate_components(self, destination_combine, self->object_to_spawn);

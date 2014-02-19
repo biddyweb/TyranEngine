@@ -7,14 +7,13 @@
 #include "../../core/src/base/event/nimbus_event_distributor.h"
 
 #include "../network/event_connection.h"
-#include <tyranscript/tyran_mocha_api.h>
+
 #include "../script/object_listeners.h"
 #include <tyran_engine/module/modules.h>
 
 struct nimbus_resource_handler;
 
 typedef struct nimbus_engine {
-	tyran_mocha_api mocha_api;
 	struct nimbus_resource_handler* resource_handler;
 	nimbus_event_listener event_listener;
 	nimbus_event_connection event_connection;

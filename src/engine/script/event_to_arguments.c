@@ -20,7 +20,6 @@
 
 #define NIMBUS_OBJECT_TO_EVENT_MEMBER_ALIGN() { const int alignment = 4; d += (alignment - ((intptr_t)(d) % alignment)) % alignment; }
 
-
 void nimbus_event_to_arguments_init(nimbus_event_to_arguments* self, struct tyran_symbol_table* symbol_table, tyran_runtime* runtime)
 {
 	tyran_symbol_table_add(symbol_table, &self->x_symbol, "x");

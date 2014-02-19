@@ -1,6 +1,6 @@
-#include "combine.h"
+#include <tyran_engine/state/combine.h>
 #include <tyranscript/tyran_memory.h>
-#include "component_definition.h"
+#include <tyran_engine/state/component_definition.h>
 
 static int NIMBUS_COMBINE_MAX_COMPONENT_COUNT = 32;
 
@@ -25,6 +25,8 @@ void realloc_components(nimbus_combine* self, int minimum_octet_size)
 		new_component_memory_pointer += component_data_octet_size;
 		self->allocated_memory_octet_count += component_data_octet_size;
 	}
+	TYRAN_MEMORY_FREE(self->components_memory);
+	self->components_memory = new_memory;
 }
 
 nimbus_component* nimbus_combine_add_component(nimbus_combine* self, const nimbus_component_definition* component_definition)

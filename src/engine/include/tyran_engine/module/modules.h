@@ -9,6 +9,7 @@ struct nimbus_event_write_stream;
 struct tyran_object;
 struct nimbus_property_reader;
 struct tyran_symbol_table;
+struct nimbus_component_definition;
 
 typedef void (*nimbus_event_converter_func)(struct nimbus_event_write_stream* stream, struct nimbus_property_reader* reader, struct tyran_object* o);
 
@@ -19,6 +20,11 @@ typedef struct nimbus_modules {
 	nimbus_event_definition* event_definitions;
 	int event_definitions_count;
 	int event_definitions_max_count;
+
+	struct nimbus_component_definition* component_definitions;
+	int component_definitions_count;
+	int component_definitions_max_count;
+	
 	struct tyran_symbol_table* symbol_table;
 } nimbus_modules;
 
@@ -28,5 +34,8 @@ void nimbus_modules_add_affinity(nimbus_modules* self, const char* name, size_t 
 
 struct nimbus_event_definition* nimbus_modules_add_event(nimbus_modules* self, const char* name, u8t event_type_id, u8t unspawn_event_type_id);
 struct nimbus_event_definition* nimbus_modules_add_event_struct(nimbus_modules* self, const char* name, size_t struct_size, u8t event_type_id);
+
+struct nimbus_component_definition* nimbus_modules_add_component_definition(nimbus_modules* self, const char* name, u8t event_type_id, size_t struct_size);
+
 
 #endif

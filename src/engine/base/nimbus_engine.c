@@ -1,22 +1,17 @@
 #include "nimbus_engine.h"
+
 #include "../../core/src/base/task/nimbus_task_queue.h"
 #include <tyran_engine/resource/id.h>
 #include "../resource/resource_handler.h"
-
 #include <tyran_engine/event/resource_load.h>
 #include <tyran_engine/event/touch_changed.h>
 #include <tyran_engine/event/key_changed.h>
-
-
 #include "../event/resource_load_state.h"
-
 #include <tyran_core/event/event_stream.h>
 #include <tyran_core/event/event_listener.h>
 #include "../resource/resource_handler.h"
-
 #include <tyran_engine/module/nimbus_module.h>
 #include <tyran_engine/module/register_modules.h>
-
 #include <tyran_engine/math/nimbus_math.h>
 
 #if defined TORNADO_OS_NACL
@@ -25,111 +20,6 @@
 #include "../../core/src/platform/nacl/nacl_connection.h"
 #include "../../core/src/platform/nacl/nacl_gamepad.h"
 #endif
-
-static void fire_load_state(nimbus_engine* self, nimbus_resource_id id)
-{
-	nimbus_resource_load_state_send(&self->update_object.event_write_stream, id);
-}
-
-static void fire_load_resource(nimbus_engine* self, nimbus_resource_id id, nimbus_resource_type_id resource_type_id)
-{
-	nimbus_resource_load_send(&self->update_object.event_write_stream, id, resource_type_id);
-}
-
-
-static void on_load_state(nimbus_engine* self, const char* state_name)
-{
-	nimbus_resource_id id = nimbus_resource_id_from_string(state_name);
-	fire_load_state(self, id);
-}
-
-TYRAN_RUNTIME_CALL_FUNC(nimbus_engine_load_library)
-{
-	return 0;
-}
-
-TYRAN_RUNTIME_CALL_FUNC(load_state)
-{
-	const struct tyran_string* state_name = tyran_value_string(&arguments[0]);
-	char state_name_buf[1024];
-	tyran_string_to_c_str(state_name_buf, 1024, state_name);
-
-
-	TYRAN_LOG("LoadState: '%s'", state_name_buf);
-	nimbus_engine* _self = runtime->program_specific_context;
-
-	on_load_state(_self, state_name_buf);
-	return 0;
-}
-
-static void print_value(tyran_runtime* runtime, tyran_value* v)
-{
-	const int buf_len = 512;
-	char buf[buf_len];
-	tyran_value_to_c_string(runtime->symbol_table, v, buf, buf_len, 0);
-	TYRAN_OUTPUT(buf);
-}
-
-TYRAN_RUNTIME_CALL_FUNC(log_output)
-{
-	struct tyran_value* v = &arguments[0];
-	if (tyran_value_is_string(v)) {
-		print_value(runtime, v);
-	} else {
-		tyran_print_value("log", v, 1, runtime->symbol_table);
-	}
-	return 0;
-}
-
-TYRAN_RUNTIME_CALL_FUNC(script_random)
-{
-	float random_value = (rand() % 512) / 511.0f;
-	tyran_value_set_number(*return_value, random_value);
-	return 0;
-}
-
-
-TYRAN_RUNTIME_CALL_FUNC(script_abs)
-{
-	float value = nimbus_math_fabs(tyran_value_number(arguments));
-	tyran_value_set_number(*return_value, value);
-	return 0;
-}
-
-TYRAN_RUNTIME_CALL_FUNC(script_atan2)
-{
-	float value = nimbus_math_atan2(tyran_value_number(&arguments[0]), tyran_value_number(&arguments[1]));
-	tyran_value_set_number(*return_value, value);
-	return 0;
-}
-
-
-TYRAN_RUNTIME_CALL_FUNC(script_sin)
-{
-	float value = nimbus_math_sin(tyran_value_number(&arguments[0]));
-	tyran_value_set_number(*return_value, value);
-	return 0;
-}
-
-
-TYRAN_RUNTIME_CALL_FUNC(script_spawn)
-{
-	nimbus_engine* _self = runtime->program_specific_context;
-
-	tyran_object* spawned_object = nimbus_object_listener_spawn(&_self->object_listener, tyran_value_object(arguments));
-	tyran_value_replace_object(*return_value, spawned_object);
-	TYRAN_ASSERT(tyran_object_program_specific(spawned_object) != 0, "Spawned must have program specific");
-	return 0;
-}
-
-TYRAN_RUNTIME_CALL_FUNC(script_unspawn)
-{
-	nimbus_engine* _self = runtime->program_specific_context;
-	nimbus_combine_instance_id combine_instance_id = (nimbus_combine_instance_id) tyran_value_number(arguments);
-	nimbus_object_listener_unspawn(&_self->object_listener, combine_instance_id);
-	return 0;
-}
-
 
 void schedule_update_tasks(nimbus_engine* self, nimbus_task_queue* queue)
 {
@@ -213,7 +103,6 @@ static void create_modules(nimbus_engine* self, tyran_memory* memory)
 	}
 }
 
-
 static void add_internal_modules(nimbus_modules* modules)
 {
 	nimbus_event_definition* touch_began = nimbus_modules_add_event(modules, "touch_began", NIMBUS_EVENT_TOUCH_BEGAN_ID, 0);
@@ -257,40 +146,15 @@ static void add_internal_modules(nimbus_modules* modules)
 	nimbus_modules_add_affinity(modules, "nacl_input", sizeof(nimbus_nacl_input), nimbus_nacl_input_init, offsetof(nimbus_nacl_input, update), 0);
 	nimbus_modules_add_affinity(modules, "nacl_connection", sizeof(nimbus_nacl_connection), nimbus_nacl_connection_init, offsetof(nimbus_nacl_connection, update), 0);
 #endif
-
+	nimbus_modules_add(modules, "script", sizeof(nimbus_script_module), nimbus_script_module_init, offsetof(nimbus_script_module, update));
 }
-
-static void delete_callback(const tyran_runtime* runtime, struct tyran_object* object_to_be_deleted)
-{
-	nimbus_engine* _self = runtime->program_specific_context;
-	nimbus_object_listener_on_delete(&_self->object_listener, object_to_be_deleted);
-}
-
 
 nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue* task_queue)
 {
 	nimbus_engine* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_engine);
 	self->frame_counter = 0;
-	// self->listener = nimbus_event_listener_new(memory, self);
-	//nimbus_event_listener_listen(self->listener, 1, );
-
-	tyran_mocha_api_new(&self->mocha_api, 1024);
-	self->mocha_api.default_runtime->program_specific_context = self;
-	self->mocha_api.default_runtime->delete_callback = delete_callback;
 
 	nimbus_event_distributor_init(&self->event_distributor, self->mocha_api.default_runtime->symbol_table, memory);
-
-
-	tyran_value* global = tyran_runtime_context(self->mocha_api.default_runtime);
-	tyran_mocha_api_add_function(&self->mocha_api, global, "load_library", nimbus_engine_load_library);
-	tyran_mocha_api_add_function(&self->mocha_api, global, "loadState", load_state);
-	tyran_mocha_api_add_function(&self->mocha_api, global, "log", log_output);
-	tyran_mocha_api_add_function(&self->mocha_api, global, "random", script_random);
-	tyran_mocha_api_add_function(&self->mocha_api, global, "abs", script_abs);
-	tyran_mocha_api_add_function(&self->mocha_api, global, "atan2", script_atan2);
-	tyran_mocha_api_add_function(&self->mocha_api, global, "sin", script_sin);
-	tyran_mocha_api_add_function(&self->mocha_api, global, "spawn", script_spawn);
-	tyran_mocha_api_add_function(&self->mocha_api, global, "unspawn", script_unspawn);
 
 	self->resource_handler = nimbus_resource_handler_new(memory);
 	nimbus_event_listener_init(&self->event_listener, self);
@@ -305,10 +169,7 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	nimbus_register_modules(&self->modules);
 	add_internal_modules(&self->modules);
 
-	nimbus_object_listener_init(&self->object_listener, memory, &self->mocha_api, tyran_value_mutable_object(global), self->modules.event_definitions, self->modules.event_definitions_count);
 	nimbus_engine_add_update_object(self, &self->object_listener.update);
-
-
 
 	create_modules(self, memory);
 
@@ -325,15 +186,12 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	return self;
 }
 
-
 void nimbus_engine_free(nimbus_engine* self)
 {
 	TYRAN_LOG("Freeing up engine...");
 }
 
-
 tyran_boolean nimbus_engine_should_render(nimbus_engine* self)
 {
 	return TYRAN_FALSE;
 }
-

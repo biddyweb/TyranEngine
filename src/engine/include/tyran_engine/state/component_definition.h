@@ -40,5 +40,6 @@ typedef struct nimbus_component_definition {
 
 void nimbus_component_definition_init(nimbus_component_definition* self, struct tyran_symbol_table* symbol_table, const char* debug_name, u8t event_type_id, size_t struct_size);
 void nimbus_component_definition_add_property(nimbus_component_definition* self, const char* name, nimbus_component_definition_property_type type, size_t offset);
+const nimbus_component_definition_property* nimbus_component_definition_property_from_type(nimbus_component_definition* self, tyran_symbol symbol);
 
 #endif

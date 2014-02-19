@@ -157,20 +157,7 @@ static nimbus_type_to_layer_combines* get_type_to_layers(nimbus_object_listener*
 	return type_to_layers;
 }
 
-static tyran_object* evaluate(nimbus_object_listener* self, const char* data)
-{
-	tyran_value new_object = tyran_mocha_api_create_object(self->mocha);
-	tyran_object* object = tyran_value_mutable_object(&new_object);
 
-	tyran_object_set_prototype(object, self->context);
-	tyran_value temp_value;
-	tyran_value_set_nil(temp_value);
-	tyran_mocha_api_eval(self->mocha, &new_object, &temp_value, data);
-	tyran_runtime_clear(self->runtime);
-
-
-	return tyran_value_mutable_object(&new_object);
-}
 
 static tyran_object* get_or_create_module_resource_object(nimbus_object_listener* self, nimbus_resource_id resource_id, int instance_index)
 {
@@ -189,19 +176,7 @@ static void add_object(nimbus_object_listener* self, nimbus_resource_id resource
 	nimbus_dependency_resolver_object_loaded(&self->dependency_resolver, o, resource_id, resource_type_id);
 }
 
-static void on_script_source_updated(nimbus_object_listener* self, struct nimbus_event_read_stream* stream, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id, int payload_size)
-{
-	TYRAN_ASSERT(payload_size <= self->script_buffer_size, "Buffer too small for script. payload:%d max:%d", payload_size, self->script_buffer_size);
 
-	nimbus_event_stream_read_octets(stream, self->script_buffer, payload_size);
-	self->script_buffer[payload_size] = 0;
-
-	// TYRAN_LOG("*** EVALUATE *** %d octet_size:%d", resource_id, payload_size);
-	// TYRAN_LOG("SCRIPT:'%s'", self->script_buffer);
-	tyran_object* o = evaluate(self, (const char*)self->script_buffer);
-
-	add_object(self, resource_id, resource_type_id, o);
-}
 
 static void on_module_resource_updated(nimbus_object_listener* self, struct nimbus_event_read_stream* stream, nimbus_resource_id resource_id, int payload_size)
 {
@@ -304,7 +279,7 @@ static void call_event(nimbus_object_listener* self, nimbus_combine_instance_id 
 
 #if defined OBJECT_LISTENERS_DEBUG
 		TYRAN_LOG("UPDATE function:%p, function_context:%p", func_info->function, &func_info->function_context);
-		tyran_print_value("context", &func_info->function_context, 1, self->symbol_table);
+		// tyran_print_value("context", &func_info->function_context, 1, self->symbol_table);
 		tyran_print_opcodes(func_info->function->data.opcodes, 0, func_info->function->constants);
 #endif
 		tyran_runtime_clear(self->runtime);
@@ -411,8 +386,6 @@ typedef struct all_objects {
 	const u8t* objects;
 	int object_count;
 } all_objects;
-
-
 
 static nimbus_track_info* add_track_info(nimbus_object_listener* self, tyran_symbol type_name)
 {
@@ -521,6 +494,7 @@ static void spawn_layer_object(nimbus_object_listener* self, nimbus_layer_associ
 {
 	TYRAN_ASSERT(association->layer_objects[layer_index] == 0, "Something bad happened when spawning");
 	tyran_object* spawned_combine = spawn(self, combine);
+	tyran_print_object("spawned layer object", spawned_combine, 1, self->symbol_table);
 	association->layer_objects[layer_index] = spawned_combine;
 	search_components_for_update_functions(self, association, spawned_combine);
 }
@@ -567,11 +541,10 @@ static nimbus_object_collection* object_collection_for_type(nimbus_object_listen
 
 static void handle_type_object(nimbus_object_listener* self, tyran_object* o, nimbus_combine_instance_id combine_instance_id, tyran_symbol type_name, const char* type_name_string)
 {
-	if (tyran_object_program_specific(o)) {
-		return;
+	nimbus_object_info* info = tyran_object_program_specific(o);
+	if (!info) {
+		info = nimbus_decorate_object(o, self->memory);
 	}
-
-	nimbus_object_info* info = nimbus_decorate_object(o, self->memory);
 	info->combine_instance_id = combine_instance_id;
 	if (!is_event_type(self, type_name)) {
 		nimbus_type_to_layer_combines* type_to_layers = get_type_to_layers(self, o, type_name);
@@ -740,7 +713,7 @@ void nimbus_object_listener_on_delete(nimbus_object_listener* self, tyran_object
 
 		tyran_property_iterator it;
 
-		tyran_property_iterator_init(&it, object_to_be_deleted);
+		tyran_property_iterator_init_shallow(&it, object_to_be_deleted);
 
 		tyran_symbol symbol;
 		const tyran_value* value;
@@ -851,11 +824,29 @@ static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* s
 	}
 }
 
-
-
 tyran_object* nimbus_object_listener_spawn(nimbus_object_listener* self, const tyran_object* combine)
 {
+	//TYRAN_ASSERT(combine->property_count >= 1, "Must have property counts");
+#if 1
+	tyran_value before_value;
+	tyran_value_set_object(before_value, (tyran_object*)combine);
+	tyran_print_value("before spawn", &before_value, 1, self->symbol_table);
+	tyran_value_release(before_value);
+#endif
 	tyran_object* spawned_object = spawn(self, combine);
+	nimbus_object_info* info = tyran_object_program_specific(spawned_object);
+	TYRAN_ASSERT(info != 0, "Spawned must have program specific");
+	TYRAN_ASSERT(info->is_spawned_combine, "Must be a combine");
+	TYRAN_ASSERT(!info->is_spawned_component, "Should not be a component");
+
+#if 1
+	tyran_value after_value;
+	tyran_value_set_object(after_value, (tyran_object*)spawned_object);
+	tyran_print_value("after spawn", &after_value, 1, self->symbol_table);
+	tyran_value_release(after_value);
+#endif
+
+	// TYRAN_ASSERT(spawned_object->property_count >= 1, "Must have property counts");
 	return spawned_object;
 }
 
@@ -906,7 +897,6 @@ static void setup_functions_for_event_definitions(nimbus_object_listener* self, 
 	}
 }
 
-
 void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* memory, struct tyran_mocha_api* mocha, struct tyran_object* context, nimbus_event_definition* event_definitions, int event_definition_count)
 {
 	self->memory = memory;
@@ -955,8 +945,6 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 	self->track_infos_count = 0;
 
 	self->context = context;
-	self->script_buffer_size = 16 * 1024;
-	self->script_buffer = TYRAN_MEMORY_ALLOC(memory, self->script_buffer_size, "Script buffer");
 	self->waiting_for_state_resource_id = 0;
 
 	self->combine_instances = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, tyran_object*, 1024);

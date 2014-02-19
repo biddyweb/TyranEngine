@@ -1,6 +1,8 @@
 #include <tyran_engine/module/modules.h>
 #include <tyranscript/tyran_symbol_table.h>
 
+#include <tyran_engine/state/component_definition.h>
+
 void nimbus_modules_init(nimbus_modules* self, struct tyran_memory* memory, struct tyran_symbol_table* symbol_table)
 {
 	self->modules_count = 0;
@@ -33,7 +35,6 @@ void nimbus_modules_add_affinity(nimbus_modules* self, const char* name, size_t 
 	module->affinity = affinity;
 }
 
-
 nimbus_event_definition* nimbus_modules_add_event(nimbus_modules* self, const char* name, u8t event_type_id, u8t unspawn_event_type_id)
 {
 	nimbus_event_definition* definition = &self->event_definitions[self->event_definitions_count++];
@@ -41,6 +42,15 @@ nimbus_event_definition* nimbus_modules_add_event(nimbus_modules* self, const ch
 
 	return definition;
 }
+
+nimbus_component_definition* nimbus_modules_add_component_definition(nimbus_modules* self, const char* name, u8t event_type_id, size_t struct_size)
+{
+	nimbus_component_definition* definition = &self->component_definitions[self->component_definitions_count++];
+	nimbus_component_definition_init(definition, self->symbol_table, name, event_type_id, struct_size);
+	
+	return definition;
+}
+
 
 nimbus_event_definition* nimbus_modules_add_event_struct(nimbus_modules* self, const char* name, size_t struct_size, u8t event_type_id)
 {

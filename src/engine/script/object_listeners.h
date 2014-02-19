@@ -106,8 +106,7 @@ typedef struct nimbus_object_listener {
 	int track_infos_count;
 
 	struct tyran_object* context;
-	u8t* script_buffer;
-	int script_buffer_size;
+
 	nimbus_dependency_resolver dependency_resolver;
 	nimbus_resource_type_id module_resource_type_id;
 	nimbus_resource_type_id wire_object_type_id;

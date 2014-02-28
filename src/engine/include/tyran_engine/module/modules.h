@@ -4,6 +4,8 @@
 #include <tyran_core/update/update.h>
 #include <tyran_engine/module/nimbus_module.h>
 #include <tyran_engine/event_definition/event_definition.h>
+#include <tyran_engine/resource/type_id.h>
+#include <tyran_engine/resource/resource_definitions.h>
 
 struct nimbus_event_write_stream;
 struct tyran_object;
@@ -25,6 +27,9 @@ typedef struct nimbus_modules {
 	int component_definitions_count;
 	int component_definitions_max_count;
 
+
+	struct nimbus_resource_definitions resource_definitions;
+
 	struct tyran_symbol_table* symbol_table;
 } nimbus_modules;
 
@@ -37,5 +42,7 @@ struct nimbus_event_definition* nimbus_modules_add_event_struct(nimbus_modules* 
 
 struct nimbus_component_definition* nimbus_modules_add_component_definition(nimbus_modules* self, const char* name, u8t event_type_id, size_t struct_size);
 const struct nimbus_component_definition* nimbus_modules_component_definition_from_type(nimbus_modules* self, tyran_symbol type);
+
+void nimbus_modules_add_resource_definition(nimbus_modules* self, const char* name, size_t struct_size);
 
 #endif

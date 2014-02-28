@@ -2,6 +2,7 @@
 #include <tyranscript/tyran_symbol_table.h>
 
 #include <tyran_engine/state/component_definition.h>
+#include <tyran_engine/resource/resource_definition.h>
 
 void nimbus_modules_init(nimbus_modules* self, struct tyran_memory* memory, struct tyran_symbol_table* symbol_table)
 {
@@ -11,6 +12,9 @@ void nimbus_modules_init(nimbus_modules* self, struct tyran_memory* memory, stru
 	self->event_definitions_count = 0;
 	self->symbol_table = symbol_table;
 	self->event_definitions = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_event_definition, self->event_definitions_max_count);
+
+	nimbus_resource_definitions_init(&self->resource_definitions, memory);
+
 }
 
 static nimbus_module* add(nimbus_modules* self, const char* name, size_t octet_size, nimbus_module_init_function func, size_t update_offset)
@@ -71,4 +75,10 @@ nimbus_event_definition* nimbus_modules_add_event_struct(nimbus_modules* self, c
 	definition->struct_size = struct_size;
 
 	return definition;
+}
+
+void nimbus_modules_add_resource_definition(nimbus_modules* self, const char* name, size_t struct_size)
+{
+	nimbus_resource_type_id type_id = nimbus_resource_type_id_from_string(name);
+	nimbus_resource_definitions_create(&self->resource_definitions, type_id, struct_size, name);
 }

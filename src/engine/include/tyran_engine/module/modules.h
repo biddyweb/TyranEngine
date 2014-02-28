@@ -24,7 +24,7 @@ typedef struct nimbus_modules {
 	struct nimbus_component_definition* component_definitions;
 	int component_definitions_count;
 	int component_definitions_max_count;
-	
+
 	struct tyran_symbol_table* symbol_table;
 } nimbus_modules;
 
@@ -36,6 +36,6 @@ struct nimbus_event_definition* nimbus_modules_add_event(nimbus_modules* self, c
 struct nimbus_event_definition* nimbus_modules_add_event_struct(nimbus_modules* self, const char* name, size_t struct_size, u8t event_type_id);
 
 struct nimbus_component_definition* nimbus_modules_add_component_definition(nimbus_modules* self, const char* name, u8t event_type_id, size_t struct_size);
-
+const struct nimbus_component_definition* nimbus_modules_component_definition_from_type(nimbus_modules* self, tyran_symbol type);
 
 #endif

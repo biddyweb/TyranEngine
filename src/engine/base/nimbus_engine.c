@@ -6,13 +6,15 @@
 #include <tyran_engine/event/resource_load.h>
 #include <tyran_engine/event/touch_changed.h>
 #include <tyran_engine/event/key_changed.h>
-#include "../event/resource_load_state.h"
+
 #include <tyran_core/event/event_stream.h>
 #include <tyran_core/event/event_listener.h>
 #include "../resource/resource_handler.h"
 #include <tyran_engine/module/nimbus_module.h>
 #include <tyran_engine/module/register_modules.h>
 #include <tyran_engine/math/nimbus_math.h>
+
+#include "../script/script_module.h"
 
 #if defined TORNADO_OS_NACL
 #include "../../core/src/platform/nacl/nacl_loader.h"
@@ -40,10 +42,6 @@ int nimbus_engine_update(nimbus_engine* self, nimbus_task_queue* queue)
 	distribute_events(self);
 	schedule_update_tasks(self, queue);
 
-	self->frame_counter++;
-	if (self->frame_counter > 9999) {
-		return 1;
-	}
 	return 0;
 }
 
@@ -51,6 +49,14 @@ static void _dummy_update(void* _self)
 {
 	TYRAN_LOG("Engine::dummy_Update");
 }
+
+
+
+static void fire_load_resource(nimbus_engine* self, nimbus_resource_id id, nimbus_resource_type_id resource_type_id)
+{
+	nimbus_resource_load_send(&self->update_object.event_write_stream, id, resource_type_id);
+}
+
 
 static void boot_resource(nimbus_engine* self)
 {
@@ -152,9 +158,8 @@ static void add_internal_modules(nimbus_modules* modules)
 nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue* task_queue)
 {
 	nimbus_engine* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_engine);
-	self->frame_counter = 0;
 
-	nimbus_event_distributor_init(&self->event_distributor, self->mocha_api.default_runtime->symbol_table, memory);
+	nimbus_event_distributor_init(&self->event_distributor, &self->symbol_table, memory);
 
 	self->resource_handler = nimbus_resource_handler_new(memory);
 	nimbus_event_listener_init(&self->event_listener, self);
@@ -165,11 +170,9 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	nimbus_update_init(&self->update_object, memory, _dummy_update, 0, "engine");
 	nimbus_engine_add_update_object(self, &self->update_object);
 
-	nimbus_modules_init(&self->modules, memory, self->mocha_api.default_runtime->symbol_table);
+	nimbus_modules_init(&self->modules, memory, &self->symbol_table);
 	nimbus_register_modules(&self->modules);
 	add_internal_modules(&self->modules);
-
-	nimbus_engine_add_update_object(self, &self->object_listener.update);
 
 	create_modules(self, memory);
 

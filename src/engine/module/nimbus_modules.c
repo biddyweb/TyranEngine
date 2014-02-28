@@ -47,10 +47,21 @@ nimbus_component_definition* nimbus_modules_add_component_definition(nimbus_modu
 {
 	nimbus_component_definition* definition = &self->component_definitions[self->component_definitions_count++];
 	nimbus_component_definition_init(definition, self->symbol_table, name, event_type_id, struct_size);
-	
+
 	return definition;
 }
 
+const nimbus_component_definition* nimbus_modules_component_definition_from_type(nimbus_modules* self, tyran_symbol type)
+{
+	for (int i = 0; i < self->component_definitions_count; ++i) {
+		const nimbus_component_definition* definition = &self->component_definitions[ i ];
+		if (tyran_symbol_equal(&definition->type_symbol, &type)) {
+			return definition;
+		}
+	}
+
+	return 0;
+}
 
 nimbus_event_definition* nimbus_modules_add_event_struct(nimbus_modules* self, const char* name, size_t struct_size, u8t event_type_id)
 {

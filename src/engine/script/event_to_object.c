@@ -1,4 +1,5 @@
-#include <tyran_engine/script/event_to_object.h>
+/*
+ #include <tyran_engine/script/event_to_object.h>
 
 #include <tyranscript/tyran_symbol_table.h>
 #include <tyran_core/event/event_stream.h>
@@ -106,3 +107,4 @@ int nimbus_event_to_object_convert(nimbus_event_to_object* self, tyran_object* o
 
 	return e->properties_count;
 }
+*/

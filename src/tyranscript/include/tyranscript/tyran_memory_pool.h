@@ -1,6 +1,8 @@
 #ifndef tyran_memory_pool_h
 #define tyran_memory_pool_h
 
+#include <tyranscript/tyran_types.h>
+
 struct tyran_memory_pool;
 struct tyran_memory;
 

@@ -148,6 +148,14 @@ void tyran_print_value_helper(int tabs, const char* property, const tyran_value*
 	}
 }
 
+void tyran_print_object(const char* property, const tyran_object* v, int quote, const tyran_symbol_table* symbol_table)
+{
+	tyran_value v_value;
+	tyran_value_set_object(v_value, (tyran_object*)v);
+	tyran_print_value_helper(0, property, &v_value, quote, symbol_table);
+	tyran_value_release(v_value);
+}
+
 void tyran_print_value(const char* property, const tyran_value* v, int quote, const tyran_symbol_table* symbol_table)
 {
 	tyran_print_value_helper(0, property, v, quote, symbol_table);

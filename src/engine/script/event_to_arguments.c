@@ -1,4 +1,5 @@
-#include <tyran_engine/script/event_to_arguments.h>
+/*
+ #include <tyran_engine/script/event_to_arguments.h>
 
 #include <tyranscript/tyran_symbol_table.h>
 #include <tyran_core/event/event_stream.h>
@@ -127,3 +128,4 @@ int nimbus_event_to_arguments_convert(nimbus_event_to_arguments* self, tyran_val
 
 	return e->properties_count;
 }
+*/

@@ -1,5 +1,5 @@
 #include "object_listeners.h"
-
+/*
 #include <tyranscript/tyran_mocha_api.h>
 #include <tyranscript/tyran_object.h>
 #include <tyranscript/tyran_symbol_table.h>
@@ -19,8 +19,6 @@
 #include "object_info.h"
 #include <tyran_engine/script/object_decorator.h>
 #include <tyran_engine/event_definition/event_definition.h>
-#include "object_spawner.h"
-#include "track_info.h"
 
 #include "../event/resource_load_state.h"
 #include <tyran_engine/event/execute_function.h>
@@ -959,3 +957,4 @@ void nimbus_object_listener_init(nimbus_object_listener* self, tyran_memory* mem
 	setup_collections_for_event_definitions(self, memory, event_definitions, event_definition_count);
 	setup_functions_for_event_definitions(self, memory, event_definitions, event_definition_count);
 }
+*/

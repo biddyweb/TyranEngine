@@ -11,6 +11,8 @@
 #include "../script/object_listeners.h"
 #include <tyran_engine/module/modules.h>
 
+#include <tyranscript/tyran_symbol_table.h>
+
 struct nimbus_resource_handler;
 
 typedef struct nimbus_engine {
@@ -19,13 +21,13 @@ typedef struct nimbus_engine {
 	nimbus_event_connection event_connection;
 	nimbus_update update_object;
 
-	nimbus_object_listener object_listener;
 	nimbus_event_distributor event_distributor;
 	nimbus_modules modules;
 
 	nimbus_update** update_objects;
 	int update_objects_count;
-	int frame_counter;
+	
+	tyran_symbol_table symbol_table;
 } nimbus_engine;
 
 nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue* task_queue);

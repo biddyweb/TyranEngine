@@ -19,3 +19,8 @@ void nimbus_component_definition_add_property(nimbus_component_definition* self,
 	property->type = type;
 	tyran_symbol_table_add(self->symbol_table, &property->symbol, name);
 }
+
+const nimbus_component_definition_property* nimbus_component_definition_property_from_type(const nimbus_component_definition* self, tyran_symbol symbol)
+{
+	return 0;
+}

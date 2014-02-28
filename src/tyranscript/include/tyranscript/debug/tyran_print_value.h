@@ -2,10 +2,12 @@
 #define _TYRAN_PRINT_VALUE_H
 
 struct tyran_value;
+struct tyran_object;
 struct tyran_memory_pool;
 struct tyran_symbol_table;
 
 void tyran_value_to_c_string(const struct tyran_symbol_table* symbol_table, const struct tyran_value* v, char* buf, int max_length, int quote);
 void tyran_print_value(const char* property, const struct tyran_value* v, int quote, const struct tyran_symbol_table* symbol_table);
+void tyran_print_object(const char* property, const struct tyran_object* v, int quote, const struct tyran_symbol_table* symbol_table);
 
 #endif

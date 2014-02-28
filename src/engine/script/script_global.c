@@ -1,13 +1,18 @@
 #include "script_global.h"
 
+#include <tyran_engine/resource/id.h>
+
+#include "../base/nimbus_engine.h"
+#include <tyranscript/tyran_runtime.h>
+#include <tyranscript/tyran_value.h>
+#include <tyranscript/tyran_object.h>
+#include <tyran_engine/math/nimbus_math.h>
+#include <tyranscript/tyran_mocha_api.h>
+#include "../event/resource_load_state.h"
+
 static void fire_load_state(nimbus_engine* self, nimbus_resource_id id)
 {
 	nimbus_resource_load_state_send(&self->update_object.event_write_stream, id);
-}
-
-static void fire_load_resource(nimbus_engine* self, nimbus_resource_id id, nimbus_resource_type_id resource_type_id)
-{
-	nimbus_resource_load_send(&self->update_object.event_write_stream, id, resource_type_id);
 }
 
 static void on_load_state(nimbus_engine* self, const char* state_name)
@@ -84,23 +89,25 @@ TYRAN_RUNTIME_CALL_FUNC(script_sin)
 
 TYRAN_RUNTIME_CALL_FUNC(script_spawn)
 {
-	nimbus_engine* _self = runtime->program_specific_context;
+	//nimbus_engine* _self = runtime->program_specific_context;
 
-	tyran_object* spawned_object = nimbus_object_listener_spawn(&_self->object_listener, tyran_value_object(arguments));
-	tyran_value_replace_object(*return_value, spawned_object);
+	// tyran_object* spawned_object = nimbus_object_listener_spawn(&_self->object_listener, tyran_value_object(arguments));
+	//tyran_value_replace_object(*return_value, spawned_object);
 	return 0;
 }
 
 TYRAN_RUNTIME_CALL_FUNC(script_unspawn)
 {
-	nimbus_engine* _self = runtime->program_specific_context;
-	nimbus_combine_instance_id combine_instance_id = (nimbus_combine_instance_id) tyran_value_number(arguments);
-	nimbus_object_listener_unspawn(&_self->object_listener, combine_instance_id);
+	//nimbus_engine* _self = runtime->program_specific_context;
+	//nimbus_combine_instance_id combine_instance_id = (nimbus_combine_instance_id) tyran_value_number(arguments);
+	//nimbus_object_listener_unspawn(&_self->object_listener, combine_instance_id);
 	return 0;
 }
 
-void nimbus_script_global_init()
+void nimbus_script_global_init(nimbus_script_global* self, tyran_mocha_api* mocha)
 {
+	self->mocha = mocha;
+	
 	tyran_value* global = tyran_runtime_context(mocha->default_runtime);
 	tyran_mocha_api_add_function(mocha, global, "load_library", nimbus_engine_load_library);
 	tyran_mocha_api_add_function(mocha, global, "loadState", load_state);

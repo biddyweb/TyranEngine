@@ -54,8 +54,8 @@ static void iterate_component(nimbus_script_component_parser* self, nimbus_modul
 	tyran_property_iterator_free(&it);
 }
 
-void nimbus_script_component_parser_init(nimbus_script_component_parser* self, struct nimbus_modules* modules, tyran_symbol_table* symbol_table, struct nimbus_combine* combine, const struct tyran_object* component_script_object)
+void nimbus_script_component_parser_init(nimbus_script_component_parser* self, struct nimbus_modules* modules, struct nimbus_resource_cache* resource_cache, tyran_symbol_table* symbol_table, struct nimbus_combine* combine, const struct tyran_object* component_script_object)
 {
-	script_property_parser_init(&self->property_parser, symbol_table);
+	script_property_parser_init(&self->property_parser, resource_cache, symbol_table);
 	iterate_component(self, modules, combine, component_script_object);
 }

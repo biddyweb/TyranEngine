@@ -9,13 +9,16 @@
 #include <tyran_engine/math/nimbus_math.h>
 #include <tyranscript/tyran_mocha_api.h>
 #include "../event/resource_load_state.h"
+#include <tyran_engine/event/resource_load.h>
+#include "script_module.h"
 
-static void fire_load_state(nimbus_engine* self, nimbus_resource_id id)
+static void fire_load_state(nimbus_script_module* self, nimbus_resource_id id)
 {
-	nimbus_resource_load_state_send(&self->update_object.event_write_stream, id);
+	nimbus_resource_load_state_send(&self->update.event_write_stream, id);
+	nimbus_resource_load_send(&self->update.event_write_stream, id, nimbus_resource_type_id_from_string("state"));
 }
 
-static void on_load_state(nimbus_engine* self, const char* state_name)
+static void on_load_state(nimbus_script_module* self, const char* state_name)
 {
 	nimbus_resource_id id = nimbus_resource_id_from_string(state_name);
 	fire_load_state(self, id);
@@ -34,7 +37,7 @@ TYRAN_RUNTIME_CALL_FUNC(load_state)
 
 
 	TYRAN_LOG("LoadState: '%s'", state_name_buf);
-	nimbus_engine* _self = runtime->program_specific_context;
+	nimbus_script_module* _self = runtime->program_specific_context;
 
 	on_load_state(_self, state_name_buf);
 	return 0;
@@ -89,7 +92,7 @@ TYRAN_RUNTIME_CALL_FUNC(script_sin)
 
 TYRAN_RUNTIME_CALL_FUNC(script_spawn)
 {
-	//nimbus_engine* _self = runtime->program_specific_context;
+	//nimbus_script_module* _self = runtime->program_specific_context;
 
 	// tyran_object* spawned_object = nimbus_object_listener_spawn(&_self->object_listener, tyran_value_object(arguments));
 	//tyran_value_replace_object(*return_value, spawned_object);
@@ -98,7 +101,7 @@ TYRAN_RUNTIME_CALL_FUNC(script_spawn)
 
 TYRAN_RUNTIME_CALL_FUNC(script_unspawn)
 {
-	//nimbus_engine* _self = runtime->program_specific_context;
+	//nimbus_script_module* _self = runtime->program_specific_context;
 	//nimbus_combine_instance_id combine_instance_id = (nimbus_combine_instance_id) tyran_value_number(arguments);
 	//nimbus_object_listener_unspawn(&_self->object_listener, combine_instance_id);
 	return 0;
@@ -118,4 +121,5 @@ void nimbus_script_global_init(nimbus_script_global* self, tyran_mocha_api* moch
 	tyran_mocha_api_add_function(mocha, global, "sin", script_sin);
 	tyran_mocha_api_add_function(mocha, global, "spawn", script_spawn);
 	tyran_mocha_api_add_function(mocha, global, "unspawn", script_unspawn);
+	self->context = tyran_value_mutable_object(global);
 }

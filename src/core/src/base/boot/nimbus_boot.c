@@ -74,7 +74,6 @@ void nimbus_boot_manually_update_affinity_zero_tasks(nimbus_boot* self)
 	}
 }
 
-
 tyran_boolean nimbus_boot_ready_for_next_frame(nimbus_boot* self)
 {
 	tyran_boolean pending_tasks = nimbus_task_queue_has_pending_tasks_from_group(self->task_queue, 1);

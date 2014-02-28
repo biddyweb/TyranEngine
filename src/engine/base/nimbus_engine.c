@@ -13,7 +13,7 @@
 #include <tyran_engine/module/nimbus_module.h>
 #include <tyran_engine/module/register_modules.h>
 #include <tyran_engine/math/nimbus_math.h>
-
+#include <tyranscript/tyran_symbol_table.h>
 #include "../script/script_module.h"
 
 #if defined TORNADO_OS_NACL
@@ -22,6 +22,8 @@
 #include "../../core/src/platform/nacl/nacl_connection.h"
 #include "../../core/src/platform/nacl/nacl_gamepad.h"
 #endif
+
+nimbus_modules* g_modules;
 
 void schedule_update_tasks(nimbus_engine* self, nimbus_task_queue* queue)
 {
@@ -158,8 +160,10 @@ static void add_internal_modules(nimbus_modules* modules)
 nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue* task_queue)
 {
 	nimbus_engine* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_engine);
+	
+	self->symbol_table = tyran_symbol_table_new(memory);
 
-	nimbus_event_distributor_init(&self->event_distributor, &self->symbol_table, memory);
+	nimbus_event_distributor_init(&self->event_distributor, self->symbol_table, memory);
 
 	self->resource_handler = nimbus_resource_handler_new(memory);
 	nimbus_event_listener_init(&self->event_listener, self);
@@ -170,7 +174,8 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 	nimbus_update_init(&self->update_object, memory, _dummy_update, 0, "engine");
 	nimbus_engine_add_update_object(self, &self->update_object);
 
-	nimbus_modules_init(&self->modules, memory, &self->symbol_table);
+	g_modules = &self->modules;
+	nimbus_modules_init(&self->modules, memory, self->symbol_table);
 	nimbus_register_modules(&self->modules);
 	add_internal_modules(&self->modules);
 

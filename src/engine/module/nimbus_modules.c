@@ -12,9 +12,12 @@ void nimbus_modules_init(nimbus_modules* self, struct tyran_memory* memory, stru
 	self->event_definitions_count = 0;
 	self->symbol_table = symbol_table;
 	self->event_definitions = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_event_definition, self->event_definitions_max_count);
+	
+	self->component_definitions_max_count = 64;
+	self->component_definitions_count = 0;
+	self->component_definitions = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_component_definition, self->component_definitions_max_count);
 
 	nimbus_resource_definitions_init(&self->resource_definitions, memory);
-
 }
 
 static nimbus_module* add(nimbus_modules* self, const char* name, size_t octet_size, nimbus_module_init_function func, size_t update_offset)

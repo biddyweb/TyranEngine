@@ -1,7 +1,6 @@
 #include <tyranscript/tyran_memory.h>
 #include <tyranscript/tyran_log.h>
 
-
 #include "nimbus_event_distributor.h"
 #include <tyran_core/update/update.h>
 
@@ -11,7 +10,6 @@ void nimbus_event_distributor_init(nimbus_event_distributor* self, const struct 
 	self->event_buffer = TYRAN_MEMORY_CALLOC(memory, self->event_buffer_size, "event_buffer");
 	self->symbol_table = table;
 }
-
 
 void nimbus_event_distributor_set_buffer_for_objects_to_parse(nimbus_event_distributor* self, nimbus_update** objects, int object_count)
 {

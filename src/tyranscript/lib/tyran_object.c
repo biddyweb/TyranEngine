@@ -45,6 +45,10 @@ void tyran_object_free(struct tyran_object* object)
 	const tyran_runtime* runtime = object->created_in_runtime;
 #if 0
 	TYRAN_LOG("Object free:%p, runtime:%p specific:%p", (void*)object, (void*)runtime, (void*)object->program_specific);
+	tyran_value delete_value;
+	tyran_value_set_object(delete_value, object);
+	object->retain_count = 0;
+	tyran_print_value("free", &delete_value, 1, runtime->symbol_table);
 #endif
 	if (object->program_specific && runtime->delete_callback) {
 		runtime->delete_callback(runtime, object);
@@ -75,7 +79,7 @@ void tyran_object_free(struct tyran_object* object)
 
 	if (object->prototype) {
 		if (object->prototype->retain_count != 1) {
-			tyran_runtime_debug_who_is_referencing(runtime, object->prototype);
+			// tyran_runtime_debug_who_is_referencing(runtime, object->prototype);
 		}
 		tyran_object_clear_prototype(object);
 	}

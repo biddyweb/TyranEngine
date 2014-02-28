@@ -13,7 +13,6 @@ void nimbus_event_write_stream_init(nimbus_event_write_stream* self, tyran_memor
 	self->buffer = TYRAN_MEMORY_ALLOC(memory, max_length, "event write buffer");
 	nimbus_event_write_stream_clear(self);
 	self->end_pointer = self->buffer + max_length;
-
 }
 
 void nimbus_event_write_stream_free(nimbus_event_write_stream* stream)
@@ -102,15 +101,15 @@ const char* nimbus_event_stream_read_convert_symbol_string(nimbus_event_read_str
 int nimbus_event_stream_read_array(nimbus_event_read_stream* self, void* destination, int size_of_entity, int max_array_count)
 {
 	const u8t* d = self->pointer;
-	
+
 	int count_in_array = *((int*)d);
 	d += sizeof(int);
-	
+
 	TYRAN_ASSERT(count_in_array <= max_array_count, "Can not read big array:%d", count_in_array);
 
 	tyran_memcpy_octets(destination, d, size_of_entity * count_in_array);
 	nimbus_event_stream_read_skip(self, size_of_entity * count_in_array);
-	
+
 	return count_in_array;
 }
 

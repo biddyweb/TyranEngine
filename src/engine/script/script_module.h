@@ -17,7 +17,6 @@ typedef struct nimbus_script_module {
 	nimbus_resource_type_id combine_script_type_id;
 	u8t* script_buffer;
 	int script_buffer_size;
-	struct tyran_object* context;
 	struct nimbus_modules* modules;
 	struct tyran_memory* memory;
 	nimbus_script_global script_global;

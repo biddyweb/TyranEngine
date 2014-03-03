@@ -66,6 +66,8 @@ const nimbus_component_definition* nimbus_modules_component_definition_from_type
 			return definition;
 		}
 	}
+	
+	TYRAN_ERROR("Could not find definition from type:%d", type.hash);
 
 	return 0;
 }

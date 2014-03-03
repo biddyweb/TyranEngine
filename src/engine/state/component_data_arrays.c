@@ -10,16 +10,24 @@ void nimbus_component_arrays_init(nimbus_component_arrays* self, struct tyran_me
 	self->tracks_count = 0;
 }
 
-nimbus_component_array* nimbus_component_arrays_add(nimbus_component_arrays* self, nimbus_component_definition* definition)
+nimbus_component_array* nimbus_component_arrays_add(nimbus_component_arrays* self, const nimbus_component_definition* definition)
 {
 	TYRAN_ASSERT(self->tracks_count <= 32, "hit max component arrays");
 	nimbus_component_array* array = &self->tracks[self->tracks_count++];
-	nimbus_component_array_init(array, self->memory, definition->struct_size, 256);
+	nimbus_component_array_init(array, self->memory, definition, 256);
 
 	return array;
 }
 
 nimbus_component_array* nimbus_component_arrays_array_from_definition(nimbus_component_arrays* self, const struct nimbus_component_definition* definition)
 {
+	for (int i=0; i<self->tracks_count; ++i) {
+		nimbus_component_array* array = &self->tracks[i];
+		if (array->definition == definition) {
+			return array;
+		}
+	}
+	
+	TYRAN_ERROR("NO DEFINITION FOUND!");
 	return 0;
 }

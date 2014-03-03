@@ -11,9 +11,10 @@ void nimbus_combines_free(nimbus_combines* self)
 	// destroy_pool(self->combines);
 }
 
-nimbus_combine* nimbus_combines_create(nimbus_combines* self)
+nimbus_combine* nimbus_combines_create(nimbus_combines* self, struct nimbus_state* state)
 {
 	nimbus_combine* combine = TYRAN_CALLOC_TYPE(self->combines, nimbus_combine);
+	nimbus_combine_init(combine, state);
 
 	return combine;
 }

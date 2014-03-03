@@ -40,7 +40,7 @@ void tyran_runtime_clear(tyran_runtime* rt)
 
 tyran_value g_tyran_nil;
 
-tyran_runtime* tyran_runtime_new(tyran_memory_pool* runtime_pool, tyran_memory* memory, tyran_memory_pool* string_pool, tyran_memory_pool* object_key_pool, tyran_memory_pool* object_iterator_pool, tyran_memory_pool* function_pool, tyran_memory_pool* function_object_pool, tyran_memory_pool* runtime_stack_pool, tyran_memory_pool* object_pool, tyran_memory_pool* registers_value_pool, tyran_memory_pool* value_pool, tyran_memory_pool* array_node_pool)
+tyran_runtime* tyran_runtime_new(tyran_memory_pool* runtime_pool, tyran_memory* memory, tyran_memory_pool* string_pool, tyran_memory_pool* object_key_pool, tyran_memory_pool* object_iterator_pool, tyran_memory_pool* function_pool, tyran_memory_pool* function_object_pool, tyran_memory_pool* runtime_stack_pool, tyran_memory_pool* object_pool, tyran_memory_pool* registers_value_pool, tyran_memory_pool* value_pool, tyran_memory_pool* array_node_pool, struct tyran_symbol_table* symbol_table)
 {
 	tyran_runtime* rt = TYRAN_CALLOC_TYPE(runtime_pool, tyran_runtime);
 
@@ -57,7 +57,7 @@ tyran_runtime* tyran_runtime_new(tyran_memory_pool* runtime_pool, tyran_memory* 
 	rt->object_pool = object_pool;
 	rt->string_pool = string_pool;
 	rt->memory = memory;
-	rt->symbol_table = tyran_symbol_table_new(memory);
+	rt->symbol_table = symbol_table ? symbol_table : tyran_symbol_table_new(memory);
 	rt->value_pool = value_pool;
 	rt->array_node_pool = array_node_pool;
 	rt->runtime_stack_pool = runtime_stack_pool;
@@ -71,6 +71,8 @@ tyran_runtime* tyran_runtime_new(tyran_memory_pool* runtime_pool, tyran_memory* 
 
 	tyran_prototypes_init(rt, rt->global);
 
+	tyran_print_value("prototypes", rt->global, 1, rt->symbol_table);
+	
 	return rt;
 }
 

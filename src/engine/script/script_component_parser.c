@@ -35,6 +35,10 @@ static void parse_property(nimbus_script_component_parser* self, nimbus_componen
 static void iterate_component(nimbus_script_component_parser* self, nimbus_modules* modules, nimbus_combine* combine, const tyran_object* component_object)
 {
 	tyran_symbol type_symbol = lookup_type(self->symbol_table, component_object);
+	
+	tyran_symbol type_string_symbol;
+	tyran_symbol_table_add(self->symbol_table, &type_string_symbol, "type");
+	
 	const nimbus_component_definition* component_definition = nimbus_modules_component_definition_from_type(modules, type_symbol);
 
 	nimbus_component* component = nimbus_combine_create_component(combine, component_definition);
@@ -47,8 +51,10 @@ static void iterate_component(nimbus_script_component_parser* self, nimbus_modul
 
 	while (tyran_property_iterator_next(&it, &symbol, &value)) {
 		const char* debug_key_string = tyran_symbol_table_lookup(self->symbol_table, &symbol);
-		TYRAN_LOG("Component: %s", debug_key_string);
-		parse_property(self, component, symbol, value);
+		TYRAN_LOG("Property: %s", debug_key_string);
+		if (!tyran_symbol_equal(&symbol, &type_string_symbol)) {
+			parse_property(self, component, symbol, value);
+		}
 	}
 
 	tyran_property_iterator_free(&it);
@@ -56,6 +62,8 @@ static void iterate_component(nimbus_script_component_parser* self, nimbus_modul
 
 void nimbus_script_component_parser_init(nimbus_script_component_parser* self, struct nimbus_modules* modules, struct nimbus_resource_cache* resource_cache, tyran_symbol_table* symbol_table, struct nimbus_combine* combine, const struct tyran_object* component_script_object)
 {
+	TYRAN_ASSERT(combine->state != 0, "Combine must have a state!");
+	self->symbol_table = symbol_table;
 	script_property_parser_init(&self->property_parser, resource_cache, symbol_table);
 	iterate_component(self, modules, combine, component_script_object);
 }

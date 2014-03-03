@@ -111,7 +111,8 @@ void nimbus_script_global_init(nimbus_script_global* self, tyran_mocha_api* moch
 {
 	self->mocha = mocha;
 	
-	tyran_value* global = tyran_runtime_context(mocha->default_runtime);
+	tyran_value* global = mocha->default_runtime->global;
+	tyran_print_object("global context", tyran_value_mutable_object(global), 1, mocha->default_runtime->symbol_table);
 	tyran_mocha_api_add_function(mocha, global, "load_library", nimbus_engine_load_library);
 	tyran_mocha_api_add_function(mocha, global, "loadState", load_state);
 	tyran_mocha_api_add_function(mocha, global, "log", log_output);
@@ -122,4 +123,5 @@ void nimbus_script_global_init(nimbus_script_global* self, tyran_mocha_api* moch
 	tyran_mocha_api_add_function(mocha, global, "spawn", script_spawn);
 	tyran_mocha_api_add_function(mocha, global, "unspawn", script_unspawn);
 	self->context = tyran_value_mutable_object(global);
+	tyran_print_object("global context", self->context, 1, mocha->default_runtime->symbol_table);
 }

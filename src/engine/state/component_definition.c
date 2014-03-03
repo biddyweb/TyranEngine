@@ -8,7 +8,7 @@ void nimbus_component_definition_init(nimbus_component_definition* self, struct 
 	self->event_type_id = event_type_id;
 	self->properties_count = 0;
 	self->struct_size = struct_size;
-	//tyran_symbol type_symbol;
+	tyran_symbol_table_add(self->symbol_table, &self->type_symbol, debug_name);
 }
 
 void nimbus_component_definition_add_property(nimbus_component_definition* self, const char* name, nimbus_component_definition_property_type type, size_t offset)
@@ -22,5 +22,12 @@ void nimbus_component_definition_add_property(nimbus_component_definition* self,
 
 const nimbus_component_definition_property* nimbus_component_definition_property_from_type(const nimbus_component_definition* self, tyran_symbol symbol)
 {
+	for (int i=0; i<self->properties_count; ++i) {
+		const nimbus_component_definition_property* property = &self->properties[i];
+		if (tyran_symbol_equal(&property->symbol, &symbol)) {
+			return property;
+		}
+	}
+	TYRAN_ERROR("Couldn't find property from symbol:%d", symbol.hash);
 	return 0;
 }

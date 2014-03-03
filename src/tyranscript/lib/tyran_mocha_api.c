@@ -13,7 +13,7 @@
 #include <tyranscript/tyran_constants.h>
 #include <tyranscript/tyran_array.h>
 
-void tyran_mocha_api_new(tyran_mocha_api* api, int hunk_size)
+void tyran_mocha_api_new(tyran_mocha_api* api, int hunk_size, struct tyran_symbol_table* symbol_table)
 {
 	u8t* start = tyran_malloc(hunk_size);
 	tyran_memory* memory = (tyran_memory*)start;
@@ -43,7 +43,7 @@ void tyran_mocha_api_new(tyran_mocha_api* api, int hunk_size)
 	api->string_pool = TYRAN_MEMORY_POOL_CONSTRUCT(api->memory, tyran_string, default_size * 3);
 
 	struct tyran_memory_pool* array_node_pool = TYRAN_MEMORY_POOL_CONSTRUCT(api->memory, tyran_array_node, 2 * 64000);
-	api->default_runtime = tyran_runtime_new(runtime_pool, api->memory, api->string_pool, object_key_pool, object_iterator_pool, api->mocha_function_pool, function_object_pool, runtime_stack_pool, api->object_pool, value_registers_pool, api->value_pool, array_node_pool);
+	api->default_runtime = tyran_runtime_new(runtime_pool, api->memory, api->string_pool, object_key_pool, object_iterator_pool, api->mocha_function_pool, function_object_pool, runtime_stack_pool, api->object_pool, value_registers_pool, api->value_pool, array_node_pool, symbol_table);
 
 	api->object_key_pool = 0; //TYRAN_MEMORY_POOL_CONSTRUCT(api->memory, tyran_object_key, 10);
 

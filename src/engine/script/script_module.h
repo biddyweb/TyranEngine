@@ -9,6 +9,7 @@
 
 struct nimbus_modules;
 struct tyran_memory;
+struct nimbus_resource_cache;
 
 typedef struct nimbus_script_module {
 	nimbus_update update;
@@ -20,6 +21,7 @@ typedef struct nimbus_script_module {
 	struct nimbus_modules* modules;
 	struct tyran_memory* memory;
 	nimbus_script_global script_global;
+	struct nimbus_resource_cache* resource_cache;
 } nimbus_script_module;
 
 void nimbus_script_module_init(void* _self, struct tyran_memory* memory);

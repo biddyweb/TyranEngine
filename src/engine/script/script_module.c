@@ -18,8 +18,7 @@ static void _on_update(void* _self)
 
 static void boot_script(nimbus_script_module* self)
 {
-	tyran_mocha_api_new(&self->mocha, 1024);
-	self->mocha.default_runtime->symbol_table = g_modules->symbol_table;
+	tyran_mocha_api_new(&self->mocha, 1024, g_modules->symbol_table);
 	self->mocha.default_runtime->program_specific_context = self;
 
 	nimbus_script_global_init(&self->script_global, &self->mocha);
@@ -63,9 +62,9 @@ static void parse_state(nimbus_script_module* self, tyran_object* state_script_o
 	nimbus_script_state_parser parser;
 
 	nimbus_state state;
-	nimbus_state_init(&state, self->memory, 0, 0);
+	nimbus_state_init(&state, self->memory, self->modules->component_definitions, self->modules->component_definitions_count);
 	
-	nimbus_script_state_parser_init(&parser, self->modules, self->mocha.default_runtime->symbol_table, &state, state_script_object, resource_id);
+	nimbus_script_state_parser_init(&parser, self->modules, self->mocha.default_runtime->symbol_table, self->resource_cache, &state, state_script_object, resource_id);
 }
 
 static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* stream)
@@ -87,7 +86,7 @@ static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* s
 void nimbus_script_module_init(void* _self, struct tyran_memory* memory)
 {
 	nimbus_script_module* self = _self;
-	self->modules = 0;
+	self->modules = g_modules;
 	self->memory = memory;
 	nimbus_update_init(&self->update, memory, _on_update, self, "script module");
 	self->script_buffer_size = 16 * 1024;

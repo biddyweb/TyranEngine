@@ -3,6 +3,7 @@
 #include "combine.h"
 
 #include "component_definition.h"
+#include "event_component_header.h"
 
 void nimbus_state_init(nimbus_state* self, struct tyran_memory* memory, const struct nimbus_component_definition* definitions, int definitions_count)
 {
@@ -20,8 +21,7 @@ struct nimbus_event_component_header* nimbus_state_create_component(nimbus_state
 {
 	nimbus_component_array* array = nimbus_component_arrays_array_from_definition(&self->arrays, definition);
 	int index;
-	struct nimbus_event_component_header* header = nimbus_component_array_create_component(array, &index);
-
+	nimbus_event_component_header* header = nimbus_component_array_create_component(array, &index);
 	return header;
 }
 

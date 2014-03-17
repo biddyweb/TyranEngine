@@ -12,10 +12,10 @@ struct nimbus_resource_cache;
 
 typedef struct nimbus_script_property_parser {
 	nimbus_property_reader property_reader;
-	struct nimbus_resource_cache* resource_cache;
+	struct tyran_symbol_table* symbol_table;
 } nimbus_script_property_parser;
 
-void script_property_parser_init(nimbus_script_property_parser* self, struct nimbus_resource_cache* cache, struct tyran_symbol_table* symbol_table);
+void script_property_parser_init(nimbus_script_property_parser* self, struct tyran_symbol_table* symbol_table);
 void nimbus_script_property_parser_parse_property(nimbus_script_property_parser* self, struct nimbus_component* component, tyran_symbol symbol, const struct tyran_value* value);
 
 #endif

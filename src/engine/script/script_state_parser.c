@@ -11,7 +11,6 @@
 #include <tyran_engine/state/component_definition.h>
 #include <tyran_engine/state/combine.h>
 #include <tyran_engine/state/component.h>
-#include <tyran_engine/event/resource_reference.h>
 #include <tyran_engine/event/intra_reference.h>
 #include <tyran_engine/module/modules.h>
 
@@ -24,7 +23,7 @@ static void parse_combine(nimbus_script_state_parser* self, const tyran_object* 
 	nimbus_combine* combine = nimbus_state_create_combine(self->state);
 
 	nimbus_script_combine_parser combine_parser;
-	nimbus_script_combine_parser_init(&combine_parser, self->modules, self->symbol_table, self->resource_cache, combine, combine_script_object, self->resource_id);
+	nimbus_script_combine_parser_init(&combine_parser, self->modules, self->symbol_table, combine, combine_script_object, self->resource_id);
 }
 
 static void iterate_state_object(nimbus_script_state_parser* self, const tyran_object* state_script_object)
@@ -45,12 +44,11 @@ static void iterate_state_object(nimbus_script_state_parser* self, const tyran_o
 	tyran_property_iterator_free(&it);
 }
 
-void nimbus_script_state_parser_init(nimbus_script_state_parser* self, struct nimbus_modules* modules, struct tyran_symbol_table* symbol_table, struct nimbus_resource_cache* resource_cache, struct nimbus_state* state, const struct tyran_object* state_script_object, nimbus_resource_id resource_id)
+void nimbus_script_state_parser_init(nimbus_script_state_parser* self, struct nimbus_modules* modules, struct tyran_symbol_table* symbol_table, struct nimbus_state* state, const struct tyran_object* state_script_object, nimbus_resource_id resource_id)
 {
 	self->resource_id = resource_id;
 	self->modules = modules;
 	self->symbol_table = symbol_table;
 	self->state = state;
-	self->resource_cache = resource_cache;
 	iterate_state_object(self, state_script_object);
 }

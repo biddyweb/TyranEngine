@@ -24,6 +24,7 @@ nimbus_event_component_header* nimbus_component_array_create_component(nimbus_co
 	*return_index = index;
 	nimbus_event_component_header* component_data = (nimbus_event_component_header*)(((u8t*)self->data) + self->struct_size * index);
 	component_data->is_used = TYRAN_TRUE;
+	component_data->component_index = index;
 	return component_data;
 }
 

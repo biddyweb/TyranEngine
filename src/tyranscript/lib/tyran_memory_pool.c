@@ -3,7 +3,7 @@
 void tyran_memory_pool_initialize_entries(tyran_memory_pool* pool)
 {
 	u8t* m = pool->memory;
-	int total_size = pool->struct_size + sizeof(tyran_memory_pool_entry);
+	int total_size = (int) (pool->struct_size + sizeof(tyran_memory_pool_entry));
 	tyran_memory_pool_entry* previous = 0;
 	for (int i=0; i<pool->max_count; ++i) {
 		tyran_memory_pool_entry* e = (tyran_memory_pool_entry*) m;
@@ -29,7 +29,7 @@ tyran_memory_pool* tyran_memory_pool_construct(tyran_memory* memory, size_t stru
 	pool->memory = TYRAN_MEMORY_ALLOC(memory, (sizeof(tyran_memory_pool_entry) + struct_size) * count, "Memory pool entries");
 	pool->struct_size = struct_size;
 	pool->type_string = type;
-	pool->max_count = count;
+	pool->max_count = (int) count;
 	pool->count = 0;
 	tyran_memory_pool_initialize_entries(pool);
 	return pool;

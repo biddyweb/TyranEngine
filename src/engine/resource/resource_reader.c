@@ -13,7 +13,7 @@ static void nimbus_resource_reader_read_file(nimbus_resource_reader* self, nimbu
 {
 	const char* name = nimbus_resource_handler_id_to_name(self->resource_handler, id);
 	FILE* file = fopen(name, "rb");
-	self->temporary_file_buffer_size = fread(self->temporary_file_buffer, self->temporary_file_buffer_max_size, 1, file);
+	self->temporary_file_buffer_size = (int) fread(self->temporary_file_buffer, self->temporary_file_buffer_max_size, 1, file);
 	fclose(file);
 }
 

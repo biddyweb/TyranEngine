@@ -70,7 +70,7 @@ tyran_mocha_operator_info tyran_mocha_parser_get_operator_info(tyran_mocha_token
 	size_t i;
 	for (i = 0; i < sizeof(operands_to_match) / sizeof(tyran_mocha_operator_info); ++i) {
 		if (operands_to_match[i].token_id == token_id) {
-			operands_to_match[i].precedence = i;
+			operands_to_match[i].precedence = (int) i;
 			return operands_to_match[i];
 		}
 	}

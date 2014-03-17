@@ -101,7 +101,7 @@ void tyran_code_fixup_label_references(tyran_code_state* state)
 		if (label->position == -1) {
 			TYRAN_SOFT_ERROR("Label:%d is not defined", i);
 		} else {
-			int absolute_position = (ref->opcode - state->opcodes->codes);
+			int absolute_position = (int) (ref->opcode - state->opcodes->codes);
 			TYRAN_ASSERT(absolute_position >= 0, "Wrong position for label");
 			int delta = label->position - absolute_position - 2;
 			tyran_opcodes_modify_branch(ref->opcode, delta);

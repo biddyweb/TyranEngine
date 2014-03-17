@@ -306,7 +306,7 @@ NODE tyran_parser_literal_string(tyran_memory* memory, const char* string)
 	tyran_parser_node_string* node = TYRAN_MALLOC_NO_POOL_TYPE_COUNT(memory, tyran_parser_node_string, 1);
 	node->node.type = TYRAN_PARSER_NODE_TYPE_STRING;
 	node->string = tyran_strdup(memory, string);
-	node->length = strlen(node->string);
+	node->length = (int) strlen(node->string);
 	return (tyran_parser_node*)node;
 }
 
@@ -315,7 +315,7 @@ NODE tyran_parser_symbol(tyran_memory* memory, const char* string)
 	tyran_parser_node_symbol* node = TYRAN_MALLOC_NO_POOL_TYPE_COUNT(memory, tyran_parser_node_symbol, 1);
 	node->node.type = TYRAN_PARSER_NODE_TYPE_SYMBOL;
 	node->string = tyran_strdup(memory, string);
-	node->length = strlen(node->string);
+	node->length = (int) strlen(node->string);
 	return (tyran_parser_node*)node;
 }
 
@@ -326,7 +326,7 @@ NODE tyran_parser_literal_identifier(tyran_memory* memory, const char* string)
 	tyran_parser_node_identifier* node = TYRAN_MALLOC_NO_POOL_TYPE_COUNT(memory, tyran_parser_node_identifier, 1);
 	node->node.type = TYRAN_PARSER_NODE_TYPE_IDENTIFIER;
 	node->string = tyran_strdup(memory, string);
-	node->length = strlen(node->string);
+	node->length = (int) strlen(node->string);
 	return (tyran_parser_node*)node;
 }
 

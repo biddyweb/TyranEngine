@@ -13,6 +13,7 @@ void nimbus_component_arrays_init(nimbus_component_arrays* self, struct tyran_me
 nimbus_component_array* nimbus_component_arrays_add(nimbus_component_arrays* self, const nimbus_component_definition* definition)
 {
 	TYRAN_ASSERT(self->tracks_count <= 32, "hit max component arrays");
+	TYRAN_ASSERT(definition != 0, "can not add null definition");
 	nimbus_component_array* array = &self->tracks[self->tracks_count++];
 	nimbus_component_array_init(array, self->memory, definition, 256);
 

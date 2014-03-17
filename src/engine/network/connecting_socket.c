@@ -67,7 +67,7 @@ void nimbus_connecting_socket_write(nimbus_connecting_socket* self, const u8t* d
 
 int nimbus_connecting_socket_read(nimbus_connecting_socket* self, u8t* data, int max_length)
 {
-	int octets_read = recv(self->socket_handle, (char*) data, max_length, 0);
+	int octets_read = (int) recv(self->socket_handle, (char*) data, max_length, 0);
 
 	return octets_read;
 }

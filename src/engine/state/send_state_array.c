@@ -10,6 +10,7 @@ void nimbus_send_state_array(const nimbus_component_array* array, struct nimbus_
 	const struct nimbus_component_definition* definition = array->definition;
 	nimbus_state_component_event event;
 	event.data = array->data;
+	TYRAN_ASSERT(event.data != 0, "Must have data in array");
 	event.count = array->max_count;
 	nimbus_event_stream_write_event(stream, definition->event_type_id, event);
 }

@@ -17,9 +17,8 @@ typedef struct nimbus_script_state_parser {
 	nimbus_resource_id resource_id;
 	struct nimbus_modules* modules;
 	struct nimbus_state* state;
-	struct nimbus_resource_cache* resource_cache;
 } nimbus_script_state_parser;
 
-void nimbus_script_state_parser_init(nimbus_script_state_parser* self, struct nimbus_modules* modules, struct tyran_symbol_table* symbol_table, struct nimbus_resource_cache* resource_cache, struct nimbus_state* state, const struct tyran_object* state_script_object, nimbus_resource_id resource_id);
+void nimbus_script_state_parser_init(nimbus_script_state_parser* self, struct nimbus_modules* modules, struct tyran_symbol_table* symbol_table, struct nimbus_state* state, const struct tyran_object* state_script_object, nimbus_resource_id resource_id);
 
 #endif

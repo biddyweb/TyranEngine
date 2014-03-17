@@ -11,7 +11,7 @@
 
 void tyran_print_runtime_state(const tyran_opcode* pc, const struct tyran_runtime_stack* sp, const struct tyran_value* r)
 {
-	long pc_value = pc - sp->opcodes->codes;
+	int pc_value = (int) (pc - sp->opcodes->codes);
 #define MAX_SIZE 1024
 	char tmp[MAX_SIZE];
 	char result[MAX_SIZE];

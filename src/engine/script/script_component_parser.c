@@ -11,7 +11,6 @@
 #include <tyran_engine/state/component_definition.h>
 #include <tyran_engine/state/combine.h>
 #include <tyran_engine/state/component.h>
-#include <tyran_engine/event/resource_reference.h>
 #include <tyran_engine/event/intra_reference.h>
 #include <tyran_engine/module/modules.h>
 
@@ -32,7 +31,7 @@ static void parse_property(nimbus_script_component_parser* self, nimbus_componen
 	nimbus_script_property_parser_parse_property(&self->property_parser, component, symbol, value);
 }
 
-static void iterate_component(nimbus_script_component_parser* self, nimbus_modules* modules, nimbus_combine* combine, const tyran_object* component_object)
+static void iterate_component(nimbus_script_component_parser* self, nimbus_modules* modules, nimbus_combine* combine, const tyran_object* component_object, tyran_symbol component_name)
 {
 	tyran_symbol type_symbol = lookup_type(self->symbol_table, component_object);
 	
@@ -41,7 +40,7 @@ static void iterate_component(nimbus_script_component_parser* self, nimbus_modul
 	
 	const nimbus_component_definition* component_definition = nimbus_modules_component_definition_from_type(modules, type_symbol);
 
-	nimbus_component* component = nimbus_combine_create_component(combine, component_definition);
+	nimbus_component* component = nimbus_combine_create_component(combine, component_name, component_definition);
 
 	tyran_property_iterator it;
 	tyran_property_iterator_init_shallow(&it, component_object);
@@ -60,10 +59,10 @@ static void iterate_component(nimbus_script_component_parser* self, nimbus_modul
 	tyran_property_iterator_free(&it);
 }
 
-void nimbus_script_component_parser_init(nimbus_script_component_parser* self, struct nimbus_modules* modules, struct nimbus_resource_cache* resource_cache, tyran_symbol_table* symbol_table, struct nimbus_combine* combine, const struct tyran_object* component_script_object)
+void nimbus_script_component_parser_init(nimbus_script_component_parser* self, struct nimbus_modules* modules, tyran_symbol_table* symbol_table, struct nimbus_combine* combine, const struct tyran_object* component_script_object, tyran_symbol component_name)
 {
 	TYRAN_ASSERT(combine->state != 0, "Combine must have a state!");
 	self->symbol_table = symbol_table;
-	script_property_parser_init(&self->property_parser, resource_cache, symbol_table);
-	iterate_component(self, modules, combine, component_script_object);
+	script_property_parser_init(&self->property_parser, symbol_table);
+	iterate_component(self, modules, combine, component_script_object, component_name);
 }

@@ -5,15 +5,17 @@
 #include "event/script_object_updated.h"
 #include <tyran_engine/event/resource_updated.h>
 #include "script_state_parser.h"
-#include "state.h"
 
+#include "../state/state_update.h"
 #include <tyran_engine/module/modules.h>
 
 extern nimbus_modules* g_modules;
 
 static void _on_update(void* _self)
 {
-	//nimbus_script_module* self = _self;
+	nimbus_script_module* self = _self;
+	
+	nimbus_state_update_send(&self->main_state.arrays, &self->update.event_write_stream);
 }
 
 static void boot_script(nimbus_script_module* self)
@@ -61,10 +63,8 @@ static void parse_state(nimbus_script_module* self, tyran_object* state_script_o
 {
 	nimbus_script_state_parser parser;
 
-	nimbus_state state;
-	nimbus_state_init(&state, self->memory, self->modules->component_definitions, self->modules->component_definitions_count);
-	
-	nimbus_script_state_parser_init(&parser, self->modules, self->mocha.default_runtime->symbol_table, self->resource_cache, &state, state_script_object, resource_id);
+	nimbus_state_init(&self->main_state, self->memory, self->modules->component_definitions, self->modules->component_definitions_count);
+	nimbus_script_state_parser_init(&parser, self->modules, self->mocha.default_runtime->symbol_table, &self->main_state, state_script_object, resource_id);
 }
 
 static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* stream)

@@ -57,5 +57,5 @@ void nimbus_out_stream_write_string(nimbus_out_stream* self, const char* str)
 void nimbus_out_stream_info(nimbus_out_stream* self, const u8t** buffer, int* length)
 {
 	*buffer = self->buffer;
-	*length = self->pointer - self->buffer;
+	*length = (int) ( self->pointer - self->buffer );
 }

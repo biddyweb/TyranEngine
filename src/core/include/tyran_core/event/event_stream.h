@@ -63,4 +63,6 @@ int nimbus_event_stream_read_array(nimbus_event_read_stream* self, void* destina
 
 #define nimbus_event_stream_read_type_pointer(stream, variable, type) { nimbus_event_stream_read_align(stream); variable = (type*) stream->pointer; nimbus_event_stream_read_skip(stream, sizeof(type)); }
 
+
+
 #endif

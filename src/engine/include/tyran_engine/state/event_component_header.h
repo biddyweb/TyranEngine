@@ -3,6 +3,7 @@
 
 typedef struct nimbus_event_component_header {
 	tyran_boolean is_used;
+	int component_index;
 } nimbus_event_component_header;
 
 #endif

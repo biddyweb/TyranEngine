@@ -11,7 +11,6 @@
 #include <tyran_engine/state/component_definition.h>
 #include <tyran_engine/state/combine.h>
 #include <tyran_engine/state/component.h>
-#include <tyran_engine/event/intra_reference.h>
 #include <tyran_engine/module/modules.h>
 
 #include "script_property_parser.h"

@@ -3,7 +3,6 @@
 #include <tyranscript/tyran_value.h>
 #include <tyranscript/tyran_symbol_table.h>
 
-#include <tyran_engine/event/intra_reference.h>
 #include <tyran_engine/resource/type_id.h>
 #include <tyran_engine/resource/resource.h>
 #include <tyran_engine/state/component.h>

@@ -66,8 +66,9 @@ const nimbus_component_definition* nimbus_modules_component_definition_from_type
 			return definition;
 		}
 	}
+	const char* type_string = tyran_symbol_table_lookup(self->symbol_table, &type);
 	
-	TYRAN_ERROR("Could not find definition from type:%d", type.hash);
+	TYRAN_ERROR("Could not find definition from type:%d '%s'", type.hash, type_string);
 
 	return 0;
 }

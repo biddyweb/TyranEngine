@@ -11,7 +11,6 @@
 #include <tyran_engine/state/component_definition.h>
 #include <tyran_engine/state/combine.h>
 #include <tyran_engine/state/component.h>
-#include <tyran_engine/event/intra_reference.h>
 #include <tyran_engine/module/modules.h>
 
 static void iterate_component(nimbus_script_combine_parser* self, nimbus_modules* modules, nimbus_combine* combine, const tyran_object* component_script_object, tyran_symbol component_name)

@@ -41,6 +41,7 @@ void tyran_symbol_table_add(tyran_symbol_table* table, tyran_symbol* symbol, con
 		table->entry_count++;
 		tyran_symbol_table_entry* entry = &table->entries[index];
 		entry->string = tyran_strdup(table->memory, str);
+		TYRAN_LOG("#%d '%s'", index, entry->string);
 	}
 
 	symbol->hash = index;

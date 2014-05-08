@@ -11,12 +11,10 @@
 #include <tyran_engine/state/component_definition.h>
 #include <tyran_engine/state/combine.h>
 #include <tyran_engine/state/component.h>
-#include <tyran_engine/event/intra_reference.h>
 #include <tyran_engine/module/modules.h>
 
 #include "../state/state.h"
 #include "script_combine_parser.h"
-
 
 static void parse_combine(nimbus_script_state_parser* self, const tyran_object* combine_script_object)
 {

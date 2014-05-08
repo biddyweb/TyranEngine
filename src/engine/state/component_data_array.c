@@ -1,5 +1,5 @@
 #include "component_data_array.h"
-#include "component_definition.h"
+#include <tyran_engine/state/component_definition.h>
 #include <tyran_engine/state/event_component_header.h>
 
 void nimbus_component_array_init(nimbus_component_array* self, struct tyran_memory* memory, const struct nimbus_component_definition* definition, int max_count)

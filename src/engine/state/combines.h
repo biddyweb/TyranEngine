@@ -2,7 +2,7 @@
 #define nimbus_combines_h
 
 #include <tyranscript/tyran_memory_pool.h>
-#include "component.h"
+#include <tyran_engine/state/component.h>
 
 struct tyran_memory;
 struct nimbus_combine;

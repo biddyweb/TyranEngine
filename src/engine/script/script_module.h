@@ -6,7 +6,7 @@
 #include <tyran_core/update/update.h>
 
 #include "script_global.h"
-#include "state.h"
+#include "../state/state.h"
 
 struct nimbus_modules;
 struct tyran_memory;

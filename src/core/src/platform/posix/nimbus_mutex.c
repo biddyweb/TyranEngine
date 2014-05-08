@@ -1,4 +1,4 @@
-#if defined TORNADO_OS_IOS || defined TORNADO_OS_NACL
+#if defined TORNADO_OS_IOS || defined TORNADO_OS_NACL || defined TORNADO_OS_LINUX
 
 #include "nimbus_mutex.h"
 

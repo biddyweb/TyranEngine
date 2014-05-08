@@ -9,9 +9,9 @@
 #include <tyran_engine/state/combine.h>
 #include <tyranscript/tyran_string.h>
 #include "property_reader.h"
-#include "component_definition.h"
+#include <tyran_engine/state/component_definition.h>
 
-#include "event_component_header.h"
+#include <tyran_engine/state/event_component_header.h>
 
 #include <tyran_engine/resource/reference.h>
 

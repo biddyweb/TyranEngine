@@ -1,5 +1,5 @@
 #include "combines.h"
-#include "combine.h"
+#include <tyran_engine/state/combine.h>
 
 void nimbus_combines_init(nimbus_combines* self, struct tyran_memory* memory, int max_count)
 {

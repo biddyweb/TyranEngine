@@ -28,7 +28,7 @@ nimbus_component_array* nimbus_component_arrays_array_from_definition(nimbus_com
 			return array;
 		}
 	}
-	
+
 	TYRAN_ERROR("NO DEFINITION FOUND!");
 	return 0;
 }

@@ -1,9 +1,13 @@
 #include "../../base/boot/nimbus_boot.h"
 #include "../../base/thread/nimbus_thread_sleep.h"
 #include <stdio.h>
+#include <tyranscript/tyran_log.h>
+#include "log.h"
 
 int main()
 {
+	g_log.log = nimbus_log_posix;
+
 	nimbus_boot* boot = nimbus_boot_new();
 
 	while (1) {

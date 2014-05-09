@@ -5,7 +5,7 @@
 #if defined TORNADO_OS_WINDOWS
 #include <Winsock2.h>
 #include <Ws2tcpip.h>
-#elif defined TORNADO_OS_IOS || TORNADO_OS_LINUX
+#elif defined TORNADO_OS_IOS || TORNADO_OS_LINUX || TORNADO_OS_MAC_OS_X
 #include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/tcp.h>

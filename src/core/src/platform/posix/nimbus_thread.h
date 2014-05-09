@@ -1,4 +1,4 @@
-#if defined TORNADO_OS_IOS || defined TORNADO_OS_NACL || defined TORNADO_OS_LINUX
+#if defined TORNADO_OS_IOS || defined TORNADO_OS_NACL || defined TORNADO_OS_LINUX || defined TORNADO_OS_MAC_OS_X
 
 #ifndef nimbus_thread_h
 #define nimbus_thread_h

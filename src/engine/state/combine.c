@@ -38,4 +38,15 @@ nimbus_component* nimbus_combine_component_from_name(nimbus_combine* self, tyran
 	TYRAN_ERROR("Couldn't find component #%d", name.hash);
 	return 0;
 }
+/*
 
+struct nimbus_extra_reference* nimbus_combine_create_extra_reference_component(nimbus_combine* self, nimbus_component** ref, nimbus_resource_id resource_id, tyran_symbol component_name)
+{
+	return 0;
+}
+
+struct nimbus_extra_reference* nimbus_combine_create_extra_reference_resource(nimbus_combine* self, nimbus_resource** ref, nimbus_resource_id resource_id)
+{
+	return 0;
+}
+ */

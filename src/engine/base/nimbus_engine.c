@@ -14,6 +14,7 @@
 #include <tyran_engine/module/register_modules.h>
 #include <tyran_engine/math/nimbus_math.h>
 #include <tyranscript/tyran_symbol_table.h>
+
 #include "../script/script_module.h"
 
 #if defined TORNADO_OS_NACL
@@ -154,6 +155,7 @@ static void add_internal_modules(nimbus_modules* modules)
 	nimbus_modules_add_affinity(modules, "nacl_input", sizeof(nimbus_nacl_input), nimbus_nacl_input_init, offsetof(nimbus_nacl_input, update), 0);
 	nimbus_modules_add_affinity(modules, "nacl_connection", sizeof(nimbus_nacl_connection), nimbus_nacl_connection_init, offsetof(nimbus_nacl_connection, update), 0);
 #endif
+
 	nimbus_modules_add(modules, "script", sizeof(nimbus_script_module), nimbus_script_module_init, offsetof(nimbus_script_module, update));
 }
 

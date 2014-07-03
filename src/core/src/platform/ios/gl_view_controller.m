@@ -164,7 +164,7 @@
 		changed.position.y = size.height / 2 - touch.position.y;
 		changed.position.x /= size.width / 2.0f;
 		changed.position.y /= size.height / 2.0f;
-		changed.finger_id = touch.fingerId;
+		changed.finger_id = (int) touch.fingerId;
 		NSLog(@"test:%d", changed.finger_id);
 		nimbus_boot_send_event(self->boot, type_id, &changed, sizeof(changed));
 	}

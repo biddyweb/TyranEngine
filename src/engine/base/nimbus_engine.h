@@ -8,7 +8,6 @@
 
 #include "../network/event_connection.h"
 
-#include "../script/object_listeners.h"
 #include <tyran_engine/module/modules.h>
 
 struct tyran_symbol_table;

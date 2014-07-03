@@ -1,6 +1,7 @@
 #include "ring_buffer.h"
 #include <tyranscript/tyran_memory.h>
 #include <tyranscript/tyran_clib.h>
+#include <tyranscript/tyran_log.h>
 
 void nimbus_ring_buffer_init(nimbus_ring_buffer* self, tyran_memory* memory, int max_length)
 {

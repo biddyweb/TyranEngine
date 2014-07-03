@@ -4,7 +4,7 @@
 #include <tyran_engine/event/state_component_event.h>
 #include <tyran_core/event/event_stream.h>
 #include <tyran_engine/state/component_definition.h>
-
+#include <tyranscript/tyran_log.h>
 void nimbus_send_state_array(const nimbus_component_array* array, struct nimbus_event_write_stream* stream)
 {
 	const struct nimbus_component_definition* definition = array->definition;

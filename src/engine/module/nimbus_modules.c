@@ -1,5 +1,7 @@
 #include <tyran_engine/module/modules.h>
 #include <tyranscript/tyran_symbol_table.h>
+#include <tyranscript/tyran_memory.h>
+#include <tyranscript/tyran_log.h>
 
 #include <tyran_engine/state/component_definition.h>
 #include <tyran_engine/resource/resource_definition.h>

@@ -1,6 +1,9 @@
 #include <tyran_core/event/event_stream.h>
 #include <tyranscript/tyran_clib.h>
 #include <tyranscript/tyran_string.h>
+#include <tyranscript/tyran_memory.h>
+#include <tyranscript/tyran_log.h>
+#include <tyranscript/tyran_symbol_table.h>
 
 void nimbus_event_write_stream_clear(nimbus_event_write_stream* self)
 {

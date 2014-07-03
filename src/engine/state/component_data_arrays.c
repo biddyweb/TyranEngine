@@ -1,6 +1,6 @@
 #include "component_data_arrays.h"
 #include "component_data_array.h"
-
+#include <tyranscript/tyran_log.h>
 #include <tyran_engine/state/component_definition.h>
 
 void nimbus_component_arrays_init(nimbus_component_arrays* self, struct tyran_memory* memory, int max_count)

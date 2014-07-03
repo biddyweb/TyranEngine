@@ -1,9 +1,12 @@
 #ifndef TYRAN_CLIB_H
 #define TYRAN_CLIB_H
 
-#include <tyranscript/tyran_config.h>
+#include <memory.h>
+#include <stdlib.h>
 
-char* tyran_str_dup(tyran_memory* pool, const char* str);
+struct tyran_memory;
+
+char* tyran_str_dup(struct tyran_memory* pool, const char* str);
 
 
 #define tyran_malloc malloc

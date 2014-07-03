@@ -1,6 +1,8 @@
 #include "in_stream.h"
 #include "endian.h"
 #include <tyranscript/tyran_clib.h>
+#include <tyranscript/tyran_memory.h>
+#include <tyranscript/tyran_log.h>
 
 void nimbus_in_stream_init(nimbus_in_stream* self, const u8t* buffer, int max_octets)
 {

@@ -1,6 +1,6 @@
 #include <tyran_engine/state/component_definition.h>
 #include <tyranscript/tyran_symbol_table.h>
-
+#include <tyranscript/tyran_log.h>
 void nimbus_component_definition_init(nimbus_component_definition* self, struct tyran_symbol_table* symbol_table, const char* debug_name, u8t event_type_id, size_t struct_size)
 {
 	self->symbol_table = symbol_table;

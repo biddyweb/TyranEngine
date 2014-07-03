@@ -4,6 +4,9 @@
 #include <tyranscript/tyran_clib.h>
 #include <tyranscript/tyran_configuration.h>
 
+#include <stdio.h>
+#include <stdlib.h>
+
 enum tyran_log_type {
 	TYRAN_LOG_TYPE_LOG
 };

@@ -5,7 +5,6 @@
 
 #include "../../../../engine/base/nimbus_engine.h"
 
-#include "tyranscript/tyran_config.h"
 #include "tyranscript/tyran_clib.h"
 #include "tyranscript/tyran_log.h"
 

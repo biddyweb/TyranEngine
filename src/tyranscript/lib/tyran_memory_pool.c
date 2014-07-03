@@ -1,4 +1,6 @@
-#include <tyranscript/tyran_config.h>
+#include <tyranscript/tyran_memory_pool.h>
+#include <tyranscript/tyran_memory.h>
+#include <tyranscript/tyran_log.h>
 
 void tyran_memory_pool_initialize_entries(tyran_memory_pool* pool)
 {

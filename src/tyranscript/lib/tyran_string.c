@@ -1,5 +1,7 @@
 #include <tyranscript/tyran_string.h>
-#include <tyranscript/tyran_config.h>
+#include <tyranscript/tyran_memory_pool.h>
+#include <tyranscript/tyran_memory.h>
+#include <tyranscript/tyran_clib.h>
 
 static tyran_string* create_string(tyran_memory_pool* string_pool)
 {

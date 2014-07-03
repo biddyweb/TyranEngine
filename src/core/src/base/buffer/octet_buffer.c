@@ -1,6 +1,7 @@
 #include "octet_buffer.h"
 #include <tyranscript/tyran_memory.h>
 #include <tyranscript/tyran_clib.h>
+#include <tyranscript/tyran_log.h>
 
 void nimbus_octet_buffer_init(nimbus_octet_buffer* self, struct tyran_memory* memory, int max_size)
 {

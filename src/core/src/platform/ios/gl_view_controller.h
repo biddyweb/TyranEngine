@@ -26,7 +26,7 @@ GLKViewController {
 	nimbus_boot* boot;
 	NSLock* touchLock;
 	NSMutableSet* touchSet;
-	NSSet* allTouches;
+	NSMutableArray* allTouches;
 }
 
 -(void)touchesBegan:

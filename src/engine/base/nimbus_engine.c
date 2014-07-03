@@ -14,6 +14,8 @@
 #include <tyran_engine/module/register_modules.h>
 #include <tyran_engine/math/nimbus_math.h>
 #include <tyranscript/tyran_symbol_table.h>
+#include <tyranscript/tyran_memory.h>
+#include <tyranscript/tyran_log.h>
 
 #include "../script/script_module.h"
 

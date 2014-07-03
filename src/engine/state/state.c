@@ -4,6 +4,7 @@
 
 #include <tyran_engine/state/component_definition.h>
 #include <tyran_engine/state/event_component_header.h>
+#include <tyranscript/tyran_log.h>
 
 void nimbus_state_init(nimbus_state* self, struct tyran_memory* memory, const struct nimbus_component_definition* definitions, int definitions_count)
 {

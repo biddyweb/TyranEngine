@@ -14,6 +14,7 @@
 #include <tyran_engine/event/resource_load.h>
 #include <tyran_engine/event/resource_updated.h>
 #include <tyranscript/tyran_log.h>
+#include <tyranscript/tyran_memory.h>
 
 void send_stream(nimbus_event_connection* self)
 {

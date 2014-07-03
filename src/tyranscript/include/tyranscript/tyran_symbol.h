@@ -1,7 +1,7 @@
 #ifndef tyran_symbol_h
 #define tyran_symbol_h
 
-#include <tyranscript/tyran_config.h>
+#include <tyranscript/tyran_types.h>
 
 typedef struct tyran_symbol {
 	u32t hash;

@@ -1,6 +1,8 @@
 #include "out_stream.h"
 #include "endian.h"
 #include <tyranscript/tyran_clib.h>
+#include <tyranscript/tyran_memory.h>
+#include <tyranscript/tyran_log.h>
 
 void nimbus_out_stream_clear(nimbus_out_stream* self)
 {

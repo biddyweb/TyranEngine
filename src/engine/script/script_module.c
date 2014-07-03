@@ -6,6 +6,8 @@
 
 #include "../state/state_update.h"
 #include <tyran_engine/module/modules.h>
+#include <tyranscript/tyran_log.h>
+#include <tyranscript/tyran_memory.h>
 
 extern nimbus_modules* g_modules;
 

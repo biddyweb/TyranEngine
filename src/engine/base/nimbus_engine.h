@@ -29,7 +29,7 @@ typedef struct nimbus_engine {
 	struct tyran_symbol_table* symbol_table;
 } nimbus_engine;
 
-nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue* task_queue);
+nimbus_engine* nimbus_engine_new(struct tyran_memory* memory, struct nimbus_task_queue* task_queue);
 tyran_boolean nimbus_engine_should_render(nimbus_engine* engine);
 int nimbus_engine_update(nimbus_engine* engine, struct nimbus_task_queue* queue);
 void nimbus_engine_free(nimbus_engine* self);

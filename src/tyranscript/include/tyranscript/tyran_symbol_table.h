@@ -4,7 +4,6 @@
 struct tyran_memory;
 struct tyran_symbol;
 
-
 typedef struct tyran_symbol_table_entry {
 	const char* string;
 } tyran_symbol_table_entry;

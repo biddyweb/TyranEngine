@@ -2,6 +2,7 @@
 #include <tyranscript/tyran_memory.h>
 #include <tyran_engine/state/component_definition.h>
 #include <tyran_engine/state/event_component_header.h>
+#include <tyranscript/tyran_log.h>
 
 #include "state.h"
 

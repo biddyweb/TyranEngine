@@ -17,4 +17,3 @@ static const tyran_boolean TYRAN_TRUE = 1;
 static const tyran_boolean TYRAN_FALSE = 0;
 
 #endif
-

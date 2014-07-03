@@ -37,7 +37,6 @@ tyran_memory_pool* tyran_memory_pool_construct(tyran_memory* memory, size_t stru
 	return pool;
 }
 
-
 void* tyran_memory_pool_alloc(tyran_memory_pool* pool)
 {
 	TYRAN_ASSERT(pool->count < pool->max_count, "Out of memory in pool (%d)", pool->count);
@@ -60,7 +59,6 @@ void* tyran_memory_pool_alloc_debug(tyran_memory_pool* pool, const char* type_na
 
 	return tyran_memory_pool_alloc(pool);
 }
-
 
 void* tyran_memory_pool_calloc(tyran_memory_pool* pool)
 {

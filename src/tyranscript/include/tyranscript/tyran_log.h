@@ -2,7 +2,6 @@
 #define tyran_log_h
 
 #include <tyranscript/tyran_clib.h>
-#include <tyranscript/tyran_configuration.h>
 
 #include <stdio.h>
 #include <stdlib.h>

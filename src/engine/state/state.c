@@ -34,6 +34,6 @@ void nimbus_state_clone(nimbus_state* self, const nimbus_state* source)
 nimbus_combine* nimbus_state_create_combine(nimbus_state* self)
 {
 	nimbus_combine* combine = nimbus_combines_create(&self->combines, self);
-	
+
 	return combine;
 }

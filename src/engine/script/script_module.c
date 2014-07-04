@@ -14,8 +14,8 @@ extern nimbus_modules* g_modules;
 static void _on_update(void* _self)
 {
 	nimbus_script_module* self = _self;
-	
-	nimbus_state_update_send(&self->main_state.arrays, &self->update.event_write_stream);
+
+	// nimbus_state_update_send(&self->main_state.arrays, &self->update.event_write_stream);
 }
 
 static void boot_script(nimbus_script_module* self)

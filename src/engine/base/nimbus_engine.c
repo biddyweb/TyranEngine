@@ -18,6 +18,7 @@
 #include <tyranscript/tyran_log.h>
 
 #include "../script/script_module.h"
+#include "../combine/combine_module.h"
 
 #if defined TORNADO_OS_NACL
 #include "../../core/src/platform/nacl/nacl_loader.h"
@@ -159,12 +160,13 @@ static void add_internal_modules(nimbus_modules* modules)
 #endif
 
 	nimbus_modules_add(modules, "script", sizeof(nimbus_script_module), nimbus_script_module_init, offsetof(nimbus_script_module, update));
+	nimbus_modules_add(modules, "combine", sizeof(nimbus_combine_module), nimbus_combine_module_init, offsetof(nimbus_combine_module, update));
 }
 
 nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue* task_queue)
 {
 	nimbus_engine* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_engine);
-	
+
 	self->symbol_table = tyran_symbol_table_new(memory);
 
 	nimbus_event_distributor_init(&self->event_distributor, self->symbol_table, memory);

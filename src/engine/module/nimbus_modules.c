@@ -14,7 +14,7 @@ void nimbus_modules_init(nimbus_modules* self, struct tyran_memory* memory, stru
 	self->event_definitions_count = 0;
 	self->symbol_table = symbol_table;
 	self->event_definitions = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_event_definition, self->event_definitions_max_count);
-	
+
 	self->component_definitions_max_count = 64;
 	self->component_definitions_count = 0;
 	self->component_definitions = TYRAN_MEMORY_CALLOC_TYPE_COUNT(memory, nimbus_component_definition, self->component_definitions_max_count);
@@ -69,7 +69,7 @@ const nimbus_component_definition* nimbus_modules_component_definition_from_type
 		}
 	}
 	const char* type_string = tyran_symbol_table_lookup(self->symbol_table, &type);
-	
+
 	TYRAN_ERROR("Could not find definition from type:%d '%s'", type.hash, type_string);
 
 	return 0;

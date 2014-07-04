@@ -4,12 +4,14 @@
 	<header directory="tyranscript/include" />
 	<header directory="engine/include" />
 	<header directory="core/include" />
+	<header directory="external/yaml/include" />
 
 
 	<source directory="tyranscript/lib" recursive="true" />
 
 	<source directory="core/src/base" recursive="true" />
 	<source directory="engine" recursive="true" />
+	<source directory="external/yaml/lib" recursive="true" />
 
 	<!-- configurations -->
 	<configuration name="debug">

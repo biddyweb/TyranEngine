@@ -62,6 +62,7 @@ char* tyran_str_dup(struct tyran_memory* pool, const char* str);
 #define tyran_fflush fflush
 #define tyran_strdup(pool, str) tyran_str_dup(pool, str)
 #define tyran_str_equal(a,b) (tyran_strcmp(a,b) == 0)
+#define tyran_str_chr(a,b) strchr(a,b)
 
 #define tyran_fmod fmod
 #define tyran_pow pow

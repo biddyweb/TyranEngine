@@ -11,3 +11,11 @@ void nimbus_component_init(nimbus_component* self, struct nimbus_combine* owner_
 	TYRAN_ASSERT(data_octet_size == definition->struct_size, "Illegal data size allocated!");
 }
 
+void nimbus_combine_component_add_extra_reference(nimbus_component* self, void* p, nimbus_resource_id resource_id, tyran_symbol component_name, tyran_symbol property_name)
+{
+	nimbus_extra_reference* ref = &self->extra_references[self->extra_references_count++];
+	ref->pointer = p;
+	ref->resource_id = resource_id;
+	ref->component_name = component_name;
+	ref->property_name = property_name;
+}

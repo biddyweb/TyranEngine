@@ -79,7 +79,9 @@ static const nimbus_component_definition* component_definition_from_type(nimbus_
 	return 0;
 }
 
-#define MEMCPY_RAW(T, V) tyran_memcpy_type(T, (T *)(((uint8_t*)self->last_component->component_data) + self->property_definition->offset_in_struct), V, 1);
+#define PROPERTY_DATA_POINTER (((uint8_t*)self->last_component->component_data) + self->property_definition->offset_in_struct)
+
+#define MEMCPY_RAW(T, V) tyran_memcpy_type(T, (T *) PROPERTY_DATA_POINTER, V, 1);
 
 #define MEMCPY(T, V) MEMCPY_RAW(T, &V)
 
@@ -150,6 +152,7 @@ static int scalar(nimbus_yaml_converter* self, const char* str)
 					break;
 				}
 				case NIMBUS_COMPONENT_DEFINITION_STRING:
+					break;
 
 				case NIMBUS_COMPONENT_DEFINITION_SYMBOL: {
 					break;
@@ -163,8 +166,30 @@ static int scalar(nimbus_yaml_converter* self, const char* str)
 					MEMCPY(void*, component->component_data);
 					break;
 				}
-				case NIMBUS_COMPONENT_DEFINITION_REFERENCE_RESOURCE:
+				case NIMBUS_COMPONENT_DEFINITION_REFERENCE_RESOURCE: {
+					const char* name = str;
+					char temp_name[256];
+					const char* component_name = 0;
+					const char* separator = tyran_str_chr(name, '.');
+					if (separator) {
+						component_name = separator + 1;
+						tyran_strncpy(temp_name, 256, str, (separator - str));
+						name = temp_name;
+					}
+					nimbus_resource_id resource_symbol = nimbus_resource_id_from_string(name);
+
+					tyran_symbol component_symbol;
+					component_symbol.hash = 0;
+					if (component_name) {
+						tyran_symbol_table_add(self->symbol_table, &component_symbol, component_name);
+					}
+
+					tyran_symbol property_symbol;
+					property_symbol.hash = 0;
+
+					nimbus_combine_component_add_extra_reference(self->last_component, PROPERTY_DATA_POINTER, resource_symbol, component_symbol, property_symbol);
 					break;
+				}
 			}
 		}
 

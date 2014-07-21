@@ -1,13 +1,13 @@
 #ifndef nimbus_extra_reference_h
-#define nimubs_extra_reference_h
+#define nimbus_extra_reference_h
 
-typedef struct nimubs_extra_reference {
+#include <tyran_engine/resource/id.h>
+
+typedef struct nimbus_extra_reference {
 	nimbus_resource_id resource_id;
+	void* pointer;
 	tyran_symbol component_name;
-	union {
-		nimbus_component** component;
-	} pointer;
-	bool is_loaded;
+	tyran_symbol property_name;
 } nimbus_extra_reference;
 
 #endif

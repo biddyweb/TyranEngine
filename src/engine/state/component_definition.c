@@ -11,16 +11,29 @@ void nimbus_component_definition_init(nimbus_component_definition* self, struct 
 	tyran_symbol_table_add(self->symbol_table, &self->type_symbol, debug_name);
 }
 
-void nimbus_component_definition_add_property(nimbus_component_definition* self, const char* name, nimbus_component_definition_property_type type, size_t offset)
+static nimbus_component_definition_property* add_property(nimbus_component_definition* self, const char* name, nimbus_component_definition_property_type type, size_t offset)
 {
 	TYRAN_ASSERT(self->properties_count < 16, "Too many properties");
 	nimbus_component_definition_property* property = &self->properties[self->properties_count++];
 	property->offset_in_struct = offset;
 	property->type = type;
 	tyran_symbol_table_add(self->symbol_table, &property->symbol, name);
+	return property;
 }
 
-const nimbus_component_definition_property* nimbus_component_definition_property_from_type(const nimbus_component_definition* self, tyran_symbol symbol)
+
+void nimbus_component_definition_add_property(nimbus_component_definition* self, const char* name, nimbus_component_definition_property_type type, size_t offset)
+{
+	add_property(self, name, type, offset);
+}
+
+void nimbus_component_definition_add_property_object(nimbus_component_definition* self, const char* name, nimbus_component_definition* object_definition, size_t offset)
+{
+	nimbus_component_definition_property* property = add_property(self, name, NIMBUS_COMPONENT_DEFINITION_OBJECT, offset);
+	property->object_definition = object_definition;
+}
+
+const nimbus_component_definition_property* nimbus_component_definition_property_from_name(const nimbus_component_definition* self, tyran_symbol symbol)
 {
 	for (int i=0; i<self->properties_count; ++i) {
 		const nimbus_component_definition_property* property = &self->properties[i];

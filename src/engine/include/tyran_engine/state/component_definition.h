@@ -14,12 +14,7 @@ typedef enum nimbus_component_definition_property_type {
 	NIMBUS_COMPONENT_DEFINITION_INTEGER,
 	NIMBUS_COMPONENT_DEFINITION_STRING,
 	NIMBUS_COMPONENT_DEFINITION_SYMBOL,
-	NIMBUS_COMPONENT_DEFINITION_VECTOR2,
-	NIMBUS_COMPONENT_DEFINITION_VECTOR3,
-	NIMBUS_COMPONENT_DEFINITION_SIZE2I,
-	NIMBUS_COMPONENT_DEFINITION_SIZE2,
-	NIMBUS_COMPONENT_DEFINITION_RECT2,
-	NIMBUS_COMPONENT_DEFINITION_ROTATION,
+	NIMBUS_COMPONENT_DEFINITION_OBJECT,
 	NIMBUS_COMPONENT_DEFINITION_REFERENCE_INTRA,
 	NIMBUS_COMPONENT_DEFINITION_REFERENCE_RESOURCE
 } nimbus_component_definition_property_type;
@@ -29,6 +24,7 @@ typedef struct nimbus_component_definition_property {
 	tyran_symbol symbol;
 	size_t offset_in_struct;
 	nimbus_resource_type_id reference_resource_type_id;
+	const struct nimbus_component_definition* object_definition;
 } nimbus_component_definition_property;
 
 typedef struct nimbus_component_definition {
@@ -43,6 +39,7 @@ typedef struct nimbus_component_definition {
 
 void nimbus_component_definition_init(nimbus_component_definition* self, struct tyran_symbol_table* symbol_table, const char* debug_name, u8t event_type_id, size_t struct_size);
 void nimbus_component_definition_add_property(nimbus_component_definition* self, const char* name, nimbus_component_definition_property_type type, size_t offset);
-const nimbus_component_definition_property* nimbus_component_definition_property_from_type(const nimbus_component_definition* self, tyran_symbol symbol);
+void nimbus_component_definition_add_property_object(nimbus_component_definition* self, const char* name, nimbus_component_definition* object_definition, size_t offset);
+const nimbus_component_definition_property* nimbus_component_definition_property_from_name(const nimbus_component_definition* self, tyran_symbol symbol);
 
 #endif

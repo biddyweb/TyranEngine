@@ -131,7 +131,7 @@ static int scalar(nimbus_yaml_converter* self, const char* str)
 			TYRAN_LOG("field value: '%s'", str);
 			self->state = NYCS_COMPONENT_FIELD_NAME;
 			switch (self->property_definition->type) {
-				case 	NIMBUS_COMPONENT_DEFINITION_FLOAT: {
+				case NIMBUS_COMPONENT_DEFINITION_FLOAT: {
 					float v = atof(str);
 					MEMCPY(float, v);
 					break;
@@ -190,14 +190,18 @@ static int scalar(nimbus_yaml_converter* self, const char* str)
 					nimbus_combine_component_add_extra_reference(self->last_component, PROPERTY_DATA_POINTER, resource_symbol, component_symbol, property_symbol);
 					break;
 				}
+				default:
+					TYRAN_ERROR("Illegal state:%d", self->property_definition->type);
 			}
+			break;
+		default:
+			TYRAN_ERROR("Illegal state: %d", self->state);
 		}
 
 	}
 
 	return 0;
 }
-
 
 
 void nimbus_yaml_converter_init(nimbus_yaml_converter* self, tyran_symbol_table* symbol_table, struct nimbus_component_definition* component_definitions, int component_definitions_count, nimbus_combine* combine)

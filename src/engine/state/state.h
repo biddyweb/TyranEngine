@@ -20,7 +20,7 @@ void nimbus_state_init(nimbus_state* self, struct tyran_memory* memory, const st
 
 struct nimbus_combine* nimbus_state_create_combine(nimbus_state* self);
 
-struct nimbus_event_component_header* nimbus_state_create_component(nimbus_state* self, const struct nimbus_component_definition* definition);
+struct nimbus_event_component_header* nimbus_state_create_component_data(nimbus_state* self, const struct nimbus_component_definition* definition);
 void nimbus_state_clone(nimbus_state* self, const nimbus_state* source);
 
 #endif

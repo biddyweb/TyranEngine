@@ -23,17 +23,10 @@ static void boot_script(nimbus_combine_module* self)
 {
 }
 
-static void on_combine(const nimbus_resource_updated* updated, struct nimbus_event_read_stream* stream)
-{
-
-}
-
-static void parse_yaml(nimbus_combine_module* self)
+static void parse_yaml(nimbus_combine_module* self, nimbus_combine* combine)
 {
 	nimbus_yaml_converter converter;
-	nimbus_combine combine;
-	nimbus_combine_init(&combine, &self->main_state);
-	nimbus_yaml_converter_init(&converter, g_modules->symbol_table, g_modules->component_definitions, g_modules->component_definitions_count, &combine);
+	nimbus_yaml_converter_init(&converter, g_modules->symbol_table, g_modules->component_definitions, g_modules->component_definitions_count, combine);
 
 	nimbus_yaml_converter_parse(&converter, (const char*)self->script_buffer, self->script_buffer_count);
 }
@@ -58,8 +51,8 @@ static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* s
 	nimbus_event_stream_read_type_pointer(stream, updated, nimbus_resource_updated);
 	if (updated->resource_type_id == self->combine_script_type_id) {
 		read_stream(self, stream, updated->resource_id, updated->resource_type_id, updated->payload_size);
-		parse_yaml(self);
-		on_combine(updated, stream);
+		nimbus_combine* combine = nimbus_state_create_combine(&self->main_state);
+		parse_yaml(self, combine);
 	}
 }
 

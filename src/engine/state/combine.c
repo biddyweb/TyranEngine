@@ -19,7 +19,7 @@ nimbus_component* nimbus_combine_create_component(nimbus_combine* self, tyran_sy
 	TYRAN_ASSERT(self->components_count < NIMBUS_COMBINE_MAX_COMPONENT_COUNT, "Too many components");
 	nimbus_component* component = &self->components[self->components_count++];
 
-	nimbus_event_component_header* component_data = nimbus_state_create_component(self->state, component_definition);
+	nimbus_event_component_header* component_data = nimbus_state_create_component_data(self->state, component_definition);
 
 	size_t struct_size = component_definition->struct_size;
 

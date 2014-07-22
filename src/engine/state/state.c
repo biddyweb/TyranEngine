@@ -18,7 +18,7 @@ void nimbus_state_init(nimbus_state* self, struct tyran_memory* memory, const st
 	nimbus_combines_init(&self->combines, memory, 256);
 }
 
-struct nimbus_event_component_header* nimbus_state_create_component(nimbus_state* self, const struct nimbus_component_definition* definition)
+struct nimbus_event_component_header* nimbus_state_create_component_data(nimbus_state* self, const struct nimbus_component_definition* definition)
 {
 	nimbus_component_array* array = nimbus_component_arrays_array_from_definition(&self->arrays, definition);
 	int index;

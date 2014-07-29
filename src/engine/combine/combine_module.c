@@ -52,6 +52,7 @@ static void _on_resource_updated(void* _self, struct nimbus_event_read_stream* s
 	if (updated->resource_type_id == self->combine_script_type_id) {
 		read_stream(self, stream, updated->resource_id, updated->resource_type_id, updated->payload_size);
 		nimbus_combine* combine = nimbus_state_create_combine(&self->main_state);
+		print_combine(combine);
 		parse_yaml(self, combine);
 	}
 }

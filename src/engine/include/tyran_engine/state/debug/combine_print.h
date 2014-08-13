@@ -1,6 +1,8 @@
 #ifndef nimbus_combine_print_h
 #define nimbus_combine_print_h
 
-void nimbus_combine_print(const nimbus_combine* combine);
+struct nimbus_combine;
+
+void nimbus_combine_print(const struct nimbus_combine* combine);
 
 #endif

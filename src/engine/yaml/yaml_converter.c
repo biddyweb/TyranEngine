@@ -6,7 +6,7 @@
 #include <tyran_engine/state/combine.h>
 #include <tyran_engine/state/component_definition.h>
 #include <tyran_engine/state/event_component_header.h>
-
+#include <tyranscript/tyran_types.h>
 #include <stdlib.h>
 
 void push_scope(nimbus_yaml_converter* self)
@@ -79,7 +79,7 @@ static const nimbus_component_definition* component_definition_from_type(nimbus_
 	return 0;
 }
 
-#define PROPERTY_DATA_POINTER (((uint8_t*)self->last_component->component_data) + self->property_definition->offset_in_struct)
+#define PROPERTY_DATA_POINTER (((u8t*)self->last_component->component_data) + self->property_definition->offset_in_struct)
 
 #define MEMCPY_RAW(T, V) tyran_memcpy_type(T, (T *) PROPERTY_DATA_POINTER, V, 1);
 

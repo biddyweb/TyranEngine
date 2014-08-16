@@ -3,7 +3,7 @@
 #include <tyran_engine/state/component.h>
 #include <tyran_engine/state/event_component_header.h>
 
-#include "../extra_reference.h"
+#include <tyran_engine/state/extra_reference.h>
 
 #include <tyranscript/tyran_log.h>
 

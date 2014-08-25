@@ -3,11 +3,13 @@
 #include <tyran_engine/state/component.h>
 #include <tyran_engine/state/event_component_header.h>
 
+#include <tyranscript/tyran_symbol_table.h>
+
 #include "../extra_reference.h"
 
 #include <tyranscript/tyran_log.h>
 
-void print_property_value(nimbus_component_definition_property_type type, const u8t* data)
+static void print_property_value(nimbus_component_definition_property_type type, const u8t* data)
 {
 	switch (type) {
 		case NIMBUS_COMPONENT_DEFINITION_FLOAT: {
@@ -48,28 +50,30 @@ void print_property_value(nimbus_component_definition_property_type type, const 
 	}
 }
 
-void print_extra_reference(const nimbus_extra_reference* ref)
+static void print_extra_reference(const nimbus_extra_reference* ref)
 {
 	TYRAN_OUTPUT("extra:");
-	TYRAN_OUTPUT("resource id:%d", ref->resource_id);
-	TYRAN_OUTPUT("component_name:%d", ref->property_name.hash);
+	TYRAN_OUTPUT("  resource id:%d", ref->resource_id);
+	TYRAN_OUTPUT("  component_name:%d", ref->property_name.hash);
 }
 
-void print_extra_references(const nimbus_component* component)
+static void print_extra_references(const nimbus_component* component)
 {
-	TYRAN_OUTPUT("Extra references:");
+	if (component->extra_references_count > 0) {
+		TYRAN_OUTPUT("Extra references:");
+	}
 	for (int i=0; i<component->extra_references_count; ++i) {
 		const nimbus_extra_reference* ref = &component->extra_references[i];
 		print_extra_reference(ref);
 	}
 }
 
-void print_property(const nimbus_component_definition_property* property, const u8t* data)
+static void print_property(const nimbus_component_definition_property* property, const u8t* data)
 {
 	print_property_value(property->type, data);
 }
 
-void print_component_data_with_definition(const nimbus_event_component_header* data, const nimbus_component_definition* definition)
+static void print_component_data_with_definition(const nimbus_event_component_header* data, const nimbus_component_definition* definition)
 {
 	for (int i=0; i<definition->properties_count; ++i) {
 		const nimbus_component_definition_property* property = &definition->properties[i];
@@ -78,8 +82,16 @@ void print_component_data_with_definition(const nimbus_event_component_header* d
 	}
 }
 
-void nimbus_component_print(const nimbus_component* component)
+static void print_component_name(const nimbus_component* component, const tyran_symbol_table* symbol_table)
 {
+	TYRAN_OUTPUT("---------- COMPONENT -----------");
+	const char* name = tyran_symbol_table_lookup(symbol_table, &component->component_name);
+	TYRAN_OUTPUT("component_name:%d '%s'", component->component_name.hash, name);
+}
+
+void nimbus_component_print(const nimbus_component* component, const tyran_symbol_table* symbol_table)
+{
+	print_component_name(component, symbol_table);
 	print_component_data_with_definition(component->component_data, component->component_definition);
 	print_extra_references(component);
 }

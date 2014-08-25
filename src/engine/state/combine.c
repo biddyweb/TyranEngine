@@ -17,6 +17,7 @@ void nimbus_combine_init(nimbus_combine* self, nimbus_state* state)
 nimbus_component* nimbus_combine_create_component(nimbus_combine* self, tyran_symbol name, const nimbus_component_definition* component_definition)
 {
 	TYRAN_ASSERT(self->components_count < NIMBUS_COMBINE_MAX_COMPONENT_COUNT, "Too many components");
+	TYRAN_ASSERT(name.hash != 0, "Illegal symbol name for component");
 	nimbus_component* component = &self->components[self->components_count++];
 
 	nimbus_event_component_header* component_data = nimbus_state_create_component_data(self->state, component_definition);

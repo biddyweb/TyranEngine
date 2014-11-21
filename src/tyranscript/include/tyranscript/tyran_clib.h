@@ -4,6 +4,11 @@
 #include <memory.h>
 #include <stdlib.h>
 
+#if defined TORNADO_OS_IOS
+#include <string.h>
+#endif
+
+
 struct tyran_memory;
 
 char* tyran_str_dup(struct tyran_memory* pool, const char* str);

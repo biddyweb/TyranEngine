@@ -72,6 +72,6 @@ void nimbus_combine_module_init(void* _self, struct tyran_memory* memory)
 	nimbus_state_init(&self->main_state, memory, g_modules->component_definitions, g_modules->component_definitions_count);
 
 
-	self->combine_script_type_id = nimbus_resource_type_id_from_string("oec");
+	self->combine_script_type_id = nimbus_resource_type_id_from_string("yaml");
 	nimbus_event_listener_listen(&self->update.event_listener, NIMBUS_EVENT_RESOURCE_UPDATED, _on_resource_updated);
 }

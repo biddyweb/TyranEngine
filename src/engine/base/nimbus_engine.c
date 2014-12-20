@@ -33,7 +33,9 @@ void schedule_update_tasks(nimbus_engine* self, nimbus_task_queue* queue)
 {
 	for (int i=1; i<self->update_objects_count; ++i) {
 		nimbus_task* task = &self->update_objects[i]->task;
-		// TYRAN_LOG("adding task:%d (%s)", i, self->update_objects[i]->name);
+#if defined NIMBUS_ENGINE_LOG_VERBOSE
+		TYRAN_LOG("adding task:%d (%s)", i, self->update_objects[i]->name);
+#endif
 		nimbus_task_queue_add_task(queue, task);
 	}
 }
@@ -68,7 +70,7 @@ static void boot_resource(nimbus_engine* self)
 {
 	nimbus_resource_id boot_id = nimbus_resource_handler_add(self->resource_handler, "boot");
 
-	nimbus_resource_type_id resource_type_id = nimbus_resource_type_id_from_string("script");
+	nimbus_resource_type_id resource_type_id = nimbus_resource_type_id_from_string("state");
 
 	fire_load_resource(self, boot_id, resource_type_id);
 }
@@ -89,7 +91,7 @@ void nimbus_engine_add_update_object(nimbus_engine* self, nimbus_update* o)
 	self->update_objects[index] = o;
 }
 
-#if defined TORNADO_OS_IOS
+#if defined TORNADO_OS_IOS || defined TORNADO_OS_MAC_OS_X
 
 void start_event_connection(nimbus_engine* self, tyran_memory* memory, const char* host, int port, struct nimbus_task_queue* task_queue)
 {
@@ -187,7 +189,7 @@ nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue*
 
 	create_modules(self, memory);
 
-#if defined TORNADO_OS_IOS
+#if defined TORNADO_OS_IOS || defined TORNADO_OS_MAC_OS_X
 #if 0
 	start_event_connection(self, memory, "spelmotor.com", 32000, task_queue);
 #else

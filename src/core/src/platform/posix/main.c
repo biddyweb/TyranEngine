@@ -24,11 +24,9 @@ int main()
 
 	while (!g_terminate) {
 		printf("main::update\n");
-		if (nimbus_boot_ready_for_next_frame(boot)) {
-			int err = nimbus_boot_update(boot);
-			if (err) {
-				break;
-			}
+		int err = nimbus_boot_update(boot);
+		if (err < -1) {
+			break;
 		}
 		nimbus_thread_sleep(0.5f);
 	}

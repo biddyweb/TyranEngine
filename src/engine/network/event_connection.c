@@ -1,4 +1,4 @@
-#if defined TORNADO_OS_IOS
+#if defined TORNADO_OS_IOS || defined TORNADO_OS_MAC_OS_X
 
 #include "event_connection.h"
 
@@ -44,6 +44,7 @@ void send_request(nimbus_event_connection* self, nimbus_resource_id resource_id)
 {
 	nimbus_out_stream_clear(&self->out_stream);
 	const u8t request_resource_id = 8;
+	TYRAN_LOG("Sending request! %d", resource_id);
 	nimbus_out_stream_write_u8(&self->out_stream, request_resource_id);
 	nimbus_out_stream_write_u32(&self->out_stream, resource_id);
 	send_stream(self);
@@ -235,6 +236,5 @@ void nimbus_event_connection_init(nimbus_event_connection* self, tyran_memory* m
 	nimbus_mutex_init(&self->ring_buffer_mutex);
 }
 #else
-
 int x;
 #endif

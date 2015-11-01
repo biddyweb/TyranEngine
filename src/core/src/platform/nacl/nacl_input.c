@@ -20,7 +20,8 @@ static void send_key_changed(nimbus_nacl_input* self, u32t virtual_key_id, tyran
 	nimbus_key_changed_send(&self->update.event_write_stream, virtual_key_id, down);
 }
 
-static void handle_wheel_input_event(nimbus_nacl_input* self, PP_InputEvent_Type input_event_type, struct PP_FloatPoint deltaPosition)
+static void handle_wheel_input_event(nimbus_nacl_input* self, PP_InputEvent_Type input_event_type,
+									 struct PP_FloatPoint deltaPosition)
 {
 	nimbus_vector2 vector;
 	vector.x = deltaPosition.x;
@@ -28,42 +29,43 @@ static void handle_wheel_input_event(nimbus_nacl_input* self, PP_InputEvent_Type
 	send_touch_changed(self, NIMBUS_EVENT_TOUCH_ZOOM_ID, 0, vector);
 }
 
-static void handle_mouse_button(nimbus_nacl_input* self, PP_InputEvent_Type input_event_type, PP_InputEvent_MouseButton mouse_button, struct PP_Point position)
+static void handle_mouse_button(nimbus_nacl_input* self, PP_InputEvent_Type input_event_type,
+								PP_InputEvent_MouseButton mouse_button, struct PP_Point position)
 {
 	nimbus_event_type_id type_id = 0;
 	int button_id = 0;
 	switch (mouse_button) {
-		case PP_INPUTEVENT_MOUSEBUTTON_NONE:
-		case PP_INPUTEVENT_MOUSEBUTTON_LEFT:
-			button_id = 1;
-			break;
-		case PP_INPUTEVENT_MOUSEBUTTON_MIDDLE:
-			button_id = 2;
-			break;
-		case PP_INPUTEVENT_MOUSEBUTTON_RIGHT:
-			button_id = 3;
-			break;
+	case PP_INPUTEVENT_MOUSEBUTTON_NONE:
+	case PP_INPUTEVENT_MOUSEBUTTON_LEFT:
+		button_id = 1;
+		break;
+	case PP_INPUTEVENT_MOUSEBUTTON_MIDDLE:
+		button_id = 2;
+		break;
+	case PP_INPUTEVENT_MOUSEBUTTON_RIGHT:
+		button_id = 3;
+		break;
 	}
 
 	switch (input_event_type) {
-		case PP_INPUTEVENT_TYPE_MOUSEDOWN:
-			self->is_mouse_down = TYRAN_TRUE;
-			type_id = NIMBUS_EVENT_TOUCH_BEGAN_ID;
-			break;
-		case PP_INPUTEVENT_TYPE_MOUSEUP:
-			self->is_mouse_down = TYRAN_FALSE;
-			type_id = NIMBUS_EVENT_TOUCH_ENDED_ID;
-			break;
-		case PP_INPUTEVENT_TYPE_MOUSEMOVE:
-			if (self->is_mouse_down) {
-				type_id = NIMBUS_EVENT_TOUCH_MOVED_ID;
-			} else {
-				type_id = NIMBUS_EVENT_TOUCH_HOVER_ID;
-			}
-			break;
-		default:
-			// TYRAN_LOG("Unknown?");
-			break;
+	case PP_INPUTEVENT_TYPE_MOUSEDOWN:
+		self->is_mouse_down = TYRAN_TRUE;
+		type_id = NIMBUS_EVENT_TOUCH_BEGAN_ID;
+		break;
+	case PP_INPUTEVENT_TYPE_MOUSEUP:
+		self->is_mouse_down = TYRAN_FALSE;
+		type_id = NIMBUS_EVENT_TOUCH_ENDED_ID;
+		break;
+	case PP_INPUTEVENT_TYPE_MOUSEMOVE:
+		if (self->is_mouse_down) {
+			type_id = NIMBUS_EVENT_TOUCH_MOVED_ID;
+		} else {
+			type_id = NIMBUS_EVENT_TOUCH_HOVER_ID;
+		}
+		break;
+	default:
+		// TYRAN_LOG("Unknown?");
+		break;
 	}
 
 	if (type_id) {
@@ -78,7 +80,8 @@ static void handle_mouse_button(nimbus_nacl_input* self, PP_InputEvent_Type inpu
 	}
 }
 
-static void handle_mouse_input_event(nimbus_nacl_input* self, PP_Resource input_event, PP_InputEvent_Type input_event_type, struct PP_Point position)
+static void handle_mouse_input_event(nimbus_nacl_input* self, PP_Resource input_event, PP_InputEvent_Type input_event_type,
+									 struct PP_Point position)
 {
 	PP_InputEvent_MouseButton mouseButton = self->mouse_interface->GetButton(input_event);
 	handle_mouse_button(self, input_event_type, mouseButton, position);
@@ -89,21 +92,20 @@ static void handle_keyboard_input_event(nimbus_nacl_input* self, PP_InputEvent_T
 	tyran_boolean down;
 
 	switch (input_event_type) {
-		case PP_INPUTEVENT_TYPE_KEYDOWN:
-			TYRAN_LOG("KeyDown");
-			down = TYRAN_TRUE;
-			break;
-		case PP_INPUTEVENT_TYPE_KEYUP:
-			TYRAN_LOG("KeyUp");
-			down = TYRAN_FALSE;
-			break;
-		default:
-			return;
+	case PP_INPUTEVENT_TYPE_KEYDOWN:
+		TYRAN_LOG("KeyDown");
+		down = TYRAN_TRUE;
+		break;
+	case PP_INPUTEVENT_TYPE_KEYUP:
+		TYRAN_LOG("KeyUp");
+		down = TYRAN_FALSE;
+		break;
+	default:
+		return;
 	}
 
 	send_key_changed(self, keycode, down);
 }
-
 
 static PP_Bool on_input_event(nimbus_nacl_input* self, PP_Resource input_event, PP_InputEvent_Type input_event_type)
 {

@@ -14,7 +14,8 @@ void nimbus_resource_definitions_free(nimbus_resource_definitions* self)
 	nimbus_array_destroy(&self->definitions_array);
 }
 
-struct nimbus_resource_definition* nimbus_resource_definitions_find(nimbus_resource_definitions* self, nimbus_resource_type_id type_id)
+struct nimbus_resource_definition* nimbus_resource_definitions_find(nimbus_resource_definitions* self,
+																	nimbus_resource_type_id type_id)
 {
 	for (int i = 0; i < self->count; ++i) {
 		nimbus_resource_definition* definition = &self->definitions[i];
@@ -26,7 +27,9 @@ struct nimbus_resource_definition* nimbus_resource_definitions_find(nimbus_resou
 	return 0;
 }
 
-struct nimbus_resource_definition* nimbus_resource_definitions_create(nimbus_resource_definitions* self, nimbus_resource_type_id type_id, size_t struct_size, const char* debug_string)
+struct nimbus_resource_definition* nimbus_resource_definitions_create(nimbus_resource_definitions* self,
+																	  nimbus_resource_type_id type_id, size_t struct_size,
+																	  const char* debug_string)
 {
 	nimbus_resource_definition* definition = &self->definitions[self->count++];
 	definition->resource_type_id = type_id;

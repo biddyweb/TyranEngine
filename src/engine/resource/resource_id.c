@@ -6,13 +6,12 @@ typedef struct debug_resource_info {
 	nimbus_resource_id resource_id;
 } debug_resource_info;
 
-
 int g_resource_names_count = 0;
 debug_resource_info g_resource_names[128];
 
 int nimbus_resource_id_debug_name_index(nimbus_resource_id id)
 {
-	for (int i=0; i<g_resource_names_count; ++i) {
+	for (int i = 0; i < g_resource_names_count; ++i) {
 		if (g_resource_names[i].resource_id == id) {
 			return i;
 		}
@@ -42,7 +41,7 @@ nimbus_resource_id nimbus_resource_id_from_string(const char* name)
 	u32t h = 0;
 	u32t g = 0;
 
-	for(p = name; *p != '\0'; p = p + 1) {
+	for (p = name; *p != '\0'; p = p + 1) {
 		h = (h << 4) + *p;
 
 		if ((g = h & 0xf0000000) != 0) {

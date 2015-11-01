@@ -27,4 +27,3 @@ void nimbus_task_thread_init(nimbus_task_thread* self, nimbus_task_queue* task_q
 
 	nimbus_thread_init(&self->thread, work, self);
 }
-

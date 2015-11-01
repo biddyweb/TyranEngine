@@ -42,20 +42,20 @@ void write_skip(nimbus_event_write_stream* self, int length)
 void nimbus_event_stream_write_align(nimbus_event_write_stream* self)
 {
 	const int alignment = 4;
-	if (((tyran_pointer_to_number)self->pointer % alignment) != 0) {
-		write_skip(self, alignment - ((tyran_pointer_to_number)self->pointer % alignment));
+	if (((tyran_pointer_to_number) self->pointer % alignment) != 0) {
+		write_skip(self, alignment - ((tyran_pointer_to_number) self->pointer % alignment));
 	}
 }
 
 void nimbus_event_stream_write_string(nimbus_event_write_stream* self, const tyran_string* string)
 {
-	nimbus_event_stream_write_octets(self, (const u8t*)&string->len, sizeof(string->len));
+	nimbus_event_stream_write_octets(self, (const u8t*) &string->len, sizeof(string->len));
 	nimbus_event_stream_write_octets(self, string->buf, sizeof(tyran_string_char) * string->len);
 }
 
 void nimbus_event_stream_write_event_end(nimbus_event_write_stream* self)
 {
-	int octet_size = self->pointer - ((u8t*)self->last_header) - sizeof(nimbus_event_stream_header);
+	int octet_size = self->pointer - ((u8t*) self->last_header) - sizeof(nimbus_event_stream_header);
 	self->last_header->event_octet_size = octet_size;
 }
 
@@ -73,7 +73,8 @@ void nimbus_event_stream_read_octets(nimbus_event_read_stream* stream, u8t* data
 	stream->pointer += len;
 }
 
-void nimbus_event_stream_read_init(nimbus_event_read_stream* self, const struct tyran_symbol_table* table, const u8t* pointer, int length)
+void nimbus_event_stream_read_init(nimbus_event_read_stream* self, const struct tyran_symbol_table* table, const u8t* pointer,
+								   int length)
 {
 	self->pointer = pointer;
 	self->end_pointer = pointer + length;
@@ -89,10 +90,10 @@ void nimbus_event_stream_read_skip(nimbus_event_read_stream* self, int length)
 void nimbus_event_stream_read_string(nimbus_event_read_stream* self, struct tyran_memory* memory, tyran_string* string)
 {
 	tyran_string_length_type character_count;
-	nimbus_event_stream_read_octets(self, (u8t*)(&character_count), sizeof(character_count));
+	nimbus_event_stream_read_octets(self, (u8t*) (&character_count), sizeof(character_count));
 	const u8t* data;
 	nimbus_event_stream_read_pointer(self, &data, character_count * sizeof(tyran_string_char));
-	tyran_string_init(string, memory, (tyran_string_char*)data, character_count);
+	tyran_string_init(string, memory, (tyran_string_char*) data, character_count);
 }
 
 const char* nimbus_event_stream_read_convert_symbol_string(nimbus_event_read_stream* self, const struct tyran_symbol* symbol)
@@ -104,7 +105,7 @@ int nimbus_event_stream_read_array(nimbus_event_read_stream* self, void* destina
 {
 	const u8t* d = self->pointer;
 
-	int count_in_array = *((int*)d);
+	int count_in_array = *((int*) d);
 	d += sizeof(int);
 
 	TYRAN_ASSERT(count_in_array <= max_array_count, "Can not read big array:%d", count_in_array);
@@ -118,7 +119,7 @@ int nimbus_event_stream_read_array(nimbus_event_read_stream* self, void* destina
 void nimbus_event_stream_read_align(nimbus_event_read_stream* self)
 {
 	const int alignment = 4;
-	if (((tyran_pointer_to_number)self->pointer % alignment) != 0) {
-		nimbus_event_stream_read_skip(self, alignment - ((tyran_pointer_to_number)self->pointer % alignment) );
+	if (((tyran_pointer_to_number) self->pointer % alignment) != 0) {
+		nimbus_event_stream_read_skip(self, alignment - ((tyran_pointer_to_number) self->pointer % alignment));
 	}
 }

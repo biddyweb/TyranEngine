@@ -3,7 +3,6 @@
 
 const u8t NIMBUS_EVENT_RESOURCE_LOAD_STATE = 14;
 
-
 void nimbus_resource_load_state_send(nimbus_event_write_stream* stream, nimbus_resource_id id)
 {
 	nimbus_resource_load_state event;

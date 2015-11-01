@@ -25,7 +25,7 @@ typedef struct nimbus_engine {
 
 	nimbus_update** update_objects;
 	int update_objects_count;
-	
+
 	struct tyran_symbol_table* symbol_table;
 } nimbus_engine;
 

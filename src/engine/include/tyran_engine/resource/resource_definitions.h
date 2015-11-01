@@ -16,7 +16,10 @@ typedef struct nimbus_resource_definitions {
 void nimbus_resource_definitions_init(nimbus_resource_definitions* self, struct tyran_memory* memory);
 void nimbus_resource_definitions_free(nimbus_resource_definitions* self);
 
-struct nimbus_resource_definition* nimbus_resource_definitions_find(nimbus_resource_definitions* self, nimbus_resource_type_id type_id);
-struct nimbus_resource_definition* nimbus_resource_definitions_create(nimbus_resource_definitions* self, nimbus_resource_type_id type_id, size_t struct_size, const char* debug_string);
+struct nimbus_resource_definition* nimbus_resource_definitions_find(nimbus_resource_definitions* self,
+																	nimbus_resource_type_id type_id);
+struct nimbus_resource_definition* nimbus_resource_definitions_create(nimbus_resource_definitions* self,
+																	  nimbus_resource_type_id type_id, size_t struct_size,
+																	  const char* debug_string);
 
 #endif

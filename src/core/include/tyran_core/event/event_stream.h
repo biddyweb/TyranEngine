@@ -30,7 +30,6 @@ typedef struct nimbus_event_read_stream {
 	const struct tyran_symbol_table* symbol_table;
 } nimbus_event_read_stream;
 
-
 void nimbus_event_write_stream_init(nimbus_event_write_stream* stream, struct tyran_memory* memory, int max_length);
 void nimbus_event_write_stream_free(nimbus_event_write_stream* stream);
 void nimbus_event_write_stream_clear(nimbus_event_write_stream* self);
@@ -40,7 +39,8 @@ void nimbus_event_stream_write_align(nimbus_event_write_stream* self);
 void nimbus_event_stream_write_event_end(nimbus_event_write_stream* self);
 void nimbus_event_stream_write_string(nimbus_event_write_stream* self, const struct tyran_string* string);
 
-void nimbus_event_stream_read_init(nimbus_event_read_stream* self, const struct tyran_symbol_table* table, const u8t* pointer, int length);
+void nimbus_event_stream_read_init(nimbus_event_read_stream* self, const struct tyran_symbol_table* table, const u8t* pointer,
+								   int length);
 void nimbus_event_stream_read_octets(nimbus_event_read_stream* stream, u8t* data, int len);
 void nimbus_event_stream_read_pointer(nimbus_event_read_stream* stream, const u8t** data, int len);
 void nimbus_event_stream_read_align(nimbus_event_read_stream* self);
@@ -49,20 +49,56 @@ void nimbus_event_stream_read_string(nimbus_event_read_stream* self, struct tyra
 const char* nimbus_event_stream_read_convert_symbol_string(nimbus_event_read_stream* self, const struct tyran_symbol* symbol);
 int nimbus_event_stream_read_array(nimbus_event_read_stream* self, void* destination, int size_of_entity, int max_array_count);
 
-#define nimbus_event_stream_write_type(stream, variable) { nimbus_event_stream_write_align(stream); nimbus_event_stream_write_octets(stream, (const u8t*)(&variable), sizeof(variable)); }
+#define nimbus_event_stream_write_type(stream, variable)                                                                         \
+	{                                                                                                                            \
+		nimbus_event_stream_write_align(stream);                                                                                 \
+		nimbus_event_stream_write_octets(stream, (const u8t*)(&variable), sizeof(variable));                                     \
+	}
 
-#define nimbus_event_stream_write_event_header(stream, ID) {  nimbus_event_stream_header header; header.event_type_id = ID; header.event_octet_size = 0; nimbus_event_stream_write_type(stream, header); (stream)->last_header = (nimbus_event_stream_header*)((stream)->pointer - sizeof(header)); }
+#define nimbus_event_stream_write_event_header(stream, ID)                                                                       \
+	{                                                                                                                            \
+		nimbus_event_stream_header header;                                                                                       \
+		header.event_type_id = ID;                                                                                               \
+		header.event_octet_size = 0;                                                                                             \
+		nimbus_event_stream_write_type(stream, header);                                                                          \
+		(stream)->last_header = (nimbus_event_stream_header*) ((stream)->pointer - sizeof(header));                              \
+	}
 
-#define nimbus_event_stream_write_event_header_ex(stream, ID, INSTANCE_ID) {  nimbus_event_stream_header header; header.event_type_id = ID; header.event_octet_size = 0; header.combine_instance_id = INSTANCE_ID; nimbus_event_stream_write_type(stream, header); (stream)->last_header = (nimbus_event_stream_header*)((stream)->pointer - sizeof(header)); }
+#define nimbus_event_stream_write_event_header_ex(stream, ID, INSTANCE_ID)                                                       \
+	{                                                                                                                            \
+		nimbus_event_stream_header header;                                                                                       \
+		header.event_type_id = ID;                                                                                               \
+		header.event_octet_size = 0;                                                                                             \
+		header.combine_instance_id = INSTANCE_ID;                                                                                \
+		nimbus_event_stream_write_type(stream, header);                                                                          \
+		(stream)->last_header = (nimbus_event_stream_header*) ((stream)->pointer - sizeof(header));                              \
+	}
 
-#define nimbus_event_stream_write_event(stream, event_type_id, variable) { nimbus_event_stream_write_event_header(stream, event_type_id); nimbus_event_stream_write_type(stream, variable); nimbus_event_stream_write_event_end(stream); }
+#define nimbus_event_stream_write_event(stream, event_type_id, variable)                                                         \
+	{                                                                                                                            \
+		nimbus_event_stream_write_event_header(stream, event_type_id);                                                           \
+		nimbus_event_stream_write_type(stream, variable);                                                                        \
+		nimbus_event_stream_write_event_end(stream);                                                                             \
+	}
 
-#define nimbus_event_stream_write_event_to_combine(stream, event_type_id, variable, INSTANCE_ID) { nimbus_event_stream_write_event_header_ex(stream, event_type_id, INSTANCE_ID); nimbus_event_stream_write_type(stream, variable); nimbus_event_stream_write_event_end(stream); }
+#define nimbus_event_stream_write_event_to_combine(stream, event_type_id, variable, INSTANCE_ID)                                 \
+	{                                                                                                                            \
+		nimbus_event_stream_write_event_header_ex(stream, event_type_id, INSTANCE_ID);                                           \
+		nimbus_event_stream_write_type(stream, variable);                                                                        \
+		nimbus_event_stream_write_event_end(stream);                                                                             \
+	}
 
-#define nimbus_event_stream_read_type(stream, variable) { nimbus_event_stream_read_align(stream); nimbus_event_stream_read_octets(stream, (u8t*)(&variable), sizeof(variable)); }
+#define nimbus_event_stream_read_type(stream, variable)                                                                          \
+	{                                                                                                                            \
+		nimbus_event_stream_read_align(stream);                                                                                  \
+		nimbus_event_stream_read_octets(stream, (u8t*)(&variable), sizeof(variable));                                            \
+	}
 
-#define nimbus_event_stream_read_type_pointer(stream, variable, type) { nimbus_event_stream_read_align(stream); variable = (type*) stream->pointer; nimbus_event_stream_read_skip(stream, sizeof(type)); }
-
-
+#define nimbus_event_stream_read_type_pointer(stream, variable, type)                                                            \
+	{                                                                                                                            \
+		nimbus_event_stream_read_align(stream);                                                                                  \
+		variable = (type*) stream->pointer;                                                                                      \
+		nimbus_event_stream_read_skip(stream, sizeof(type));                                                                     \
+	}
 
 #endif

@@ -12,7 +12,6 @@ static void on_connected(void* user_data, int32_t octets_read)
 {
 }
 
-
 static void connect(nimbus_nacl_connection* self)
 {
 	const char* string = "ws://spelmotor.com:8080";

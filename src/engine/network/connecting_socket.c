@@ -22,7 +22,7 @@ int nimbus_connecting_socket_connect(nimbus_connecting_socket* self, const char*
 
 	int flag = 1;
 	/* int ret = */
-	setsockopt(self->socket_handle, IPPROTO_TCP, TCP_NODELAY, (char*)&flag, sizeof(flag) );
+	setsockopt(self->socket_handle, IPPROTO_TCP, TCP_NODELAY, (char*) &flag, sizeof(flag));
 
 	struct sockaddr_in sin;
 
@@ -47,7 +47,7 @@ int nimbus_connecting_socket_connect(nimbus_connecting_socket* self, const char*
 	sin.sin_family = AF_INET;
 	sin.sin_port = htons(port);
 
-	int result = connect(self->socket_handle, (const struct sockaddr*)&sin, sizeof(sin));
+	int result = connect(self->socket_handle, (const struct sockaddr*) &sin, sizeof(sin));
 	if (result < 0) {
 		return -2;
 	}
@@ -62,7 +62,7 @@ void nimbus_connecting_socket_init(nimbus_connecting_socket* self, const char* h
 
 void nimbus_connecting_socket_write(nimbus_connecting_socket* self, const u8t* data, int length)
 {
-	send(self->socket_handle, (const char*)data, length, 0);
+	send(self->socket_handle, (const char*) data, length, 0);
 }
 
 int nimbus_connecting_socket_read(nimbus_connecting_socket* self, u8t* data, int max_length)

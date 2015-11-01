@@ -10,7 +10,7 @@ nimbus_task_queue* nimbus_task_queue_new(tyran_memory* memory)
 
 	nimbus_mutex_init(&self->mutex);
 
-	for (int i=0; i<8; ++i) {
+	for (int i = 0; i < 8; ++i) {
 		self->group_counter[i] = 0;
 	}
 
@@ -29,8 +29,8 @@ void nimbus_task_queue_add_task(nimbus_task_queue* self, nimbus_task* task)
 {
 	TYRAN_ASSERT(task, "MUST BE zero");
 	TYRAN_ASSERT(self->task_count < self->task_max_count, "FULL");
-	TYRAN_ASSERT(task->work!=0, "work must not be zero");
-	TYRAN_ASSERT(task->self!=0, "self must not be zero in task");
+	TYRAN_ASSERT(task->work != 0, "work must not be zero");
+	TYRAN_ASSERT(task->self != 0, "self must not be zero in task");
 	nimbus_mutex_lock(&self->mutex);
 
 	task->task_queue = self;
@@ -49,14 +49,14 @@ void nimbus_task_queue_add_task(nimbus_task_queue* self, nimbus_task* task)
 static void debug_log_all_tasks(nimbus_task_queue* self, int group)
 {
 	int task_index = self->task_read_index;
-	for (int i=0; i<self->task_count; ++i) {
+	for (int i = 0; i < self->task_count; ++i) {
 		nimbus_task* task = self->tasks[task_index];
 		if (task->group == group) {
 #if defined NIMBUS_TASK_LOG_VERBOSE
 			TYRAN_LOG("Remaining task:'%s' group:%d affinity:%d", task->name, task->group, task->affinity);
 #endif
 		}
-		task_index ++;
+		task_index++;
 		task_index %= self->task_max_count;
 	}
 }
@@ -99,12 +99,11 @@ nimbus_task* nimbus_task_queue_fetch_next_task_from_affinity(nimbus_task_queue* 
 	return task;
 }
 
-
 nimbus_task* nimbus_task_queue_fetch_next_task(nimbus_task_queue* self, int requested_affinity)
 {
 	nimbus_task* task;
 
-//	TYRAN_LOG("Fetching next task. no affinity");
+	//	TYRAN_LOG("Fetching next task. no affinity");
 	nimbus_mutex_lock(&self->mutex);
 	if (self->task_count == 0) {
 		task = 0;
@@ -112,7 +111,7 @@ nimbus_task* nimbus_task_queue_fetch_next_task(nimbus_task_queue* self, int requ
 		task = self->tasks[self->task_read_index];
 
 		if (task->affinity != -1 && requested_affinity != task->affinity) {
-//			TYRAN_LOG("Ignoring task:'%s' group:%d affinity:%d", task->name, task->group, task->affinity);
+			//			TYRAN_LOG("Ignoring task:'%s' group:%d affinity:%d", task->name, task->group, task->affinity);
 			task = 0;
 		} else {
 #if defined NIMBUS_TASK_LOG_VERBOSE
@@ -138,5 +137,3 @@ void nimbus_task_queue_task_completed(nimbus_task_queue* self, nimbus_task* task
 		nimbus_mutex_unlock(&self->mutex);
 	}
 }
-
-

@@ -8,11 +8,9 @@
 #include <string.h>
 #endif
 
-
 struct tyran_memory;
 
 char* tyran_str_dup(struct tyran_memory* pool, const char* str);
-
 
 #define tyran_malloc malloc
 #define tyran_realloc realloc
@@ -29,7 +27,6 @@ char* tyran_str_dup(struct tyran_memory* pool, const char* str);
 #define tyran_memset_type_n(T, V, N) memset(T, V, sizeof(*T) * (N))
 #define tyran_mem_clear_type_n(T, N) tyran_memset_type_n(T, 0, N);
 #define tyran_mem_clear(D, N) memset(D, 0, N)
-
 
 #if defined WIN32
 // #pragma warning( disable : 4100 )
@@ -66,8 +63,8 @@ char* tyran_str_dup(struct tyran_memory* pool, const char* str);
 #define tyran_fputs fputs
 #define tyran_fflush fflush
 #define tyran_strdup(pool, str) tyran_str_dup(pool, str)
-#define tyran_str_equal(a,b) (tyran_strcmp(a,b) == 0)
-#define tyran_str_chr(a,b) strchr(a,b)
+#define tyran_str_equal(a, b) (tyran_strcmp(a, b) == 0)
+#define tyran_str_chr(a, b) strchr(a, b)
 
 #define tyran_fmod fmod
 #define tyran_pow pow

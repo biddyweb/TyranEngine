@@ -28,7 +28,7 @@ int main()
 		if (err < -1) {
 			break;
 		}
-		nimbus_thread_sleep(0.5f);
+		nimbus_thread_sleep(0.8f);
 	}
 
 	TYRAN_LOG("main::destroy");

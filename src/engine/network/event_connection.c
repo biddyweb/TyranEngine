@@ -98,13 +98,13 @@ static void read_message_type(nimbus_event_connection* self, nimbus_in_stream* i
 	read_resource_type_id(in_stream, &self->resource_type_id);
 
 	switch (message_type) {
-		case 0: // Delete
-			handle_deleted(self, self->resource_id);
-			break;
-		case 1: // New
-		case 9: // Update
-			handle_updated(self, in_stream, self->resource_id);
-			break;
+	case 0: // Delete
+		handle_deleted(self, self->resource_id);
+		break;
+	case 1: // New
+	case 9: // Update
+		handle_updated(self, in_stream, self->resource_id);
+		break;
 	}
 }
 
@@ -122,12 +122,14 @@ void check_header(nimbus_event_connection* self)
 	}
 }
 
-static void fire_resource_updated(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id, nimbus_ring_buffer* buffer, int expected_payload_size)
+static void fire_resource_updated(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id,
+								  nimbus_resource_type_id resource_type_id, nimbus_ring_buffer* buffer, int expected_payload_size)
 {
 	u8t* temp_buffer;
 	int temp_buffer_size;
 
-	TYRAN_LOG("EventConnection: Fire resource id:%d resource_name:'%s' type:%d", resource_id, nimbus_resource_id_debug_name(resource_id), resource_type_id);
+	TYRAN_LOG("EventConnection: Fire resource id:%d resource_name:'%s' type:%d", resource_id,
+			  nimbus_resource_id_debug_name(resource_id), resource_type_id);
 
 	nimbus_resource_updated resource_updated;
 	resource_updated.resource_id = resource_id;
@@ -156,7 +158,8 @@ static void fire_resource_updated(nimbus_event_write_stream* out_event_stream, n
 static void on_payload_done(nimbus_event_connection* self)
 {
 	self->waiting_for_header = 1;
-	fire_resource_updated(&self->update_object.event_write_stream, self->resource_id, self->resource_type_id, &self->buffer, self->expected_payload_size);
+	fire_resource_updated(&self->update_object.event_write_stream, self->resource_id, self->resource_type_id, &self->buffer,
+						  self->expected_payload_size);
 }
 
 static void consume(nimbus_event_connection* self)

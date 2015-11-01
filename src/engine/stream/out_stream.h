@@ -15,7 +15,6 @@ void nimbus_out_stream_init(nimbus_out_stream* self, struct tyran_memory* memory
 void nimbus_out_stream_free(nimbus_out_stream* self);
 void nimbus_out_stream_clear(nimbus_out_stream* self);
 
-
 void nimbus_out_stream_write_u8(nimbus_out_stream* self, u8t data);
 void nimbus_out_stream_write_u16(nimbus_out_stream* self, u16t data);
 void nimbus_out_stream_write_u32(nimbus_out_stream* self, u32t data);

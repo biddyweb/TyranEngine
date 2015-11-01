@@ -22,7 +22,8 @@ typedef struct resource_progress {
 	nimbus_octet_buffer in_buffer;
 } resource_progress;
 
-static void set_string_property(PPB_URLRequestInfo* interface, PP_Resource request, PP_URLRequestProperty property, const char* string)
+static void set_string_property(PPB_URLRequestInfo* interface, PP_Resource request, PP_URLRequestProperty property,
+								const char* string)
 {
 	struct PP_Var property_var_string = g_nacl.var->VarFromUtf8(string, tyran_strlen(string));
 	interface->SetProperty(request, property, property_var_string);
@@ -55,7 +56,8 @@ static void extension_from_resource_type(char* extension, int extension_size, ni
 	tyran_strcpy(extension, extension_size, nimbus_resource_id_debug_name(resource_type_id));
 }
 
-static PP_Resource create_request_info_instance(nimbus_nacl_loader* self, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id)
+static PP_Resource create_request_info_instance(nimbus_nacl_loader* self, nimbus_resource_id resource_id,
+												nimbus_resource_type_id resource_type_id)
 {
 	PP_Resource request = self->url_request_info->Create(g_nacl.module_instance);
 
@@ -76,7 +78,8 @@ static PP_Resource create_request_info_instance(nimbus_nacl_loader* self, nimbus
 	return request;
 }
 
-static void send_resource_update(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id, const u8t* payload, int payload_size)
+static void send_resource_update(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id,
+								 nimbus_resource_type_id resource_type_id, const u8t* payload, int payload_size)
 {
 	nimbus_resource_updated resource_updated;
 	resource_updated.resource_id = resource_id;
@@ -89,7 +92,9 @@ static void send_resource_update(nimbus_event_write_stream* out_event_stream, ni
 	nimbus_event_stream_write_event_end(out_event_stream);
 }
 
-static resource_progress* create_progress(nimbus_nacl_loader* self, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id, PP_Resource url_loader_instance, PP_Resource request_info_instance)
+static resource_progress* create_progress(nimbus_nacl_loader* self, nimbus_resource_id resource_id,
+										  nimbus_resource_type_id resource_type_id, PP_Resource url_loader_instance,
+										  PP_Resource request_info_instance)
 {
 	resource_progress* progress = TYRAN_CALLOC_TYPE(self->resource_progress_pool, resource_progress);
 	nimbus_octet_buffer_init(&progress->buffer, self->memory, 2 * 1024 * 1024);
@@ -115,10 +120,10 @@ static void free_progress(resource_progress* progress)
 	TYRAN_MALLOC_FREE(progress);
 }
 
-
 static void resource_data_complete(nimbus_nacl_loader* self, resource_progress* progress)
 {
-	send_resource_update(&self->update_object.event_write_stream, progress->resource_id, progress->resource_type_id, progress->buffer.octets, progress->buffer.size);
+	send_resource_update(&self->update_object.event_write_stream, progress->resource_id, progress->resource_type_id,
+						 progress->buffer.octets, progress->buffer.size);
 	free_progress(progress);
 }
 
@@ -138,7 +143,8 @@ static void continue_reading(nimbus_nacl_loader* self, resource_progress* progre
 
 	int32_t result;
 	do {
-		result = self->url_loader->ReadResponseBody(progress->url_loader_instance, progress->in_buffer.octets, progress->in_buffer.max_size, callback);
+		result = self->url_loader->ReadResponseBody(progress->url_loader_instance, progress->in_buffer.octets,
+													progress->in_buffer.max_size, callback);
 		if (result > 0) {
 			add_resource_data_to_buffer(progress, result);
 		} else if (result != PP_OK_COMPLETIONPENDING) {
@@ -171,10 +177,12 @@ static void on_resource_opened(void* user_data, int32_t result)
 	continue_reading(self, progress);
 }
 
-static void request_open(nimbus_nacl_loader* self, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id, PP_Resource url_loader_instance, PP_Resource request_info_instance)
+static void request_open(nimbus_nacl_loader* self, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id,
+						 PP_Resource url_loader_instance, PP_Resource request_info_instance)
 {
 	struct PP_CompletionCallback callback;
-	resource_progress* progress = create_progress(self, resource_id, resource_type_id, url_loader_instance, request_info_instance);
+	resource_progress* progress =
+		create_progress(self, resource_id, resource_type_id, url_loader_instance, request_info_instance);
 	callback.func = on_resource_opened;
 	callback.user_data = progress;
 	callback.flags = 0;
@@ -187,7 +195,8 @@ static PP_Resource create_url_loader_instance(nimbus_nacl_loader* self)
 	return url_loader;
 }
 
-static void on_resource_request(nimbus_nacl_loader* self, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id)
+static void on_resource_request(nimbus_nacl_loader* self, nimbus_resource_id resource_id,
+								nimbus_resource_type_id resource_type_id)
 {
 	nimbus_resource_type_id extension_type_id = generic_resource_type_to_extension_type(resource_type_id);
 	PP_Resource request_info_instance = create_request_info_instance(self, resource_id, extension_type_id);

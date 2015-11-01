@@ -4,8 +4,6 @@
 #include <tyran_engine/resource/type_id.h>
 #include <tyran_core/update/update.h>
 
-#include "../state/state.h"
-#include <tyran_engine/state/event_component_header.h>
 #include <mocha/runtime.h>
 #include <mocha/values.h>
 
@@ -15,10 +13,9 @@ struct tyran_memory;
 extern const u8t NIMBUS_EVENT_SCRIPT_UPDATED_ID;
 
 typedef struct nimbus_script_updated {
-    nimbus_event_component_header component;
-    void* script;
+	const mocha_object* script_function;
+	const mocha_object* state;
 } nimbus_script_updated;
-
 
 typedef struct nimbus_script_module {
 	nimbus_update update;
@@ -28,7 +25,6 @@ typedef struct nimbus_script_module {
 	int script_buffer_size;
 	struct nimbus_modules* modules;
 	struct tyran_memory* memory;
-	nimbus_state main_state;
 	mocha_runtime runtime;
 	mocha_context root_context;
 	mocha_values values;

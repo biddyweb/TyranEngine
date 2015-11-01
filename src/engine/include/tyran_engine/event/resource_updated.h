@@ -14,7 +14,7 @@ typedef struct nimbus_resource_updated {
 	int payload_size;
 } nimbus_resource_updated;
 
-
-void nimbus_resource_updated_send(struct nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id, const void* data, int payload_size);
+void nimbus_resource_updated_send(struct nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id,
+								  nimbus_resource_type_id resource_type_id, const void* data, int payload_size);
 
 #endif

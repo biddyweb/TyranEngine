@@ -9,5 +9,4 @@ typedef struct nimbus_resource_definition {
 	nimbus_resource_type_id resource_type_id;
 } nimbus_resource_definition;
 
-
 #endif

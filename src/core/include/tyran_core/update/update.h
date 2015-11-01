@@ -15,14 +15,14 @@ typedef struct nimbus_update {
 	nimbus_event_listener event_listener;
 	nimbus_task task;
 
-
 	nimbus_update_function update_function;
 	void* update_function_self;
 
 	const char* name;
 } nimbus_update;
 
-
-void nimbus_update_init(nimbus_update* self, struct tyran_memory* memory, nimbus_update_function func, void* func_self, const char* name);
-void nimbus_update_init_ex(nimbus_update* self, struct tyran_memory* memory, nimbus_update_function func, void* update_self, int max_size, const char* name);
+void nimbus_update_init(nimbus_update* self, struct tyran_memory* memory, nimbus_update_function func, void* func_self,
+						const char* name);
+void nimbus_update_init_ex(nimbus_update* self, struct tyran_memory* memory, nimbus_update_function func, void* update_self,
+						   int max_size, const char* name);
 #endif

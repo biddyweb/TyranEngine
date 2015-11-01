@@ -18,7 +18,6 @@
 #include <tyranscript/tyran_log.h>
 
 #include "../script/script_module.h"
-#include "../combine/combine_module.h"
 
 #if defined TORNADO_OS_NACL
 #include "../../core/src/platform/nacl/nacl_loader.h"
@@ -31,7 +30,7 @@ nimbus_modules* g_modules;
 
 void schedule_update_tasks(nimbus_engine* self, nimbus_task_queue* queue)
 {
-	for (int i=1; i<self->update_objects_count; ++i) {
+	for (int i = 1; i < self->update_objects_count; ++i) {
 		nimbus_task* task = &self->update_objects[i]->task;
 #if defined NIMBUS_ENGINE_LOG_VERBOSE
 		TYRAN_LOG("adding task:%d (%s)", i, self->update_objects[i]->name);
@@ -58,13 +57,10 @@ static void _dummy_update(void* _self)
 	TYRAN_LOG("Engine::dummy_Update");
 }
 
-
-
 static void fire_load_resource(nimbus_engine* self, nimbus_resource_id id, nimbus_resource_type_id resource_type_id)
 {
 	nimbus_resource_load_send(&self->update_object.event_write_stream, id, resource_type_id);
 }
-
 
 static void boot_resource(nimbus_engine* self)
 {
@@ -93,7 +89,8 @@ void nimbus_engine_add_update_object(nimbus_engine* self, nimbus_update* o)
 
 #if defined TORNADO_OS_IOS || defined TORNADO_OS_MAC_OS_X
 
-void start_event_connection(nimbus_engine* self, tyran_memory* memory, const char* host, int port, struct nimbus_task_queue* task_queue)
+void start_event_connection(nimbus_engine* self, tyran_memory* memory, const char* host, int port,
+							struct nimbus_task_queue* task_queue)
 {
 	nimbus_event_connection_init(&self->event_connection, memory, host, port);
 	nimbus_engine_add_update_object(self, &self->event_connection.update_object);
@@ -105,7 +102,7 @@ void start_event_connection(nimbus_engine* self, tyran_memory* memory, const cha
 static void create_modules(nimbus_engine* self, tyran_memory* memory)
 {
 	nimbus_modules* modules = &self->modules;
-	for (int i=0; i < modules->modules_count; ++i) {
+	for (int i = 0; i < modules->modules_count; ++i) {
 		nimbus_module* module = &modules->modules[i];
 		void* instance = nimbus_module_create(module, memory);
 		nimbus_update* instance_update = nimbus_module_get_update(module, instance);
@@ -142,7 +139,8 @@ static void add_internal_modules(nimbus_modules* modules)
 	touch_zoom->is_module_to_script = TYRAN_TRUE;
 	touch_zoom->has_index = TYRAN_FALSE;
 
-	nimbus_event_definition* touch_stationary = nimbus_modules_add_event(modules, "touch_stationary", NIMBUS_EVENT_TOUCH_STATIONARY_ID, 0);
+	nimbus_event_definition* touch_stationary =
+		nimbus_modules_add_event(modules, "touch_stationary", NIMBUS_EVENT_TOUCH_STATIONARY_ID, 0);
 	nimbus_event_definition_add_property(touch_stationary, "position", NIMBUS_EVENT_DEFINITION_VECTOR2);
 	nimbus_event_definition_add_property(touch_stationary, "finger_id", NIMBUS_EVENT_DEFINITION_INTEGER);
 	touch_stationary->is_module_to_script = TYRAN_TRUE;
@@ -155,14 +153,18 @@ static void add_internal_modules(nimbus_modules* modules)
 	key_changed->has_index = TYRAN_FALSE;
 
 #if defined TORNADO_OS_NACL
-	nimbus_modules_add_affinity(modules, "nacl_loader", sizeof(nimbus_nacl_loader), nimbus_nacl_loader_init, offsetof(nimbus_nacl_loader, update_object), 0);
-	nimbus_modules_add_affinity(modules, "nacl_gamepad", sizeof(nimbus_nacl_gamepad), nimbus_nacl_gamepad_init, offsetof(nimbus_nacl_gamepad, update), 0);
-	nimbus_modules_add_affinity(modules, "nacl_input", sizeof(nimbus_nacl_input), nimbus_nacl_input_init, offsetof(nimbus_nacl_input, update), 0);
-	nimbus_modules_add_affinity(modules, "nacl_connection", sizeof(nimbus_nacl_connection), nimbus_nacl_connection_init, offsetof(nimbus_nacl_connection, update), 0);
+	nimbus_modules_add_affinity(modules, "nacl_loader", sizeof(nimbus_nacl_loader), nimbus_nacl_loader_init,
+								offsetof(nimbus_nacl_loader, update_object), 0);
+	nimbus_modules_add_affinity(modules, "nacl_gamepad", sizeof(nimbus_nacl_gamepad), nimbus_nacl_gamepad_init,
+								offsetof(nimbus_nacl_gamepad, update), 0);
+	nimbus_modules_add_affinity(modules, "nacl_input", sizeof(nimbus_nacl_input), nimbus_nacl_input_init,
+								offsetof(nimbus_nacl_input, update), 0);
+	nimbus_modules_add_affinity(modules, "nacl_connection", sizeof(nimbus_nacl_connection), nimbus_nacl_connection_init,
+								offsetof(nimbus_nacl_connection, update), 0);
 #endif
 
-	nimbus_modules_add(modules, "script", sizeof(nimbus_script_module), nimbus_script_module_init, offsetof(nimbus_script_module, update));
-	nimbus_modules_add(modules, "combine", sizeof(nimbus_combine_module), nimbus_combine_module_init, offsetof(nimbus_combine_module, update));
+	nimbus_modules_add(modules, "script", sizeof(nimbus_script_module), nimbus_script_module_init,
+					   offsetof(nimbus_script_module, update));
 }
 
 nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue* task_queue)

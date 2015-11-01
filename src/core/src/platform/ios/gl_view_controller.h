@@ -3,16 +3,13 @@
 
 #include "../../base/boot/nimbus_boot.h"
 
-@interface NimbusTouch :
-NSObject {
+@interface NimbusTouch : NSObject {
 	CGPoint position;
 	UITouchPhase phase;
 	NSUInteger fingerId;
 }
 
--(id) initWithPhase:
-(UITouchPhase)phase andPosition:
-(CGPoint)position andFingerId:(NSUInteger)fingerId;
+- (id)initWithPhase:(UITouchPhase)phase andPosition:(CGPoint)position andFingerId:(NSUInteger)fingerId;
 
 @property(nonatomic) CGPoint position;
 @property(nonatomic) UITouchPhase phase;
@@ -20,28 +17,18 @@ NSObject {
 
 @end
 
-
-@interface ViewController :
-GLKViewController {
+@interface ViewController : GLKViewController {
 	nimbus_boot* boot;
 	NSLock* touchLock;
 	NSMutableSet* touchSet;
 	NSMutableArray* allTouches;
 }
 
--(void)touchesBegan:
-(NSSet*)touches withEvent:
-(UIEvent*)event;
--(void)touchesMoved:
-(NSSet*)touches withEvent:
-(UIEvent*)event;
--(void)touchesEnded:
-(NSSet*)touches withEvent:
-(UIEvent*)event;
--(void)touchesCancelled:
-(NSSet*)touches withEvent:
-(UIEvent*)event;
--(NSUInteger)getFingerId: (UITouch*) touch;
+- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event;
+- (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event;
+- (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event;
+- (void)touchesCancelled:(NSSet*)touches withEvent:(UIEvent*)event;
+- (NSUInteger)getFingerId:(UITouch*)touch;
 - (BOOL)prefersStatusBarHidden;
 
 @end

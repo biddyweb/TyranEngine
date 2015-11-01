@@ -3,7 +3,8 @@
 
 const u8t NIMBUS_EVENT_SCRIPT_OBJECT_UPDATED_ID = 101;
 
-void nimbus_script_object_updated_send(struct nimbus_event_write_stream* stream, nimbus_resource_id id, struct tyran_object* object)
+void nimbus_script_object_updated_send(struct nimbus_event_write_stream* stream, nimbus_resource_id id,
+									   struct tyran_object* object)
 {
 	nimbus_script_object_updated event;
 	event.resource_id = id;

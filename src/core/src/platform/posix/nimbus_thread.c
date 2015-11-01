@@ -9,7 +9,7 @@ void nimbus_thread_done(nimbus_thread* thread)
 
 void* nimbus_thread_main_routine(void* data)
 {
-	nimbus_thread* thread = (nimbus_thread*)(data);
+	nimbus_thread* thread = (nimbus_thread*) (data);
 
 	thread->func(thread->other_self);
 	nimbus_thread_done(thread);

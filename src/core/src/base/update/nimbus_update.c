@@ -11,7 +11,8 @@ void nimbus_update_update(void* _self, struct nimbus_task_queue* queue)
 	self->update_function(self->update_function_self);
 }
 
-void nimbus_update_init_ex(nimbus_update* self, struct tyran_memory* memory, nimbus_update_function func, void* update_self, int max_size, const char* name)
+void nimbus_update_init_ex(nimbus_update* self, struct tyran_memory* memory, nimbus_update_function func, void* update_self,
+						   int max_size, const char* name)
 {
 	TYRAN_ASSERT(func != 0, "Must give me a proper function");
 	self->update_function = func;
@@ -23,7 +24,8 @@ void nimbus_update_init_ex(nimbus_update* self, struct tyran_memory* memory, nim
 	nimbus_event_listener_init(&self->event_listener, update_self);
 }
 
-void nimbus_update_init(nimbus_update* self, struct tyran_memory* memory, nimbus_update_function func, void* update_self, const char* name)
+void nimbus_update_init(nimbus_update* self, struct tyran_memory* memory, nimbus_update_function func, void* update_self,
+						const char* name)
 {
 	const int max_size = 1024;
 	nimbus_update_init_ex(self, memory, func, update_self, max_size, name);

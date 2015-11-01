@@ -8,7 +8,7 @@ void nimbus_thread_sleep(tyran_number seconds)
 	const int NANO_MULTIPLIER = 1e9;
 
 	rm.tv_sec = (size_t) seconds;
-	tyran_number nano_seconds = (seconds - (tyran_number)(size_t)seconds) * (tyran_number) NANO_MULTIPLIER;
+	tyran_number nano_seconds = (seconds - (tyran_number)(size_t) seconds) * (tyran_number) NANO_MULTIPLIER;
 	rm.tv_nsec = nano_seconds;
 
 	nanosleep(&rm, &rm);

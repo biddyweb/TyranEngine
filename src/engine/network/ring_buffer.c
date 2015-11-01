@@ -98,7 +98,6 @@ void nimbus_ring_buffer_read_pointer(nimbus_ring_buffer* self, u8t** data, int* 
 	*length = available;
 }
 
-
 void nimbus_ring_buffer_read(nimbus_ring_buffer* self, u8t* data, int size)
 {
 	u8t* source;
@@ -111,7 +110,7 @@ void nimbus_ring_buffer_read(nimbus_ring_buffer* self, u8t* data, int size)
 	read_advance(self, data, read_count);
 	size -= read_count;
 
-	nimbus_ring_buffer_read_pointer(self, &source,  &available);
+	nimbus_ring_buffer_read_pointer(self, &source, &available);
 	int next_count = available > size ? size : available;
 	read_advance(self, data + read_count, next_count);
 	size -= next_count;

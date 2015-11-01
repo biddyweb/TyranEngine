@@ -30,10 +30,11 @@
 	<!-- platforms -->
 	<platform name="mac_os_x">
 		<define name="TORNADO_OS_MAC_OS_X" />
+		<compiler program="clang" />
 
 		<source directory="core/src/platform/posix" exclude="[absolute_time.cpp, elapsed_time.cpp, elapsed_time.h, tornado_semaphore.h, tornado_semaphore.cpp]"/>
 		<source directory="core/src/platform/mac_os_x" recursive="true" />
-		
+
 		<library filename="Cocoa.framework" />
 		<library filename="OpenGL.framework" />
 		<library filename="AudioToolbox.framework" />

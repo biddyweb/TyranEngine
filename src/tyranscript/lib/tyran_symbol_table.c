@@ -17,15 +17,15 @@ tyran_symbol_table* tyran_symbol_table_new(tyran_memory* memory)
 
 void tyran_symbol_table_free(tyran_symbol_table* table)
 {
-	for (int i=0; i<table->entry_count; ++i) {
-		tyran_free((void*)table->entries[i].string);
+	for (int i = 0; i < table->entry_count; ++i) {
+		tyran_free((void*) table->entries[i].string);
 	}
 	tyran_free(table);
 }
 
 int tyran_symbol_table_find(tyran_symbol_table* table, const char* str)
 {
-	for (int i=0; i<table->entry_count; ++i) {
+	for (int i = 0; i < table->entry_count; ++i) {
 		if (tyran_strcmp(table->entries[i].string, str) == 0) {
 			return i;
 		}

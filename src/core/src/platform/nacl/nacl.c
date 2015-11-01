@@ -28,17 +28,16 @@ static void nacl_log(enum tyran_log_type type, const char* string)
 
 PP_EXPORT int32_t PPP_InitializeModule(PP_Module a_module_id, PPB_GetInterface get_browser)
 {
-	g_nacl.console = (PPB_Console*)(get_browser(PPB_CONSOLE_INTERFACE));
-	g_nacl.var = (PPB_Var*)(get_browser(PPB_VAR_INTERFACE));
+	g_nacl.console = (PPB_Console*) (get_browser(PPB_CONSOLE_INTERFACE));
+	g_nacl.var = (PPB_Var*) (get_browser(PPB_VAR_INTERFACE));
 	g_nacl.get_browser = get_browser;
-	g_nacl.input_event = (PPB_InputEvent*)(get_browser(PPB_INPUT_EVENT_INTERFACE));
+	g_nacl.input_event = (PPB_InputEvent*) (get_browser(PPB_INPUT_EVENT_INTERFACE));
 
 	return PP_OK;
 }
 
 PP_EXPORT void PPP_ShutdownModule()
 {
-
 }
 
 static PP_Bool InputEvent_HandleInputEvent(PP_Instance instance, PP_Resource input_event)
@@ -57,22 +56,18 @@ static void initialize_3d(nimbus_nacl_render* self)
 	int width = 1024;
 	int height = 768;
 
-	self->graphics_3d = (PPB_Graphics3D*)(g_nacl.get_browser(PPB_GRAPHICS_3D_INTERFACE));
+	self->graphics_3d = (PPB_Graphics3D*) (g_nacl.get_browser(PPB_GRAPHICS_3D_INTERFACE));
 	TYRAN_ASSERT(self->graphics_3d, "Couldn't fetch browser 3D graphics");
 
-	int32_t attributes[] = {
-		PP_GRAPHICS3DATTRIB_ALPHA_SIZE, 8,
-		PP_GRAPHICS3DATTRIB_WIDTH, width,
-		PP_GRAPHICS3DATTRIB_HEIGHT, height,
-		PP_GRAPHICS3DATTRIB_NONE
-	};
+	int32_t attributes[] = {PP_GRAPHICS3DATTRIB_ALPHA_SIZE, 8,		PP_GRAPHICS3DATTRIB_WIDTH, width,
+							PP_GRAPHICS3DATTRIB_HEIGHT,		height, PP_GRAPHICS3DATTRIB_NONE};
 
 	g_nacl.display_size.width = width;
 	g_nacl.display_size.height = height;
 	g_nacl.graphics_3d_context = self->graphics_3d->Create(g_nacl.module_instance, 0, attributes);
-	self->instance = (PPB_Instance*)(g_nacl.get_browser(PPB_INSTANCE_INTERFACE));
+	self->instance = (PPB_Instance*) (g_nacl.get_browser(PPB_INSTANCE_INTERFACE));
 	self->instance->BindGraphics(g_nacl.module_instance, g_nacl.graphics_3d_context);
-	g_nacl.view = (PPB_View*)(g_nacl.get_browser(PPB_VIEW_INTERFACE));
+	g_nacl.view = (PPB_View*) (g_nacl.get_browser(PPB_VIEW_INTERFACE));
 }
 
 static void draw(nimbus_nacl_render* self);
@@ -140,19 +135,12 @@ static PP_Bool Instance_HandleDocumentLoad(PP_Instance instance, PP_Resource url
 PP_EXPORT const void* PPP_GetInterface(const char* interface_name)
 {
 	if (strcmp(interface_name, PPP_INSTANCE_INTERFACE) == 0) {
-		static PPP_Instance instance_interface = {
-			&Instance_DidCreate,
-			&Instance_DidDestroy,
-			&Instance_DidChangeView,
-			&Instance_DidChangeFocus,
-			&Instance_HandleDocumentLoad
-		};
+		static PPP_Instance instance_interface = {&Instance_DidCreate, &Instance_DidDestroy, &Instance_DidChangeView,
+												  &Instance_DidChangeFocus, &Instance_HandleDocumentLoad};
 
 		return &instance_interface;
 	} else if (strcmp(interface_name, PPP_INPUT_EVENT_INTERFACE) == 0) {
-		static PPP_InputEvent instance_interface = {
-			&InputEvent_HandleInputEvent
-		};
+		static PPP_InputEvent instance_interface = {&InputEvent_HandleInputEvent};
 
 		return &instance_interface;
 	}

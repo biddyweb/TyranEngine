@@ -21,5 +21,4 @@ nimbus_resource_handler* nimbus_resource_handler_new(struct tyran_memory* memory
 nimbus_resource_id nimbus_resource_handler_add(nimbus_resource_handler* self, const char* name);
 const char* nimbus_resource_handler_id_to_name(nimbus_resource_handler* self, nimbus_resource_id id);
 
-
 #endif

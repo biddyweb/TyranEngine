@@ -4,7 +4,6 @@
 
 const u8t NIMBUS_EVENT_RESOURCE_LOAD = 1;
 
-
 void nimbus_resource_load_send(nimbus_event_write_stream* stream, nimbus_resource_id id, nimbus_resource_type_id resource_type_id)
 {
 	nimbus_resource_load event;

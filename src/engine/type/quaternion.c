@@ -41,7 +41,7 @@ void nimbus_quaternion_to_euler(nimbus_quaternion* q, tyran_number* roll, tyran_
 	float sqw = q->w * q->w;
 	float sqy = q->v.y * q->v.y;
 
-	*yaw = nimbus_math_atan2(2.0f * q->v.x * q->w + 2.0f * q->v.y * q->v.z, 1.0f - 2.0f * (sqz  + sqw));
-	*pitch = nimbus_math_asin(2.0f * ( q->v.x * q->v.z - q->w * q->v.y ) );
+	*yaw = nimbus_math_atan2(2.0f * q->v.x * q->w + 2.0f * q->v.y * q->v.z, 1.0f - 2.0f * (sqz + sqw));
+	*pitch = nimbus_math_asin(2.0f * (q->v.x * q->v.z - q->w * q->v.y));
 	*roll = nimbus_math_atan2(2.0f * q->v.x * q->v.y + 2.0f * q->v.z * q->w, 1.0f - 2.0f * (sqy + sqz));
 }

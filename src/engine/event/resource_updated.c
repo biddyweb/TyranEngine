@@ -4,7 +4,8 @@
 
 const u8t NIMBUS_EVENT_RESOURCE_UPDATED = 2;
 
-void nimbus_resource_updated_send(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id, nimbus_resource_type_id resource_type_id, const void* data, int payload_size)
+void nimbus_resource_updated_send(nimbus_event_write_stream* out_event_stream, nimbus_resource_id resource_id,
+								  nimbus_resource_type_id resource_type_id, const void* data, int payload_size)
 {
 	nimbus_resource_updated updated;
 	updated.resource_id = resource_id;

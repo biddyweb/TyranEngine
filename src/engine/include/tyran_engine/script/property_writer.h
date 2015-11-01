@@ -24,7 +24,8 @@ typedef struct nimbus_property_writer {
 	struct tyran_runtime* runtime;
 } nimbus_property_writer;
 
-void nimbus_property_writer_init(nimbus_property_writer* self, struct tyran_runtime* runtime, struct tyran_symbol_table* symbol_table);
+void nimbus_property_writer_init(nimbus_property_writer* self, struct tyran_runtime* runtime,
+								 struct tyran_symbol_table* symbol_table);
 void nimbus_property_writer_float(nimbus_property_writer* self, float* v, struct tyran_object* o, tyran_symbol* s);
 void nimbus_property_writer_vector3(nimbus_property_writer* self, struct tyran_value* destination, nimbus_vector3* v);
 void nimbus_property_writer_vector2(nimbus_property_writer* self, struct tyran_value* destination, nimbus_vector2* v);

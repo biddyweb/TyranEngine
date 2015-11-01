@@ -13,6 +13,7 @@ typedef struct nimbus_script_object_updated {
 	struct tyran_object* object;
 } nimbus_script_object_updated;
 
-void nimbus_script_object_updated_send(struct nimbus_event_write_stream* stream, nimbus_resource_id id, struct tyran_object* object);
+void nimbus_script_object_updated_send(struct nimbus_event_write_stream* stream, nimbus_resource_id id,
+									   struct tyran_object* object);
 
 #endif

@@ -7,9 +7,9 @@ void tyran_memory_pool_initialize_entries(tyran_memory_pool* pool)
 	u8t* m = pool->memory;
 	int total_size = (int) (pool->struct_size + sizeof(tyran_memory_pool_entry));
 	tyran_memory_pool_entry* previous = 0;
-	for (int i=0; i<pool->max_count; ++i) {
+	for (int i = 0; i < pool->max_count; ++i) {
 		tyran_memory_pool_entry* e = (tyran_memory_pool_entry*) m;
-		if (i==0) {
+		if (i == 0) {
 			pool->first_free = e;
 		}
 		e->allocated = TYRAN_FALSE;
@@ -48,14 +48,17 @@ void* tyran_memory_pool_alloc(tyran_memory_pool* pool)
 	u8t* p = m + sizeof(tyran_memory_pool_entry);
 	e->allocated = TYRAN_TRUE;
 	// TYRAN_ASSERT(((tyran_pointer_to_number)p) % alignment == 0, "alignment error");
-	// TYRAN_LOG("Allocating from memory pool '%s' (%zu) -> %p (count:%zu)", pool->type_string, pool->struct_size, m, pool->count);
+	// TYRAN_LOG("Allocating from memory pool '%s' (%zu) -> %p (count:%zu)", pool->type_string, pool->struct_size, m,
+	// pool->count);
 	return p;
 }
 
 void* tyran_memory_pool_alloc_debug(tyran_memory_pool* pool, const char* type_name, size_t struct_size)
 {
-	TYRAN_ASSERT(tyran_strcmp(pool->type_string, type_name) == 0, "Type name mismatch. Expected:%s received %s", pool->type_string, type_name);
-	TYRAN_ASSERT(pool->struct_size == struct_size, "Struct size mismatch. Expected %zu, received %zu", pool->struct_size, struct_size);
+	TYRAN_ASSERT(tyran_strcmp(pool->type_string, type_name) == 0, "Type name mismatch. Expected:%s received %s",
+				 pool->type_string, type_name);
+	TYRAN_ASSERT(pool->struct_size == struct_size, "Struct size mismatch. Expected %zu, received %zu", pool->struct_size,
+				 struct_size);
 
 	return tyran_memory_pool_alloc(pool);
 }
@@ -70,8 +73,10 @@ void* tyran_memory_pool_calloc(tyran_memory_pool* pool)
 
 void* tyran_memory_pool_calloc_debug(tyran_memory_pool* pool, const char* type_name, size_t struct_size)
 {
-	TYRAN_ASSERT(tyran_strcmp(pool->type_string, type_name) == 0, "Type name mismatch. Expected:%s received %s", pool->type_string, type_name);
-	TYRAN_ASSERT(pool->struct_size == struct_size, "Struct size mismatch. Expected %zu, received %zu", pool->struct_size, struct_size);
+	TYRAN_ASSERT(tyran_strcmp(pool->type_string, type_name) == 0, "Type name mismatch. Expected:%s received %s",
+				 pool->type_string, type_name);
+	TYRAN_ASSERT(pool->struct_size == struct_size, "Struct size mismatch. Expected %zu, received %zu", pool->struct_size,
+				 struct_size);
 
 	return tyran_memory_pool_calloc(pool);
 }
@@ -79,7 +84,7 @@ void* tyran_memory_pool_calloc_debug(tyran_memory_pool* pool, const char* type_n
 void tyran_memory_pool_free(void* p)
 {
 	u8t* m = p;
-	tyran_memory_pool_entry* e = (tyran_memory_pool_entry*)(m - sizeof(tyran_memory_pool_entry));
+	tyran_memory_pool_entry* e = (tyran_memory_pool_entry*) (m - sizeof(tyran_memory_pool_entry));
 	e->allocated = TYRAN_FALSE;
 
 	tyran_memory_pool* pool = e->pool;

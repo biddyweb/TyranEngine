@@ -5,7 +5,7 @@
 
 nimbus_event_listener_function* nimbus_event_function_from_event_id(nimbus_event_listener* self, nimbus_event_type_id id)
 {
-	for (int i=0; i<self->function_count; ++i) {
+	for (int i = 0; i < self->function_count; ++i) {
 		nimbus_event_listener_function* func = &self->functions[i];
 		if (func->id == id) {
 			return func;
@@ -21,7 +21,7 @@ void nimbus_event_process(nimbus_event_listener* self, struct nimbus_event_read_
 
 	nimbus_event_stream_header header;
 
-	for (; read_stream->pointer < read_stream->end_pointer; ) {
+	for (; read_stream->pointer < read_stream->end_pointer;) {
 		nimbus_event_stream_read_type(read_stream, header);
 		// TYRAN_LOG("Read event header type:%d octet_size:%d", header.event_type_id, header.event_octet_size);
 
@@ -45,7 +45,6 @@ void nimbus_event_process(nimbus_event_listener* self, struct nimbus_event_read_
 		nimbus_event_stream_read_skip(read_stream, header.event_octet_size);
 	}
 }
-
 
 void nimbus_event_listener_init(nimbus_event_listener* self, void* other_self)
 {

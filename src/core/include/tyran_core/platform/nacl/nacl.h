@@ -23,12 +23,11 @@ typedef struct nimbus_nacl {
 	PPB_Graphics3D* graphics_3d;
 	PPB_View* view;
 
-	PP_Bool(*input_event_receiver)(PP_Instance instance, PP_Resource input_event);
+	PP_Bool (*input_event_receiver)(PP_Instance instance, PP_Resource input_event);
 	void* input_event_receiver_self;
 	nimbus_size2 display_size;
 } nimbus_nacl;
 
 extern nimbus_nacl g_nacl;
-
 
 #endif

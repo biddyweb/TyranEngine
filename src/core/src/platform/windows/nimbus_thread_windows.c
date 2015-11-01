@@ -3,7 +3,7 @@
 
 static DWORD WINAPI thread_main_routine(LPVOID data)
 {
-	nimbus_thread* self = (nimbus_thread*)(data);
+	nimbus_thread* self = (nimbus_thread*) (data);
 
 	self->func(self->other_self);
 

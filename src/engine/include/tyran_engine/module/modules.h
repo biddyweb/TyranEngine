@@ -11,9 +11,9 @@ struct nimbus_event_write_stream;
 struct tyran_object;
 struct nimbus_property_reader;
 struct tyran_symbol_table;
-struct nimbus_component_definition;
 
-typedef void (*nimbus_event_converter_func)(struct nimbus_event_write_stream* stream, struct nimbus_property_reader* reader, struct tyran_object* o);
+typedef void (*nimbus_event_converter_func)(struct nimbus_event_write_stream* stream, struct nimbus_property_reader* reader,
+											struct tyran_object* o);
 
 typedef struct nimbus_modules {
 	nimbus_module modules[16];
@@ -23,25 +23,21 @@ typedef struct nimbus_modules {
 	int event_definitions_count;
 	int event_definitions_max_count;
 
-	struct nimbus_component_definition* component_definitions;
-	int component_definitions_count;
-	int component_definitions_max_count;
-
-
 	struct nimbus_resource_definitions resource_definitions;
 
 	struct tyran_symbol_table* symbol_table;
 } nimbus_modules;
 
 void nimbus_modules_init(nimbus_modules* self, struct tyran_memory* memory, struct tyran_symbol_table* symbol_table);
-void nimbus_modules_add(nimbus_modules* self, const char* name, size_t octet_size, nimbus_module_init_function func, size_t update_offset);
-void nimbus_modules_add_affinity(nimbus_modules* self, const char* name, size_t octet_size, nimbus_module_init_function func, size_t update_offset, int affinity);
+void nimbus_modules_add(nimbus_modules* self, const char* name, size_t octet_size, nimbus_module_init_function func,
+						size_t update_offset);
+void nimbus_modules_add_affinity(nimbus_modules* self, const char* name, size_t octet_size, nimbus_module_init_function func,
+								 size_t update_offset, int affinity);
 
-struct nimbus_event_definition* nimbus_modules_add_event(nimbus_modules* self, const char* name, u8t event_type_id, u8t unspawn_event_type_id);
-struct nimbus_event_definition* nimbus_modules_add_event_struct(nimbus_modules* self, const char* name, size_t struct_size, u8t event_type_id);
-
-struct nimbus_component_definition* nimbus_modules_add_component_definition(nimbus_modules* self, const char* name, u8t event_type_id, size_t struct_size);
-const struct nimbus_component_definition* nimbus_modules_component_definition_from_type(nimbus_modules* self, tyran_symbol type);
+struct nimbus_event_definition* nimbus_modules_add_event(nimbus_modules* self, const char* name, u8t event_type_id,
+														 u8t unspawn_event_type_id);
+struct nimbus_event_definition* nimbus_modules_add_event_struct(nimbus_modules* self, const char* name, size_t struct_size,
+																u8t event_type_id);
 
 void nimbus_modules_add_resource_definition(nimbus_modules* self, const char* name, size_t struct_size);
 

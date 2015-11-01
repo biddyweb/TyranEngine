@@ -13,5 +13,4 @@ typedef struct nimbus_resource_load_state {
 
 void nimbus_resource_load_state_send(struct nimbus_event_write_stream* stream, nimbus_resource_id id);
 
-
 #endif

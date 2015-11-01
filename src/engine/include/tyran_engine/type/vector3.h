@@ -11,7 +11,4 @@ typedef struct nimbus_vector3 {
 
 nimbus_vector3 nimbus_vector3_make(tyran_number x, tyran_number y, tyran_number z);
 
-
-
-
 #endif

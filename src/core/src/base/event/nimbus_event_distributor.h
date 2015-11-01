@@ -12,7 +12,8 @@ typedef struct nimbus_event_distributor {
 	const struct tyran_symbol_table* symbol_table;
 } nimbus_event_distributor;
 
-void nimbus_event_distributor_init(nimbus_event_distributor* self, const struct tyran_symbol_table* table,  struct tyran_memory* memory);
+void nimbus_event_distributor_init(nimbus_event_distributor* self, const struct tyran_symbol_table* table,
+								   struct tyran_memory* memory);
 void nimbus_event_distributor_distribute_events(nimbus_event_distributor* self, struct nimbus_update** objects, int object_count);
 
 #endif

@@ -16,12 +16,12 @@ void nimbus_bit_array_free(nimbus_bit_array* self)
 
 static int find_free_index(nimbus_bit_array* self)
 {
-	for (int i=0; i<self->block_count; ++i) {
+	for (int i = 0; i < self->block_count; ++i) {
 		u32t d = self->bits[i];
 		if (d != 0xffffffff) {
-			for (int j=0; j<32; ++j) {
+			for (int j = 0; j < 32; ++j) {
 				if ((d & 0x1) == 0) {
-					return i*32 + j;
+					return i * 32 + j;
 				}
 				d >>= 1;
 			}

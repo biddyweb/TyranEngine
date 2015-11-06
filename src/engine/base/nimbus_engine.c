@@ -17,8 +17,6 @@
 #include <tyranscript/tyran_memory.h>
 #include <tyranscript/tyran_log.h>
 
-#include "../script/script_module.h"
-
 #if defined TORNADO_OS_NACL
 #include "../../core/src/platform/nacl/nacl_loader.h"
 #include "../../core/src/platform/nacl/nacl_input.h"
@@ -162,9 +160,6 @@ static void add_internal_modules(nimbus_modules* modules)
 	nimbus_modules_add_affinity(modules, "nacl_connection", sizeof(nimbus_nacl_connection), nimbus_nacl_connection_init,
 								offsetof(nimbus_nacl_connection, update), 0);
 #endif
-
-	nimbus_modules_add(modules, "script", sizeof(nimbus_script_module), nimbus_script_module_init,
-					   offsetof(nimbus_script_module, update));
 }
 
 nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue* task_queue)

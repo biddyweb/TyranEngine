@@ -81,13 +81,6 @@ int nimbus_event_stream_read_array(nimbus_event_read_stream* self, void* destina
 		nimbus_event_stream_write_event_end(stream);                                                                             \
 	}
 
-#define nimbus_event_stream_write_event_to_combine(stream, event_type_id, variable, INSTANCE_ID)                                 \
-	{                                                                                                                            \
-		nimbus_event_stream_write_event_header_ex(stream, event_type_id, INSTANCE_ID);                                           \
-		nimbus_event_stream_write_type(stream, variable);                                                                        \
-		nimbus_event_stream_write_event_end(stream);                                                                             \
-	}
-
 #define nimbus_event_stream_read_type(stream, variable)                                                                          \
 	{                                                                                                                            \
 		nimbus_event_stream_read_align(stream);                                                                                  \

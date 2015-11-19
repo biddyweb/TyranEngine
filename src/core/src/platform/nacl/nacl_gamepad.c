@@ -40,7 +40,7 @@ static void _on_update(void* _self)
 	compare_states(self, &gamepads);
 }
 
-void nimbus_nacl_gamepad_init(void* _self, tyran_memory* memory)
+void nimbus_nacl_gamepad_init(void* _self, struct tyran_memory* memory)
 {
 	nimbus_nacl_gamepad* self = _self;
 	nimbus_update_init(&self->update, memory, _on_update, self, "nacl_gamepad");

@@ -34,7 +34,7 @@ static PP_Resource create_socket(nimbus_nacl_connection* self)
 	return socket;
 }
 
-void nimbus_nacl_connection_init(void* _self, tyran_memory* memory)
+void nimbus_nacl_connection_init(void* _self, struct tyran_memory* memory)
 {
 	nimbus_nacl_connection* self = _self;
 	nimbus_update_init(&self->update, memory, _on_update, self, "nacl_connection");

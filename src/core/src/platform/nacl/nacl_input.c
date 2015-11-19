@@ -140,7 +140,7 @@ static PP_Bool _on_input_event(PP_Instance instance, PP_Resource input_event)
 	return on_input_event(self, input_event, input_event_type);
 }
 
-void nimbus_nacl_input_init(void* _self, tyran_memory* memory)
+void nimbus_nacl_input_init(void* _self, struct tyran_memory* memory)
 {
 	nimbus_nacl_input* self = _self;
 	nimbus_update_init(&self->update, memory, _on_update, self, "nacl_input");

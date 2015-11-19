@@ -5,6 +5,7 @@
 #include "../../base/buffer/octet_buffer.h"
 
 #include <tyranscript/tyran_clib.h>
+#include <tyranscript/tyran_log.h>
 
 #include <tyran_engine/event/resource_load.h>
 #include <tyran_engine/resource/type_id.h>
@@ -219,7 +220,7 @@ static void _on_update(void* self)
 {
 }
 
-void nimbus_nacl_loader_init(void* _self, tyran_memory* memory)
+void nimbus_nacl_loader_init(void* _self, struct tyran_memory* memory)
 {
 	nimbus_nacl_loader* self = _self;
 	self->url_request_info = (PPB_URLRequestInfo*) g_nacl.get_browser(PPB_URLREQUESTINFO_INTERFACE);

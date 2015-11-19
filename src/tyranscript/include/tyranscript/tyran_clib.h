@@ -1,10 +1,15 @@
 #ifndef TYRAN_CLIB_H
 #define TYRAN_CLIB_H
 
+#if !defined TORNADO_OS_NACL
 #include <memory.h>
+#else
+#include <stdio.h>
+#endif
+
 #include <stdlib.h>
 
-#if defined TORNADO_OS_IOS
+#if defined TORNADO_OS_IOS || defined TORNADO_OS_NACL
 #include <string.h>
 #endif
 

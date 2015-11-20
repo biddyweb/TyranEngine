@@ -43,8 +43,8 @@ static nimbus_resource_type_id generic_resource_type_to_extension_type(nimbus_re
 		converted = "fsh";
 	} else if (resource_type_id == nimbus_resource_type_id_from_string("skeleton")) {
 		converted = "skeleton";
-	} else if (resource_type_id == nimbus_resource_type_id_from_string("script")) {
-		converted = "oes";
+	} else if (resource_type_id == nimbus_resource_type_id_from_string("mocha")) {
+		converted = "mocha";
 	} else if (resource_type_id == nimbus_resource_type_id_from_string("wave")) {
 		converted = "ogg";
 	}

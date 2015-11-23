@@ -20,7 +20,7 @@ void nimbus_boot_task_queue(nimbus_boot* self)
 void nimbus_boot_task_threads(nimbus_boot* self)
 {
 	self->task_thread_count = 3;
-	TYRAN_LOG("Tyran Engine v0.1 boot. Starting %d thread(s).", self->task_thread_count);
+	TYRAN_LOG("Tyran Engine v0.0.2 boot. Starting %d thread(s).", self->task_thread_count);
 	for (int i = 1; i < self->task_thread_count; ++i) {
 		nimbus_task_thread_init(&self->task_threads[i], self->task_queue, i);
 	}

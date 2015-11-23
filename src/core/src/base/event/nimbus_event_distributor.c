@@ -46,7 +46,7 @@ void nimbus_event_distributor_write_events_to_buffer(nimbus_event_distributor* s
 		nimbus_event_write_stream_clear(&o->event_write_stream);
 	}
 
-	self->event_buffer_used_octet_size = (int)(p - self->event_buffer);
+	self->event_buffer_used_octet_size = (int) (p - self->event_buffer);
 }
 
 void nimbus_event_distributor_distribute_events(nimbus_event_distributor* self, nimbus_update** objects, int object_count)

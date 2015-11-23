@@ -24,7 +24,7 @@ void nimbus_event_write_stream_free(nimbus_event_write_stream* stream)
 
 int nimbus_event_write_stream_length(nimbus_event_write_stream* self)
 {
-	return (int)(self->pointer - self->buffer);
+	return (int) (self->pointer - self->buffer);
 }
 
 void nimbus_event_stream_write_octets(nimbus_event_write_stream* stream, const void* data, int len)
@@ -55,7 +55,7 @@ void nimbus_event_stream_write_string(nimbus_event_write_stream* self, const tyr
 
 void nimbus_event_stream_write_event_end(nimbus_event_write_stream* self)
 {
-	int octet_size = (int)(self->pointer - ((u8t*) self->last_header) - sizeof(nimbus_event_stream_header));
+	int octet_size = (int) (self->pointer - ((u8t*) self->last_header) - sizeof(nimbus_event_stream_header));
 	self->last_header->event_octet_size = octet_size;
 }
 

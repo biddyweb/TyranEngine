@@ -1,4 +1,4 @@
-#include "nacl_connection.h"
+#include "nacl_websocket_connection.h"
 
 #include <tyranscript/tyran_log.h>
 
@@ -14,7 +14,7 @@ static void on_connected(void* user_data, int32_t octets_read)
 
 static void connect(nimbus_nacl_connection* self)
 {
-	const char* string = "ws://spelmotor.com:8080";
+	const char* string = "ws://localhost:32001";
 	struct PP_Var property_var_string = g_nacl.var->VarFromUtf8(string, tyran_strlen(string));
 
 	struct PP_CompletionCallback callback;

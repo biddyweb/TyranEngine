@@ -20,7 +20,7 @@
 #if defined TORNADO_OS_NACL
 #include "../../core/src/platform/nacl/nacl_loader.h"
 #include "../../core/src/platform/nacl/nacl_input.h"
-#include "../../core/src/platform/nacl/nacl_connection.h"
+#include "../../core/src/platform/nacl/nacl_websocket_connection.h"
 #include "../../core/src/platform/nacl/nacl_gamepad.h"
 #endif
 

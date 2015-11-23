@@ -9,6 +9,7 @@
 
 #include <tyran_core/event/event_stream.h>
 #include <tyran_core/event/event_listener.h>
+#include "../../core/src/base/time/absolute_time.h"
 #include "../resource/resource_handler.h"
 #include <tyran_engine/module/nimbus_module.h>
 #include <tyran_engine/module/register_modules.h>
@@ -24,7 +25,12 @@
 #include "../../core/src/platform/nacl/nacl_gamepad.h"
 #endif
 
+#include <tyran_engine/math/nimbus_math.h>
+
 nimbus_modules* g_modules;
+
+static nimbus_absolute_time s_time;
+static int s_frame_count = 0;
 
 void schedule_update_tasks(nimbus_engine* self, nimbus_task_queue* queue)
 {
@@ -44,6 +50,20 @@ void distribute_events(nimbus_engine* self)
 
 int nimbus_engine_update(nimbus_engine* self, nimbus_task_queue* queue)
 {
+	if (1) {
+		if (s_frame_count >= 120) {
+			nimbus_absolute_time stop_time;
+			nimbus_absolute_time_init(&stop_time);
+
+			double delta_time = nimbus_absolute_time_delta(&stop_time, &s_time);
+			nimbus_absolute_time_init(&s_time);
+
+			float fps = (float) s_frame_count / (float) delta_time;
+			TYRAN_LOG("FPS:%.1f", fps);
+			s_frame_count = 0;
+		}
+		s_frame_count++;
+	}
 	distribute_events(self);
 	schedule_update_tasks(self, queue);
 
@@ -165,6 +185,8 @@ static void add_internal_modules(nimbus_modules* modules)
 nimbus_engine* nimbus_engine_new(tyran_memory* memory, struct nimbus_task_queue* task_queue)
 {
 	nimbus_engine* self = TYRAN_MEMORY_CALLOC_TYPE(memory, nimbus_engine);
+
+	nimbus_absolute_time_init(&s_time);
 
 	self->symbol_table = tyran_symbol_table_new(memory);
 

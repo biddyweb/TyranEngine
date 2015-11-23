@@ -17,4 +17,6 @@
 #define nimbus_math_asin(f) asin(f)
 #define nimbus_math_tan(f) tanf(f)
 
+#define nimbus_math_pow(a, b) pow((a), (b))
+
 #endif

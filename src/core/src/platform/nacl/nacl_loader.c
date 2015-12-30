@@ -45,6 +45,12 @@ static nimbus_resource_type_id generic_resource_type_to_extension_type(nimbus_re
 		converted = "skeleton";
 	} else if (resource_type_id == nimbus_resource_type_id_from_string("mocha")) {
 		converted = "mocha";
+	} else if (resource_type_id == nimbus_resource_type_id_from_string("material")) {
+		converted = "material";
+	} else if (resource_type_id == nimbus_resource_type_id_from_string("shader")) {
+		converted = "shader";
+	} else if (resource_type_id == nimbus_resource_type_id_from_string("texture")) {
+		converted = "texture";
 	} else if (resource_type_id == nimbus_resource_type_id_from_string("wave")) {
 		converted = "ogg";
 	}

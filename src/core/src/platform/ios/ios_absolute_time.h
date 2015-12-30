@@ -4,7 +4,6 @@
 #include <mach/mach.h>
 #include <mach/mach_time.h>
 
-
 typedef struct nimbus_absolute_time {
 	uint64_t absolute;
 } nimbus_absolute_time;

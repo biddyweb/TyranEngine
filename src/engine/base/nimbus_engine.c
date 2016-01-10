@@ -77,7 +77,7 @@ static void _dummy_update(void* _self)
 
 static void fire_load_resource(nimbus_engine* self, nimbus_resource_id id, nimbus_resource_type_id resource_type_id)
 {
-	nimbus_resource_load_send(&self->update_object.event_write_stream, id, resource_type_id);
+	nimbus_resource_load_send(&self->update_object.event_write_stream, id, resource_type_id, 0);
 }
 
 static void boot_resource(nimbus_engine* self)

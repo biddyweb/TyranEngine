@@ -3,7 +3,7 @@
 
 void nimbus_absolute_time_init(nimbus_absolute_time* a)
 {
-	clock_gettime(CLOCK_REALTIME, &a->absolute);
+	clock_gettime(CLOCK_MONOTONIC, &a->absolute);
 }
 
 static uint64_t nano_seconds(const struct timespec* t)

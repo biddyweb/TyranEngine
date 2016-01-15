@@ -51,6 +51,7 @@
 		<define name="TORNADO_OS_LINUX" />
 		<source directory="core/src/platform/posix" />
 		<library filename="pthread" />
+		<library filename="rt" />
 	</platform>
 	<platform name="windows">
 		<define name="TORNADO_OS_WINDOWS" />

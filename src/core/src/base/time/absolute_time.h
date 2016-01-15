@@ -5,5 +5,5 @@
 #elif defined TORNADO_OS_NACL
 #include "../../platform/nacl/nacl_absolute_time.h"
 #else
-#include "../../platform/posix/absolute_time.h"
+#include "../../platform/posix/posix_absolute_time.h"
 #endif
